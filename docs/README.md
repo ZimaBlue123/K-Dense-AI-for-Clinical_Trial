@@ -6,6 +6,7 @@
 
 - `skills_guide.md`：Skills 导览与推荐工作流（推荐先读）
 - `skills_catalog.md`：Skills 清单与常用 prompt 模板
+- `Skills List_for_Word.md`：Skills 列表（便于直接复制到 Word 使用多级列表/样式）
 
 ## 面向维护者
 

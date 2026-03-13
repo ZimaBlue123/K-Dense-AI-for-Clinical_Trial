@@ -45,7 +45,7 @@ Scientific-Skills-for-Clinical_Trial/
 ├── skills/                # 每个 skill 一个目录（核心内容）
 ├── docs/                  # 长文档（索引见 README.md 的“文档索引”）
 ├── scripts/               # 仓库级可执行脚本入口
-├── reports/               # 生成产物（默认不入库；见 .gitignore）
+├── review_materials/      # 审核/报告素材库（本地使用，不入库；见 .gitignore）
 ├── tests/                 # 测试
 ├── requirements.txt
 ├── requirements-dev.txt
@@ -77,7 +77,25 @@ Scientific-Skills-for-Clinical_Trial/
 python scripts/generate_norovirus_review_docx.py
 ```
 
-生成的 `.docx` 默认输出到 `reports/`，该目录下的二进制产物默认不会被提交（见 `.gitignore`）。
+生成的 `.docx` 为本地产物，建议输出到你自己的工作目录（例如 `review_materials/` 或其他不入库目录），避免将原始素材/报告提交到 GitHub（见 `.gitignore`）。
+
+## 常用脚本：审核工作流（素材→Markdown→Word）
+
+### 1) 将 `review_materials/` 内 DOCX/PDF 转成 Markdown
+
+```bash
+python scripts/convert_review_to_md.py
+```
+
+输出到：`review_materials/converted/`
+
+### 2) 将 Markdown 审核报告转成 Word
+
+```bash
+python scripts/md_to_docx.py "review_materials/<你的审核报告>.md" -o "review_materials/<你的审核报告>.docx"
+```
+
+提示：`review_materials/` 已在 `.gitignore` 中忽略，不会被上传到 GitHub。
 
 ## 来源与归属（合规声明）
 
