@@ -124,6 +124,11 @@ reports/
 !skills/**/assets/**/*.webp
 !skills/**/assets/**/*.svg
 
+# Allow project skills under .cursor/skills/ to be versioned
+!.cursor/
+!.cursor/skills/
+!.cursor/skills/**
+
 # "Generated report sources" (ONLY under typical artifact dirs)
 reports/**/*.md
 reports/**/*.py
