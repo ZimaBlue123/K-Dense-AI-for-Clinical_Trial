@@ -19,6 +19,32 @@
 python -m pip install -r requirements.txt
 ```
 
+### 开发与质量（可选）
+
+安装开发依赖（测试/Lint）：
+
+```bash
+python -m pip install -r requirements-dev.txt
+```
+
+运行测试：
+
+```bash
+pytest
+```
+
+运行代码风格检查：
+
+```bash
+flake8
+```
+
+清理本地缓存/忽略文件（谨慎使用，会删除所有被 `.gitignore` 忽略的内容）：
+
+```bash
+git clean -fdX
+```
+
 ### 安装（skills 到客户端）
 
 如果你的客户端支持“直接引用项目目录”，推荐直接指向本仓库的 `skills/`；否则可复制到客户端的全局 skills 目录。
