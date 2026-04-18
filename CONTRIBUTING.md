@@ -29,6 +29,7 @@ flake8 .
 目录约定：
 
 - 路径：`skills/<skill-name>/`
+- 一律在**项目内**创建 skill；不要放到 `~/.cursor/skills/` 这类全局目录
 - 至少包含：`SKILL.md`
 - 如包含脚本：放在 `skills/<skill-name>/scripts/` 下，并在 `SKILL.md` 里写清入口、参数与输出
 

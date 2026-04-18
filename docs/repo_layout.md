@@ -19,6 +19,7 @@ Scientific-Skills-for-Clinical_Trial/
 ## 贡献约定（摘要）
 
 - **新增 skill**：在 `skills/<skill-name>/` 下建立目录，至少包含 `SKILL.md` 与（如有）`scripts/`。
+- **skill 存放位置**：项目相关 skill 仅放在仓库 `skills/` 下，不使用 `~/.cursor/skills/` 等全局目录。
 - **脚本入口放置**：
   - 与 skill 强绑定的脚本放在对应 skill 的 `scripts/` 下
   - 与整个仓库相关的脚本放在仓库根的 `scripts/` 下

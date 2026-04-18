@@ -1,0 +1,10 @@
+---
+description: Enforce in-repo skill location under skills/
+alwaysApply: true
+---
+
+# Skill Location Policy
+
+- Create new skills only under `skills/<skill-name>/` in this repository.
+- Do not create project skills under global user paths such as `~/.cursor/skills/`.
+- When migrating an external skill into this project, place it in `skills/` and update docs (`README.md`, `docs/skills_catalog.md`) plus license/attribution notes if needed.

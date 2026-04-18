@@ -1,5 +1,7 @@
 # Scientific-Skills-for-Clinical_Trial
 
+中文 | [English](README.en.md)
+
 临床试验 / 临床研究 AI 辅助系统（仓库核心内容：`skills/`）。
 
 ## 项目定位
@@ -350,6 +352,14 @@ print(result.text_content)
 
 - **使用说明**：优先看对应目录的 `SKILL.md`
 - **参考资料**：统一放在 `references/INDEX.md`（如存在）
+- **补充文档（README）**：部分 skill 目录提供额外 README（见下方直达链接）
+- **项目规则记忆**：已在 `.cursor/rules/skills-location-policy.mdc` 固化“skill 仅放项目 `skills/` 目录”
+
+### Skills 补充 README 直达链接
+
+- `skills/fireworks-tech-graph/README.zh.md`（中文说明）
+- `skills/fireworks-tech-graph/README.md`（英文说明）
+- `skills/fireworks-tech-graph/scripts/README.md`（脚本说明）
 
 ---
 
