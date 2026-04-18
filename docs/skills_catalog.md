@@ -2,7 +2,7 @@
 
 本文件提供"做什么用"的速览与可复制的常用 prompt 模板；更细的参数/脚本入口请以各 skill 目录下的 `SKILL.md` 为准。
 
-## Skills 清单（项目内置 - 24 个）
+## Skills 清单（项目内置 - 26 个）
 
 ### 核心数据分析
 
@@ -52,6 +52,18 @@
 | `pyhealth` | 医疗 AI：EHR 任务/数据集/模型 | MIT | 见 references/ |
 | `csr-stage-docx-workflow` | CSR 阶段性小结 Word 生成（Shell结构+PDF自动填数） | MIT | `scripts/generate_csr_docx.py` |
 | `word-audit-report-format` | Word 审核报告字体规范（中文宋体/英文TNR） | MIT | `scripts/generate_audit_report_docx.py` |
+
+### 图表扩展（项目内置）
+
+| Skill | 主要用途 | 来源 | 安装位置 |
+|-------|----------|------|----------|
+| `fireworks-tech-graph` | 自然语言生成技术图（架构图/流程图/序列图/UML），导出 SVG+PNG | [yizhiyanhua-ai/fireworks-tech-graph](https://github.com/yizhiyanhua-ai/fireworks-tech-graph) | `skills/fireworks-tech-graph` |
+
+更新（Windows/PowerShell）：
+
+```powershell
+git -c http.proxy= -c https.proxy= -C ".\skills\fireworks-tech-graph" pull
+```
 
 ---
 

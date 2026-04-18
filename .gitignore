@@ -131,6 +131,10 @@ reports/
 !skills/**/assets/**/*.webp
 !skills/**/assets/**/*.svg
 
+# Keep fireworks-tech-graph templates/samples versioned (outside assets/)
+!skills/fireworks-tech-graph/**/*.svg
+!skills/fireworks-tech-graph/**/*.png
+
 # Allow project skills under .cursor/skills/ to be versioned
 !.cursor/
 !.cursor/skills/

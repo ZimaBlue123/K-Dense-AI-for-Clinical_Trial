@@ -12,6 +12,17 @@
 
 - **Python**：3.10+（CI 当前使用 3.10）
 - **AI 客户端**：Cursor / Claude Code / Codex（需要支持 skills 机制）
+- **图表渲染（`fireworks-tech-graph`）**：`librsvg`（提供 `rsvg-convert` 命令）
+
+`rsvg-convert` 安装示例：
+
+```bash
+# macOS
+brew install librsvg
+
+# Ubuntu / Debian
+sudo apt install librsvg2-bin
+```
 
 ### 安装（Python 依赖）
 
@@ -73,7 +84,7 @@ cp -r ./skills/* ~/.cursor/skills/
 
 ```
 Scientific-Skills-for-Clinical_Trial/
-├── skills/                # 每个 skill 一个目录（核心内容，24 个）
+├── skills/                # 每个 skill 一个目录（核心内容，26 个）
 ├── docs/                  # 长文档（索引见下方"文档索引"）
 ├── scripts/               # 仓库级可执行脚本入口（含 CSR/审核报告生成）
 ├── tests/                 # 测试
@@ -88,7 +99,7 @@ Scientific-Skills-for-Clinical_Trial/
 
 ## Skills 清单与使用方法
 
-本仓库包含 **24 个 skills**，分为以下几类：
+本仓库包含 **26 个 skills**，分为以下几类：
 
 ### 核心数据分析 Skills
 
@@ -139,6 +150,21 @@ Scientific-Skills-for-Clinical_Trial/
 | `pyhealth` | 医疗 AI（EHR 任务/模型） | 见 `references/datasets.md` |
 | `csr-stage-docx-workflow` | CSR 阶段性小结 Word 生成 | `python scripts/generate_csr_docx.py` |
 | `word-audit-report-format` | Word 审核报告字体规范 | `python scripts/generate_audit_report_docx.py` |
+
+### 图表 Skill（项目内置）
+
+| Skill | 用途 | 安装位置 | 快速使用 |
+|-------|------|----------|----------|
+| `fireworks-tech-graph` | 通过自然语言生成技术图（架构图/流程图/序列图/UML），导出 SVG+PNG | `skills/fireworks-tech-graph` | Prompt 示例：`画一个 RAG 架构图，style 2，输出到 ./output/` |
+
+说明：
+- 该 skill 来源：[`yizhiyanhua-ai/fireworks-tech-graph`](https://github.com/yizhiyanhua-ai/fireworks-tech-graph)。
+- `fireworks-tech-graph` 已并入本项目 `skills/` 目录统一管理。
+- 更新该 skill（Windows/PowerShell）：
+
+```powershell
+git -c http.proxy= -c https.proxy= -C ".\skills\fireworks-tech-graph" pull
+```
 
 ---
 
@@ -358,7 +384,8 @@ python scripts/generate_csr_docx.py --root "项目根目录"
 ## 来源与归属（合规声明）
 
 - **上游项目**：本仓库从 [`K-Dense-AI/claude-scientific-skills`](https://github.com/K-Dense-AI/claude-scientific-skills.git) 提取并裁剪出更聚焦"临床研究/临床试验"场景的一部分 skills。
-- **许可证**：上游与本仓库均为 MIT License；本仓库在再分发时保留上游版权与许可声明。
+- **附加来源**：`skills/fireworks-tech-graph` 来自 [`yizhiyanhua-ai/fireworks-tech-graph`](https://github.com/yizhiyanhua-ai/fireworks-tech-graph)（MIT License）。
+- **许可证**：上游与本仓库均为 MIT License；本仓库在再分发时保留上游版权与许可声明（含新增第三方 skill 版权声明）。
 - **改动范围（摘要）**：删除与临床研究无关的 skills/文档，仅保留并重组与临床研究相关的 skills；补充本仓库的目录规范、依赖与 CI。
 - **非背书声明**：本仓库为社区维护的裁剪/整理版本，不代表上游作者或组织的官方立场、认证或背书。
 

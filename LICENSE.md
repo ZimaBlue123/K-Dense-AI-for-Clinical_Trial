@@ -20,3 +20,12 @@ furnished to do so, subject to the following conditions:
    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
    SOFTWARE.
+
+---
+
+Third-party notices included in this repository:
+
+- `skills/fireworks-tech-graph` is derived from
+  [yizhiyanhua-ai/fireworks-tech-graph](https://github.com/yizhiyanhua-ai/fireworks-tech-graph),
+  licensed under MIT.
+- Copyright (c) 2025 fireworks-tech-graph contributors.

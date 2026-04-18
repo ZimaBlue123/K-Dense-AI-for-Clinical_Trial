@@ -9,3 +9,7 @@ pandas>=2.0
 statsmodels>=0.14
 matplotlib>=3.7
 
+# Diagram skill note:
+# `skills/fireworks-tech-graph` is SVG/PNG oriented and does not require extra Python packages here.
+# It relies on system tool `rsvg-convert` from librsvg.
+

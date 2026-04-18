@@ -1,3 +1,5 @@
 -r requirements.txt
 flake8>=7.0.0
 pytest>=8.0.0
+
+# No extra dev-only Python dependency is required for `skills/fireworks-tech-graph`.
