@@ -91,9 +91,10 @@ python3 ./scripts/generate-from-template.py architecture ./output/arch.svg '{"ti
 5. **Map nodes to shapes** — use Shape Vocabulary below
 6. **Check icon needs** — load `references/icons.md` for known products
 7. **Write SVG** with adaptive strategy (see SVG Generation Strategy below)
-8. **Validate**: Run `rsvg-convert file.svg -o /dev/null 2>&1` to check syntax
-9. **Export PNG**: `rsvg-convert -w 1920 file.svg -o file.png`
-10. **Report** the generated file paths
+8. **Sanitize text entities** (critical): run `python3 scripts/sanitize-svg-text.py file.svg` to escape unsafe text entities (especially raw `&`)
+9. **Validate XML + SVG**: run `scripts/validate-svg.sh file.svg` (uses XML parser and structural checks; optionally uses `rsvg-convert` when available)
+10. **Export PNG**: `rsvg-convert -w 1920 file.svg -o file.png`
+11. **Report** the generated file paths
 
 ## Diagram Types & Layout Rules
 
@@ -382,6 +383,8 @@ EOF
 
 **Validation** (run after generation):
 ```bash
+python3 scripts/sanitize-svg-text.py file.svg
+scripts/validate-svg.sh file.svg
 rsvg-convert file.svg -o /tmp/test.png 2>&1 && echo "✓ Valid" && rm /tmp/test.png
 ```
 
@@ -397,6 +400,7 @@ rsvg-convert file.svg -o /tmp/test.png 2>&1 && echo "✓ Valid" && rm /tmp/test.
 - ❌ `marker-end=` → ✅ `marker-end="url(#arrow)"`
 - ❌ `L 29450` → ✅ `L 290,220`
 - ❌ Missing `</svg>` at end
+- ❌ Raw text `A & B` in `<text>` → ✅ `A &amp; B`
 
 ## Output
 

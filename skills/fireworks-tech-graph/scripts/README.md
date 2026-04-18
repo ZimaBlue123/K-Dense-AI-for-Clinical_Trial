@@ -115,6 +115,19 @@ python3 ./generate-from-template.py memory ./output/mem0.svg '{
 - PNG 文件（带时间戳）
 - 详细的验证错误信息
 
+### 5. sanitize-svg-text.py
+
+在导出前自动修复 SVG 文本节点中的未转义实体（重点是 `&`）。
+
+**用法：**
+```bash
+python3 ./sanitize-svg-text.py <svg-file>
+```
+
+**典型场景：**
+- 文本包含 `A & B`，浏览器提示 `xml parsing error`（通常是 line/column 报错）
+- 先运行 sanitize，再跑 `validate-svg.sh`
+
 **示例：**
 ```bash
 ./test-all-styles.sh
@@ -165,7 +178,11 @@ cd ~/.claude/skills/fireworks-tech-graph/scripts
 ### 场景 2：生成并验证图表
 
 1. 使用 Claude Code 生成 SVG 内容
-2. 运行验证和导出：
+2. 先做文本转义修复（推荐）：
+   ```bash
+   python3 ./sanitize-svg-text.py /path/to/your-diagram.svg
+   ```
+3. 运行验证和导出：
    ```bash
    ./generate-diagram.sh -t architecture -s 1 -o ./output/arch.svg
    ```

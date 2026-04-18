@@ -27,7 +27,7 @@ echo "----------------------------------------"
 
 FAILURES=0
 
-# Check 0: XML syntax
+# Check 0: XML syntax (always run: xmllint or python fallback)
 echo -n "Checking XML syntax... "
 if command -v xmllint &> /dev/null; then
     if xmllint --noout "$SVG_FILE" 2>/dev/null; then
@@ -38,7 +38,27 @@ if command -v xmllint &> /dev/null; then
         FAILURES=$((FAILURES + 1))
     fi
 else
-    echo -e "${YELLOW}⚠ Skipped${NC} (xmllint not found)"
+    XML_RESULT=$(python3 - "$SVG_FILE" <<'PY'
+import sys
+import xml.etree.ElementTree as ET
+
+path = sys.argv[1]
+try:
+    ET.parse(path)
+    print("OK")
+except ET.ParseError as exc:
+    print(f"PARSE_ERROR:{exc}")
+except Exception as exc:
+    print(f"ERROR:{exc}")
+PY
+)
+    if [[ "$XML_RESULT" == OK ]]; then
+        echo -e "${GREEN}✓ Pass${NC} (python xml parser)"
+    else
+        echo -e "${RED}✗ Fail${NC}"
+        echo "$XML_RESULT" | sed 's/^PARSE_ERROR:/XML ParseError: /; s/^ERROR:/XML Error: /'
+        FAILURES=$((FAILURES + 1))
+    fi
 fi
 
 # Check 1: Tag balance
