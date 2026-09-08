@@ -1,4 +1,4 @@
-﻿# Scientific-Skills-for-Clinical_Trial
+# Scientific-Skills-for-Clinical_Trial
 
 涓枃 | [English](README.en.md)
 
@@ -411,7 +411,7 @@ print(result.text_content)
 | 鑴氭湰 | 鐢ㄩ€?| 鐘舵€?|
 |------|------|------|
 | `scripts/convert_to_md.py` | 鏂囨。杞琈arkdown锛堟帹鑽愶級 | 鉁?鎺ㄨ崘 |
-| `scripts/md_to_docx.py` | Markdown杞琖ord | 鉁?鎺ㄨ崘 |
+| `scripts/_archive/md_to_docx.py` | Markdown杞琖ord | 鉁?鎺ㄨ崘 |
 | `scripts/_archive/generate_csr_docx.py` | CSR阶段性小结 |
 | `scripts/project_self_check.py` | 椤圭洰鑷 | 鉁?鎺ㄨ崘 |
 | `scripts/cleanup_generated_artifacts.py` | 娓呯悊缂撳瓨涓嶪DE鍘嗗彶璁板綍 | 鉁?鎺ㄨ崘 |
@@ -446,12 +446,11 @@ print(result.text_content)
 |------|------|
 | `scripts/_archive/generate_audit_report_docx.py` | 通用审核报告 |
 | `scripts/_archive/generate_clinical_doc_audit_report.py` | 临床文档审核报告 |
-| `scripts/generate_clinical_overview_doc_review_docx.py` | 涓村簥姒傝瀹℃牳Word |
-| `scripts/generate_phase_summary_doc_review_docx.py` | 闃舵鎬荤粨瀹℃牳Word |
-| `scripts/generate_norovirus_review_docx.py` | 璇哄鐥呮瘨缁艰堪 |
-| `scripts/build_tvax006_IMA_v2_docx.py` | TVAX006浜у搧涓撶敤 |
-| `scripts/cansino_detail4843_manual_docx.py` | 搴峰笇璇轰骇鍝佷笓鐢?|
-| `scripts/extract_tables_to_docx.py` | OCR鍥剧墖杞琖ord琛ㄦ牸 |
+| `scripts/_archive/generate_clinical_overview_doc_review_docx.py` | 临床概览审核Word |
+| `scripts/_archive/generate_phase_summary_doc_review_docx.py` | 阶段总结审核Word |
+| `scripts/_archive/generate_norovirus_review_docx.py` | 诺如病毒综述 |
+| `scripts/_archive/cansino_detail4843_manual_docx.py` | 康希诺产品专用 |
+| `scripts/extract_tables_to_docx.py` | OCR图片转Word表格 |
 
 ### 鏂囨。瀹℃牳宸ヤ綔娴侊紙绱犳潗 鈫?Markdown 鈫?Word锛?
 

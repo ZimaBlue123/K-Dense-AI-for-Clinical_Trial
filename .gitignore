@@ -7,14 +7,21 @@ __pycache__/
 *.so
 *.pyo
 *.pyd
+*.pyc
 .Python
 __pypackages__/
-venv/
-.venv/
-env/
 .python-version
 .python_history
 .hypothesis/
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+myenv/
 
 # Packaging
 build/
@@ -60,6 +67,7 @@ $RECYCLE.BIN/
 
 # Claude / Mavis / WorkBuddy local state
 .claude/
+.claude-plugin/
 .mavis/
 .workbuddy/
 
@@ -96,6 +104,8 @@ config_local.yaml
 *.download
 *_result.txt
 verify_data_result.txt
+temp*.txt
+*dump*.txt
 .ipynb_checkpoints/
 ~$*
 
@@ -130,11 +140,9 @@ verify_data_result.txt
 # ==========================================
 # Reports (generated artifacts)
 # ==========================================
-# Keep an empty top-level reports/ folder in repo
 reports/
 !reports/
 !reports/.gitkeep
-# Generated report sources under artifact dirs
 reports/**/*.md
 reports/**/*.py
 reports/**/*.json
@@ -143,10 +151,8 @@ reports/**/*.doc
 reports/**/*.docx
 output/**/*.md
 output/**/*.py
-# If you ever generate reports elsewhere, keep them out too
 **/report/
 **/reports/
-# Reusable local template outputs (do not commit)
 scripts/common_templates/
 scripts/deliverables/
 **/deliverables/
@@ -225,7 +231,7 @@ docs/_converted/
 *.py.rej
 .#*
 
-# Review side-products (review_clinical_xlsx.py)
+# Review side-products
 *.review_dump.txt
 *.review.md
 
@@ -237,41 +243,6 @@ docs/_converted/
 **/_audit_*.sh
 **/_audit_*.ps1
 
-# Virtual Environments
-myenv/
-.venv/
-
-# Python Cache
-__pycache__/
-*.pyc
-
-# Temp logs
-*.log
-# Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*.class
-
-# IDE / Editor
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Project specific
-temp*.txt
-*dump*.txt
-*.log
-
-# Archived scripts
+# Archived scripts (local-only, not tracked)
 scripts/_archive/
 scripts/_archive_2026_consolidation/
