@@ -271,3 +271,7 @@ __pycache__/
 temp*.txt
 *dump*.txt
 *.log
+
+# Archived scripts
+scripts/_archive/
+scripts/_archive_2026_consolidation/
