@@ -253,9 +253,9 @@ Goal: Anomaly detection in sensor networks
 """)
 
 # Automate entire pipeline
-den.get_idea()        # Generate research idea
-den.get_method()      # Develop methodology
-den.get_results()     # Execute analysis
+den.get_idea()  # Generate research idea
+den.get_method()  # Develop methodology
+den.get_results()  # Execute analysis
 den.get_paper(journal=Journal.APS)  # Create paper
 ```
 
@@ -288,7 +288,7 @@ den = Denario(project_dir="./manual_research")
 den.set_data_description("Pre-existing dataset description...")
 den.set_idea("Pre-defined research hypothesis")
 den.set_method("methodology.md")  # Load from file
-den.set_results("results.md")      # Load from file
+den.set_results("results.md")  # Load from file
 
 # Generate formatted paper
 den.get_paper(journal=Journal.APS)

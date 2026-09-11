@@ -24,6 +24,7 @@ ROIs (Regions of Interest) in OMERO are containers for geometric shapes that mar
 from omero.rtypes import rdouble, rint, rstring
 import omero.model
 
+
 def create_roi(conn, image, shapes):
     """
     Create an ROI and link it to shapes.
@@ -45,6 +46,7 @@ def create_roi(conn, image, shapes):
     updateService = conn.getUpdateService()
     return updateService.saveAndReturnObject(roi)
 
+
 def rgba_to_int(red, green, blue, alpha=255):
     """
     Convert RGBA values (0-255) to integer encoding for OMERO.
@@ -55,8 +57,7 @@ def rgba_to_int(red, green, blue, alpha=255):
     Returns:
         Integer color value
     """
-    return int.from_bytes([red, green, blue, alpha],
-                          byteorder='big', signed=True)
+    return int.from_bytes([red, green, blue, alpha], byteorder="big", signed=True)
 ```
 
 ### Rectangle ROI
@@ -84,7 +85,7 @@ rect.theT = rint(t)
 
 # Set label and colors
 rect.textValue = rstring("Cell Region")
-rect.fillColor = rint(rgba_to_int(255, 0, 0, 50))    # Red, semi-transparent
+rect.fillColor = rint(rgba_to_int(255, 0, 0, 50))  # Red, semi-transparent
 rect.strokeColor = rint(rgba_to_int(255, 255, 0, 255))  # Yellow border
 
 # Create ROI
@@ -189,6 +190,7 @@ import numpy as np
 import struct
 import math
 
+
 def create_mask_bytes(mask_array, bytes_per_pixel=1):
     """
     Convert binary mask array to bit-packed bytes for OMERO.
@@ -216,8 +218,7 @@ def create_mask_bytes(mask_array, bytes_per_pixel=1):
     packed_mask = []
 
     for i in range(int(steps)):
-        binary = mask_bytes[i * int(divider):
-                           i * int(divider) + int(divider)]
+        binary = mask_bytes[i * int(divider) : i * int(divider) + int(divider)]
         format_str = str(int(byte_factor * len(binary))) + format_string
         binary = struct.unpack(format_str, binary)
         s = "".join(str(bit) for bit in binary)
@@ -225,11 +226,12 @@ def create_mask_bytes(mask_array, bytes_per_pixel=1):
 
     return bytearray(packed_mask)
 
+
 # Create binary mask (1s and 0s)
 mask_w, mask_h = 100, 100
 mask_array = np.fromfunction(
-    lambda x, y: ((x - 50)**2 + (y - 50)**2) < 40**2,  # Circle
-    (mask_w, mask_h)
+    lambda x, y: ((x - 50) ** 2 + (y - 50) ** 2) < 40**2,  # Circle
+    (mask_w, mask_h),
 )
 
 # Pack mask
@@ -253,6 +255,7 @@ mask.textValue = rstring("Segmentation Mask")
 
 # Set color
 from omero.gateway import ColorHolder
+
 mask_color = ColorHolder()
 mask_color.setRed(255)
 mask_color.setGreen(0)
@@ -393,9 +396,7 @@ z, t = 0, 0
 channel_index = 0
 
 # Get statistics
-stats = roi_service.getShapeStatsRestricted(
-    shape_ids, z, t, [channel_index]
-)
+stats = roi_service.getShapeStatsRestricted(shape_ids, z, t, [channel_index])
 
 # Display statistics
 for i, stat in enumerate(stats):
@@ -439,7 +440,7 @@ for c in range(image.getSizeC()):
     plane = pixels.getPlane(z, c, t)
 
     # Extract ROI region
-    roi_region = plane[y:y+height, x:x+width]
+    roi_region = plane[y : y + height, x : x + width]
 
     print(f"Channel {c}:")
     print(f"  Mean intensity: {np.mean(roi_region)}")
@@ -475,9 +476,7 @@ result = roi_service.findByImage(image_id, None)
 for roi in result.rois:
     for shape in roi.copyShapes():
         # Check condition (e.g., remove by label)
-        if (shape.getTextValue() and
-            shape.getTextValue().getValue() == "test-Ellipse"):
-
+        if shape.getTextValue() and shape.getTextValue().getValue() == "test-Ellipse":
             print(f"Removing shape {shape.getId().getValue()}")
             roi.removeShape(shape)
 
@@ -565,13 +564,15 @@ from omero.gateway import BlitzGateway
 from omero.rtypes import rdouble, rint, rstring
 import omero.model
 
-HOST = 'omero.example.com'
+HOST = "omero.example.com"
 PORT = 4064
-USERNAME = 'user'
-PASSWORD = 'pass'
+USERNAME = "user"
+PASSWORD = "pass"
+
 
 def rgba_to_int(r, g, b, a=255):
-    return int.from_bytes([r, g, b, a], byteorder='big', signed=True)
+    return int.from_bytes([r, g, b, a], byteorder="big", signed=True)
+
 
 with BlitzGateway(USERNAME, PASSWORD, host=HOST, port=PORT) as conn:
     # Get image

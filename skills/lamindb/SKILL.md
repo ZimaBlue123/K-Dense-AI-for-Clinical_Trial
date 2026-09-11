@@ -228,23 +228,15 @@ import lamindb as ln
 # Register multiple experiments
 for i, file in enumerate(data_files):
     artifact = ln.Artifact.from_anndata(
-        ad.read_h5ad(file),
-        key=f"scrna/batch_{i}.h5ad",
-        description=f"scRNA-seq batch {i}"
+        ad.read_h5ad(file), key=f"scrna/batch_{i}.h5ad", description=f"scRNA-seq batch {i}"
     ).save()
 
     # Annotate with features
-    artifact.features.add_values({
-        "batch": i,
-        "tissue": tissues[i],
-        "condition": conditions[i]
-    })
+    artifact.features.add_values({"batch": i, "tissue": tissues[i], "condition": conditions[i]})
 
 # Query across all experiments
 immune_datasets = ln.Artifact.filter(
-    key__startswith="scrna/",
-    tissue="PBMC",
-    condition="treated"
+    key__startswith="scrna/", tissue="PBMC", condition="treated"
 ).to_dataframe()
 
 # Load specific datasets
@@ -275,6 +267,7 @@ wandb.log({"accuracy": 0.95})
 
 # Save model in LaminDB with W&B linkage
 import joblib
+
 joblib.dump(model, "model.pkl")
 model_artifact = ln.Artifact("model.pkl", key="models/exp-42.pkl").save()
 model_artifact.features.add_values({"wandb_run_id": wandb.run.id})
@@ -299,10 +292,7 @@ input_path = input_artifact.cache()
 # ... Nextflow process logic ...
 
 # Save output
-output_artifact = ln.Artifact(
-    "counts.csv",
-    key="processed/batch_${batch_id}_counts.csv"
-).save()
+output_artifact = ln.Artifact("counts.csv", key="processed/batch_${batch_id}_counts.csv").save()
 
 ln.finish()
 ```

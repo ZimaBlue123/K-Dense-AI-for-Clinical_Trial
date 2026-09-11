@@ -11,6 +11,7 @@ FluidSim provides multiple solvers for different fluid dynamics equations. All s
 **Import**:
 ```python
 from fluidsim.solvers.ns2d.solver import Simul
+
 # or dynamically
 Simul = fluidsim.import_simul_class_from_key("ns2d")
 ```

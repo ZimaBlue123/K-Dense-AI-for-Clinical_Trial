@@ -73,11 +73,13 @@ latch register my-workflow
 from latch import workflow, small_task
 from latch.types import LatchFile
 
+
 @small_task
 def process_file(input_file: LatchFile) -> LatchFile:
     """Process a single file"""
     # Processing logic
     return output_file
+
 
 @workflow
 def my_workflow(input_file: LatchFile) -> LatchFile:
@@ -201,27 +203,27 @@ This skill includes comprehensive reference documentation organized by capabilit
 from latch import workflow, small_task, large_task
 from latch.types import LatchFile, LatchDir
 
+
 @small_task
 def quality_control(fastq: LatchFile) -> LatchFile:
     """Run FastQC"""
     return qc_output
+
 
 @large_task
 def alignment(fastq: LatchFile, genome: str) -> LatchFile:
     """STAR alignment"""
     return bam_output
 
+
 @small_task
 def quantification(bam: LatchFile) -> LatchFile:
     """featureCounts"""
     return counts
 
+
 @workflow
-def rnaseq_pipeline(
-    input_fastq: LatchFile,
-    genome: str,
-    output_dir: LatchDir
-) -> LatchFile:
+def rnaseq_pipeline(input_fastq: LatchFile, genome: str, output_dir: LatchDir) -> LatchFile:
     """RNA-seq analysis pipeline"""
     qc = quality_control(fastq=input_fastq)
     aligned = alignment(fastq=qc, genome=genome)
@@ -234,15 +236,18 @@ def rnaseq_pipeline(
 from latch import workflow, small_task, large_gpu_task
 from latch.types import LatchFile
 
+
 @small_task
 def preprocess(input_file: LatchFile) -> LatchFile:
     """Prepare data"""
     return processed
 
+
 @large_gpu_task
 def gpu_computation(data: LatchFile) -> LatchFile:
     """GPU-accelerated analysis"""
     return results
+
 
 @workflow
 def gpu_pipeline(input_file: LatchFile) -> LatchFile:
@@ -259,6 +264,7 @@ from latch.registry.table import Table
 from latch.registry.record import Record
 from latch.types import LatchFile
 
+
 @small_task
 def process_and_track(sample_id: str, table_id: str) -> str:
     """Process sample and update Registry"""
@@ -274,6 +280,7 @@ def process_and_track(sample_id: str, table_id: str) -> str:
     # Update registry
     sample.update(values={"status": "completed", "result": output})
     return "Success"
+
 
 @workflow
 def registry_workflow(sample_id: str, table_id: str):

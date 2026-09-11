@@ -119,9 +119,7 @@ def analyze_structure(struct: Structure, args) -> dict:
 
             # Show equivalent sites
             sym_struct = sga.get_symmetrized_structure()
-            print(
-                f"Symmetry-equivalent site groups: {len(sym_struct.equivalent_sites)}"
-            )
+            print(f"Symmetry-equivalent site groups: {len(sym_struct.equivalent_sites)}")
 
         except Exception as e:
             print(f"Could not determine symmetry: {e}")
@@ -132,7 +130,9 @@ def analyze_structure(struct: Structure, args) -> dict:
     print("-" * 60)
 
     for i, site in enumerate(struct):
-        coords_str = f"[{site.frac_coords[0]:.4f}, {site.frac_coords[1]:.4f}, {site.frac_coords[2]:.4f}]"
+        coords_str = (
+            f"[{site.frac_coords[0]:.4f}, {site.frac_coords[1]:.4f}, {site.frac_coords[2]:.4f}]"
+        )
         wyckoff = "N/A"
 
         if args.symmetry:
@@ -198,13 +198,9 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
 
-    parser.add_argument(
-        "structure_file", help="Structure file to analyze (CIF, POSCAR, etc.)"
-    )
+    parser.add_argument("structure_file", help="Structure file to analyze (CIF, POSCAR, etc.)")
 
-    parser.add_argument(
-        "--symmetry", "-s", action="store_true", help="Perform symmetry analysis"
-    )
+    parser.add_argument("--symmetry", "-s", action="store_true", help="Perform symmetry analysis")
 
     parser.add_argument(
         "--neighbors",
@@ -258,9 +254,7 @@ def main():
                     yaml.dump(results, f, default_flow_style=False)
                 print(f"\n✓ Analysis exported to {output_file}")
             except ImportError:
-                print(
-                    "Error: PyYAML is not installed. Install with: pip install pyyaml"
-                )
+                print("Error: PyYAML is not installed. Install with: pip install pyyaml")
 
 
 if __name__ == "__main__":

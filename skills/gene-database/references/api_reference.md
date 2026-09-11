@@ -366,13 +366,14 @@ Implement exponential backoff for failed requests:
 ```python
 import time
 
+
 def retry_request(func, max_attempts=3):
     for attempt in range(max_attempts):
         try:
             return func()
         except Exception as e:
             if attempt < max_attempts - 1:
-                wait_time = 2 ** attempt  # 1s, 2s, 4s
+                wait_time = 2**attempt  # 1s, 2s, 4s
                 time.sleep(wait_time)
             else:
                 raise

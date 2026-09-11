@@ -45,11 +45,11 @@ thermal_dm(N, n_avg)
 
 ```python
 # Spin-1/2 states
-spin_state(1/2, 1/2)  # Spin up
-spin_coherent(1/2, theta, phi)  # Coherent spin state
+spin_state(1 / 2, 1 / 2)  # Spin up
+spin_coherent(1 / 2, theta, phi)  # Coherent spin state
 
 # Multi-qubit computational basis
-basis([2,2,2], [0,1,0])  # |010⟩ for 3 qubits
+basis([2, 2, 2], [0, 1, 0])  # |010⟩ for 3 qubits
 ```
 
 ### Composite States
@@ -61,7 +61,7 @@ psi2 = basis(2, 1)
 tensor(psi1, psi2)  # |01⟩
 
 # Bell states
-bell_state('00')  # (|00⟩ + |11⟩)/√2
+bell_state("00")  # (|00⟩ + |11⟩)/√2
 maximally_mixed_dm(2)  # Maximally mixed state
 ```
 
@@ -91,11 +91,11 @@ sigmam()  # σ- = (σx - iσy)/2
 ```python
 # Spin operators for arbitrary j
 j = 1  # Spin-1
-jmat(j, 'x')  # Jx
-jmat(j, 'y')  # Jy
-jmat(j, 'z')  # Jz
-jmat(j, '+')  # J+
-jmat(j, '-')  # J-
+jmat(j, "x")  # Jx
+jmat(j, "y")  # Jy
+jmat(j, "z")  # Jz
+jmat(j, "+")  # J+
+jmat(j, "-")  # J-
 ```
 
 ### Displacement and Squeezing
@@ -130,7 +130,7 @@ tensor(sigmaz(), qeye(2), qeye(2))
 
 ```python
 # Composite system state
-rho = bell_state('00').proj()  # |Φ+⟩⟨Φ+|
+rho = bell_state("00").proj()  # |Φ+⟩⟨Φ+|
 
 # Trace out subsystem
 rho_A = ptrace(rho, 0)  # Trace out subsystem 0
@@ -194,10 +194,10 @@ from qutip_qip.operations import *
 
 # Single-qubit gates
 hadamard_transform()  # Hadamard
-rx(np.pi/2)  # X-rotation
-ry(np.pi/2)  # Y-rotation
-rz(np.pi/2)  # Z-rotation
-phasegate(np.pi/4)  # Phase gate
+rx(np.pi / 2)  # X-rotation
+ry(np.pi / 2)  # Y-rotation
+rz(np.pi / 2)  # Z-rotation
+phasegate(np.pi / 4)  # Phase gate
 snot()  # Hadamard (alternative)
 
 # Two-qubit gates
@@ -245,11 +245,13 @@ H = wc * a.dag() * a + wa * sm.dag() * sm + g * (a.dag() * sm + a * sm.dag())
 H0 = sigmaz()
 H1 = sigmax()
 
+
 def drive(t, args):
-    return np.sin(args['w'] * t)
+    return np.sin(args["w"] * t)
+
 
 H = [H0, [H1, drive]]
-args = {'w': 1.0}
+args = {"w": 1.0}
 ```
 
 ### Spin Chains
@@ -264,9 +266,9 @@ H = 0
 for i in range(N_spins - 1):
     # σᵢˣσᵢ₊₁ˣ + σᵢʸσᵢ₊₁ʸ + σᵢᶻσᵢ₊₁ᶻ
     H += J * (
-        tensor_at([sigmax()], i, N_spins) * tensor_at([sigmax()], i+1, N_spins) +
-        tensor_at([sigmay()], i, N_spins) * tensor_at([sigmay()], i+1, N_spins) +
-        tensor_at([sigmaz()], i, N_spins) * tensor_at([sigmaz()], i+1, N_spins)
+        tensor_at([sigmax()], i, N_spins) * tensor_at([sigmax()], i + 1, N_spins)
+        + tensor_at([sigmay()], i, N_spins) * tensor_at([sigmay()], i + 1, N_spins)
+        + tensor_at([sigmaz()], i, N_spins) * tensor_at([sigmaz()], i + 1, N_spins)
     )
 ```
 

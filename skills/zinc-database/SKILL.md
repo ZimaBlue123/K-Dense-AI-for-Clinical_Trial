@@ -152,7 +152,7 @@ curl "https://cartblanche22.docking.org/substance/random.txt:count=1000&subset=l
    import pandas as pd
 
    # Load results
-   df = pd.read_csv('docking_library.txt', sep='\t')
+   df = pd.read_csv("docking_library.txt", sep="\t")
 
    # Filter by properties in tranche data
    # Tranche format: H##P###M###-phase
@@ -177,9 +177,9 @@ curl "https://cartblanche22.docking.org/substance/random.txt:count=1000&subset=l
    ```python
    import pandas as pd
 
-   analogs = pd.read_csv('analogs.txt', sep='\t')
+   analogs = pd.read_csv("analogs.txt", sep="\t")
    print(f"Found {len(analogs)} analogs")
-   print(analogs[['zinc_id', 'smiles', 'catalogs']].head(10))
+   print(analogs[["zinc_id", "smiles", "catalogs"]].head(10))
    ```
 
 4. **Retrieve 3D structures** for the most promising analogs
@@ -188,11 +188,7 @@ curl "https://cartblanche22.docking.org/substance/random.txt:count=1000&subset=l
 
 1. **Compile list of ZINC IDs** from literature, databases, or previous screens:
    ```python
-   zinc_ids = [
-       "ZINC000000000001",
-       "ZINC000000000002",
-       "ZINC000000000003"
-   ]
+   zinc_ids = ["ZINC000000000001", "ZINC000000000002", "ZINC000000000003"]
    zinc_ids_str = ",".join(zinc_ids)
    ```
 
@@ -274,24 +270,27 @@ Refer to ZINC documentation at https://wiki.docking.org for downloading protocol
 import subprocess
 import json
 
+
 def query_zinc_by_id(zinc_id, output_fields="zinc_id,smiles,catalogs"):
     """Query ZINC22 by ZINC ID."""
     url = f"https://cartblanche22.docking.org/[email protected]_id={zinc_id}&output_fields={output_fields}"
-    result = subprocess.run(['curl', url], capture_output=True, text=True)
+    result = subprocess.run(["curl", url], capture_output=True, text=True)
     return result.stdout
+
 
 def search_by_smiles(smiles, dist=0, adist=0, output_fields="zinc_id,smiles"):
     """Search ZINC22 by SMILES with optional distance parameters."""
     url = f"https://cartblanche22.docking.org/smiles.txt:smiles={smiles}&dist={dist}&adist={adist}&output_fields={output_fields}"
-    result = subprocess.run(['curl', url], capture_output=True, text=True)
+    result = subprocess.run(["curl", url], capture_output=True, text=True)
     return result.stdout
+
 
 def get_random_compounds(count=100, subset=None, output_fields="zinc_id,smiles,tranche"):
     """Get random compounds from ZINC22."""
     url = f"https://cartblanche22.docking.org/substance/random.txt:count={count}&output_fields={output_fields}"
     if subset:
         url += f"&subset={subset}"
-    result = subprocess.run(['curl', url], capture_output=True, text=True)
+    result = subprocess.run(["curl", url], capture_output=True, text=True)
     return result.stdout
 ```
 
@@ -303,24 +302,27 @@ from io import StringIO
 
 # Query ZINC and parse as DataFrame
 result = query_zinc_by_id("ZINC000000000001")
-df = pd.read_csv(StringIO(result), sep='\t')
+df = pd.read_csv(StringIO(result), sep="\t")
+
 
 # Extract tranche properties
 def parse_tranche(tranche_str):
     """Parse ZINC tranche code to extract properties."""
     # Format: H##P###M###-phase
     import re
-    match = re.match(r'H(\d+)P(\d+)M(\d+)-(\d+)', tranche_str)
+
+    match = re.match(r"H(\d+)P(\d+)M(\d+)-(\d+)", tranche_str)
     if match:
         return {
-            'h_donors': int(match.group(1)),
-            'logP': int(match.group(2)) / 10.0,
-            'mw': int(match.group(3)),
-            'phase': int(match.group(4))
+            "h_donors": int(match.group(1)),
+            "logP": int(match.group(2)) / 10.0,
+            "mw": int(match.group(3)),
+            "phase": int(match.group(4)),
         }
     return None
 
-df['tranche_props'] = df['tranche'].apply(parse_tranche)
+
+df["tranche_props"] = df["tranche"].apply(parse_tranche)
 ```
 
 ## Best Practices

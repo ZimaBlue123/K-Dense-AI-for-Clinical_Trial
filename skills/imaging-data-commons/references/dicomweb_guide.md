@@ -38,6 +38,7 @@ Replace `{VERSION}` with the IDC release number. To find the current version:
 
 ```python
 from idc_index import IDCClient
+
 client = IDCClient()
 print(client.get_idc_version())  # e.g., "23" for v23
 ```
@@ -174,8 +175,8 @@ results = client.sql_query("""
 """)
 
 # Use these UIDs with DICOMweb
-study_uid = results.iloc[0]['StudyInstanceUID']
-series_uid = results.iloc[0]['SeriesInstanceUID']
+study_uid = results.iloc[0]["StudyInstanceUID"]
+series_uid = results.iloc[0]["SeriesInstanceUID"]
 print(f"Study: {study_uid}")
 print(f"Series: {series_uid}")
 ```
@@ -192,7 +193,7 @@ study_uid = "1.3.6.1.4.1.14519.5.2.1.6450.9002.307623500513044641407722230440"
 response = requests.get(
     f"{base_url}/studies",
     params={"StudyInstanceUID": study_uid},
-    headers={"Accept": "application/dicom+json"}
+    headers={"Accept": "application/dicom+json"},
 )
 
 if response.status_code == 200:
@@ -209,8 +210,7 @@ base_url = "https://proxy.imaging.datacommons.cancer.gov/current/viewer-only-no-
 study_uid = "1.3.6.1.4.1.14519.5.2.1.6450.9002.307623500513044641407722230440"
 
 response = requests.get(
-    f"{base_url}/studies/{study_uid}/series",
-    headers={"Accept": "application/dicom+json"}
+    f"{base_url}/studies/{study_uid}/series", headers={"Accept": "application/dicom+json"}
 )
 
 if response.status_code == 200:
@@ -235,7 +235,7 @@ series_uid = "1.3.6.1.4.1.14519.5.2.1.6450.9002.217441095430480124587725641302"
 response = requests.get(
     f"{base_url}/studies/{study_uid}/series/{series_uid}/instances",
     params={"limit": 10},
-    headers={"Accept": "application/dicom+json"}
+    headers={"Accept": "application/dicom+json"},
 )
 
 if response.status_code == 200:
@@ -257,7 +257,7 @@ series_uid = "1.3.6.1.4.1.14519.5.2.1.6450.9002.217441095430480124587725641302"
 
 response = requests.get(
     f"{base_url}/studies/{study_uid}/series/{series_uid}/metadata",
-    headers={"Accept": "application/dicom+json"}
+    headers={"Accept": "application/dicom+json"},
 )
 
 if response.status_code == 200:
@@ -287,8 +287,8 @@ results = idc.sql_query("""
     LIMIT 1
 """)
 
-study_uid = results.iloc[0]['StudyInstanceUID']
-series_uid = results.iloc[0]['SeriesInstanceUID']
+study_uid = results.iloc[0]["StudyInstanceUID"]
+series_uid = results.iloc[0]["SeriesInstanceUID"]
 print(f"Found: {results.iloc[0]['SeriesDescription']}")
 
 # Use DICOMweb to stream metadata without downloading files
@@ -296,7 +296,7 @@ base_url = "https://proxy.imaging.datacommons.cancer.gov/current/viewer-only-no-
 
 response = requests.get(
     f"{base_url}/studies/{study_uid}/series/{series_uid}/metadata",
-    headers={"Accept": "application/dicom+json"}
+    headers={"Accept": "application/dicom+json"},
 )
 
 if response.status_code == 200:
@@ -339,10 +339,7 @@ base_url = "https://healthcare.googleapis.com/v1/projects/nci-idc-data/locations
 response = requests.get(
     f"{base_url}/studies",
     params={"limit": 5},
-    headers={
-        "Authorization": f"Bearer {credentials.token}",
-        "Accept": "application/dicom+json"
-    }
+    headers={"Authorization": f"Bearer {credentials.token}", "Accept": "application/dicom+json"},
 )
 ```
 

@@ -10,9 +10,9 @@ Matchms provides multiple similarity functions for comparing mass spectra. Use `
 from matchms import calculate_scores
 from matchms.similarity import CosineGreedy
 
-scores = calculate_scores(references=library_spectra,
-                         queries=query_spectra,
-                         similarity_function=CosineGreedy())
+scores = calculate_scores(
+    references=library_spectra, queries=query_spectra, similarity_function=CosineGreedy()
+)
 ```
 
 ## Peak-Based Similarity Functions
@@ -162,8 +162,7 @@ from matchms.similarity import FingerprintSimilarity
 from matchms.filtering import add_fingerprint
 
 # Add fingerprints to spectra
-spectra_with_fps = [add_fingerprint(s, fingerprint_type="morgan2", nbits=2048)
-                    for s in spectra]
+spectra_with_fps = [add_fingerprint(s, fingerprint_type="morgan2", nbits=2048) for s in spectra]
 
 similarity_func = FingerprintSimilarity(similarity_measure="jaccard")
 scores = calculate_scores(references_with_fps, queries_with_fps, similarity_func)
@@ -210,9 +209,7 @@ scores = calculate_scores(references, queries, similarity_func)
 **Example (Numerical matching)**:
 ```python
 # Match retention time within 0.5 minutes
-similarity_func = MetadataMatch(field="retention_time",
-                                matching_type="difference",
-                                tolerance=0.5)
+similarity_func = MetadataMatch(field="retention_time", matching_type="difference", tolerance=0.5)
 scores = calculate_scores(references, queries, similarity_func)
 ```
 
@@ -298,9 +295,11 @@ fingerprint_scores = calculate_scores(refs, queries, FingerprintSimilarity())
 # Combine scores with weights
 for i, query in enumerate(queries):
     for j, ref in enumerate(refs):
-        combined_score = (0.5 * cosine_scores.scores[j, i] +
-                         0.3 * modified_cosine_scores.scores[j, i] +
-                         0.2 * fingerprint_scores.scores[j, i])
+        combined_score = (
+            0.5 * cosine_scores.scores[j, i]
+            + 0.3 * modified_cosine_scores.scores[j, i]
+            + 0.2 * fingerprint_scores.scores[j, i]
+        )
 ```
 
 ## Accessing Scores Results
@@ -316,6 +315,7 @@ score_array = scores.scores
 
 # Get scores as pandas DataFrame
 import pandas as pd
+
 df = scores.to_dataframe()
 
 # Filter by threshold
@@ -347,8 +347,7 @@ scores.to_pickle("scores.pkl")
 ```python
 from matchms.similarity import CosineGreedy
 
-scores = calculate_scores(library_spectra, query_spectra,
-                         CosineGreedy(tolerance=0.1))
+scores = calculate_scores(library_spectra, query_spectra, CosineGreedy(tolerance=0.1))
 ```
 
 ### Multi-Metric Matching

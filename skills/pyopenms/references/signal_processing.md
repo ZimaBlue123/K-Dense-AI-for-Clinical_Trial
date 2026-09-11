@@ -334,6 +334,7 @@ print(f"Base peak: {base_peak_mz} m/z at {base_peak_intensity}")
 ```python
 import pyopenms as ms
 
+
 def preprocess_experiment(input_file, output_file):
     """Complete preprocessing pipeline."""
 
@@ -368,6 +369,7 @@ def preprocess_experiment(input_file, output_file):
     ms.MzMLFile().store(output_file, exp_picked)
 
     return exp_picked
+
 
 # Run pipeline
 exp_processed = preprocess_experiment("raw_data.mzML", "processed_data.mzML")

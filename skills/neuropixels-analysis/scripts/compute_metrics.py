@@ -166,12 +166,8 @@ def main():
     parser.add_argument("sorting", help="Path to sorting directory")
     parser.add_argument("recording", help="Path to preprocessed recording")
     parser.add_argument("--output", "-o", default="metrics/", help="Output directory")
-    parser.add_argument(
-        "--curation", "-c", default="allen", choices=["allen", "ibl", "strict"]
-    )
-    parser.add_argument(
-        "--n-jobs", type=int, default=-1, help="Number of parallel jobs"
-    )
+    parser.add_argument("--curation", "-c", default="allen", choices=["allen", "ibl", "strict"])
+    parser.add_argument("--n-jobs", type=int, default=-1, help="Number of parallel jobs")
 
     args = parser.parse_args()
 

@@ -50,18 +50,19 @@ Files are automatically transferred between local execution and cloud storage:
 from latch import small_task
 from latch.types import LatchFile
 
+
 @small_task
 def process_file(input_file: LatchFile) -> LatchFile:
     # File is automatically downloaded to local execution
     local_path = input_file.local_path
 
     # Process the file
-    with open(local_path, 'r') as f:
+    with open(local_path, "r") as f:
         data = f.read()
 
     # Write output
     output_path = "output.txt"
-    with open(output_path, 'w') as f:
+    with open(output_path, "w") as f:
         f.write(processed_data)
 
     # Automatically uploaded back to cloud storage
@@ -106,10 +107,7 @@ Account/Workspace
 from latch.registry.project import Project
 
 # Get or create a project
-project = Project.create(
-    name="RNA-seq Analysis",
-    description="Bulk RNA-seq experiments"
-)
+project = Project.create(name="RNA-seq Analysis", description="Bulk RNA-seq experiments")
 
 # List existing projects
 all_projects = Project.list()
@@ -133,8 +131,8 @@ table = Table.create(
         {"name": "sample_id", "type": "string"},
         {"name": "condition", "type": "string"},
         {"name": "replicate", "type": "number"},
-        {"name": "fastq_file", "type": "file"}
-    ]
+        {"name": "fastq_file", "type": "file"},
+    ],
 )
 
 # List tables in project
@@ -168,8 +166,8 @@ record = Record.create(
         "sample_id": "S001",
         "condition": "treated",
         "replicate": 1,
-        "fastq_file": LatchFile("latch:///data/S001.fastq")
-    }
+        "fastq_file": LatchFile("latch:///data/S001.fastq"),
+    },
 )
 
 # Bulk create records
@@ -177,16 +175,13 @@ records = Record.bulk_create(
     table_id=table.id,
     records=[
         {"sample_id": "S001", "condition": "treated"},
-        {"sample_id": "S002", "condition": "control"}
-    ]
+        {"sample_id": "S002", "condition": "control"},
+    ],
 )
 
 # Query records
 all_records = Record.list(table_id=table.id)
-filtered = Record.list(
-    table_id=table.id,
-    filter={"condition": "treated"}
-)
+filtered = Record.list(table_id=table.id, filter={"condition": "treated"})
 
 # Update record
 record.update(values={"replicate": 2})
@@ -207,8 +202,8 @@ results_table = Table.create(
     columns=[
         {"name": "sample", "type": "link", "target_table": samples_table.id},
         {"name": "alignment_bam", "type": "file"},
-        {"name": "gene_counts", "type": "file"}
-    ]
+        {"name": "gene_counts", "type": "file"},
+    ],
 )
 
 # Create record with link
@@ -217,8 +212,8 @@ result_record = Record.create(
     values={
         "sample": sample_record.id,  # Link to sample record
         "alignment_bam": LatchFile("latch:///results/aligned.bam"),
-        "gene_counts": LatchFile("latch:///results/counts.tsv")
-    }
+        "gene_counts": LatchFile("latch:///results/counts.tsv"),
+    },
 )
 
 # Access linked data
@@ -234,12 +229,8 @@ table = Table.create(
     project_id=project.id,
     name="Experiments",
     columns=[
-        {
-            "name": "status",
-            "type": "enum",
-            "options": ["pending", "running", "completed", "failed"]
-        }
-    ]
+        {"name": "status", "type": "enum", "options": ["pending", "running", "completed", "failed"]}
+    ],
 )
 ```
 
@@ -267,14 +258,12 @@ from latch.types import LatchFile
 from latch.registry.table import Table
 from latch.registry.record import Record
 
+
 @small_task
 def process_and_save(sample_id: str, table_id: str) -> str:
     # Get sample from registry
     table = Table.get(table_id=table_id)
-    records = Record.list(
-        table_id=table_id,
-        filter={"sample_id": sample_id}
-    )
+    records = Record.list(table_id=table_id, filter={"sample_id": sample_id})
     sample = records[0]
 
     # Process file
@@ -282,12 +271,10 @@ def process_and_save(sample_id: str, table_id: str) -> str:
     # ... processing logic ...
 
     # Save results back to registry
-    sample.update(values={
-        "status": "completed",
-        "results_file": output_file
-    })
+    sample.update(values={"status": "completed", "results_file": output_file})
 
     return "Success"
+
 
 @workflow
 def registry_workflow(sample_id: str, table_id: str):
@@ -307,9 +294,7 @@ launch_plan = LaunchPlan.create(
     workflow_name="rnaseq_pipeline",
     name="auto_process",
     trigger_folder="latch:///incoming_data",
-    default_inputs={
-        "output_dir": "latch:///results"
-    }
+    default_inputs={"output_dir": "latch:///results"},
 )
 ```
 
@@ -350,11 +335,7 @@ The `latch.functions` module provides data manipulation utilities:
 from latch.functions import left_join, inner_join, outer_join, right_join
 
 # Join tables
-combined = left_join(
-    left_table=table1,
-    right_table=table2,
-    on="sample_id"
-)
+combined = left_join(left_table=table1, right_table=table2, on="sample_id")
 ```
 
 ### Filtering
@@ -363,10 +344,7 @@ combined = left_join(
 from latch.functions import filter_records
 
 # Filter records
-filtered = filter_records(
-    table=table,
-    condition=lambda record: record["replicate"] > 1
-)
+filtered = filter_records(table=table, condition=lambda record: record["replicate"] > 1)
 ```
 
 ### Secrets Management
@@ -405,8 +383,8 @@ samples = Table.create(
         {"name": "collection_date", "type": "date"},
         {"name": "raw_fastq_r1", "type": "file"},
         {"name": "raw_fastq_r2", "type": "file"},
-        {"name": "status", "type": "enum", "options": ["pending", "processing", "complete"]}
-    ]
+        {"name": "status", "type": "enum", "options": ["pending", "processing", "complete"]},
+    ],
 )
 ```
 
@@ -421,7 +399,7 @@ results = Table.create(
         {"name": "sample", "type": "link", "target_table": samples.id},
         {"name": "alignment_bam", "type": "file"},
         {"name": "variants_vcf", "type": "file"},
-        {"name": "qc_metrics", "type": "file"}
-    ]
+        {"name": "qc_metrics", "type": "file"},
+    ],
 )
 ```

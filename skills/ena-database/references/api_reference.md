@@ -70,7 +70,7 @@ params = {
     "query": "tax_eq(9606)",
     "format": "json",
     "fields": "accession,sample_title,collection_date",
-    "limit": 100
+    "limit": 100,
 }
 response = requests.get(url, params=params)
 
@@ -78,16 +78,12 @@ response = requests.get(url, params=params)
 params = {
     "result": "read_experiment",
     "query": 'study_accession="PRJNA123456" AND library_strategy="RNA-Seq"',
-    "format": "tsv"
+    "format": "tsv",
 }
 response = requests.get(url, params=params)
 
 # Find assemblies for E. coli with minimum contig N50
-params = {
-    "result": "assembly",
-    "query": "tax_tree(562) AND contig_n50>=50000",
-    "format": "json"
-}
+params = {"result": "assembly", "query": "tax_tree(562) AND contig_n50>=50000", "format": "json"}
 response = requests.get(url, params=params)
 ```
 
@@ -167,13 +163,13 @@ params = {
     "accession": "ERR123456",
     "result": "read_run",
     "format": "json",
-    "fields": "run_accession,fastq_ftp,fastq_md5,fastq_bytes"
+    "fields": "run_accession,fastq_ftp,fastq_md5,fastq_bytes",
 }
 response = requests.get(url, params=params)
 file_info = response.json()
 
 # Download FASTQ files
-for ftp_url in file_info[0]['fastq_ftp'].split(';'):
+for ftp_url in file_info[0]["fastq_ftp"].split(";"):
     # Download from ftp://ftp.sra.ebi.ac.uk/...
     pass
 ```
@@ -433,6 +429,7 @@ import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
 
+
 def create_session_with_retries():
     """Create requests session with retry logic"""
     session = requests.Session()
@@ -440,11 +437,12 @@ def create_session_with_retries():
         total=5,
         backoff_factor=1,
         status_forcelist=[429, 500, 502, 503, 504],
-        allowed_methods=["GET", "POST"]
+        allowed_methods=["GET", "POST"],
     )
     adapter = HTTPAdapter(max_retries=retries)
     session.mount("https://", adapter)
     return session
+
 
 # Usage
 session = create_session_with_retries()

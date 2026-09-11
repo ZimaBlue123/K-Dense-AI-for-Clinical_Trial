@@ -31,14 +31,10 @@ def init_client(config):
     try:
         from labarchivespy.client import Client
 
-        return Client(
-            config["api_url"], config["access_key_id"], config["access_password"]
-        )
+        return Client(config["api_url"], config["access_key_id"], config["access_password"])
     except ImportError:
         print("❌ labarchives-py package not installed")
-        print(
-            "   Install with: pip install git+https://github.com/mcmero/labarchives-py"
-        )
+        print("   Install with: pip install git+https://github.com/mcmero/labarchives-py")
         sys.exit(1)
 
 
@@ -207,9 +203,7 @@ def batch_upload(client, config, uid, nbid, entry_id, directory):
     print("=" * 60)
 
 
-def create_entry_with_attachments(
-    client, config, uid, nbid, title, content, attachments
-):
+def create_entry_with_attachments(client, config, uid, nbid, title, content, attachments):
     """Create entry and upload multiple attachments"""
     # Create entry
     entry_id = create_entry(client, uid, nbid, title, content)
@@ -271,9 +265,7 @@ Examples:
     create_parser.add_argument("--title", required=True, help="Entry title")
     create_parser.add_argument("--content", help="Entry content (HTML supported)")
     create_parser.add_argument("--date", help="Entry date (YYYY-MM-DD)")
-    create_parser.add_argument(
-        "--attachments", nargs="+", help="Files to attach to the new entry"
-    )
+    create_parser.add_argument("--attachments", nargs="+", help="Files to attach to the new entry")
 
     # Upload attachment command
     upload_parser = subparsers.add_parser("upload", help="Upload attachment to entry")
@@ -281,9 +273,7 @@ Examples:
     upload_parser.add_argument("--file", required=True, help="File to upload")
 
     # Batch upload command
-    batch_parser = subparsers.add_parser(
-        "batch-upload", help="Upload all files from directory"
-    )
+    batch_parser = subparsers.add_parser("batch-upload", help="Upload all files from directory")
     batch_parser.add_argument("--entry-id", required=True, help="Entry ID")
     batch_parser.add_argument(
         "--directory", required=True, help="Directory containing files to upload"

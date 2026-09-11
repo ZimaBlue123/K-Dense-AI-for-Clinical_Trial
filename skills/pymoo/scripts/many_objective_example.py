@@ -49,7 +49,7 @@ def run_many_objective_optimization():
     # Visualize using Parallel Coordinate Plot
     plot = PCP(
         title=f"DTLZ2 ({n_obj} objectives) - NSGA-III Results",
-        labels=[f"f{i+1}" for i in range(n_obj)],
+        labels=[f"f{i + 1}" for i in range(n_obj)],
         normalize_each_axis=True,
     )
     plot.add(result.F, alpha=0.3, color="blue")

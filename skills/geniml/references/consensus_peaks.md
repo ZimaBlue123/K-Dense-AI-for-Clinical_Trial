@@ -125,12 +125,12 @@ from geniml.universe import build_universe
 
 # Build using coverage cutoff method
 universe = build_universe(
-    coverage_folder='coverage/',
-    method='cc',
+    coverage_folder="coverage/",
+    method="cc",
     cutoff=5,
     merge_distance=100,
     min_size=50,
-    output_file='universe.bed'
+    output_file="universe.bed",
 )
 ```
 
@@ -177,9 +177,7 @@ After building, assess universe quality:
 from geniml.evaluation import assess_universe
 
 metrics = assess_universe(
-    universe_file='universe.bed',
-    coverage_folder='coverage/',
-    bed_files='bed_files/'
+    universe_file="universe.bed", coverage_folder="coverage/", bed_files="bed_files/"
 )
 
 print(f"Number of regions: {metrics['n_regions']}")

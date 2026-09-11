@@ -79,6 +79,7 @@ print(results.summary())
 ```python
 from statsmodels.tsa.stattools import adfuller
 
+
 # ADF test for stationarity
 def check_stationarity(series):
     result = adfuller(series)
@@ -90,6 +91,7 @@ def check_stationarity(series):
     else:
         print("Series is non-stationary, needs differencing")
         return False
+
 
 # Test original series
 if not check_stationarity(y):
@@ -111,11 +113,11 @@ fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 8))
 
 # ACF: helps determine q (MA order)
 plot_acf(y_stationary, lags=40, ax=ax1)
-ax1.set_title('Autocorrelation Function (ACF)')
+ax1.set_title("Autocorrelation Function (ACF)")
 
 # PACF: helps determine p (AR order)
 plot_pacf(y_stationary, lags=40, ax=ax2)
-ax2.set_title('Partial Autocorrelation Function (PACF)')
+ax2.set_title("Partial Autocorrelation Function (PACF)")
 
 plt.tight_layout()
 plt.show()
@@ -165,9 +167,11 @@ Extends ARIMA with seasonality and exogenous regressors.
 from statsmodels.tsa.statespace.sarimax import SARIMAX
 
 # Seasonal ARIMA for monthly data (s=12)
-model = SARIMAX(y,
-                order=(1, 1, 1),           # (p,d,q)
-                seasonal_order=(1, 1, 1, 12))  # (P,D,Q,s)
+model = SARIMAX(
+    y,
+    order=(1, 1, 1),  # (p,d,q)
+    seasonal_order=(1, 1, 1, 12),
+)  # (P,D,Q,s)
 results = model.fit()
 
 print(results.summary())
@@ -176,10 +180,7 @@ print(results.summary())
 **With exogenous variables:**
 ```python
 # SARIMAX with external predictors
-model = SARIMAX(y,
-                exog=X_exog,
-                order=(1, 1, 1),
-                seasonal_order=(1, 1, 1, 12))
+model = SARIMAX(y, exog=X_exog, order=(1, 1, 1), seasonal_order=(1, 1, 1, 12))
 results = model.fit()
 ```
 
@@ -188,11 +189,13 @@ results = model.fit()
 # Typical for monthly data: (p,d,q)(P,D,Q,12)
 # Start with (1,1,1)(1,1,1,12) or (0,1,1)(0,1,1,12)
 
-model = SARIMAX(monthly_sales,
-                order=(0, 1, 1),
-                seasonal_order=(0, 1, 1, 12),
-                enforce_stationarity=False,
-                enforce_invertibility=False)
+model = SARIMAX(
+    monthly_sales,
+    order=(0, 1, 1),
+    seasonal_order=(0, 1, 1, 12),
+    enforce_stationarity=False,
+    enforce_invertibility=False,
+)
 results = model.fit()
 ```
 
@@ -218,14 +221,16 @@ model = ExponentialSmoothing(y, trend=None, seasonal=None)
 results = model.fit()
 
 # Holt's method (with trend)
-model = ExponentialSmoothing(y, trend='add', seasonal=None)
+model = ExponentialSmoothing(y, trend="add", seasonal=None)
 results = model.fit()
 
 # Holt-Winters (trend + seasonality)
-model = ExponentialSmoothing(y,
-                            trend='add',           # 'add' or 'mul'
-                            seasonal='add',        # 'add' or 'mul'
-                            seasonal_periods=12)   # e.g., 12 for monthly
+model = ExponentialSmoothing(
+    y,
+    trend="add",  # 'add' or 'mul'
+    seasonal="add",  # 'add' or 'mul'
+    seasonal_periods=12,
+)  # e.g., 12 for monthly
 results = model.fit()
 
 print(results.summary())
@@ -249,11 +254,13 @@ print(results.summary())
 from statsmodels.tsa.exponential_smoothing.ets import ETSModel
 
 # More robust, state space formulation
-model = ETSModel(y,
-                error='add',           # 'add' or 'mul'
-                trend='add',           # 'add', 'mul', or None
-                seasonal='add',        # 'add', 'mul', or None
-                seasonal_periods=12)
+model = ETSModel(
+    y,
+    error="add",  # 'add' or 'mul'
+    trend="add",  # 'add', 'mul', or None
+    seasonal="add",  # 'add', 'mul', or None
+    seasonal_periods=12,
+)
 results = model.fit()
 ```
 
@@ -278,7 +285,7 @@ import pandas as pd
 
 # Data should be DataFrame with multiple columns
 # Each column is a time series
-df_multivariate = pd.DataFrame({'series1': y1, 'series2': y2, 'series3': y3})
+df_multivariate = pd.DataFrame({"series1": y1, "series2": y2, "series3": y3})
 
 # Fit VAR
 model = VAR(df_multivariate)
@@ -288,7 +295,7 @@ lag_order_results = model.select_order(maxlags=15)
 print(lag_order_results.summary())
 
 # Fit with optimal lags
-results = model.fit(maxlags=5, ic='aic')
+results = model.fit(maxlags=5, ic="aic")
 print(results.summary())
 ```
 
@@ -298,7 +305,7 @@ print(results.summary())
 from statsmodels.tsa.stattools import grangercausalitytests
 
 # Requires 2D array [series2, series1]
-test_data = df_multivariate[['series2', 'series1']]
+test_data = df_multivariate[["series2", "series1"]]
 
 # Test up to max_lag
 max_lag = 5
@@ -306,7 +313,7 @@ results = grangercausalitytests(test_data, max_lag, verbose=True)
 
 # P-values for each lag
 for lag in range(1, max_lag + 1):
-    p_value = results[lag][0]['ssr_ftest'][1]
+    p_value = results[lag][0]["ssr_ftest"][1]
     print(f"Lag {lag}: p-value = {p_value:.4f}")
 ```
 
@@ -345,9 +352,11 @@ Extends VAR with MA component and external regressors.
 from statsmodels.tsa.statespace.varmax import VARMAX
 
 # VARMAX(p, q) with exogenous variables
-model = VARMAX(df_multivariate,
-               order=(1, 1),        # (p, q)
-               exog=X_exog)
+model = VARMAX(
+    df_multivariate,
+    order=(1, 1),  # (p, q)
+    exog=X_exog,
+)
 results = model.fit()
 
 print(results.summary())
@@ -375,9 +384,11 @@ from statsmodels.tsa.statespace.mlemodel import MLEModel
 from statsmodels.tsa.statespace.dynamic_factor import DynamicFactor
 
 # Extract common factors from multiple time series
-model = DynamicFactor(df_multivariate,
-                      k_factors=2,          # Number of factors
-                      factor_order=2)       # AR order of factors
+model = DynamicFactor(
+    df_multivariate,
+    k_factors=2,  # Number of factors
+    factor_order=2,
+)  # AR order of factors
 results = model.fit()
 
 # Estimated factors
@@ -416,22 +427,21 @@ print(forecast_df)
 # Contains: mean, mean_se, mean_ci_lower, mean_ci_upper
 
 # Extract components
-forecast_mean = forecast_df['mean']
-forecast_ci_lower = forecast_df['mean_ci_lower']
-forecast_ci_upper = forecast_df['mean_ci_upper']
+forecast_mean = forecast_df["mean"]
+forecast_ci_lower = forecast_df["mean_ci_lower"]
+forecast_ci_upper = forecast_df["mean_ci_upper"]
 
 # Plot
 import matplotlib.pyplot as plt
 
 plt.figure(figsize=(12, 6))
-plt.plot(y.index, y, label='Historical')
-plt.plot(forecast_df.index, forecast_mean, label='Forecast', color='red')
-plt.fill_between(forecast_df.index,
-                 forecast_ci_lower,
-                 forecast_ci_upper,
-                 alpha=0.3, color='red', label='95% CI')
+plt.plot(y.index, y, label="Historical")
+plt.plot(forecast_df.index, forecast_mean, label="Forecast", color="red")
+plt.fill_between(
+    forecast_df.index, forecast_ci_lower, forecast_ci_upper, alpha=0.3, color="red", label="95% CI"
+)
 plt.legend()
-plt.title('Forecast with Prediction Intervals')
+plt.title("Forecast with Prediction Intervals")
 plt.show()
 ```
 
@@ -439,18 +449,16 @@ plt.show()
 
 ```python
 # Static (one-step-ahead, using actual values)
-static_forecast = results.get_prediction(start=split_point, end=len(y)-1)
+static_forecast = results.get_prediction(start=split_point, end=len(y) - 1)
 
 # Dynamic (multi-step, using predicted values)
-dynamic_forecast = results.get_prediction(start=split_point,
-                                          end=len(y)-1,
-                                          dynamic=True)
+dynamic_forecast = results.get_prediction(start=split_point, end=len(y) - 1, dynamic=True)
 
 # Plot comparison
 fig, ax = plt.subplots(figsize=(12, 6))
-y.plot(ax=ax, label='Actual')
-static_forecast.predicted_mean.plot(ax=ax, label='Static forecast')
-dynamic_forecast.predicted_mean.plot(ax=ax, label='Dynamic forecast')
+y.plot(ax=ax, label="Actual")
+static_forecast.predicted_mean.plot(ax=ax, label="Static forecast")
+dynamic_forecast.predicted_mean.plot(ax=ax, label="Dynamic forecast")
 ax.legend()
 plt.show()
 ```
@@ -464,7 +472,7 @@ from statsmodels.tsa.stattools import adfuller, kpss
 
 # Augmented Dickey-Fuller (ADF) test
 # H0: unit root (non-stationary)
-adf_result = adfuller(y, autolag='AIC')
+adf_result = adfuller(y, autolag="AIC")
 print(f"ADF Statistic: {adf_result[0]:.4f}")
 print(f"p-value: {adf_result[1]:.4f}")
 if adf_result[1] <= 0.05:
@@ -474,7 +482,7 @@ else:
 
 # KPSS test
 # H0: stationary (opposite of ADF)
-kpss_result = kpss(y, regression='c', nlags='auto')
+kpss_result = kpss(y, regression="c", nlags="auto")
 print(f"KPSS Statistic: {kpss_result[0]:.4f}")
 print(f"p-value: {kpss_result[1]:.4f}")
 if kpss_result[1] <= 0.05:
@@ -523,9 +531,11 @@ print(f"p-value: {arch_test[1]:.4f}")
 from statsmodels.tsa.seasonal import seasonal_decompose
 
 # Decompose into trend, seasonal, residual
-decomposition = seasonal_decompose(y,
-                                   model='additive',  # or 'multiplicative'
-                                   period=12)         # seasonal period
+decomposition = seasonal_decompose(
+    y,
+    model="additive",  # or 'multiplicative'
+    period=12,
+)  # seasonal period
 
 # Plot components
 fig = decomposition.plot()
@@ -566,6 +576,7 @@ print(f"RMSE: {rmse:.4f}")
 
 # MAE
 from sklearn.metrics import mean_absolute_error
+
 mae = mean_absolute_error(y, results.fittedvalues)
 print(f"MAE: {mae:.4f}")
 ```
@@ -605,7 +616,7 @@ forecasts = []
 
 for t in range(len(y_test)):
     # Refit or update with new observation
-    y_current = y[:train_size + t]
+    y_current = y[: train_size + t]
     model = ARIMA(y_current, order=(1, 1, 1))
     fit = model.fit()
 

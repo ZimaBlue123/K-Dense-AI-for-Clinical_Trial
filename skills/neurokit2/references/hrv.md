@@ -89,9 +89,17 @@ hrv_time = nk.hrv_time(peaks, sampling_rate=1000)
 Analyze HRV power across frequency bands using spectral analysis.
 
 ```python
-hrv_freq = nk.hrv_frequency(peaks, sampling_rate=1000, ulf=(0, 0.0033), vlf=(0.0033, 0.04),
-                            lf=(0.04, 0.15), hf=(0.15, 0.4), vhf=(0.4, 0.5),
-                            psd_method='welch', normalize=True)
+hrv_freq = nk.hrv_frequency(
+    peaks,
+    sampling_rate=1000,
+    ulf=(0, 0.0033),
+    vlf=(0.0033, 0.04),
+    lf=(0.04, 0.15),
+    hf=(0.15, 0.4),
+    vhf=(0.4, 0.5),
+    psd_method="welch",
+    normalize=True,
+)
 ```
 
 ### Frequency Bands
@@ -140,7 +148,7 @@ hrv_freq = nk.hrv_frequency(peaks, sampling_rate=1000, ulf=(0, 0.0033), vlf=(0.0
 
 **Welch's method (default):**
 ```python
-hrv_freq = nk.hrv_frequency(peaks, sampling_rate=1000, psd_method='welch')
+hrv_freq = nk.hrv_frequency(peaks, sampling_rate=1000, psd_method="welch")
 ```
 - Windowed FFT with overlap
 - Smoother spectra, reduced variance
@@ -148,7 +156,7 @@ hrv_freq = nk.hrv_frequency(peaks, sampling_rate=1000, psd_method='welch')
 
 **Lomb-Scargle periodogram:**
 ```python
-hrv_freq = nk.hrv_frequency(peaks, sampling_rate=1000, psd_method='lomb')
+hrv_freq = nk.hrv_frequency(peaks, sampling_rate=1000, psd_method="lomb")
 ```
 - Handles unevenly sampled data
 - No interpolation required
@@ -156,7 +164,7 @@ hrv_freq = nk.hrv_frequency(peaks, sampling_rate=1000, psd_method='lomb')
 
 **Multitaper method:**
 ```python
-hrv_freq = nk.hrv_frequency(peaks, sampling_rate=1000, psd_method='multitapers')
+hrv_freq = nk.hrv_frequency(peaks, sampling_rate=1000, psd_method="multitapers")
 ```
 - Superior spectral estimation
 - Reduced variance with minimal bias
@@ -164,7 +172,7 @@ hrv_freq = nk.hrv_frequency(peaks, sampling_rate=1000, psd_method='multitapers')
 
 **Burg autoregressive:**
 ```python
-hrv_freq = nk.hrv_frequency(peaks, sampling_rate=1000, psd_method='burg', order=16)
+hrv_freq = nk.hrv_frequency(peaks, sampling_rate=1000, psd_method="burg", order=16)
 ```
 - Parametric method
 - Smooth spectra with well-defined peaks
@@ -326,7 +334,7 @@ Quantifies abnormal short-term fluctuations reflecting autonomic dysregulation.
 Respiratory Sinus Arrhythmia - heart rate modulation by breathing.
 
 ```python
-rsa = nk.hrv_rsa(peaks, rsp_signal, sampling_rate=1000, method='porges1980')
+rsa = nk.hrv_rsa(peaks, rsp_signal, sampling_rate=1000, method="porges1980")
 ```
 
 **Methods:**
@@ -368,8 +376,9 @@ rqa = nk.hrv_rqa(peaks, sampling_rate=1000)
 Preprocess RR-intervals before HRV analysis.
 
 ```python
-processed_intervals = nk.intervals_process(rr_intervals, interpolate=False,
-                                           interpolate_sampling_rate=1000)
+processed_intervals = nk.intervals_process(
+    rr_intervals, interpolate=False, interpolate_sampling_rate=1000
+)
 ```
 
 **Operations:**

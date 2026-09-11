@@ -10,10 +10,10 @@ items = zot.items()
 top = zot.top(limit=25)
 
 # A specific item by key
-item = zot.item('ITEMKEY')
+item = zot.item("ITEMKEY")
 
 # Multiple specific items (up to 50 per call)
-subset = zot.get_subset(['KEY1', 'KEY2', 'KEY3'])
+subset = zot.get_subset(["KEY1", "KEY2", "KEY3"])
 
 # Items from trash
 trash = zot.trash()
@@ -36,22 +36,22 @@ n = zot.num_items()
 Items are returned as dicts. Data lives in `item['data']`:
 
 ```python
-item = zot.item('VDNIEAPH')[0]
-title = item['data']['title']
-item_type = item['data']['itemType']
-creators = item['data']['creators']
-tags = item['data']['tags']
-key = item['data']['key']
-version = item['data']['version']
-collections = item['data']['collections']
-doi = item['data'].get('DOI', '')
+item = zot.item("VDNIEAPH")[0]
+title = item["data"]["title"]
+item_type = item["data"]["itemType"]
+creators = item["data"]["creators"]
+tags = item["data"]["tags"]
+key = item["data"]["key"]
+version = item["data"]["version"]
+collections = item["data"]["collections"]
+doi = item["data"].get("DOI", "")
 ```
 
 ## Child Items
 
 ```python
 # Get child items (notes, attachments) of a parent
-children = zot.children('PARENTKEY')
+children = zot.children("PARENTKEY")
 ```
 
 ## Retrieving Collections
@@ -64,24 +64,24 @@ collections = zot.collections()
 top_collections = zot.collections_top()
 
 # A specific collection
-collection = zot.collection('COLLECTIONKEY')
+collection = zot.collection("COLLECTIONKEY")
 
 # Sub-collections of a collection
-sub = zot.collections_sub('COLLECTIONKEY')
+sub = zot.collections_sub("COLLECTIONKEY")
 
 # All collections and sub-collections in a flat list
 all_cols = zot.all_collections()
 # Or from a specific collection down:
-all_cols = zot.all_collections('COLLECTIONKEY')
+all_cols = zot.all_collections("COLLECTIONKEY")
 
 # Items in a specific collection (not sub-collections)
-col_items = zot.collection_items('COLLECTIONKEY')
+col_items = zot.collection_items("COLLECTIONKEY")
 
 # Top-level items in a specific collection
-col_top = zot.collection_items_top('COLLECTIONKEY')
+col_top = zot.collection_items_top("COLLECTIONKEY")
 
 # Count items in a collection
-n = zot.num_collectionitems('COLLECTIONKEY')
+n = zot.num_collectionitems("COLLECTIONKEY")
 ```
 
 ## Retrieving Tags
@@ -91,10 +91,10 @@ n = zot.num_collectionitems('COLLECTIONKEY')
 tags = zot.tags()
 
 # Tags from a specific item
-item_tags = zot.item_tags('ITEMKEY')
+item_tags = zot.item_tags("ITEMKEY")
 
 # Tags in a collection
-col_tags = zot.collection_tags('COLLECTIONKEY')
+col_tags = zot.collection_tags("COLLECTIONKEY")
 ```
 
 ## Retrieving Groups

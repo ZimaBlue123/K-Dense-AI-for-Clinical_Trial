@@ -25,9 +25,9 @@ Run hard tokenization to convert genomic regions into tokens:
 ```python
 from geniml.tokenization import hard_tokenization
 
-src_folder = '/path/to/raw/bed/files'
-dst_folder = '/path/to/tokenized_files'
-universe_file = '/path/to/universe_file.bed'
+src_folder = "/path/to/raw/bed/files"
+dst_folder = "/path/to/tokenized_files"
+universe_file = "/path/to/universe_file.bed"
 
 hard_tokenization(src_folder, dst_folder, universe_file, 1e-9)
 ```
@@ -43,12 +43,12 @@ from geniml.region2vec import region2vec
 
 region2vec(
     token_folder=dst_folder,
-    save_dir='./region2vec_model',
+    save_dir="./region2vec_model",
     num_shufflings=1000,
     embedding_dim=100,
     context_len=50,
     window_size=5,
-    init_lr=0.025
+    init_lr=0.025,
 )
 ```
 

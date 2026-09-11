@@ -195,20 +195,17 @@ curl -X POST "https://search.patentsview.org/api/v1/patent" \
 import requests
 
 url = "https://search.patentsview.org/api/v1/patent"
-headers = {
-    "X-Api-Key": "YOUR_API_KEY",
-    "Content-Type": "application/json"
-}
+headers = {"X-Api-Key": "YOUR_API_KEY", "Content-Type": "application/json"}
 data = {
     "q": {
         "_and": [
             {"patent_date": {"_gte": "2024-01-01"}},
-            {"patent_abstract": {"_text_all": ["artificial", "intelligence"]}}
+            {"patent_abstract": {"_text_all": ["artificial", "intelligence"]}},
         ]
     },
     "f": ["patent_number", "patent_title", "patent_date", "assignee_organization"],
     "s": [{"patent_date": "desc"}],
-    "o": {"per_page": 100}
+    "o": {"per_page": 100},
 }
 
 response = requests.post(url, headers=headers, json=data)

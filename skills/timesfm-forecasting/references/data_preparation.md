@@ -7,8 +7,8 @@ univariate time series.
 
 ```python
 inputs = [
-    np.array([1.0, 2.0, 3.0, 4.0, 5.0]),       # Series 1
-    np.array([10.0, 20.0, 15.0, 25.0]),          # Series 2 (different length)
+    np.array([1.0, 2.0, 3.0, 4.0, 5.0]),  # Series 1
+    np.array([10.0, 20.0, 15.0, 25.0]),  # Series 2 (different length)
     np.array([100.0, 110.0, 105.0, 115.0, 120.0, 130.0]),  # Series 3
 ]
 ```
@@ -75,14 +75,20 @@ inputs = [np.sin(np.linspace(0, 10, 200))]
 
 ```python
 df = pd.read_excel("data.xlsx", sheet_name="Sheet1")
-inputs = [df[col].dropna().values.astype(np.float32) for col in df.select_dtypes(include=[np.number]).columns]
+inputs = [
+    df[col].dropna().values.astype(np.float32)
+    for col in df.select_dtypes(include=[np.number]).columns
+]
 ```
 
 ### Parquet
 
 ```python
 df = pd.read_parquet("data.parquet")
-inputs = [df[col].dropna().values.astype(np.float32) for col in df.select_dtypes(include=[np.number]).columns]
+inputs = [
+    df[col].dropna().values.astype(np.float32)
+    for col in df.select_dtypes(include=[np.number]).columns
+]
 ```
 
 ### JSON
@@ -144,6 +150,7 @@ def clean_series(arr: np.ndarray) -> np.ndarray:
     arr[np.isinf(arr)] = np.nan
     return arr
 
+
 inputs = [clean_series(df[col].values) for col in cols]
 ```
 
@@ -179,8 +186,8 @@ Each covariate must have length `context + horizon` for each series:
 ```python
 import numpy as np
 
-context_len = 100   # length of historical data
-horizon = 24        # forecast horizon
+context_len = 100  # length of historical data
+horizon = 24  # forecast horizon
 total_len = context_len + horizon
 
 # Dynamic numerical: temperature forecast for each series
@@ -224,10 +231,7 @@ TimesFM needs at least 1 data point, but more context = better forecasts.
 ```python
 MIN_LENGTH = 32  # Practical minimum for meaningful forecasts
 
-inputs = [
-    arr for arr in raw_inputs
-    if len(arr[~np.isnan(arr)]) >= MIN_LENGTH
-]
+inputs = [arr for arr in raw_inputs if len(arr[~np.isnan(arr)]) >= MIN_LENGTH]
 ```
 
 ### Issue: Series with constant values
@@ -260,9 +264,9 @@ TimesFM handles each series independently, so you can mix frequencies:
 
 ```python
 inputs = [
-    daily_sales,      # 365 points
-    weekly_revenue,   # 52 points
-    monthly_users,    # 24 points
+    daily_sales,  # 365 points
+    weekly_revenue,  # 52 points
+    monthly_users,  # 24 points
 ]
 # All forecasted in one batch — TimesFM handles different lengths
 point, q = model.forecast(horizon=12, inputs=inputs)

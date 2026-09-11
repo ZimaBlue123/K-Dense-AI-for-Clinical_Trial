@@ -439,6 +439,7 @@ These are useful when working with small, fully-connected, or densely represente
 ```python
 from torch_geometric.nn import GCNConv, global_mean_pool
 
+
 class GNN(torch.nn.Module):
     def __init__(self, in_channels, hidden_channels, out_channels):
         super().__init__()
@@ -467,7 +468,7 @@ class DeepGNN(torch.nn.Module):
             self.norms.append(LayerNorm(hidden_channels))
 
         self.convs.append(GCNConv(hidden_channels, out_channels))
-        self.jk = JumpingKnowledge(mode='cat')
+        self.jk = JumpingKnowledge(mode="cat")
 
     def forward(self, x, edge_index, batch):
         xs = []

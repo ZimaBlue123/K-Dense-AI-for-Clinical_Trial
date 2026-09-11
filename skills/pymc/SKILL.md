@@ -54,22 +54,19 @@ X_scaled = (X - X_mean) / X_std
 ### 2. Model Building
 
 ```python
-coords = {
-    'predictors': ['var1', 'var2', 'var3'],
-    'obs_id': np.arange(len(y))
-}
+coords = {"predictors": ["var1", "var2", "var3"], "obs_id": np.arange(len(y))}
 
 with pm.Model(coords=coords) as model:
     # Priors
-    alpha = pm.Normal('alpha', mu=0, sigma=1)
-    beta = pm.Normal('beta', mu=0, sigma=1, dims='predictors')
-    sigma = pm.HalfNormal('sigma', sigma=1)
+    alpha = pm.Normal("alpha", mu=0, sigma=1)
+    beta = pm.Normal("beta", mu=0, sigma=1, dims="predictors")
+    sigma = pm.HalfNormal("sigma", sigma=1)
 
     # Linear predictor
     mu = alpha + pm.math.dot(X_scaled, beta)
 
     # Likelihood
-    y_obs = pm.Normal('y_obs', mu=mu, sigma=sigma, observed=y, dims='obs_id')
+    y_obs = pm.Normal("y_obs", mu=mu, sigma=sigma, observed=y, dims="obs_id")
 ```
 
 **Key practices:**
@@ -87,7 +84,7 @@ with model:
     prior_pred = pm.sample_prior_predictive(samples=1000, random_seed=42)
 
 # Visualize
-az.plot_ppc(prior_pred, group='prior')
+az.plot_ppc(prior_pred, group="prior")
 ```
 
 **Check:**
@@ -109,7 +106,7 @@ with model:
         chains=4,
         target_accept=0.9,
         random_seed=42,
-        idata_kwargs={'log_likelihood': True}  # For model comparison
+        idata_kwargs={"log_likelihood": True},  # For model comparison
     )
 ```
 
@@ -127,7 +124,7 @@ with model:
 ```python
 from scripts.model_diagnostics import check_diagnostics
 
-results = check_diagnostics(idata, var_names=['alpha', 'beta', 'sigma'])
+results = check_diagnostics(idata, var_names=["alpha", "beta", "sigma"])
 ```
 
 **Check:**
@@ -162,13 +159,13 @@ az.plot_ppc(idata)
 
 ```python
 # Summary statistics
-print(az.summary(idata, var_names=['alpha', 'beta', 'sigma']))
+print(az.summary(idata, var_names=["alpha", "beta", "sigma"]))
 
 # Posterior distributions
-az.plot_posterior(idata, var_names=['alpha', 'beta', 'sigma'])
+az.plot_posterior(idata, var_names=["alpha", "beta", "sigma"])
 
 # Coefficient estimates
-az.plot_forest(idata, var_names=['beta'], combined=True)
+az.plot_forest(idata, var_names=["beta"], combined=True)
 ```
 
 ### 8. Make Predictions
@@ -178,16 +175,12 @@ X_new = ...  # New predictor values
 X_new_scaled = (X_new - X_mean) / X_std
 
 with model:
-    pm.set_data({'X_scaled': X_new_scaled})
-    post_pred = pm.sample_posterior_predictive(
-        idata.posterior,
-        var_names=['y_obs'],
-        random_seed=42
-    )
+    pm.set_data({"X_scaled": X_new_scaled})
+    post_pred = pm.sample_posterior_predictive(idata.posterior, var_names=["y_obs"], random_seed=42)
 
 # Extract prediction intervals
-y_pred_mean = post_pred.posterior_predictive['y_obs'].mean(dim=['chain', 'draw'])
-y_pred_hdi = az.hdi(post_pred.posterior_predictive, var_names=['y_obs'])
+y_pred_mean = post_pred.posterior_predictive["y_obs"].mean(dim=["chain", "draw"])
+y_pred_hdi = az.hdi(post_pred.posterior_predictive, var_names=["y_obs"])
 ```
 
 ## Common Model Patterns
@@ -198,12 +191,12 @@ For continuous outcomes with linear relationships:
 
 ```python
 with pm.Model() as linear_model:
-    alpha = pm.Normal('alpha', mu=0, sigma=10)
-    beta = pm.Normal('beta', mu=0, sigma=10, shape=n_predictors)
-    sigma = pm.HalfNormal('sigma', sigma=1)
+    alpha = pm.Normal("alpha", mu=0, sigma=10)
+    beta = pm.Normal("beta", mu=0, sigma=10, shape=n_predictors)
+    sigma = pm.HalfNormal("sigma", sigma=1)
 
     mu = alpha + pm.math.dot(X, beta)
-    y = pm.Normal('y', mu=mu, sigma=sigma, observed=y_obs)
+    y = pm.Normal("y", mu=mu, sigma=sigma, observed=y_obs)
 ```
 
 **Use template:** `assets/linear_regression_template.py`
@@ -214,11 +207,11 @@ For binary outcomes:
 
 ```python
 with pm.Model() as logistic_model:
-    alpha = pm.Normal('alpha', mu=0, sigma=10)
-    beta = pm.Normal('beta', mu=0, sigma=10, shape=n_predictors)
+    alpha = pm.Normal("alpha", mu=0, sigma=10)
+    beta = pm.Normal("beta", mu=0, sigma=10, shape=n_predictors)
 
     logit_p = alpha + pm.math.dot(X, beta)
-    y = pm.Bernoulli('y', logit_p=logit_p, observed=y_obs)
+    y = pm.Bernoulli("y", logit_p=logit_p, observed=y_obs)
 ```
 
 ### Hierarchical Models
@@ -226,19 +219,19 @@ with pm.Model() as logistic_model:
 For grouped data (use non-centered parameterization):
 
 ```python
-with pm.Model(coords={'groups': group_names}) as hierarchical_model:
+with pm.Model(coords={"groups": group_names}) as hierarchical_model:
     # Hyperpriors
-    mu_alpha = pm.Normal('mu_alpha', mu=0, sigma=10)
-    sigma_alpha = pm.HalfNormal('sigma_alpha', sigma=1)
+    mu_alpha = pm.Normal("mu_alpha", mu=0, sigma=10)
+    sigma_alpha = pm.HalfNormal("sigma_alpha", sigma=1)
 
     # Group-level (non-centered)
-    alpha_offset = pm.Normal('alpha_offset', mu=0, sigma=1, dims='groups')
-    alpha = pm.Deterministic('alpha', mu_alpha + sigma_alpha * alpha_offset, dims='groups')
+    alpha_offset = pm.Normal("alpha_offset", mu=0, sigma=1, dims="groups")
+    alpha = pm.Deterministic("alpha", mu_alpha + sigma_alpha * alpha_offset, dims="groups")
 
     # Observation-level
     mu = alpha[group_idx]
-    sigma = pm.HalfNormal('sigma', sigma=1)
-    y = pm.Normal('y', mu=mu, sigma=sigma, observed=y_obs)
+    sigma = pm.HalfNormal("sigma", sigma=1)
+    y = pm.Normal("y", mu=mu, sigma=sigma, observed=y_obs)
 ```
 
 **Use template:** `assets/hierarchical_model_template.py`
@@ -251,11 +244,11 @@ For count data:
 
 ```python
 with pm.Model() as poisson_model:
-    alpha = pm.Normal('alpha', mu=0, sigma=10)
-    beta = pm.Normal('beta', mu=0, sigma=10, shape=n_predictors)
+    alpha = pm.Normal("alpha", mu=0, sigma=10)
+    beta = pm.Normal("beta", mu=0, sigma=10, shape=n_predictors)
 
     log_lambda = alpha + pm.math.dot(X, beta)
-    y = pm.Poisson('y', mu=pm.math.exp(log_lambda), observed=y_obs)
+    y = pm.Poisson("y", mu=pm.math.exp(log_lambda), observed=y_obs)
 ```
 
 For overdispersed counts, use `NegativeBinomial` instead.
@@ -266,11 +259,11 @@ For autoregressive processes:
 
 ```python
 with pm.Model() as ar_model:
-    sigma = pm.HalfNormal('sigma', sigma=1)
-    rho = pm.Normal('rho', mu=0, sigma=0.5, shape=ar_order)
+    sigma = pm.HalfNormal("sigma", sigma=1)
+    rho = pm.Normal("rho", mu=0, sigma=0.5, shape=ar_order)
     init_dist = pm.Normal.dist(mu=0, sigma=sigma)
 
-    y = pm.AR('y', rho=rho, sigma=sigma, init_dist=init_dist, observed=y_obs)
+    y = pm.AR("y", rho=rho, sigma=sigma, init_dist=init_dist, observed=y_obs)
 ```
 
 ## Model Comparison
@@ -283,14 +276,10 @@ Use LOO or WAIC for model comparison:
 from scripts.model_comparison import compare_models, check_loo_reliability
 
 # Fit models with log_likelihood
-models = {
-    'Model1': idata1,
-    'Model2': idata2,
-    'Model3': idata3
-}
+models = {"Model1": idata1, "Model2": idata2, "Model3": idata3}
 
 # Compare using LOO
-comparison = compare_models(models, ic='loo')
+comparison = compare_models(models, ic="loo")
 
 # Check reliability
 check_loo_reliability(models)
@@ -313,7 +302,7 @@ When models are similar, average predictions:
 ```python
 from scripts.model_comparison import model_averaging
 
-averaged_pred, weights = model_averaging(models, var_name='y_obs')
+averaged_pred, weights = model_averaging(models, var_name="y_obs")
 ```
 
 ## Distribution Selection Guide
@@ -366,13 +355,7 @@ averaged_pred, weights = model_averaging(models, var_name='y_obs')
 Default and recommended for most models:
 
 ```python
-idata = pm.sample(
-    draws=2000,
-    tune=1000,
-    chains=4,
-    target_accept=0.9,
-    random_seed=42
-)
+idata = pm.sample(draws=2000, tune=1000, chains=4, target_accept=0.9, random_seed=42)
 ```
 
 **Adjust when needed:**
@@ -386,7 +369,7 @@ Fast approximation for exploration or initialization:
 
 ```python
 with model:
-    approx = pm.fit(n=20000, method='advi')
+    approx = pm.fit(n=20000, method="advi")
 
     # Use for initialization
     start = approx.sample(return_inferencedata=False)[0]
@@ -407,11 +390,7 @@ with model:
 ```python
 from scripts.model_diagnostics import create_diagnostic_report
 
-create_diagnostic_report(
-    idata,
-    var_names=['alpha', 'beta', 'sigma'],
-    output_dir='diagnostics/'
-)
+create_diagnostic_report(idata, var_names=["alpha", "beta", "sigma"], output_dir="diagnostics/")
 ```
 
 Creates:
@@ -529,11 +508,11 @@ This skill includes:
 
 ### Model Building
 ```python
-with pm.Model(coords={'var': names}) as model:
+with pm.Model(coords={"var": names}) as model:
     # Priors
-    param = pm.Normal('param', mu=0, sigma=1, dims='var')
+    param = pm.Normal("param", mu=0, sigma=1, dims="var")
     # Likelihood
-    y = pm.Normal('y', mu=..., sigma=..., observed=data)
+    y = pm.Normal("y", mu=..., sigma=..., observed=data)
 ```
 
 ### Sampling
@@ -544,19 +523,21 @@ idata = pm.sample(draws=2000, tune=1000, chains=4, target_accept=0.9)
 ### Diagnostics
 ```python
 from scripts.model_diagnostics import check_diagnostics
+
 check_diagnostics(idata)
 ```
 
 ### Model Comparison
 ```python
 from scripts.model_comparison import compare_models
-compare_models({'m1': idata1, 'm2': idata2}, ic='loo')
+
+compare_models({"m1": idata1, "m2": idata2}, ic="loo")
 ```
 
 ### Predictions
 ```python
 with model:
-    pm.set_data({'X': X_new})
+    pm.set_data({"X": X_new})
     pred = pm.sample_posterior_predictive(idata.posterior)
 ```
 

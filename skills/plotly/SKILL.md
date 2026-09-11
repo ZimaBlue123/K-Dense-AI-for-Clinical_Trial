@@ -22,12 +22,9 @@ Basic usage with Plotly Express (high-level API):
 import plotly.express as px
 import pandas as pd
 
-df = pd.DataFrame({
-    'x': [1, 2, 3, 4],
-    'y': [10, 11, 12, 13]
-})
+df = pd.DataFrame({"x": [1, 2, 3, 4], "y": [10, 11, 12, 13]})
 
-fig = px.scatter(df, x='x', y='y', title='My First Plot')
+fig = px.scatter(df, x="x", y="y", title="My First Plot")
 fig.show()
 ```
 
@@ -53,9 +50,9 @@ See [reference/graph-objects.md](reference/graph-objects.md) for complete guide.
 
 **Note:** Plotly Express returns graph objects Figure, so you can combine approaches:
 ```python
-fig = px.scatter(df, x='x', y='y')
-fig.update_layout(title='Custom Title')  # Use go methods on px figure
-fig.add_hline(y=10)                     # Add shapes
+fig = px.scatter(df, x="x", y="y")
+fig.update_layout(title="Custom Title")  # Use go methods on px figure
+fig.add_hline(y=10)  # Add shapes
 ```
 
 ## Core Capabilities
@@ -87,13 +84,13 @@ For detailed examples and usage of all chart types, see [reference/chart-types.m
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 
-fig = make_subplots(rows=2, cols=2, subplot_titles=('A', 'B', 'C', 'D'))
+fig = make_subplots(rows=2, cols=2, subplot_titles=("A", "B", "C", "D"))
 fig.add_trace(go.Scatter(x=[1, 2], y=[3, 4]), row=1, col=1)
 ```
 
 **Templates:** Apply coordinated styling:
 ```python
-fig = px.scatter(df, x='x', y='y', template='plotly_dark')
+fig = px.scatter(df, x="x", y="y", template="plotly_dark")
 # Built-in: plotly_white, plotly_dark, ggplot2, seaborn, simple_white
 ```
 
@@ -120,15 +117,13 @@ Built-in interactive features:
 
 ```python
 # Custom hover template
-fig.update_traces(
-    hovertemplate='<b>%{x}</b><br>Value: %{y:.2f}<extra></extra>'
-)
+fig.update_traces(hovertemplate="<b>%{x}</b><br>Value: %{y:.2f}<extra></extra>")
 
 # Add rangeslider
 fig.update_xaxes(rangeslider_visible=True)
 
 # Animations
-fig = px.scatter(df, x='x', y='y', animation_frame='year')
+fig = px.scatter(df, x="x", y="y", animation_frame="year")
 ```
 
 For complete interactivity guide, see [reference/export-interactivity.md](reference/export-interactivity.md).
@@ -137,8 +132,8 @@ For complete interactivity guide, see [reference/export-interactivity.md](refere
 
 **Interactive HTML:**
 ```python
-fig.write_html('chart.html')                       # Full standalone
-fig.write_html('chart.html', include_plotlyjs='cdn')  # Smaller file
+fig.write_html("chart.html")  # Full standalone
+fig.write_html("chart.html", include_plotlyjs="cdn")  # Smaller file
 ```
 
 **Static Images (requires kaleido):**
@@ -147,9 +142,9 @@ uv pip install kaleido
 ```
 
 ```python
-fig.write_image('chart.png')   # PNG
-fig.write_image('chart.pdf')   # PDF
-fig.write_image('chart.svg')   # SVG
+fig.write_image("chart.png")  # PNG
+fig.write_image("chart.pdf")  # PDF
+fig.write_image("chart.svg")  # SVG
 ```
 
 For complete export options, see [reference/export-interactivity.md](reference/export-interactivity.md).
@@ -162,13 +157,14 @@ For complete export options, see [reference/export-interactivity.md](reference/e
 import plotly.express as px
 
 # Scatter plot with trendline
-fig = px.scatter(df, x='temperature', y='yield', trendline='ols')
+fig = px.scatter(df, x="temperature", y="yield", trendline="ols")
 
 # Heatmap from matrix
-fig = px.imshow(correlation_matrix, text_auto=True, color_continuous_scale='RdBu')
+fig = px.imshow(correlation_matrix, text_auto=True, color_continuous_scale="RdBu")
 
 # 3D surface plot
 import plotly.graph_objects as go
+
 fig = go.Figure(data=[go.Surface(z=z_data, x=x_data, y=y_data)])
 ```
 
@@ -176,31 +172,32 @@ fig = go.Figure(data=[go.Surface(z=z_data, x=x_data, y=y_data)])
 
 ```python
 # Distribution comparison
-fig = px.histogram(df, x='values', color='group', marginal='box', nbins=30)
+fig = px.histogram(df, x="values", color="group", marginal="box", nbins=30)
 
 # Box plot with all points
-fig = px.box(df, x='category', y='value', points='all')
+fig = px.box(df, x="category", y="value", points="all")
 
 # Violin plot
-fig = px.violin(df, x='group', y='measurement', box=True)
+fig = px.violin(df, x="group", y="measurement", box=True)
 ```
 
 ### Time Series and Financial
 
 ```python
 # Time series with rangeslider
-fig = px.line(df, x='date', y='price')
+fig = px.line(df, x="date", y="price")
 fig.update_xaxes(rangeslider_visible=True)
 
 # Candlestick chart
 import plotly.graph_objects as go
-fig = go.Figure(data=[go.Candlestick(
-    x=df['date'],
-    open=df['open'],
-    high=df['high'],
-    low=df['low'],
-    close=df['close']
-)])
+
+fig = go.Figure(
+    data=[
+        go.Candlestick(
+            x=df["date"], open=df["open"], high=df["high"], low=df["low"], close=df["close"]
+        )
+    ]
+)
 ```
 
 ### Multi-Plot Dashboards
@@ -210,14 +207,14 @@ from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 
 fig = make_subplots(
-    rows=2, cols=2,
-    subplot_titles=('Scatter', 'Bar', 'Histogram', 'Box'),
-    specs=[[{'type': 'scatter'}, {'type': 'bar'}],
-           [{'type': 'histogram'}, {'type': 'box'}]]
+    rows=2,
+    cols=2,
+    subplot_titles=("Scatter", "Bar", "Histogram", "Box"),
+    specs=[[{"type": "scatter"}, {"type": "bar"}], [{"type": "histogram"}, {"type": "box"}]],
 )
 
 fig.add_trace(go.Scatter(x=[1, 2, 3], y=[4, 5, 6]), row=1, col=1)
-fig.add_trace(go.Bar(x=['A', 'B'], y=[1, 2]), row=1, col=2)
+fig.add_trace(go.Bar(x=["A", "B"], y=[1, 2]), row=1, col=2)
 fig.add_trace(go.Histogram(x=data), row=2, col=1)
 fig.add_trace(go.Box(y=data), row=2, col=2)
 
@@ -239,12 +236,9 @@ import plotly.express as px
 
 app = dash.Dash(__name__)
 
-fig = px.scatter(df, x='x', y='y')
+fig = px.scatter(df, x="x", y="y")
 
-app.layout = html.Div([
-    html.H1('Dashboard'),
-    dcc.Graph(figure=fig)
-])
+app.layout = html.Div([html.H1("Dashboard"), dcc.Graph(figure=fig)])
 
 app.run_server(debug=True)
 ```

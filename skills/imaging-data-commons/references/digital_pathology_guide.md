@@ -24,6 +24,7 @@ All require `client.fetch_index("table_name")` before querying. Use `client.indi
 
 ```python
 from idc_index import IDCClient
+
 client = IDCClient()
 
 # sm_index has detailed metadata; join with index for collection_id

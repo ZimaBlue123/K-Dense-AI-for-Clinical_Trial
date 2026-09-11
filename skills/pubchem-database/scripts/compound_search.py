@@ -233,9 +233,9 @@ def print_compound_info(compound: pcp.Compound) -> None:
     Args:
         compound: PubChemPy Compound object
     """
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"Compound CID: {compound.cid}")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
     print(f"IUPAC Name: {compound.iupac_name or 'N/A'}")
     print(f"Molecular Formula: {compound.molecular_formula or 'N/A'}")
     print(f"Molecular Weight: {compound.molecular_weight or 'N/A'} g/mol")
@@ -246,7 +246,7 @@ def print_compound_info(compound: pcp.Compound) -> None:
     print(f"TPSA: {compound.tpsa or 'N/A'} Ų")
     print(f"H-Bond Donors: {compound.h_bond_donor_count or 'N/A'}")
     print(f"H-Bond Acceptors: {compound.h_bond_acceptor_count or 'N/A'}")
-    print(f"{'='*60}\n")
+    print(f"{'=' * 60}\n")
 
 
 def main():

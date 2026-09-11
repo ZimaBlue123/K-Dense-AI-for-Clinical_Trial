@@ -294,7 +294,7 @@ for variant in invcf:
         id=variant.id,
         qual=variant.qual,
         filter=variant.filter,
-        info=variant.info
+        info=variant.info,
     )
 
     # Copy genotype data for selected samples
@@ -336,15 +336,17 @@ with open("variants.csv", "w", newline="") as csvfile:
     writer.writerow(["CHROM", "POS", "ID", "REF", "ALT", "QUAL", "DP"])
 
     for variant in vcf:
-        writer.writerow([
-            variant.chrom,
-            variant.pos,
-            variant.id or ".",
-            variant.ref,
-            ",".join(variant.alts) if variant.alts else ".",
-            variant.qual or ".",
-            variant.info.get("DP", ".")
-        ])
+        writer.writerow(
+            [
+                variant.chrom,
+                variant.pos,
+                variant.id or ".",
+                variant.ref,
+                ",".join(variant.alts) if variant.alts else ".",
+                variant.qual or ".",
+                variant.info.get("DP", "."),
+            ]
+        )
 ```
 
 ## Performance Tips

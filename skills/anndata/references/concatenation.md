@@ -43,16 +43,14 @@ import pandas as pd
 
 # Create objects with different variables
 adata1 = ad.AnnData(
-    X=np.random.rand(100, 50),
-    var=pd.DataFrame(index=[f'Gene_{i}' for i in range(50)])
+    X=np.random.rand(100, 50), var=pd.DataFrame(index=[f"Gene_{i}" for i in range(50)])
 )
 adata2 = ad.AnnData(
-    X=np.random.rand(150, 60),
-    var=pd.DataFrame(index=[f'Gene_{i}' for i in range(10, 70)])
+    X=np.random.rand(150, 60), var=pd.DataFrame(index=[f"Gene_{i}" for i in range(10, 70)])
 )
 
 # Inner join: only genes 10-49 are kept (overlap)
-adata_inner = ad.concat([adata1, adata2], join='inner')
+adata_inner = ad.concat([adata1, adata2], join="inner")
 print(adata_inner.n_vars)  # 40 genes (overlap)
 ```
 
@@ -61,7 +59,7 @@ Keep all variables/observations, filling missing values.
 
 ```python
 # Outer join: all genes are kept
-adata_outer = ad.concat([adata1, adata2], join='outer')
+adata_outer = ad.concat([adata1, adata2], join="outer")
 print(adata_outer.n_vars)  # 70 genes (union)
 
 # Missing values are filled with appropriate defaults:
@@ -72,7 +70,7 @@ print(adata_outer.n_vars)  # 70 genes (union)
 ### Fill values for outer joins
 ```python
 # Specify fill value for missing data
-adata_filled = ad.concat([adata1, adata2], join='outer', fill_value=0)
+adata_filled = ad.concat([adata1, adata2], join="outer", fill_value=0)
 ```
 
 ## Tracking Data Sources
@@ -82,11 +80,11 @@ adata_filled = ad.concat([adata1, adata2], join='outer', fill_value=0)
 # Label which object each observation came from
 adata_combined = ad.concat(
     [adata1, adata2, adata3],
-    label='batch',  # Column name for labels
-    keys=['batch1', 'batch2', 'batch3']  # Labels for each object
+    label="batch",  # Column name for labels
+    keys=["batch1", "batch2", "batch3"],  # Labels for each object
 )
 
-print(adata_combined.obs['batch'].value_counts())
+print(adata_combined.obs["batch"].value_counts())
 # batch1    100
 # batch2    150
 # batch3    200
@@ -95,10 +93,7 @@ print(adata_combined.obs['batch'].value_counts())
 ### Automatic batch labels
 ```python
 # If keys not provided, uses integer indices
-adata_combined = ad.concat(
-    [adata1, adata2, adata3],
-    label='dataset'
-)
+adata_combined = ad.concat([adata1, adata2, adata3], label="dataset")
 # dataset column contains: 0, 1, 2
 ```
 
@@ -111,8 +106,8 @@ Exclude metadata on non-concatenation axis.
 
 ```python
 # When concatenating observations, var metadata must match
-adata1.var['gene_type'] = 'protein_coding'
-adata2.var['gene_type'] = 'protein_coding'
+adata1.var["gene_type"] = "protein_coding"
+adata2.var["gene_type"] = "protein_coding"
 
 # var is kept only if identical across all objects
 adata_combined = ad.concat([adata1, adata2], merge=None)
@@ -122,46 +117,46 @@ adata_combined = ad.concat([adata1, adata2], merge=None)
 Keep metadata that is identical across all objects.
 
 ```python
-adata1.var['chromosome'] = ['chr1'] * 25 + ['chr2'] * 25
-adata2.var['chromosome'] = ['chr1'] * 25 + ['chr2'] * 25
-adata1.var['type'] = 'protein_coding'
-adata2.var['type'] = 'lncRNA'  # Different
+adata1.var["chromosome"] = ["chr1"] * 25 + ["chr2"] * 25
+adata2.var["chromosome"] = ["chr1"] * 25 + ["chr2"] * 25
+adata1.var["type"] = "protein_coding"
+adata2.var["type"] = "lncRNA"  # Different
 
 # 'chromosome' is kept (same), 'type' is excluded (different)
-adata_combined = ad.concat([adata1, adata2], merge='same')
+adata_combined = ad.concat([adata1, adata2], merge="same")
 ```
 
 ### merge='unique'
 Keep metadata columns where each key has exactly one value.
 
 ```python
-adata1.var['gene_id'] = [f'ENSG{i:05d}' for i in range(50)]
-adata2.var['gene_id'] = [f'ENSG{i:05d}' for i in range(50)]
+adata1.var["gene_id"] = [f"ENSG{i:05d}" for i in range(50)]
+adata2.var["gene_id"] = [f"ENSG{i:05d}" for i in range(50)]
 
 # gene_id is kept (unique values for each key)
-adata_combined = ad.concat([adata1, adata2], merge='unique')
+adata_combined = ad.concat([adata1, adata2], merge="unique")
 ```
 
 ### merge='first'
 Take values from the first object containing each key.
 
 ```python
-adata1.var['description'] = ['Desc1'] * 50
-adata2.var['description'] = ['Desc2'] * 50
+adata1.var["description"] = ["Desc1"] * 50
+adata2.var["description"] = ["Desc2"] * 50
 
 # Uses descriptions from adata1
-adata_combined = ad.concat([adata1, adata2], merge='first')
+adata_combined = ad.concat([adata1, adata2], merge="first")
 ```
 
 ### merge='only'
 Keep metadata that appears in only one object.
 
 ```python
-adata1.var['adata1_specific'] = [1] * 50
-adata2.var['adata2_specific'] = [2] * 50
+adata1.var["adata1_specific"] = [1] * 50
+adata2.var["adata2_specific"] = [2] * 50
 
 # Both metadata columns are kept
-adata_combined = ad.concat([adata1, adata2], merge='only')
+adata_combined = ad.concat([adata1, adata2], merge="only")
 ```
 
 ## Handling Index Conflicts
@@ -171,21 +166,15 @@ adata_combined = ad.concat([adata1, adata2], merge='only')
 import pandas as pd
 
 # Create objects with overlapping observation names
-adata1 = ad.AnnData(
-    X=np.random.rand(3, 10),
-    obs=pd.DataFrame(index=['cell_1', 'cell_2', 'cell_3'])
-)
-adata2 = ad.AnnData(
-    X=np.random.rand(3, 10),
-    obs=pd.DataFrame(index=['cell_1', 'cell_2', 'cell_3'])
-)
+adata1 = ad.AnnData(X=np.random.rand(3, 10), obs=pd.DataFrame(index=["cell_1", "cell_2", "cell_3"]))
+adata2 = ad.AnnData(X=np.random.rand(3, 10), obs=pd.DataFrame(index=["cell_1", "cell_2", "cell_3"]))
 
 # Make indices unique by appending batch keys
 adata_combined = ad.concat(
     [adata1, adata2],
-    label='batch',
-    keys=['batch1', 'batch2'],
-    index_unique='_'  # Separator for making indices unique
+    label="batch",
+    keys=["batch1", "batch2"],
+    index_unique="_",  # Separator for making indices unique
 )
 
 print(adata_combined.obs_names)
@@ -198,12 +187,12 @@ print(adata_combined.obs_names)
 ```python
 # Objects with layers
 adata1 = ad.AnnData(X=np.random.rand(100, 50))
-adata1.layers['normalized'] = np.random.rand(100, 50)
-adata1.layers['scaled'] = np.random.rand(100, 50)
+adata1.layers["normalized"] = np.random.rand(100, 50)
+adata1.layers["scaled"] = np.random.rand(100, 50)
 
 adata2 = ad.AnnData(X=np.random.rand(150, 50))
-adata2.layers['normalized'] = np.random.rand(150, 50)
-adata2.layers['scaled'] = np.random.rand(150, 50)
+adata2.layers["normalized"] = np.random.rand(150, 50)
+adata2.layers["scaled"] = np.random.rand(150, 50)
 
 # Layers are concatenated automatically if present in all objects
 adata_combined = ad.concat([adata1, adata2])
@@ -217,12 +206,12 @@ print(adata_combined.layers.keys())
 ### obsm/varm
 ```python
 # Objects with embeddings
-adata1.obsm['X_pca'] = np.random.rand(100, 50)
-adata2.obsm['X_pca'] = np.random.rand(150, 50)
+adata1.obsm["X_pca"] = np.random.rand(100, 50)
+adata2.obsm["X_pca"] = np.random.rand(150, 50)
 
 # obsm is concatenated along observation axis
 adata_combined = ad.concat([adata1, adata2])
-print(adata_combined.obsm['X_pca'].shape)  # (250, 50)
+print(adata_combined.obsm["X_pca"].shape)  # (250, 50)
 ```
 
 ### obsp/varp (pairwise annotations)
@@ -230,8 +219,8 @@ print(adata_combined.obsm['X_pca'].shape)  # (250, 50)
 from scipy.sparse import csr_matrix
 
 # Pairwise matrices
-adata1.obsp['connectivities'] = csr_matrix((100, 100))
-adata2.obsp['connectivities'] = csr_matrix((150, 150))
+adata1.obsp["connectivities"] = csr_matrix((100, 100))
+adata2.obsp["connectivities"] = csr_matrix((150, 150))
 
 # By default, obsp is NOT concatenated (set pairwise=True to include)
 adata_combined = ad.concat([adata1, adata2])
@@ -239,7 +228,7 @@ adata_combined = ad.concat([adata1, adata2])
 
 # Include pairwise data (creates block diagonal matrix)
 adata_combined = ad.concat([adata1, adata2], pairwise=True)
-print(adata_combined.obsp['connectivities'].shape)  # (250, 250)
+print(adata_combined.obsp["connectivities"].shape)  # (250, 250)
 ```
 
 ## Concatenating uns (unstructured)
@@ -247,11 +236,11 @@ print(adata_combined.obsp['connectivities'].shape)  # (250, 250)
 Unstructured metadata is merged recursively:
 
 ```python
-adata1.uns['experiment'] = {'date': '2025-01-01', 'batch': 'A'}
-adata2.uns['experiment'] = {'date': '2025-01-01', 'batch': 'B'}
+adata1.uns["experiment"] = {"date": "2025-01-01", "batch": "A"}
+adata2.uns["experiment"] = {"date": "2025-01-01", "batch": "B"}
 
 # Using merge='unique' for uns
-adata_combined = ad.concat([adata1, adata2], uns_merge='unique')
+adata_combined = ad.concat([adata1, adata2], uns_merge="unique")
 # 'date' is kept (same value), 'batch' might be excluded (different values)
 ```
 
@@ -263,13 +252,13 @@ For very large datasets, use lazy concatenation that doesn't load all data:
 from anndata.experimental import AnnCollection
 
 # Create collection from file paths (doesn't load data)
-files = ['data1.h5ad', 'data2.h5ad', 'data3.h5ad']
+files = ["data1.h5ad", "data2.h5ad", "data3.h5ad"]
 collection = AnnCollection(
     files,
-    join_obs='outer',
-    join_vars='inner',
-    label='dataset',
-    keys=['dataset1', 'dataset2', 'dataset3']
+    join_obs="outer",
+    join_vars="inner",
+    label="dataset",
+    keys=["dataset1", "dataset2", "dataset3"],
 )
 
 # Access data lazily
@@ -283,7 +272,7 @@ adata = collection.to_adata()
 ### Working with AnnCollection
 ```python
 # Subset without loading data
-subset = collection[collection.obs['cell_type'] == 'T cell']
+subset = collection[collection.obs["cell_type"] == "T cell"]
 
 # Iterate through datasets
 for adata in collection:
@@ -301,14 +290,10 @@ For datasets too large for memory, concatenate directly on disk:
 from anndata.experimental import concat_on_disk
 
 # Concatenate without loading into memory
-concat_on_disk(
-    ['data1.h5ad', 'data2.h5ad', 'data3.h5ad'],
-    'combined.h5ad',
-    join='outer'
-)
+concat_on_disk(["data1.h5ad", "data2.h5ad", "data3.h5ad"], "combined.h5ad", join="outer")
 
 # Load result in backed mode
-adata = ad.read_h5ad('combined.h5ad', backed='r')
+adata = ad.read_h5ad("combined.h5ad", backed="r")
 ```
 
 ## Common Concatenation Patterns
@@ -319,9 +304,9 @@ adata = ad.read_h5ad('combined.h5ad', backed='r')
 replicates = [adata_run1, adata_run2, adata_run3]
 adata_combined = ad.concat(
     replicates,
-    label='technical_replicate',
-    keys=['rep1', 'rep2', 'rep3'],
-    join='inner'  # Keep only genes measured in all runs
+    label="technical_replicate",
+    keys=["rep1", "rep2", "rep3"],
+    join="inner",  # Keep only genes measured in all runs
 )
 ```
 
@@ -331,9 +316,9 @@ adata_combined = ad.concat(
 batches = [adata_batch1, adata_batch2, adata_batch3]
 adata_combined = ad.concat(
     batches,
-    label='batch',
-    keys=['batch1', 'batch2', 'batch3'],
-    join='outer'  # Keep all genes
+    label="batch",
+    keys=["batch1", "batch2", "batch3"],
+    join="outer",  # Keep all genes
 )
 
 # Later: apply batch correction
@@ -349,7 +334,7 @@ adata_protein = ad.AnnData(X=np.random.rand(100, 50))
 adata_multimodal = ad.concat([adata_rna, adata_protein], axis=1)
 
 # Add labels to distinguish modalities
-adata_multimodal.var['modality'] = ['RNA'] * 2000 + ['protein'] * 50
+adata_multimodal.var["modality"] = ["RNA"] * 2000 + ["protein"] * 50
 ```
 
 ## Best Practices
@@ -379,7 +364,8 @@ Concatenation combines data but doesn't correct for batch effects. Apply batch c
 ```python
 # After concatenation, apply batch correction
 import scanpy as sc
-sc.pp.combat(adata_combined, key='batch')
+
+sc.pp.combat(adata_combined, key="batch")
 ```
 
 6. **Validate results**
@@ -388,7 +374,7 @@ sc.pp.combat(adata_combined, key='batch')
 print(adata_combined.shape)
 
 # Check batch distribution
-print(adata_combined.obs['batch'].value_counts())
+print(adata_combined.obs["batch"].value_counts())
 
 # Verify metadata integrity
 print(adata_combined.var.head())

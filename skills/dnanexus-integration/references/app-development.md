@@ -69,14 +69,13 @@ Python apps use the `@dxpy.entry_point()` decorator to define functions:
 ```python
 import dxpy
 
-@dxpy.entry_point('main')
+
+@dxpy.entry_point("main")
 def main(input1, input2):
     # Process inputs
     # Return outputs
-    return {
-        "output1": result1,
-        "output2": result2
-    }
+    return {"output1": result1, "output2": result2}
+
 
 dxpy.run()
 ```
@@ -86,7 +85,7 @@ dxpy.run()
 **Inputs**: DNAnexus data objects are represented as dicts containing links:
 
 ```python
-@dxpy.entry_point('main')
+@dxpy.entry_point("main")
 def main(reads_file):
     # Convert link to handler
     reads_dxfile = dxpy.DXFile(reads_file)
@@ -100,12 +99,10 @@ def main(reads_file):
 **Outputs**: Return primitive types directly, convert file outputs to links:
 
 ```python
-    # Upload result file
-    output_file = dxpy.upload_local_file("output.fastq")
+# Upload result file
+output_file = dxpy.upload_local_file("output.fastq")
 
-    return {
-        "trimmed_reads": dxpy.dxlink(output_file)
-    }
+return {"trimmed_reads": dxpy.dxlink(output_file)}
 ```
 
 ## Bash App Structure
@@ -168,10 +165,7 @@ Apps can spawn subjobs for parallel execution:
 # Create subjobs
 subjobs = []
 for item in input_list:
-    subjob = dxpy.new_dxjob(
-        fn_input={"input": item},
-        fn_name="process_item"
-    )
+    subjob = dxpy.new_dxjob(fn_input={"input": item}, fn_name="process_item")
     subjobs.append(subjob)
 
 # Collect results

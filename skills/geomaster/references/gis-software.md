@@ -8,8 +8,13 @@ Guide to integrating with major GIS platforms: QGIS, ArcGIS, GRASS GIS, and SAGA
 
 ```python
 # Processing framework script
-from qgis.core import (QgsProject, QgsVectorLayer, QgsRasterLayer,
-                       QgsProcessingAlgorithm, QgsProcessingParameterRasterLayer)
+from qgis.core import (
+    QgsProject,
+    QgsVectorLayer,
+    QgsRasterLayer,
+    QgsProcessingAlgorithm,
+    QgsProcessingParameterRasterLayer,
+)
 
 # Load layers
 vector_layer = QgsVectorLayer("path/to/shapefile.shp", "layer_name", "ogr")
@@ -29,40 +34,46 @@ for feature in vector_layer.getFeatures():
 
 ```python
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (QgsProcessingAlgorithm, QgsProcessingParameterRasterDestination,
-                       QgsProcessingParameterRasterLayer)
+from qgis.core import (
+    QgsProcessingAlgorithm,
+    QgsProcessingParameterRasterDestination,
+    QgsProcessingParameterRasterLayer,
+)
+
 
 class NDVIAlgorithm(QgsProcessingAlgorithm):
-    INPUT = 'INPUT'
-    OUTPUT = 'OUTPUT'
+    INPUT = "INPUT"
+    OUTPUT = "OUTPUT"
 
     def tr(self, string):
-        return QCoreApplication.translate('Processing', string)
+        return QCoreApplication.translate("Processing", string)
 
     def createInstance(self):
         return NDVIAlgorithm()
 
     def name(self):
-        return 'ndvi_calculation'
+        return "ndvi_calculation"
 
     def displayName(self):
-        return self.tr('Calculate NDVI')
+        return self.tr("Calculate NDVI")
 
     def group(self):
-        return self.tr('Raster')
+        return self.tr("Raster")
 
     def groupId(self):
-        return 'raster'
+        return "raster"
 
     def shortHelpString(self):
         return self.tr("Calculate NDVI from Sentinel-2 imagery")
 
     def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterRasterLayer(
-            self.INPUT, self.tr('Input Sentinel-2 Raster')))
+        self.addParameter(
+            QgsProcessingParameterRasterLayer(self.INPUT, self.tr("Input Sentinel-2 Raster"))
+        )
 
-        self.addParameter(QgsProcessingParameterRasterDestination(
-            self.OUTPUT, self.tr('Output NDVI')))
+        self.addParameter(
+            QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr("Output NDVI"))
+        )
 
     def processAlgorithm(self, parameters, context, feedback):
         raster = self.parameterAsRasterLayer(parameters, self.INPUT, context)
@@ -79,12 +90,15 @@ class NDVIAlgorithm(QgsProcessingAlgorithm):
 # __init__.py
 def classFactory(iface):
     from .my_plugin import MyPlugin
+
     return MyPlugin(iface)
+
 
 # my_plugin.py
 from qgis.PyQt.QtCore import QSettings
 from qgis.PyQt.QtWidgets import QAction
 from qgis.core import QgsProject
+
 
 class MyPlugin:
     def __init__(self, iface):
@@ -178,13 +192,16 @@ stream_raster = StreamOrder(stream, flow_dir)
 arcpy.Buffer_analysis("roads.shp", "roads_buffer.shp", "100 meters")
 
 # Spatial join
-arcpy.SpatialJoin_analysis("points.shp", "zones.shp", "points_joined.shp",
-                           join_operation="JOIN_ONE_TO_ONE",
-                           match_option="HAVE_THEIR_CENTER_IN")
+arcpy.SpatialJoin_analysis(
+    "points.shp",
+    "zones.shp",
+    "points_joined.shp",
+    join_operation="JOIN_ONE_TO_ONE",
+    match_option="HAVE_THEIR_CENTER_IN",
+)
 
 # Dissolve
-arcpy.Dissolve_management("parcels.shp", "parcels_dissolved.shp",
-                          dissolve_field="OWNER_ID")
+arcpy.Dissolve_management("parcels.shp", "parcels_dissolved.shp", dissolve_field="OWNER_ID")
 
 # Intersect
 arcpy.Intersect_analysis(["layer1.shp", "layer2.shp"], "intersection.shp")
@@ -193,8 +210,7 @@ arcpy.Intersect_analysis(["layer1.shp", "layer2.shp"], "intersection.shp")
 arcpy.Clip_analysis("input.shp", "clip_boundary.shp", "output.shp")
 
 # Select by location
-arcpy.SelectLayerByLocation_management("points_layer", "HAVE_THEIR_CENTER_IN",
-                                      "polygon_layer")
+arcpy.SelectLayerByLocation_management("points_layer", "HAVE_THEIR_CENTER_IN", "polygon_layer")
 
 # Feature to raster
 arcpy.FeatureToRaster_conversion("landuse.shp", "LU_CODE", "landuse.tif", 10)
@@ -219,14 +235,13 @@ layer = m.listLayers("Parcels")[0]
 sdf = pd.DataFrame.spatial.from_layer(layer)
 
 # Plot
-sdf.plot(column='VALUE', cmap='YlOrRd', legend=True)
+sdf.plot(column="VALUE", cmap="YlOrRd", legend=True)
 plt.show()
 
 # Geocode addresses
 locator = "C:/data/locators/composite.locator"
 results = arcpy.geocoding.GeocodeAddresses(
-    "addresses.csv", locator, "Address Address",
-    None, "geocoded_results.gdb"
+    "addresses.csv", locator, "Address Address", None, "geocoded_results.gdb"
 )
 ```
 
@@ -239,34 +254,33 @@ import grass.script as gscript
 import grass.script.array as garray
 
 # Initialize GRASS session
-gscript.run_command('g.gisenv', set='GISDBASE=/grassdata')
-gscript.run_command('g.gisenv', set='LOCATION_NAME=nc_spm_08')
-gscript.run_command('g.gisenv', set='MAPSET=user1')
+gscript.run_command("g.gisenv", set="GISDBASE=/grassdata")
+gscript.run_command("g.gisenv", set="LOCATION_NAME=nc_spm_08")
+gscript.run_command("g.gisenv", set="MAPSET=user1")
 
 # Import raster
-gscript.run_command('r.in.gdal', input='elevation.tif', output='elevation')
+gscript.run_command("r.in.gdal", input="elevation.tif", output="elevation")
 
 # Import vector
-gscript.run_command('v.in.ogr', input='roads.shp', output='roads')
+gscript.run_command("v.in.ogr", input="roads.shp", output="roads")
 
 # Get raster info
-info = gscript.raster_info('elevation')
+info = gscript.raster_info("elevation")
 print(info)
 
 # Slope analysis
-gscript.run_command('r.slope.aspect', elevation='elevation',
-                    slope='slope', aspect='aspect')
+gscript.run_command("r.slope.aspect", elevation="elevation", slope="slope", aspect="aspect")
 
 # Buffer
-gscript.run_command('v.buffer', input='roads', output='roads_buffer',
-                    distance=100)
+gscript.run_command("v.buffer", input="roads", output="roads_buffer", distance=100)
 
 # Overlay
-gscript.run_command('v.overlay', ainput='zones', binput='roads',
-                    operator='and', output='zones_roads')
+gscript.run_command(
+    "v.overlay", ainput="zones", binput="roads", operator="and", output="zones_roads"
+)
 
 # Calculate statistics
-stats = gscript.parse_command('r.univar', map='elevation', flags='g')
+stats = gscript.parse_command("r.univar", map="elevation", flags="g")
 ```
 
 ## SAGA GIS
@@ -280,44 +294,56 @@ import os
 # SAGA path
 saga_cmd = "/usr/local/saga/saga_cmd"
 
+
 # Grid Calculus
 def saga_grid_calculus(input1, input2, output, formula):
     cmd = [
-        saga_cmd, "grid_calculus", "GridCalculator",
+        saga_cmd,
+        "grid_calculus",
+        "GridCalculator",
         f"-GRIDS={input1};{input2}",
         f"-RESULT={output}",
-        f"-FORMULA={formula}"
+        f"-FORMULA={formula}",
     ]
     subprocess.run(cmd)
+
 
 # Slope analysis
 def saga_slope(dem, output_slope):
     cmd = [
-        saga_cmd, "ta_morphometry", "SlopeAspectCurvature",
+        saga_cmd,
+        "ta_morphometry",
+        "SlopeAspectCurvature",
         f"-ELEVATION={dem}",
-        f"-SLOPE={output_slope}"
+        f"-SLOPE={output_slope}",
     ]
     subprocess.run(cmd)
+
 
 # Morphometric features
 def saga_morphometry(dem):
     cmd = [
-        saga_cmd, "ta_morphometry", "MorphometricFeatures",
+        saga_cmd,
+        "ta_morphometry",
+        "MorphometricFeatures",
         f"-DEM={dem}",
         f"-SLOPE=slope.sgrd",
         f"-ASPECT=aspect.sgrd",
-        f"-CURVATURE=curvature.sgrd"
+        f"-CURVATURE=curvature.sgrd",
     ]
     subprocess.run(cmd)
+
 
 # Channel network
 def saga_channels(dem, threshold=1000):
     cmd = [
-        saga_cmd, "ta_channels", "ChannelNetworkAndDrainageBasins",
+        saga_cmd,
+        "ta_channels",
+        "ChannelNetworkAndDrainageBasins",
         f"-ELEVATION={dem}",
         f"-CHANNELS=channels.shp",
         f"-BASINS=basins.shp",
-        f"-THRESHOLD={threshold}"
+        f"-THRESHOLD={threshold}",
     ]
     subprocess.run(cmd)
 ```
@@ -330,17 +356,17 @@ def saga_channels(dem, threshold=1000):
 import geopandas as gpd
 
 # Read data processed in QGIS
-gdf = gpd.read_file('qgis_output.geojson')
+gdf = gpd.read_file("qgis_output.geojson")
 
 # Ensure CRS
-gdf = gdf.to_crs('EPSG:32633')
+gdf = gdf.to_crs("EPSG:32633")
 
 # Export for ArcGIS (File Geodatabase)
-gdf.to_file('arcgis_input.gpkg', driver='GPKG')
+gdf.to_file("arcgis_input.gpkg", driver="GPKG")
 # ArcGIS can read GPKG directly
 
 # Or export to shapefile
-gdf.to_file('arcgis_input.shp')
+gdf.to_file("arcgis_input.shp")
 ```
 
 ### Batch Processing
@@ -350,20 +376,20 @@ import geopandas as gpd
 from pathlib import Path
 
 # Process multiple files
-input_dir = Path('input')
-output_dir = Path('output')
+input_dir = Path("input")
+output_dir = Path("output")
 
-for shp in input_dir.glob('*.shp'):
+for shp in input_dir.glob("*.shp"):
     gdf = gpd.read_file(shp)
 
     # Process
-    gdf['area'] = gdf.geometry.area
-    gdf['buffered'] = gdf.geometry.buffer(100)
+    gdf["area"] = gdf.geometry.area
+    gdf["buffered"] = gdf.geometry.buffer(100)
 
     # Export for various platforms
     basename = shp.stem
-    gdf.to_file(output_dir / f'{basename}_qgis.geojson')
-    gdf.to_file(output_dir / f'{basename}_arcgis.shp')
+    gdf.to_file(output_dir / f"{basename}_qgis.geojson")
+    gdf.to_file(output_dir / f"{basename}_arcgis.shp")
 ```
 
 For more GIS-specific examples, see [code-examples.md](code-examples.md).

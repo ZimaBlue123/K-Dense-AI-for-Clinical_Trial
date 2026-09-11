@@ -40,10 +40,9 @@ import pandas as pd
 
 BASE = "https://data.financialresearch.gov/hf/v1"
 
-resp = requests.get(f"{BASE}/series/full", params={
-    "mnemonic": "FPF-ALLQHF_NAV_SUM",
-    "start_date": "2018-01-01"
-})
+resp = requests.get(
+    f"{BASE}/series/full", params={"mnemonic": "FPF-ALLQHF_NAV_SUM", "start_date": "2018-01-01"}
+)
 result = resp.json()
 mnemonic = "FPF-ALLQHF_NAV_SUM"
 
@@ -81,11 +80,14 @@ Returns data + metadata for multiple series in one request. Response is keyed by
 
 ```python
 # Fetch multiple leverage series at once
-resp = requests.get(f"{BASE}/series/multifull", params={
-    "mnemonics": "FPF-ALLQHF_LEVERAGERATIO_GAVWMEAN,FPF-STRATEGY_EQUITY_LEVERAGERATIO_GAVWMEAN,FPF-STRATEGY_CREDIT_LEVERAGERATIO_GAVWMEAN",
-    "start_date": "2015-01-01",
-    "remove_nulls": "true"
-})
+resp = requests.get(
+    f"{BASE}/series/multifull",
+    params={
+        "mnemonics": "FPF-ALLQHF_LEVERAGERATIO_GAVWMEAN,FPF-STRATEGY_EQUITY_LEVERAGERATIO_GAVWMEAN,FPF-STRATEGY_CREDIT_LEVERAGERATIO_GAVWMEAN",
+        "start_date": "2015-01-01",
+        "remove_nulls": "true",
+    },
+)
 results = resp.json()
 
 # Build a combined DataFrame
@@ -133,28 +135,25 @@ datasets = resp.json()
 # {"ficc": {"long_name": "...", "short_name": "..."}, "fpf": {...}, ...}
 
 # Download full FPF dataset (recent data only)
-resp = requests.get(f"{BASE}/series/dataset", params={
-    "dataset": "fpf",
-    "start_date": "2020-01-01"
-})
+resp = requests.get(f"{BASE}/series/dataset", params={"dataset": "fpf", "start_date": "2020-01-01"})
 fpf_data = resp.json()
 # fpf_data["short_name"], fpf_data["long_name"]
 # fpf_data["timeseries"]["FPF-ALLQHF_NAV_SUM"]["timeseries"]["aggregation"]
 
 # Annual data with custom periodicity
-resp = requests.get(f"{BASE}/series/dataset", params={
-    "dataset": "fpf",
-    "start_date": "2015-01-01",
-    "end_date": "2024-12-31",
-    "periodicity": "A",
-    "how": "last"
-})
+resp = requests.get(
+    f"{BASE}/series/dataset",
+    params={
+        "dataset": "fpf",
+        "start_date": "2015-01-01",
+        "end_date": "2024-12-31",
+        "periodicity": "A",
+        "how": "last",
+    },
+)
 
 # Only final vintage
-resp = requests.get(f"{BASE}/series/dataset", params={
-    "dataset": "ficc",
-    "vintage": "f"
-})
+resp = requests.get(f"{BASE}/series/dataset", params={"dataset": "ficc", "vintage": "f"})
 ```
 
 ---
@@ -189,6 +188,7 @@ Returns a **CSV file** with all series data for a given category.
 resp = requests.get(f"{BASE}/categories", params={"category": "leverage"})
 # Response is CSV text
 import io
+
 df = pd.read_csv(io.StringIO(resp.text))
 
 # Also accessible via direct URL:

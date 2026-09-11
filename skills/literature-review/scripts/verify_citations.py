@@ -14,9 +14,7 @@ import requests
 class CitationVerifier:
     def __init__(self):
         self.session = requests.Session()
-        self.session.headers.update(
-            {"User-Agent": "CitationVerifier/1.0 (Literature Review Tool)"}
-        )
+        self.session.headers.update({"User-Agent": "CitationVerifier/1.0 (Literature Review Tool)"})
 
     def extract_dois(self, text: str) -> list[str]:
         """Extract all DOIs from text."""

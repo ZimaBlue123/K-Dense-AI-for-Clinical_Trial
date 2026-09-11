@@ -34,11 +34,11 @@ The central data structure representing a protein with optional sequence, struct
 from esm.sdk.api import ESMProtein
 
 protein = ESMProtein(
-    sequence="MPRTKEINDAGLIVHSP",           # Amino acid sequence (optional)
-    coordinates=coordinates_array,          # 3D structure (optional)
-    function_annotations=[...],             # Function labels (optional)
-    secondary_structure="HHHEEEECCC",       # SS annotations (optional)
-    sasa=sasa_array                        # Solvent accessibility (optional)
+    sequence="MPRTKEINDAGLIVHSP",  # Amino acid sequence (optional)
+    coordinates=coordinates_array,  # 3D structure (optional)
+    function_annotations=[...],  # Function labels (optional)
+    secondary_structure="HHHEEEECCC",  # SS annotations (optional)
+    sasa=sasa_array,  # Solvent accessibility (optional)
 )
 ```
 
@@ -70,7 +70,7 @@ protein = ESMProtein(sequence="_" * 200)
 # Partial structure (some coordinates None)
 protein = ESMProtein(
     sequence="MPRTKEIND",
-    coordinates=partial_coords  # Some positions can be None
+    coordinates=partial_coords,  # Some positions can be None
 )
 ```
 
@@ -84,11 +84,11 @@ Controls generation behavior and parameters.
 from esm.sdk.api import GenerationConfig
 
 config = GenerationConfig(
-    track="sequence",              # Track to generate: "sequence", "structure", or "function"
-    num_steps=8,                  # Number of demasking steps
-    temperature=0.7,              # Sampling temperature (0.0-1.0)
-    top_p=None,                   # Nucleus sampling threshold
-    condition_on_coordinates_only=False  # For structure conditioning
+    track="sequence",  # Track to generate: "sequence", "structure", or "function"
+    num_steps=8,  # Number of demasking steps
+    temperature=0.7,  # Sampling temperature (0.0-1.0)
+    top_p=None,  # Nucleus sampling threshold
+    condition_on_coordinates_only=False,  # For structure conditioning
 )
 ```
 
@@ -143,8 +143,7 @@ protein_output = model.generate(protein_input, config)
 
 # With explicit track specification
 protein_output = model.generate(
-    protein_input,
-    GenerationConfig(track="sequence", num_steps=16, temperature=0.6)
+    protein_input, GenerationConfig(track="sequence", num_steps=16, temperature=0.6)
 )
 ```
 
@@ -205,10 +204,7 @@ target.sequence = None
 
 # Generate sequence that folds to this structure
 config = GenerationConfig(
-    track="sequence",
-    num_steps=50,
-    temperature=0.7,
-    condition_on_coordinates_only=True
+    track="sequence", num_steps=50, temperature=0.7, condition_on_coordinates_only=True
 )
 designed = model.generate(target, config)
 
@@ -225,13 +221,7 @@ from esm.sdk.api import FunctionAnnotation
 # Specify desired function
 protein = ESMProtein(
     sequence="_" * 150,
-    function_annotations=[
-        FunctionAnnotation(
-            label="enzymatic_activity",
-            start=30,
-            end=90
-        )
-    ]
+    function_annotations=[FunctionAnnotation(label="enzymatic_activity", start=30, end=90)],
 )
 
 # Generate sequence with this function
@@ -248,22 +238,13 @@ Iteratively generate across multiple tracks:
 protein = ESMProtein(sequence="MPRT" + "_" * 100)
 
 # Step 1: Complete sequence
-protein = model.generate(
-    protein,
-    GenerationConfig(track="sequence", num_steps=50, temperature=0.6)
-)
+protein = model.generate(protein, GenerationConfig(track="sequence", num_steps=50, temperature=0.6))
 
 # Step 2: Predict structure for completed sequence
-protein = model.generate(
-    protein,
-    GenerationConfig(track="structure", num_steps=50)
-)
+protein = model.generate(protein, GenerationConfig(track="structure", num_steps=50))
 
 # Step 3: Predict function
-protein = model.generate(
-    protein,
-    GenerationConfig(track="function", num_steps=20)
-)
+protein = model.generate(protein, GenerationConfig(track="function", num_steps=20))
 
 print(f"Final sequence: {protein.sequence}")
 print(f"Functions: {protein.function_annotations}")
@@ -284,14 +265,13 @@ for i in range(10):
     seq_list = list(base_sequence)
     mask_indices = np.random.choice(len(seq_list), size=5, replace=False)
     for idx in mask_indices:
-        seq_list[idx] = '_'
+        seq_list[idx] = "_"
 
-    protein = ESMProtein(sequence=''.join(seq_list))
+    protein = ESMProtein(sequence="".join(seq_list))
 
     # Generate variant
     variant = model.generate(
-        protein,
-        GenerationConfig(track="sequence", num_steps=8, temperature=0.8)
+        protein, GenerationConfig(track="sequence", num_steps=8, temperature=0.8)
     )
     variants.append(variant.sequence)
 
@@ -311,21 +291,14 @@ def generate_with_temperature_schedule(model, protein, temperatures):
     steps_per_temp = 10
 
     for temp in temperatures:
-        config = GenerationConfig(
-            track="sequence",
-            num_steps=steps_per_temp,
-            temperature=temp
-        )
+        config = GenerationConfig(track="sequence", num_steps=steps_per_temp, temperature=temp)
         current = model.generate(current, config)
 
     return current
 
+
 # Example: Start diverse, end deterministic
-result = generate_with_temperature_schedule(
-    model,
-    protein,
-    temperatures=[1.0, 0.8, 0.6, 0.4, 0.2]
-)
+result = generate_with_temperature_schedule(model, protein, temperatures=[1.0, 0.8, 0.6, 0.4, 0.2])
 ```
 
 ### Constrained Generation
@@ -336,10 +309,11 @@ Preserve specific regions during generation:
 # Keep active site residues fixed
 def mask_except_active_site(sequence, active_site_positions):
     """Mask everything except specified positions."""
-    seq_list = ['_'] * len(sequence)
+    seq_list = ["_"] * len(sequence)
     for pos in active_site_positions:
         seq_list[pos] = sequence[pos]
-    return ''.join(seq_list)
+    return "".join(seq_list)
+
 
 # Define active site
 active_site = [23, 24, 25, 45, 46, 89]
@@ -355,16 +329,10 @@ Use secondary structure information in generation:
 
 ```python
 # Define secondary structure (H=helix, E=sheet, C=coil)
-protein = ESMProtein(
-    sequence="_" * 80,
-    secondary_structure="CCHHHHHHHEEEEECCCHHHHHHCC" + "C" * 55
-)
+protein = ESMProtein(sequence="_" * 80, secondary_structure="CCHHHHHHHEEEEECCCHHHHHHCC" + "C" * 55)
 
 # Generate sequence with this structure
-result = model.generate(
-    protein,
-    GenerationConfig(track="sequence", num_steps=40, temperature=0.6)
-)
+result = model.generate(protein, GenerationConfig(track="sequence", num_steps=40, temperature=0.6))
 ```
 
 ## Performance Optimization
@@ -382,10 +350,10 @@ torch.cuda.empty_cache()
 # Use half precision for memory efficiency
 model = ESM3.from_pretrained("esm3-sm-open-v1").to("cuda").half()
 
+
 # Process in chunks for very long sequences
 def chunk_generate(model, long_sequence, chunk_size=500):
-    chunks = [long_sequence[i:i+chunk_size]
-              for i in range(0, len(long_sequence), chunk_size)]
+    chunks = [long_sequence[i : i + chunk_size] for i in range(0, len(long_sequence), chunk_size)]
     results = []
 
     for chunk in chunks:
@@ -393,7 +361,7 @@ def chunk_generate(model, long_sequence, chunk_size=500):
         result = model.generate(protein, GenerationConfig(track="sequence"))
         results.append(result.sequence)
 
-    return ''.join(results)
+    return "".join(results)
 ```
 
 ### Batch Processing Tips

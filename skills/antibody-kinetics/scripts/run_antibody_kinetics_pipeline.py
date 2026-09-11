@@ -344,20 +344,14 @@ def main() -> int:
     )
     ap.add_argument("--outdir", required=True, help="输出目录（建议用 output/ 下）。")
 
-    ap.add_argument(
-        "--usubjid-col", default="USUBJID", help="受试者ID列名（默认 USUBJID）。"
-    )
-    ap.add_argument(
-        "--group-col", default="Group", help="分组/程序列名（默认 Group）。"
-    )
+    ap.add_argument("--usubjid-col", default="USUBJID", help="受试者ID列名（默认 USUBJID）。")
+    ap.add_argument("--group-col", default="Group", help="分组/程序列名（默认 Group）。")
     ap.add_argument(
         "--t-post-col",
         default="t_post",
         help="t_post（末免后/月数对齐）列名（默认 t_post）。",
     )
-    ap.add_argument(
-        "--titer-col", default="TITER", help="抗体滴度/浓度列名（默认 TITER）。"
-    )
+    ap.add_argument("--titer-col", default="TITER", help="抗体滴度/浓度列名（默认 TITER）。")
 
     ap.add_argument(
         "--log-base",
@@ -365,9 +359,7 @@ def main() -> int:
         choices=["e", "10"],
         help="对数底数：e=自然对数，10=以10为底（b不变）。",
     )
-    ap.add_argument(
-        "--alpha", type=float, default=0.05, help="置信水平：alpha=0.05 对应 95%% CI。"
-    )
+    ap.add_argument("--alpha", type=float, default=0.05, help="置信水平：alpha=0.05 对应 95%% CI。")
     ap.add_argument("--reml", action="store_true", help="使用 REML（默认 False）。")
 
     ap.add_argument(
@@ -434,9 +426,7 @@ def main() -> int:
     covars = [c.strip() for c in covars]
     for c in covars:
         if c not in df.columns:
-            raise ValueError(
-                f"--covars 中指定列不存在：{c}. 实际列: {list(df.columns)}"
-            )
+            raise ValueError(f"--covars 中指定列不存在：{c}. 实际列: {list(df.columns)}")
 
     # 协变量用于预测时的取值
     covar_values: dict[str, float] = {}
@@ -462,9 +452,7 @@ def main() -> int:
 
     exog_names = list(result.model.exog_names)
     groups = sorted(df["Group"].astype(str).unique().tolist())
-    key_t_post = [
-        float(x.strip()) for x in str(args.key_t_post).split(",") if x.strip()
-    ]
+    key_t_post = [float(x.strip()) for x in str(args.key_t_post).split(",") if x.strip()]
     t_grid = np.linspace(1.0, float(args.target_t_post), int(args.grid_n))
     if key_t_post:
         t_grid = np.unique(np.concatenate([t_grid, np.array(key_t_post, dtype=float)]))
@@ -602,9 +590,7 @@ def main() -> int:
                 label=f"{g} observed (mean)",
             )
 
-            sub_pred = pred_df[pred_df["Group"].astype(str) == str(g)].sort_values(
-                "t_post"
-            )
+            sub_pred = pred_df[pred_df["Group"].astype(str) == str(g)].sort_values("t_post")
             ax.plot(
                 sub_pred["t_post"],
                 sub_pred["titer_mean"],
@@ -631,9 +617,7 @@ def main() -> int:
         ax.set_yscale("log")
         ax.set_xlabel("t_post (months; aligned)")
         ax.set_ylabel("Titer (log scale)")
-        ax.set_title(
-            "Antibody persistence projection (MixedLM; fixed-effect marginal mean)"
-        )
+        ax.set_title("Antibody persistence projection (MixedLM; fixed-effect marginal mean)")
         ax.legend(loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
         fig.tight_layout()
         fig.savefig(plot_dir / "persistence_projection.png", bbox_inches="tight")

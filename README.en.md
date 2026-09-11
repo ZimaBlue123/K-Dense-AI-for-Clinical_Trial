@@ -199,12 +199,7 @@ Run EDA on <path/to/data>: identify format, columns/dimensions, missingness/outl
 ```python
 from scripts.assumption_checks import comprehensive_assumption_check
 
-results = comprehensive_assumption_check(
-    data=df,
-    value_col="score",
-    group_col="group",
-    alpha=0.05
-)
+results = comprehensive_assumption_check(data=df, value_col="score", group_col="group", alpha=0.05)
 ```
 
 Prompt template:
@@ -231,6 +226,7 @@ Perform survival analysis on <path/to.csv> with time=<time_col> and event=<event
 
 ```python
 import requests
+
 url = "https://clinicaltrials.gov/api/v2/studies"
 ```
 
@@ -244,6 +240,7 @@ Search ClinicalTrials.gov with condition=<disease>, intervention=<drug/therapy>,
 
 ```python
 import shap
+
 explainer = shap.TreeExplainer(model)
 ```
 

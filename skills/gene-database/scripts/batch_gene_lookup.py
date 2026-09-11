@@ -137,9 +137,7 @@ def batch_esummary(
     return all_results
 
 
-def batch_lookup_by_ids(
-    gene_ids: list[str], api_key: str | None = None
-) -> list[dict[str, Any]]:
+def batch_lookup_by_ids(gene_ids: list[str], api_key: str | None = None) -> list[dict[str, Any]]:
     """
     Lookup genes by IDs and return structured data.
 
@@ -246,15 +244,11 @@ Examples:
     )
 
     parser.add_argument("--ids", "-i", help="Comma-separated Gene IDs")
-    parser.add_argument(
-        "--file", "-f", help="File containing gene symbols (one per line)"
-    )
+    parser.add_argument("--file", "-f", help="File containing gene symbols (one per line)")
     parser.add_argument("--organism", "-o", help="Organism name (required with --file)")
     parser.add_argument("--output", "-O", help="Output file path (JSON format)")
     parser.add_argument("--api-key", "-k", help="NCBI API key")
-    parser.add_argument(
-        "--pretty", "-p", action="store_true", help="Pretty-print JSON output"
-    )
+    parser.add_argument("--pretty", "-p", action="store_true", help="Pretty-print JSON output")
 
     args = parser.parse_args()
 
@@ -270,9 +264,7 @@ Examples:
         results = batch_lookup_by_ids(gene_ids, api_key=args.api_key)
     else:
         gene_symbols = read_gene_list(args.file)
-        results = batch_lookup_by_symbols(
-            gene_symbols, args.organism, api_key=args.api_key
-        )
+        results = batch_lookup_by_symbols(gene_symbols, args.organism, api_key=args.api_key)
 
     # Output results
     indent = 2 if args.pretty else None

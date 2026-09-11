@@ -40,12 +40,7 @@ genes_to_keep = counts_df.columns[counts_df.sum(axis=0) >= 10]
 counts_df = counts_df[genes_to_keep]
 
 # 3. Initialize and fit DESeq2
-dds = DeseqDataSet(
-    counts=counts_df,
-    metadata=metadata,
-    design="~condition",
-    refit_cooks=True
-)
+dds = DeseqDataSet(counts=counts_df, metadata=metadata, design="~condition", refit_cooks=True)
 dds.deseq2()
 
 # 4. Perform statistical testing
@@ -78,6 +73,7 @@ counts_df = pd.read_csv("counts.tsv", sep="\t", index_col=0).T
 
 # From AnnData
 import anndata as ad
+
 adata = ad.read_h5ad("data.h5ad")
 counts_df = pd.DataFrame(adata.X, index=adata.obs_names, columns=adata.var_names)
 metadata = adata.obs
@@ -108,7 +104,7 @@ design = "~condition"  # Simple two-group comparison
 **Multi-factor designs:**
 ```python
 design = "~batch + condition"  # Control for batch effects
-design = "~age + condition"     # Include continuous covariate
+design = "~age + condition"  # Include continuous covariate
 design = "~group + condition + group:condition"  # Interaction effects
 ```
 
@@ -130,7 +126,7 @@ dds = DeseqDataSet(
     metadata=metadata,
     design="~condition",
     refit_cooks=True,  # Refit after removing outliers
-    n_cpus=1           # Parallel processing (adjust as needed)
+    n_cpus=1,  # Parallel processing (adjust as needed)
 )
 
 # Run the complete DESeq2 pipeline
@@ -157,9 +153,9 @@ from pydeseq2.ds import DeseqStats
 ds = DeseqStats(
     dds,
     contrast=["condition", "treated", "control"],  # Test treated vs control
-    alpha=0.05,                # Significance threshold
-    cooks_filter=True,         # Filter outliers
-    independent_filter=True    # Filter low-power tests
+    alpha=0.05,  # Significance threshold
+    cooks_filter=True,  # Filter outliers
+    independent_filter=True,  # Filter low-power tests
 )
 
 ds.summary()
@@ -323,10 +319,7 @@ Refer users to `scripts/run_deseq2_analysis.py` when they need a standalone anal
 significant = ds.results_df[ds.results_df.padj < 0.05]
 
 # Filter by both significance and effect size
-sig_and_large = ds.results_df[
-    (ds.results_df.padj < 0.05) &
-    (abs(ds.results_df.log2FoldChange) > 1)
-]
+sig_and_large = ds.results_df[(ds.results_df.padj < 0.05) & (abs(ds.results_df.log2FoldChange) > 1)]
 
 # Separate up- and down-regulated
 upregulated = significant[significant.log2FoldChange > 0]
@@ -360,6 +353,7 @@ print("Size factors:", dds.obsm["size_factors"])
 
 # Examine dispersion estimates
 import matplotlib.pyplot as plt
+
 plt.hist(dds.varm["dispersions"], bins=50)
 plt.xlabel("Dispersion")
 plt.ylabel("Frequency")
@@ -393,15 +387,21 @@ significant = results.padj < 0.05
 plt.scatter(
     results.loc[~significant, "log2FoldChange"],
     results.loc[~significant, "-log10(padj)"],
-    alpha=0.3, s=10, c='gray', label='Not significant'
+    alpha=0.3,
+    s=10,
+    c="gray",
+    label="Not significant",
 )
 plt.scatter(
     results.loc[significant, "log2FoldChange"],
     results.loc[significant, "-log10(padj)"],
-    alpha=0.6, s=10, c='red', label='padj < 0.05'
+    alpha=0.6,
+    s=10,
+    c="red",
+    label="padj < 0.05",
 )
 
-plt.axhline(-np.log10(0.05), color='blue', linestyle='--', alpha=0.5)
+plt.axhline(-np.log10(0.05), color="blue", linestyle="--", alpha=0.5)
 plt.xlabel("Log2 Fold Change")
 plt.ylabel("-Log10(Adjusted P-value)")
 plt.title("Volcano Plot")
@@ -419,15 +419,19 @@ plt.figure(figsize=(10, 6))
 plt.scatter(
     np.log10(results.loc[~significant, "baseMean"] + 1),
     results.loc[~significant, "log2FoldChange"],
-    alpha=0.3, s=10, c='gray'
+    alpha=0.3,
+    s=10,
+    c="gray",
 )
 plt.scatter(
     np.log10(results.loc[significant, "baseMean"] + 1),
     results.loc[significant, "log2FoldChange"],
-    alpha=0.6, s=10, c='red'
+    alpha=0.6,
+    s=10,
+    c="red",
 )
 
-plt.axhline(0, color='blue', linestyle='--', alpha=0.5)
+plt.axhline(0, color="blue", linestyle="--", alpha=0.5)
 plt.xlabel("Log10(Base Mean + 1)")
 plt.ylabel("Log2 Fold Change")
 plt.title("MA Plot")

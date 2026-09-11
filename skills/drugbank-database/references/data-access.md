@@ -53,7 +53,7 @@ pip install lxml  # For XML parsing optimization
 from drugbank_downloader import download_drugbank
 
 # Download specific version
-path = download_drugbank(version='5.1.7')
+path = download_drugbank(version="5.1.7")
 # Returns: ~/.data/drugbank/5.1.7/full database.xml.zip
 
 # Download latest version (requires bioversions)
@@ -63,13 +63,14 @@ path = download_drugbank()
 ### Custom Storage Location
 ```python
 # Custom prefix for storage
-path = download_drugbank(prefix=['custom', 'location', 'drugbank'])
+path = download_drugbank(prefix=["custom", "location", "drugbank"])
 # Stores at: ~/.data/custom/location/drugbank/[version]/
 ```
 
 ### Verify Download
 ```python
 import os
+
 if os.path.exists(path):
     size_mb = os.path.getsize(path) / (1024 * 1024)
     print(f"Downloaded successfully: {size_mb:.1f} MB")
@@ -119,11 +120,12 @@ drugbank_downloader
 ### Version Management
 ```python
 # Specify exact version for reproducibility
-path = download_drugbank(version='5.1.10')
+path = download_drugbank(version="5.1.10")
 
 # List cached versions
 from pathlib import Path
-drugbank_dir = Path.home() / '.data' / 'drugbank'
+
+drugbank_dir = Path.home() / ".data" / "drugbank"
 if drugbank_dir.exists():
     versions = [d.name for d in drugbank_dir.iterdir() if d.is_dir()]
     print(f"Cached versions: {versions}")
@@ -177,7 +179,7 @@ from pathlib import Path
 cache_file = Path("drugbank_parsed.pkl")
 
 if cache_file.exists():
-    with open(cache_file, 'rb') as f:
+    with open(cache_file, "rb") as f:
         data = pickle.load(f)
 else:
     # Parse and process
@@ -185,7 +187,7 @@ else:
     data = process_drugbank_data(root)
 
     # Save cache
-    with open(cache_file, 'wb') as f:
+    with open(cache_file, "wb") as f:
         pickle.dump(data, f)
 ```
 
@@ -228,7 +230,7 @@ try:
 except Exception as e:
     print(f"Download failed: {e}")
     # Fallback: specify older stable version
-    path = download_drugbank(version='5.1.7')
+    path = download_drugbank(version="5.1.7")
 ```
 
 ## Best Practices

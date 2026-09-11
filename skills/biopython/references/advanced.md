@@ -273,12 +273,14 @@ from Bio.Cluster import kcluster
 import numpy as np
 
 # Sample data matrix (genes x conditions)
-data = np.array([
-    [1.2, 0.8, 0.5, 1.5],
-    [0.9, 1.1, 0.7, 1.3],
-    [0.2, 0.3, 2.1, 2.5],
-    [0.1, 0.4, 2.3, 2.2],
-])
+data = np.array(
+    [
+        [1.2, 0.8, 0.5, 1.5],
+        [0.9, 1.1, 0.7, 1.3],
+        [0.2, 0.3, 2.1, 2.5],
+        [0.1, 0.4, 2.3, 2.2],
+    ]
+)
 
 # Perform k-means clustering
 clusterid, error, nfound = kcluster(data, nclusters=2)
@@ -311,13 +313,7 @@ for feature in record.features:
     else:
         color = colors.grey
 
-    gd_feature_set.add_feature(
-        feature,
-        color=color,
-        label=True,
-        label_size=6,
-        label_angle=45
-    )
+    gd_feature_set.add_feature(feature, color=color, label=True, label_size=6, label_angle=45)
 
 # Draw and save
 gd_diagram.draw(format="linear", pagesize="A4", fragments=1)
@@ -374,7 +370,7 @@ feature = SeqFeature(
     location=FeatureLocation(start=10, end=50),
     type="CDS",
     strand=1,
-    qualifiers={"gene": ["ABC1"], "product": ["ABC protein"]}
+    qualifiers={"gene": ["ABC1"], "product": ["ABC protein"]},
 )
 
 # Add feature to record
@@ -414,11 +410,11 @@ for record in SeqIO.parse("reads.fastq", "fastq"):
     print(f"Quality: {record.letter_annotations['phred_quality']}")
 
     # Calculate average quality
-    avg_quality = sum(record.letter_annotations['phred_quality']) / len(record)
+    avg_quality = sum(record.letter_annotations["phred_quality"]) / len(record)
     print(f"Average quality: {avg_quality:.2f}")
 
     # Filter by quality
-    min_quality = min(record.letter_annotations['phred_quality'])
+    min_quality = min(record.letter_annotations["phred_quality"])
     if min_quality >= 20:
         print("High quality read")
 ```
@@ -444,6 +440,7 @@ for record in SeqIO.parse("reads.fastq", "fastq"):
 from Bio import SeqIO
 from Bio.SeqUtils import gc_fraction
 
+
 def find_orfs(seq, min_length=100):
     """Find all ORFs in sequence."""
     orfs = []
@@ -462,18 +459,21 @@ def find_orfs(seq, min_length=100):
                 if aa_end - aa_start >= min_length // 3:
                     start = frame + aa_start * 3
                     end = frame + aa_end * 3
-                    orfs.append({
-                        'start': start,
-                        'end': end,
-                        'strand': strand,
-                        'frame': frame,
-                        'length': end - start,
-                        'sequence': nuc[start:end]
-                    })
+                    orfs.append(
+                        {
+                            "start": start,
+                            "end": end,
+                            "strand": strand,
+                            "frame": frame,
+                            "length": end - start,
+                            "sequence": nuc[start:end],
+                        }
+                    )
 
                 aa_start = aa_end + 1
 
     return orfs
+
 
 # Use it
 record = SeqIO.read("sequence.fasta", "fasta")
@@ -488,22 +488,23 @@ for orf in orfs:
 from Bio import SeqIO
 from Bio.SeqUtils import CodonUsage
 
+
 def analyze_codon_usage(fasta_file):
     """Analyze codon usage in coding sequences."""
     codon_counts = {}
 
     for record in SeqIO.parse(fasta_file, "fasta"):
         # Ensure sequence is multiple of 3
-        seq = record.seq[:len(record.seq) - len(record.seq) % 3]
+        seq = record.seq[: len(record.seq) - len(record.seq) % 3]
 
         # Count codons
         for i in range(0, len(seq), 3):
-            codon = str(seq[i:i+3])
+            codon = str(seq[i : i + 3])
             codon_counts[codon] = codon_counts.get(codon, 0) + 1
 
     # Calculate frequencies
     total = sum(codon_counts.values())
-    codon_freq = {k: v/total for k, v in codon_counts.items()}
+    codon_freq = {k: v / total for k, v in codon_counts.items()}
 
     return codon_freq
 ```
@@ -517,7 +518,7 @@ def sequence_complexity(seq, k=2):
     from collections import Counter
 
     # Generate k-mers
-    kmers = [str(seq[i:i+k]) for i in range(len(seq) - k + 1)]
+    kmers = [str(seq[i : i + k]) for i in range(len(seq) - k + 1)]
 
     # Count k-mers
     counts = Counter(kmers)
@@ -530,12 +531,14 @@ def sequence_complexity(seq, k=2):
         entropy -= freq * math.log2(freq)
 
     # Normalize by maximum possible entropy
-    max_entropy = math.log2(4 ** k)  # For DNA
+    max_entropy = math.log2(4**k)  # For DNA
 
     return entropy / max_entropy if max_entropy > 0 else 0
 
+
 # Use it
 from Bio.Seq import Seq
+
 seq = Seq("ATCGATCGATCGATCG")
 complexity = sequence_complexity(seq, k=2)
 print(f"Sequence complexity: {complexity:.3f}")
@@ -566,12 +569,14 @@ def extract_promoters(genbank_file, upstream=500):
             if feature.strand == -1:
                 promoter_seq = promoter_seq.reverse_complement()
 
-            promoters.append({
-                'gene': feature.qualifiers.get('gene', ['Unknown'])[0],
-                'sequence': promoter_seq,
-                'start': start,
-                'end': end
-            })
+            promoters.append(
+                {
+                    "gene": feature.qualifiers.get("gene", ["Unknown"])[0],
+                    "sequence": promoter_seq,
+                    "start": start,
+                    "end": end,
+                }
+            )
 
     return promoters
 ```

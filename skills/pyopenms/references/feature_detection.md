@@ -238,6 +238,7 @@ adduct_detector.compute(feature_map, feature_map_out, ms.ConsensusMap())
 ```python
 import pyopenms as ms
 
+
 def feature_detection_workflow(input_files, output_consensus):
     """
     Complete workflow: feature detection and linking across samples.
@@ -298,6 +299,7 @@ def feature_detection_workflow(input_files, output_consensus):
     print(f"Results saved to {output_consensus}")
 
     return consensus_map
+
 
 # Run workflow
 input_files = ["sample1.mzML", "sample2.mzML", "sample3.mzML"]
@@ -401,10 +403,10 @@ df = feature_map.get_df()
 import matplotlib.pyplot as plt
 
 plt.figure(figsize=(10, 6))
-plt.scatter(df['RT'], df['mz'], s=df['intensity']/1000, alpha=0.5)
-plt.xlabel('Retention Time (s)')
-plt.ylabel('m/z')
-plt.title('Feature Map')
-plt.colorbar(label='Intensity (scaled)')
+plt.scatter(df["RT"], df["mz"], s=df["intensity"] / 1000, alpha=0.5)
+plt.xlabel("Retention Time (s)")
+plt.ylabel("m/z")
+plt.title("Feature Map")
+plt.colorbar(label="Intensity (scaled)")
 plt.show()
 ```

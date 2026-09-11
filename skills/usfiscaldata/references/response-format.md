@@ -115,16 +115,17 @@ else:
 import requests
 import pandas as pd
 
+
 def api_to_dataframe(endpoint, params=None):
     """Fetch API data and return a typed DataFrame."""
     base = "https://api.fiscaldata.treasury.gov/services/api/fiscal_service"
     resp = requests.get(f"{base}{endpoint}", params=params)
     resp.raise_for_status()
     result = resp.json()
-    
+
     df = pd.DataFrame(result["data"])
     meta = result["meta"]
-    
+
     # Apply type conversions using metadata
     for col, dtype in meta["dataTypes"].items():
         if col not in df.columns:
@@ -135,13 +136,13 @@ def api_to_dataframe(endpoint, params=None):
             df[col] = pd.to_datetime(df[col].replace("null", None), errors="coerce")
         elif dtype == "INTEGER":
             df[col] = pd.to_numeric(df[col].replace("null", None), errors="coerce").astype("Int64")
-    
+
     return df, meta
+
 
 # Usage
 df, meta = api_to_dataframe(
-    "/v2/accounting/od/debt_to_penny",
-    params={"sort": "-record_date", "page[size]": 30}
+    "/v2/accounting/od/debt_to_penny", params={"sort": "-record_date", "page[size]": 30}
 )
 print(f"Total records available: {meta['total-count']}")
 print(df[["record_date", "tot_pub_debt_out_amt"]].head())
@@ -156,7 +157,7 @@ import io
 
 resp = requests.get(
     "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v2/accounting/od/debt_to_penny",
-    params={"format": "csv", "sort": "-record_date", "page[size]": 100}
+    params={"format": "csv", "sort": "-record_date", "page[size]": 100},
 )
 df = pd.read_csv(io.StringIO(resp.text))
 ```
@@ -170,7 +171,7 @@ import xml.etree.ElementTree as ET
 
 resp = requests.get(
     "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v2/accounting/od/debt_to_penny",
-    params={"format": "xml", "page[size]": 10}
+    params={"format": "xml", "page[size]": 10},
 )
 root = ET.fromstring(resp.text)
 ```

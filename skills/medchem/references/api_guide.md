@@ -447,11 +447,7 @@ Apply constraints to molecules.
 
 **Example:**
 ```python
-constraints = mc.constraints.Constraints(
-    mw_range=(200, 500),
-    logp_range=(-2, 5),
-    tpsa_max=140
-)
+constraints = mc.constraints.Constraints(mw_range=(200, 500), logp_range=(-2, 5), tpsa_max=140)
 results = constraints(mols=mol_list, n_jobs=-1)
 ```
 
@@ -479,6 +475,7 @@ Parse a medchem query string into a Query object.
 **Example Queries:**
 ```python
 "rule_of_five AND NOT common_alerts"
+
 "rule_of_cns AND complexity < 400"
 "mw > 200 AND mw < 500 AND logp < 5"
 "(rule_of_five OR rule_of_oprea) AND NOT pains_filter"
@@ -569,7 +566,8 @@ lilly_results = lilly_filter(mols=mol_list, n_jobs=-1)
 
 # Combine criteria
 passing_mols = [
-    mol for i, mol in enumerate(mol_list)
+    mol
+    for i, mol in enumerate(mol_list)
     if rule_results[i]["passes"]
     and not alert_results[i]["has_alerts"]
     and lilly_results[i]["passes"]

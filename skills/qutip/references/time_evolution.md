@@ -53,20 +53,23 @@ a_t = result.expect[1]  # ⟨a⟩(t)
 
 ```python
 # Method 1: String-based (faster, requires Cython)
-H = [num(N), [destroy(N) + create(N), 'cos(w*t)']]
-args = {'w': 1.0}
+H = [num(N), [destroy(N) + create(N), "cos(w*t)"]]
+args = {"w": 1.0}
 result = sesolve(H, psi0, tlist, args=args)
+
 
 # Method 2: Function-based
 def drive(t, args):
-    return np.exp(-t/args['tau']) * np.sin(args['w'] * t)
+    return np.exp(-t / args["tau"]) * np.sin(args["w"] * t)
+
 
 H = [num(N), [destroy(N) + create(N), drive]]
-args = {'w': 1.0, 'tau': 5.0}
+args = {"w": 1.0, "tau": 5.0}
 result = sesolve(H, psi0, tlist, args=args)
 
 # Method 3: QobjEvo (most flexible)
 from qutip import QobjEvo
+
 H_td = QobjEvo([num(N), [destroy(N) + create(N), drive]], args=args)
 result = sesolve(H_td, psi0, tlist)
 ```
@@ -109,7 +112,7 @@ nth = 0.5  # Thermal photon number
 c_ops = [
     np.sqrt(kappa * (1 + nth)) * destroy(N),  # Thermal decay
     np.sqrt(kappa * nth) * create(N),  # Thermal excitation
-    np.sqrt(gamma) * num(N)  # Pure dephasing
+    np.sqrt(gamma) * num(N),  # Pure dephasing
 ]
 
 result = mesolve(H, psi0, tlist, c_ops)
@@ -120,10 +123,11 @@ result = mesolve(H, psi0, tlist, c_ops)
 ```python
 # Time-dependent decay rate
 def kappa_t(t, args):
-    return args['k0'] * (1 + np.sin(args['w'] * t))
+    return args["k0"] * (1 + np.sin(args["w"] * t))
+
 
 c_ops = [[np.sqrt(1.0) * destroy(N), kappa_t]]
-args = {'k0': 0.1, 'w': 1.0}
+args = {"k0": 0.1, "w": 1.0}
 
 result = mesolve(H, psi0, tlist, c_ops, args=args)
 ```
@@ -193,8 +197,8 @@ For time-periodic Hamiltonians.
 w_d = 1.0  # Drive frequency
 H0 = sigmaz()
 H1 = sigmax()
-H = [H0, [H1, 'cos(w*t)']]
-args = {'w': w_d}
+H = [H0, [H1, "cos(w*t)"]]
+args = {"w": w_d}
 
 # Floquet modes and quasi-energies
 T = 2 * np.pi / w_d  # Period
@@ -218,15 +222,15 @@ result = fmmesolve(H, psi0, tlist, c_ops, e_ops=[num(2)], T=T, args=args)
 sc_ops = [np.sqrt(0.1) * destroy(N)]
 
 # Heterodyne detection
-result = ssesolve(H, psi0, tlist, sc_ops=sc_ops, e_ops=[num(N)],
-                   ntraj=500, noise=1)  # noise=1 for heterodyne
+result = ssesolve(
+    H, psi0, tlist, sc_ops=sc_ops, e_ops=[num(N)], ntraj=500, noise=1
+)  # noise=1 for heterodyne
 ```
 
 ### Stochastic Master Equation (smesolve)
 
 ```python
-result = smesolve(H, psi0, tlist, c_ops=[], sc_ops=sc_ops,
-                   e_ops=[num(N)], ntraj=500)
+result = smesolve(H, psi0, tlist, c_ops=[], sc_ops=sc_ops, e_ops=[num(N)], ntraj=500)
 ```
 
 ## Propagators
@@ -271,7 +275,7 @@ assert (L * operator_to_vector(rho_ss)).norm() < 1e-10
 
 ```python
 # For degenerate steady states
-rho_ss = steadystate(H, c_ops, method='direct')
+rho_ss = steadystate(H, c_ops, method="direct")
 # or 'eigen', 'svd', 'power'
 ```
 
@@ -308,7 +312,7 @@ options = Options()
 options.nsteps = 10000  # Max internal steps
 options.atol = 1e-8  # Absolute tolerance
 options.rtol = 1e-6  # Relative tolerance
-options.method = 'adams'  # or 'bdf' for stiff problems
+options.method = "adams"  # or 'bdf' for stiff problems
 options.store_states = True  # Store all states
 options.store_final_state = True  # Store only final state
 
@@ -330,6 +334,7 @@ result.save("my_simulation.dat")
 
 # Load results
 from qutip import Result
+
 loaded_result = Result.load("my_simulation.dat")
 ```
 

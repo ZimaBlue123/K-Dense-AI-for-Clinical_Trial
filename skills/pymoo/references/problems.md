@@ -80,6 +80,7 @@ Comprehensive reference for benchmark optimization problems in pymoo.
 **Usage:**
 ```python
 from pymoo.problems.multi import ZDT1, ZDT2, ZDT3, ZDT4, ZDT5, ZDT6
+
 problem = ZDT1()  # or ZDT2(), ZDT3(), etc.
 ```
 
@@ -171,6 +172,7 @@ problem = ZDT1()  # or ZDT2(), ZDT3(), etc.
 **Usage:**
 ```python
 from pymoo.problems.many import DTLZ1, DTLZ2
+
 problem = DTLZ1(n_var=7, n_obj=3)  # 7 variables, 3 objectives
 ```
 
@@ -218,21 +220,22 @@ Define custom problems by extending base classes:
 from pymoo.core.problem import ElementwiseProblem
 import numpy as np
 
+
 class MyProblem(ElementwiseProblem):
     def __init__(self):
         super().__init__(
-            n_var=2,           # number of variables
-            n_obj=2,           # number of objectives
-            n_ieq_constr=0,    # inequality constraints
-            n_eq_constr=0,     # equality constraints
-            xl=np.array([0, 0]),   # lower bounds
-            xu=np.array([1, 1])    # upper bounds
+            n_var=2,  # number of variables
+            n_obj=2,  # number of objectives
+            n_ieq_constr=0,  # inequality constraints
+            n_eq_constr=0,  # equality constraints
+            xl=np.array([0, 0]),  # lower bounds
+            xu=np.array([1, 1]),  # upper bounds
         )
 
     def _evaluate(self, x, out, *args, **kwargs):
         # Define objectives
-        f1 = x[0]**2 + x[1]**2
-        f2 = (x[0]-1)**2 + x[1]**2
+        f1 = x[0] ** 2 + x[1] ** 2
+        f2 = (x[0] - 1) ** 2 + x[1] ** 2
 
         out["F"] = [f1, f2]
 

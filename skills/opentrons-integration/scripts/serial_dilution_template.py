@@ -31,9 +31,7 @@ def run(protocol: protocol_api.ProtocolContext):
     # Load labware
     tips = protocol.load_labware("opentrons_flex_96_tiprack_200ul", "D1")
     reservoir = protocol.load_labware("nest_12_reservoir_15ml", "D2", label="Reservoir")
-    plate = protocol.load_labware(
-        "corning_96_wellplate_360ul_flat", "D3", label="Dilution Plate"
-    )
+    plate = protocol.load_labware("corning_96_wellplate_360ul_flat", "D3", label="Dilution Plate")
 
     # Load pipette
     p300 = protocol.load_instrument("p300_single_flex", "left", tip_racks=[tips])
@@ -89,6 +87,4 @@ def run(protocol: protocol_api.ProtocolContext):
         )
 
     protocol.comment("Serial dilution complete!")
-    protocol.comment(
-        f"Created {num_dilutions} dilutions with {dilution_factor}x dilution factor"
-    )
+    protocol.comment(f"Created {num_dilutions} dilutions with {dilution_factor}x dilution factor")

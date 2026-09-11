@@ -28,10 +28,7 @@ client = DataCommonsClient()
 
 # Step 1: Resolve place names to DCIDs
 places = ["California", "Texas", "New York"]
-resolve_response = client.resolve.fetch_dcids_by_name(
-    names=places,
-    entity_type="State"
-)
+resolve_response = client.resolve.fetch_dcids_by_name(names=places, entity_type="State")
 
 # Extract DCIDs
 dcids = []
@@ -42,9 +39,7 @@ for name, result in resolve_response.to_dict().items():
 
 # Step 2: Query population data
 response = client.observation.fetch(
-    variable_dcids=["Count_Person"],
-    entity_dcids=dcids,
-    date="latest"
+    variable_dcids=["Count_Person"], entity_dcids=dcids, date="latest"
 )
 
 # Step 3: Display results
@@ -69,19 +64,19 @@ client = DataCommonsClient()
 response = client.observation.fetch(
     variable_dcids=["UnemploymentRate_Person"],
     entity_dcids=["country/USA"],
-    date="all"  # Get all historical data
+    date="all",  # Get all historical data
 )
 
 # Convert to DataFrame
 df = response.to_observations_as_records()
 
 # Plot
-df = df.sort_values('date')
+df = df.sort_values("date")
 plt.figure(figsize=(12, 6))
-plt.plot(df['date'], df['value'])
-plt.title('US Unemployment Rate Over Time')
-plt.xlabel('Year')
-plt.ylabel('Unemployment Rate (%)')
+plt.plot(df["date"], df["value"])
+plt.title("US Unemployment Rate Over Time")
+plt.xlabel("Year")
+plt.ylabel("Unemployment Rate (%)")
 plt.grid(True)
 plt.show()
 ```
@@ -97,21 +92,21 @@ client = DataCommonsClient()
 response = client.observation.fetch(
     variable_dcids=["Median_Income_Household"],
     entity_expression="geoId/06<-containedInPlace+{typeOf:County}",
-    date="2020"
+    date="2020",
 )
 
 # Convert to DataFrame and sort
 df = response.to_observations_as_records()
 
 # Get county names
-county_dcids = df['entity'].unique().tolist()
+county_dcids = df["entity"].unique().tolist()
 names = client.node.fetch_entity_names(node_dcids=county_dcids)
 
 # Add names to dataframe
-df['name'] = df['entity'].map(names)
+df["name"] = df["entity"].map(names)
 
 # Display top 10 by income
-top_counties = df.nlargest(10, 'value')[['name', 'value']]
+top_counties = df.nlargest(10, "value")[["name", "value"]]
 print("\nTop 10 California Counties by Median Household Income:")
 for idx, row in top_counties.iterrows():
     print(f"{row['name']}: ${row['value']:,.0f}")
@@ -143,27 +138,19 @@ variables = [
     "Count_Person",
     "Median_Income_Household",
     "UnemploymentRate_Person",
-    "Median_Age_Person"
+    "Median_Age_Person",
 ]
 
-response = client.observation.fetch(
-    variable_dcids=variables,
-    entity_dcids=dcids,
-    date="latest"
-)
+response = client.observation.fetch(variable_dcids=variables, entity_dcids=dcids, date="latest")
 
 # Convert to DataFrame
 df = response.to_observations_as_records()
 
 # Add readable names
-df['state'] = df['entity'].map(name_map)
+df["state"] = df["entity"].map(name_map)
 
 # Pivot for comparison
-pivot = df.pivot_table(
-    values='value',
-    index='state',
-    columns='variable'
-)
+pivot = df.pivot_table(values="value", index="state", columns="variable")
 
 print("\nState Comparison:")
 print(pivot.to_string())
@@ -180,28 +167,21 @@ client = DataCommonsClient()
 latitude, longitude = 37.7749, -122.4194  # San Francisco
 
 # Step 1: Resolve coordinates to place
-dcid = client.resolve.fetch_dcid_by_coordinates(
-    latitude=latitude,
-    longitude=longitude
-)
+dcid = client.resolve.fetch_dcid_by_coordinates(latitude=latitude, longitude=longitude)
 
 # Step 2: Get place name
 name = client.node.fetch_entity_names(node_dcids=[dcid])
 print(f"Location: {name[dcid]}")
 
 # Step 3: Check available variables
-available_vars = client.observation.fetch_available_statistical_variables(
-    entity_dcids=[dcid]
-)
+available_vars = client.observation.fetch_available_statistical_variables(entity_dcids=[dcid])
 
 print(f"\nAvailable variables: {len(available_vars[dcid])} found")
 print("First 10:", list(available_vars[dcid])[:10])
 
 # Step 4: Query specific variables
 response = client.observation.fetch(
-    variable_dcids=["Count_Person", "Median_Income_Household"],
-    entity_dcids=[dcid],
-    date="latest"
+    variable_dcids=["Count_Person", "Median_Income_Household"], entity_dcids=[dcid], date="latest"
 )
 
 # Display results
@@ -223,7 +203,7 @@ response = client.observation.fetch(
     variable_dcids=["Count_Person"],
     entity_dcids=["country/USA"],
     date="all",
-    filter_facet_domains=["census.gov"]  # Only US Census data
+    filter_facet_domains=["census.gov"],  # Only US Census data
 )
 
 df = response.to_observations_as_records()
@@ -231,9 +211,7 @@ print(f"Found {len(df)} observations from census.gov")
 
 # Compare with all sources
 response_all = client.observation.fetch(
-    variable_dcids=["Count_Person"],
-    entity_dcids=["country/USA"],
-    date="all"
+    variable_dcids=["Count_Person"], entity_dcids=["country/USA"], date="all"
 )
 
 df_all = response_all.to_observations_as_records()
@@ -251,29 +229,19 @@ client = DataCommonsClient()
 entity = "geoId/06"  # California
 
 # Get outgoing properties
-out_props = client.node.fetch_property_labels(
-    node_dcids=[entity],
-    out=True
-)
+out_props = client.node.fetch_property_labels(node_dcids=[entity], out=True)
 
 print(f"Outgoing properties for California:")
 print(out_props[entity])
 
 # Get incoming properties
-in_props = client.node.fetch_property_labels(
-    node_dcids=[entity],
-    out=False
-)
+in_props = client.node.fetch_property_labels(node_dcids=[entity], out=False)
 
 print(f"\nIncoming properties for California:")
 print(in_props[entity])
 
 # Step 2: Get specific property values
-name_response = client.node.fetch_property_values(
-    node_dcids=[entity],
-    property="name",
-    out=True
-)
+name_response = client.node.fetch_property_values(node_dcids=[entity], property="name", out=True)
 
 print(f"\nName property value:")
 print(name_response.to_dict())
@@ -301,19 +269,10 @@ import pandas as pd
 client = DataCommonsClient()
 
 # List of cities to analyze
-cities = [
-    "San Francisco, CA",
-    "Los Angeles, CA",
-    "San Diego, CA",
-    "Sacramento, CA",
-    "San Jose, CA"
-]
+cities = ["San Francisco, CA", "Los Angeles, CA", "San Diego, CA", "Sacramento, CA", "San Jose, CA"]
 
 # Resolve all cities
-resolve_response = client.resolve.fetch_dcids_by_name(
-    names=cities,
-    entity_type="City"
-)
+resolve_response = client.resolve.fetch_dcids_by_name(names=cities, entity_type="City")
 
 # Build mapping
 city_dcids = []
@@ -325,35 +284,24 @@ for name, result in resolve_response.to_dict().items():
         dcid_to_name[dcid] = name
 
 # Query multiple variables at once
-variables = [
-    "Count_Person",
-    "Median_Income_Household",
-    "UnemploymentRate_Person"
-]
+variables = ["Count_Person", "Median_Income_Household", "UnemploymentRate_Person"]
 
 response = client.observation.fetch(
-    variable_dcids=variables,
-    entity_dcids=city_dcids,
-    date="latest"
+    variable_dcids=variables, entity_dcids=city_dcids, date="latest"
 )
 
 # Process into a comparison table
 df = response.to_observations_as_records()
-df['city'] = df['entity'].map(dcid_to_name)
+df["city"] = df["entity"].map(dcid_to_name)
 
 # Create comparison table
-comparison = df.pivot_table(
-    values='value',
-    index='city',
-    columns='variable',
-    aggfunc='first'
-)
+comparison = df.pivot_table(values="value", index="city", columns="variable", aggfunc="first")
 
 print("\nCalifornia Cities Comparison:")
 print(comparison.to_string())
 
 # Export to CSV
-comparison.to_csv('ca_cities_comparison.csv')
+comparison.to_csv("ca_cities_comparison.csv")
 print("\nData exported to ca_cities_comparison.csv")
 ```
 

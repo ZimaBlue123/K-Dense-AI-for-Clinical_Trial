@@ -38,17 +38,19 @@ params.forcing.type = "in_script"
 
 sim = Simul(params)
 
+
 # Define custom forcing function
 def compute_forcing_fft(sim):
     """Compute forcing in Fourier space"""
-    forcing_vx_fft = sim.oper.create_arrayK(value=0.)
-    forcing_vy_fft = sim.oper.create_arrayK(value=0.)
+    forcing_vx_fft = sim.oper.create_arrayK(value=0.0)
+    forcing_vy_fft = sim.oper.create_arrayK(value=0.0)
 
     # Add custom forcing logic
     # Example: force specific modes
     forcing_vx_fft[10, 10] = 1.0 + 0.5j
 
     return forcing_vx_fft, forcing_vy_fft
+
 
 # Override forcing method
 sim.forcing.forcing_maker.compute_forcing_fft = lambda: compute_forcing_fft(sim)
@@ -113,7 +115,7 @@ b = sim.state.state_phys.get_var("b")  # buoyancy field
 # Gaussian density anomaly
 x0, y0 = pi, pi
 sigma = 0.5
-b[:] = np.exp(-((X - x0)**2 + (Y - y0)**2) / (2 * sigma**2))
+b[:] = np.exp(-((X - x0) ** 2 + (Y - y0) ** 2) / (2 * sigma**2))
 
 sim.state.statephys_from_statespect()
 sim.time_stepping.start()
@@ -216,7 +218,7 @@ sim.time_stepping.start()
             name_run=f"sim_nu{nu}_nx{nx}",
             nb_nodes=1,
             nb_cores_per_node=24,
-            walltime="12:00:00"
+            walltime="12:00:00",
         )
 ```
 
@@ -248,12 +250,9 @@ for sim_dir in os.listdir("simulations"):
         final_energy = df["E"].iloc[-1]
         mean_energy = df["E"].mean()
 
-        results.append({
-            "nu": nu,
-            "nx": nx,
-            "final_energy": final_energy,
-            "mean_energy": mean_energy
-        })
+        results.append(
+            {"nu": nu, "nx": nx, "final_energy": final_energy, "mean_energy": mean_energy}
+        )
     except Exception as e:
         print(f"Error loading {sim_dir}: {e}")
 
@@ -264,8 +263,7 @@ results_df = pd.DataFrame(results)
 plt.figure(figsize=(10, 6))
 for nx in results_df["nx"].unique():
     subset = results_df[results_df["nx"] == nx]
-    plt.plot(subset["nu"], subset["mean_energy"],
-             marker="o", label=f"nx={nx}")
+    plt.plot(subset["nu"], subset["mean_energy"], marker="o", label=f"nx={nx}")
 
 plt.xlabel("Viscosity")
 plt.ylabel("Mean Energy")
@@ -283,6 +281,7 @@ Create a new solver by inheriting from an existing one:
 ```python
 from fluidsim.solvers.ns2d.solver import Simul as SimulNS2D
 from fluidsim.base.setofvariables import SetOfVariables
+
 
 class SimulCustom(SimulNS2D):
     """Custom solver with additional physics"""

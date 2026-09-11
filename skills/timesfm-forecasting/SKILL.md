@@ -155,6 +155,7 @@ pip install torch>=2.0.0  # MPS support is built-in
 ```python
 import timesfm
 import numpy as np
+
 print(f"TimesFM version: {timesfm.__version__}")
 print("Installation OK")
 ```
@@ -168,18 +169,25 @@ import torch, numpy as np, timesfm
 
 torch.set_float32_matmul_precision("high")
 
-model = timesfm.TimesFM_2p5_200M_torch.from_pretrained(
-    "google/timesfm-2.5-200m-pytorch"
+model = timesfm.TimesFM_2p5_200M_torch.from_pretrained("google/timesfm-2.5-200m-pytorch")
+model.compile(
+    timesfm.ForecastConfig(
+        max_context=1024,
+        max_horizon=256,
+        normalize_inputs=True,
+        use_continuous_quantile_head=True,
+        force_flip_invariance=True,
+        infer_is_positive=True,
+        fix_quantile_crossing=True,
+    )
 )
-model.compile(timesfm.ForecastConfig(
-    max_context=1024, max_horizon=256, normalize_inputs=True,
-    use_continuous_quantile_head=True, force_flip_invariance=True,
-    infer_is_positive=True, fix_quantile_crossing=True,
-))
 
-point, quantiles = model.forecast(horizon=24, inputs=[
-    np.sin(np.linspace(0, 20, 200)),  # any 1-D array
-])
+point, quantiles = model.forecast(
+    horizon=24,
+    inputs=[
+        np.sin(np.linspace(0, 20, 200)),  # any 1-D array
+    ],
+)
 # point.shape == (1, 24)        — median forecast
 # quantiles.shape == (1, 24, 10) — 10th–90th percentile bands
 ```
@@ -200,12 +208,14 @@ point, quantiles = model.forecast(horizon=12, inputs=inputs)
 for i, col in enumerate(df.columns):
     last_date = df[col].dropna().index[-1]
     future_dates = pd.date_range(last_date, periods=13, freq="MS")[1:]
-    forecast_df = pd.DataFrame({
-        "date": future_dates,
-        "forecast": point[i],
-        "lower_80": quantiles[i, :, 2],  # 20th percentile
-        "upper_80": quantiles[i, :, 8],  # 80th percentile
-    })
+    forecast_df = pd.DataFrame(
+        {
+            "date": future_dates,
+            "forecast": point[i],
+            "lower_80": quantiles[i, :, 2],  # 20th percentile
+            "upper_80": quantiles[i, :, 8],  # 80th percentile
+        }
+    )
     print(f"\n--- {col} ---")
     print(forecast_df.to_string(index=False))
 ```
@@ -344,15 +354,15 @@ All forecasting behavior is controlled by `timesfm.ForecastConfig`:
 
 ```python
 timesfm.ForecastConfig(
-    max_context=1024,                    # Max context window (truncates longer series)
-    max_horizon=256,                     # Max forecast horizon
-    normalize_inputs=True,               # Normalize inputs (RECOMMENDED for stability)
-    per_core_batch_size=32,              # Batch size per device (tune for memory)
-    use_continuous_quantile_head=True,   # Better quantile accuracy for long horizons
-    force_flip_invariance=True,          # Ensures f(-x) = -f(x) (mathematical consistency)
-    infer_is_positive=True,              # Clamp forecasts ≥ 0 when all inputs > 0
-    fix_quantile_crossing=True,          # Ensure q10 ≤ q20 ≤ ... ≤ q90
-    return_backcast=False,               # Return backcast (for covariate workflows)
+    max_context=1024,  # Max context window (truncates longer series)
+    max_horizon=256,  # Max forecast horizon
+    normalize_inputs=True,  # Normalize inputs (RECOMMENDED for stability)
+    per_core_batch_size=32,  # Batch size per device (tune for memory)
+    use_continuous_quantile_head=True,  # Better quantile accuracy for long horizons
+    force_flip_invariance=True,  # Ensures f(-x) = -f(x) (mathematical consistency)
+    infer_is_positive=True,  # Clamp forecasts ≥ 0 when all inputs > 0
+    fix_quantile_crossing=True,  # Ensure q10 ≤ q20 ≤ ... ≤ q90
+    return_backcast=False,  # Return backcast (for covariate workflows)
 )
 ```
 
@@ -395,13 +405,16 @@ import torch, numpy as np, pandas as pd, timesfm
 
 # 2-3. Load and compile
 torch.set_float32_matmul_precision("high")
-model = timesfm.TimesFM_2p5_200M_torch.from_pretrained(
-    "google/timesfm-2.5-200m-pytorch"
+model = timesfm.TimesFM_2p5_200M_torch.from_pretrained("google/timesfm-2.5-200m-pytorch")
+model.compile(
+    timesfm.ForecastConfig(
+        max_context=512,
+        max_horizon=52,
+        normalize_inputs=True,
+        use_continuous_quantile_head=True,
+        fix_quantile_crossing=True,
+    )
 )
-model.compile(timesfm.ForecastConfig(
-    max_context=512, max_horizon=52, normalize_inputs=True,
-    use_continuous_quantile_head=True, fix_quantile_crossing=True,
-))
 
 # 4. Prepare data
 df = pd.read_csv("weekly_demand.csv", parse_dates=["week"])
@@ -411,20 +424,29 @@ values = df["demand"].values.astype(np.float32)
 point, quantiles = model.forecast(horizon=52, inputs=[values])
 
 # 6. Extract prediction intervals
-forecast_df = pd.DataFrame({
-    "forecast": point[0],
-    "lower_80": quantiles[0, :, 1],
-    "upper_80": quantiles[0, :, 9],
-})
+forecast_df = pd.DataFrame(
+    {
+        "forecast": point[0],
+        "lower_80": quantiles[0, :, 1],
+        "upper_80": quantiles[0, :, 9],
+    }
+)
 
 # 7. Plot
 import matplotlib.pyplot as plt
+
 fig, ax = plt.subplots(figsize=(12, 5))
 ax.plot(values[-104:], label="Historical")
 x_fc = range(len(values[-104:]), len(values[-104:]) + 52)
 ax.plot(x_fc, forecast_df["forecast"], label="Forecast", color="tab:orange")
-ax.fill_between(x_fc, forecast_df["lower_80"], forecast_df["upper_80"],
-                alpha=0.2, color="tab:orange", label="80% PI")
+ax.fill_between(
+    x_fc,
+    forecast_df["lower_80"],
+    forecast_df["upper_80"],
+    alpha=0.2,
+    color="tab:orange",
+    label="80% PI",
+)
 ax.legend()
 ax.set_title("52-Week Demand Forecast")
 plt.tight_layout()
@@ -455,6 +477,7 @@ for i, col in enumerate(df.columns):
 
 # Export
 import json
+
 with open("batch_forecasts.json", "w") as f:
     json.dump(results, f, indent=2)
 print(f"Forecasted {len(results)} series → batch_forecasts.json")
@@ -520,14 +543,16 @@ torch.set_float32_matmul_precision("high")
 # CPU with 16 GB RAM:  per_core_batch_size=32
 # CPU with 32 GB RAM:  per_core_batch_size=64
 
-model.compile(timesfm.ForecastConfig(
-    max_context=1024,
-    max_horizon=256,
-    per_core_batch_size=32,  # <-- tune this
-    normalize_inputs=True,
-    use_continuous_quantile_head=True,
-    fix_quantile_crossing=True,
-))
+model.compile(
+    timesfm.ForecastConfig(
+        max_context=1024,
+        max_horizon=256,
+        per_core_batch_size=32,  # <-- tune this
+        normalize_inputs=True,
+        use_continuous_quantile_head=True,
+        fix_quantile_crossing=True,
+    )
+)
 ```
 
 ### Memory-Constrained Environments
@@ -541,25 +566,25 @@ if torch.cuda.is_available():
     torch.cuda.empty_cache()
 
 # Load model
-model = timesfm.TimesFM_2p5_200M_torch.from_pretrained(
-    "google/timesfm-2.5-200m-pytorch"
-)
+model = timesfm.TimesFM_2p5_200M_torch.from_pretrained("google/timesfm-2.5-200m-pytorch")
 
 # Use small batch size on low-memory machines
-model.compile(timesfm.ForecastConfig(
-    max_context=512,        # Reduce context if needed
-    max_horizon=128,        # Reduce horizon if needed
-    per_core_batch_size=4,  # Small batches
-    normalize_inputs=True,
-    use_continuous_quantile_head=True,
-    fix_quantile_crossing=True,
-))
+model.compile(
+    timesfm.ForecastConfig(
+        max_context=512,  # Reduce context if needed
+        max_horizon=128,  # Reduce horizon if needed
+        per_core_batch_size=4,  # Small batches
+        normalize_inputs=True,
+        use_continuous_quantile_head=True,
+        fix_quantile_crossing=True,
+    )
+)
 
 # Process series in chunks to avoid OOM
 CHUNK = 50
 all_results = []
 for i in range(0, len(inputs), CHUNK):
-    chunk = inputs[i:i+CHUNK]
+    chunk = inputs[i : i + CHUNK]
     p, q = model.forecast(horizon=H, inputs=chunk)
     all_results.append((p, q))
     gc.collect()  # Clean up between chunks
@@ -577,7 +602,8 @@ tfm_point, tfm_q = model.forecast(horizon=H, inputs=[values])
 
 # statsmodels ARIMA forecast
 from statsmodels.tsa.arima.model import ARIMA
-arima = ARIMA(values, order=(1,1,1)).fit()
+
+arima = ARIMA(values, order=(1, 1, 1)).fit()
 arima_forecast = arima.forecast(steps=H)
 
 # Compare

@@ -45,7 +45,7 @@ Work with biological sequences using specialized classes for DNA, RNA, and prote
 import skbio
 
 # Read sequences from file
-seq = skbio.DNA.read('input.fasta')
+seq = skbio.DNA.read("input.fasta")
 
 # Sequence operations
 rc = seq.reverse_complement()
@@ -53,7 +53,7 @@ rna = seq.transcribe()
 protein = rna.translate()
 
 # Find motifs
-motif_positions = seq.find_with_regex('ATG[ACGT]{3}')
+motif_positions = seq.find_with_regex("ATG[ACGT]{3}")
 
 # Check for properties
 has_degens = seq.has_degenerates()
@@ -88,7 +88,7 @@ alignment = local_pairwise_align_ssw(seq1, seq2)
 msa = alignment.aligned_sequences
 
 # Read multiple alignment from file
-msa = TabularMSA.read('alignment.fasta', constructor=skbio.DNA)
+msa = TabularMSA.read("alignment.fasta", constructor=skbio.DNA)
 
 # Calculate consensus
 consensus = msa.consensus()
@@ -117,18 +117,18 @@ from skbio import TreeNode
 from skbio.tree import nj
 
 # Read tree from file
-tree = TreeNode.read('tree.nwk')
+tree = TreeNode.read("tree.nwk")
 
 # Construct tree from distance matrix
 tree = nj(distance_matrix)
 
 # Tree operations
-subtree = tree.shear(['taxon1', 'taxon2', 'taxon3'])
+subtree = tree.shear(["taxon1", "taxon2", "taxon3"])
 tips = [node for node in tree.tips()]
-lca = tree.lowest_common_ancestor(['taxon1', 'taxon2'])
+lca = tree.lowest_common_ancestor(["taxon1", "taxon2"])
 
 # Calculate distances
-patristic_dist = tree.find('taxon1').distance(tree.find('taxon2'))
+patristic_dist = tree.find("taxon1").distance(tree.find("taxon2"))
 cophenetic_matrix = tree.cophenetic_matrix()
 
 # Compare trees
@@ -158,17 +158,20 @@ from skbio.diversity import alpha_diversity, beta_diversity
 import skbio
 
 # Alpha diversity
-alpha = alpha_diversity('shannon', counts_matrix, ids=sample_ids)
-faith_pd = alpha_diversity('faith_pd', counts_matrix, ids=sample_ids,
-                          tree=tree, otu_ids=feature_ids)
+alpha = alpha_diversity("shannon", counts_matrix, ids=sample_ids)
+faith_pd = alpha_diversity(
+    "faith_pd", counts_matrix, ids=sample_ids, tree=tree, otu_ids=feature_ids
+)
 
 # Beta diversity
-bc_dm = beta_diversity('braycurtis', counts_matrix, ids=sample_ids)
-unifrac_dm = beta_diversity('unweighted_unifrac', counts_matrix,
-                           ids=sample_ids, tree=tree, otu_ids=feature_ids)
+bc_dm = beta_diversity("braycurtis", counts_matrix, ids=sample_ids)
+unifrac_dm = beta_diversity(
+    "unweighted_unifrac", counts_matrix, ids=sample_ids, tree=tree, otu_ids=feature_ids
+)
 
 # Get available metrics
 from skbio.diversity import get_alpha_diversity_metrics
+
 print(get_alpha_diversity_metrics())
 ```
 
@@ -195,15 +198,15 @@ from skbio.stats.ordination import pcoa, cca
 
 # PCoA from distance matrix
 pcoa_results = pcoa(distance_matrix)
-pc1 = pcoa_results.samples['PC1']
-pc2 = pcoa_results.samples['PC2']
+pc1 = pcoa_results.samples["PC1"]
+pc2 = pcoa_results.samples["PC2"]
 
 # CCA with environmental variables
 cca_results = cca(species_matrix, environmental_matrix)
 
 # Save/load ordination results
-pcoa_results.write('ordination.txt')
-results = skbio.OrdinationResults.read('ordination.txt')
+pcoa_results.write("ordination.txt")
+results = skbio.OrdinationResults.read("ordination.txt")
 ```
 
 **Important notes:**
@@ -235,7 +238,7 @@ print(f"p-value: {permanova_results['p-value']}")
 anosim_results = anosim(distance_matrix, grouping, permutations=999)
 
 # Mantel test between two distance matrices
-mantel_results = mantel(dm1, dm2, method='pearson', permutations=999)
+mantel_results = mantel(dm1, dm2, method="pearson", permutations=999)
 print(f"Correlation: {mantel_results[0]}, p-value: {mantel_results[1]}")
 ```
 
@@ -263,19 +266,19 @@ Read and write 19+ biological file formats with automatic format detection.
 import skbio
 
 # Read with automatic format detection
-seq = skbio.DNA.read('file.fasta', format='fasta')
-tree = skbio.TreeNode.read('tree.nwk')
+seq = skbio.DNA.read("file.fasta", format="fasta")
+tree = skbio.TreeNode.read("tree.nwk")
 
 # Write to file
-seq.write('output.fasta', format='fasta')
+seq.write("output.fasta", format="fasta")
 
 # Generator for large files (memory efficient)
-for seq in skbio.io.read('large.fasta', format='fasta', constructor=skbio.DNA):
+for seq in skbio.io.read("large.fasta", format="fasta", constructor=skbio.DNA):
     process(seq)
 
 # Convert formats
-seqs = list(skbio.io.read('input.fastq', format='fastq', constructor=skbio.DNA))
-skbio.io.write(seqs, format='fasta', into='output.fasta')
+seqs = list(skbio.io.read("input.fastq", format="fastq", constructor=skbio.DNA))
+skbio.io.write(seqs, format="fasta", into="output.fasta")
 ```
 
 **Important notes:**
@@ -301,14 +304,14 @@ import numpy as np
 
 # Create from array
 data = np.array([[0, 1, 2], [1, 0, 3], [2, 3, 0]])
-dm = DistanceMatrix(data, ids=['A', 'B', 'C'])
+dm = DistanceMatrix(data, ids=["A", "B", "C"])
 
 # Access distances
-dist_ab = dm['A', 'B']
-row_a = dm['A']
+dist_ab = dm["A", "B"]
+row_a = dm["A"]
 
 # Read from file
-dm = DistanceMatrix.read('distances.txt')
+dm = DistanceMatrix.read("distances.txt")
 
 # Use in downstream analyses
 pcoa_results = pcoa(dm)
@@ -337,15 +340,15 @@ Work with feature tables (OTU/ASV tables) common in microbiome research.
 from skbio import Table
 
 # Read BIOM table
-table = Table.read('table.biom')
+table = Table.read("table.biom")
 
 # Access data
-sample_ids = table.ids(axis='sample')
-feature_ids = table.ids(axis='observation')
+sample_ids = table.ids(axis="sample")
+feature_ids = table.ids(axis="observation")
 counts = table.matrix_data
 
 # Filter
-filtered = table.filter(sample_ids_to_keep, axis='sample')
+filtered = table.filter(sample_ids_to_keep, axis="sample")
 
 # Convert to/from pandas
 df = table.to_dataframe()
@@ -376,10 +379,10 @@ from skbio.embedding import ProteinEmbedding, ProteinVector
 embedding = ProteinEmbedding(embedding_array, sequence_ids)
 
 # Convert to distance matrix for analysis
-dm = embedding.to_distances(metric='euclidean')
+dm = embedding.to_distances(metric="euclidean")
 
 # PCoA visualization of embedding space
-pcoa_results = embedding.to_ordination(metric='euclidean', method='pcoa')
+pcoa_results = embedding.to_ordination(metric="euclidean", method="pcoa")
 
 # Export for machine learning
 array = embedding.to_array()

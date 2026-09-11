@@ -59,11 +59,13 @@ from aeon.segmentation import ClaSPSegmenter
 import numpy as np
 
 # Create time series with regime changes
-y = np.concatenate([
-    np.sin(np.linspace(0, 10, 100)),      # Segment 1
-    np.cos(np.linspace(0, 10, 100)),      # Segment 2
-    np.sin(2 * np.linspace(0, 10, 100))   # Segment 3
-])
+y = np.concatenate(
+    [
+        np.sin(np.linspace(0, 10, 100)),  # Segment 1
+        np.cos(np.linspace(0, 10, 100)),  # Segment 2
+        np.sin(2 * np.linspace(0, 10, 100)),  # Segment 3
+    ]
+)
 
 # Segment the series
 segmenter = ClaSPSegmenter()
@@ -128,10 +130,7 @@ segments = segmenter.fit_predict(temperature_data)
 Use segmentation quality metrics:
 
 ```python
-from aeon.benchmarking.metrics.segmentation import (
-    count_error,
-    hausdorff_error
-)
+from aeon.benchmarking.metrics.segmentation import count_error, hausdorff_error
 
 # Count error: difference in number of change points
 count_err = count_error(y_true, y_pred)
@@ -155,9 +154,9 @@ hausdorff_err = hausdorff_error(y_true, y_pred)
 import matplotlib.pyplot as plt
 
 plt.figure(figsize=(12, 4))
-plt.plot(y, label='Time Series')
+plt.plot(y, label="Time Series")
 for cp in change_points:
-    plt.axvline(cp, color='r', linestyle='--', label='Change Point')
+    plt.axvline(cp, color="r", linestyle="--", label="Change Point")
 plt.legend()
 plt.show()
 ```

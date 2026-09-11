@@ -10,7 +10,7 @@ The top-level container for all plot elements.
 
 **Creation:**
 ```python
-fig = plt.figure(figsize=(10, 6), dpi=100, facecolor='white')
+fig = plt.figure(figsize=(10, 6), dpi=100, facecolor="white")
 fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(10, 6))
 fig, axes = plt.subplots(2, 2, figsize=(12, 10))
 ```
@@ -184,56 +184,62 @@ High-level interface for quick plotting.
 ### Plot Function Parameters
 
 ```python
-ax.plot(x, y,
-    color='blue',           # Line color
-    linewidth=2,            # Line width
-    linestyle='--',         # Line style
-    marker='o',             # Marker style
-    markersize=8,           # Marker size
-    markerfacecolor='red',  # Marker fill color
-    markeredgecolor='black',# Marker edge color
-    markeredgewidth=1,      # Marker edge width
-    alpha=0.7,              # Transparency (0-1)
-    label='data',           # Legend label
-    zorder=2,               # Drawing order
-    rasterized=True         # Rasterize for smaller file size
+ax.plot(
+    x,
+    y,
+    color="blue",  # Line color
+    linewidth=2,  # Line width
+    linestyle="--",  # Line style
+    marker="o",  # Marker style
+    markersize=8,  # Marker size
+    markerfacecolor="red",  # Marker fill color
+    markeredgecolor="black",  # Marker edge color
+    markeredgewidth=1,  # Marker edge width
+    alpha=0.7,  # Transparency (0-1)
+    label="data",  # Legend label
+    zorder=2,  # Drawing order
+    rasterized=True,  # Rasterize for smaller file size
 )
 ```
 
 ### Scatter Function Parameters
 
 ```python
-ax.scatter(x, y,
-    s=50,                   # Size (scalar or array)
-    c='blue',               # Color (scalar, array, or sequence)
-    marker='o',             # Marker style
-    cmap='viridis',         # Colormap (if c is numeric)
-    alpha=0.5,              # Transparency
-    edgecolors='black',     # Edge color
-    linewidths=1,           # Edge width
-    vmin=0, vmax=1,         # Color scale limits
-    label='data'            # Legend label
+ax.scatter(
+    x,
+    y,
+    s=50,  # Size (scalar or array)
+    c="blue",  # Color (scalar, array, or sequence)
+    marker="o",  # Marker style
+    cmap="viridis",  # Colormap (if c is numeric)
+    alpha=0.5,  # Transparency
+    edgecolors="black",  # Edge color
+    linewidths=1,  # Edge width
+    vmin=0,
+    vmax=1,  # Color scale limits
+    label="data",  # Legend label
 )
 ```
 
 ### Text Parameters
 
 ```python
-ax.text(x, y, text,
-    fontsize=12,            # Font size
-    fontweight='normal',    # 'normal', 'bold', 'heavy', 'light'
-    fontstyle='normal',     # 'normal', 'italic', 'oblique'
-    fontfamily='sans-serif',# Font family
-    color='black',          # Text color
-    alpha=1.0,              # Transparency
-    ha='center',            # Horizontal alignment: 'left', 'center', 'right'
-    va='center',            # Vertical alignment: 'top', 'center', 'bottom', 'baseline'
-    rotation=0,             # Rotation angle in degrees
-    bbox=dict(              # Background box
-        facecolor='white',
-        edgecolor='black',
-        boxstyle='round'
-    )
+ax.text(
+    x,
+    y,
+    text,
+    fontsize=12,  # Font size
+    fontweight="normal",  # 'normal', 'bold', 'heavy', 'light'
+    fontstyle="normal",  # 'normal', 'italic', 'oblique'
+    fontfamily="sans-serif",  # Font family
+    color="black",  # Text color
+    alpha=1.0,  # Transparency
+    ha="center",  # Horizontal alignment: 'left', 'center', 'right'
+    va="center",  # Vertical alignment: 'top', 'center', 'bottom', 'baseline'
+    rotation=0,  # Rotation angle in degrees
+    bbox=dict(  # Background box
+        facecolor="white", edgecolor="black", boxstyle="round"
+    ),
 )
 ```
 
@@ -243,41 +249,41 @@ Common rcParams settings for global customization:
 
 ```python
 # Font settings
-plt.rcParams['font.family'] = 'sans-serif'
-plt.rcParams['font.sans-serif'] = ['Arial', 'Helvetica']
-plt.rcParams['font.size'] = 12
+plt.rcParams["font.family"] = "sans-serif"
+plt.rcParams["font.sans-serif"] = ["Arial", "Helvetica"]
+plt.rcParams["font.size"] = 12
 
 # Figure settings
-plt.rcParams['figure.figsize'] = (10, 6)
-plt.rcParams['figure.dpi'] = 100
-plt.rcParams['figure.facecolor'] = 'white'
-plt.rcParams['savefig.dpi'] = 300
-plt.rcParams['savefig.bbox'] = 'tight'
+plt.rcParams["figure.figsize"] = (10, 6)
+plt.rcParams["figure.dpi"] = 100
+plt.rcParams["figure.facecolor"] = "white"
+plt.rcParams["savefig.dpi"] = 300
+plt.rcParams["savefig.bbox"] = "tight"
 
 # Axes settings
-plt.rcParams['axes.labelsize'] = 14
-plt.rcParams['axes.titlesize'] = 16
-plt.rcParams['axes.grid'] = True
-plt.rcParams['axes.grid.alpha'] = 0.3
+plt.rcParams["axes.labelsize"] = 14
+plt.rcParams["axes.titlesize"] = 16
+plt.rcParams["axes.grid"] = True
+plt.rcParams["axes.grid.alpha"] = 0.3
 
 # Line settings
-plt.rcParams['lines.linewidth'] = 2
-plt.rcParams['lines.markersize'] = 8
+plt.rcParams["lines.linewidth"] = 2
+plt.rcParams["lines.markersize"] = 8
 
 # Tick settings
-plt.rcParams['xtick.labelsize'] = 10
-plt.rcParams['ytick.labelsize'] = 10
-plt.rcParams['xtick.direction'] = 'in'  # 'in', 'out', 'inout'
-plt.rcParams['ytick.direction'] = 'in'
+plt.rcParams["xtick.labelsize"] = 10
+plt.rcParams["ytick.labelsize"] = 10
+plt.rcParams["xtick.direction"] = "in"  # 'in', 'out', 'inout'
+plt.rcParams["ytick.direction"] = "in"
 
 # Legend settings
-plt.rcParams['legend.fontsize'] = 12
-plt.rcParams['legend.frameon'] = True
-plt.rcParams['legend.framealpha'] = 0.8
+plt.rcParams["legend.fontsize"] = 12
+plt.rcParams["legend.frameon"] = True
+plt.rcParams["legend.framealpha"] = 0.8
 
 # Grid settings
-plt.rcParams['grid.alpha'] = 0.3
-plt.rcParams['grid.linestyle'] = '--'
+plt.rcParams["grid.alpha"] = 0.3
+plt.rcParams["grid.linestyle"] = "--"
 ```
 
 ## GridSpec for Complex Layouts
@@ -289,11 +295,11 @@ fig = plt.figure(figsize=(12, 8))
 gs = GridSpec(3, 3, figure=fig, hspace=0.3, wspace=0.3)
 
 # Span multiple cells
-ax1 = fig.add_subplot(gs[0, :])      # Top row, all columns
-ax2 = fig.add_subplot(gs[1:, 0])     # Bottom two rows, first column
-ax3 = fig.add_subplot(gs[1, 1:])     # Middle row, last two columns
-ax4 = fig.add_subplot(gs[2, 1])      # Bottom row, middle column
-ax5 = fig.add_subplot(gs[2, 2])      # Bottom row, right column
+ax1 = fig.add_subplot(gs[0, :])  # Top row, all columns
+ax2 = fig.add_subplot(gs[1:, 0])  # Bottom two rows, first column
+ax3 = fig.add_subplot(gs[1, 1:])  # Middle row, last two columns
+ax4 = fig.add_subplot(gs[2, 1])  # Bottom row, middle column
+ax5 = fig.add_subplot(gs[2, 2])  # Bottom row, right column
 ```
 
 ## 3D Plotting
@@ -302,21 +308,21 @@ ax5 = fig.add_subplot(gs[2, 2])      # Bottom row, right column
 from mpl_toolkits.mplot3d import Axes3D
 
 fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
+ax = fig.add_subplot(111, projection="3d")
 
 # Plot types
-ax.plot(x, y, z)                    # 3D line
-ax.scatter(x, y, z)                 # 3D scatter
-ax.plot_surface(X, Y, Z)            # 3D surface
-ax.plot_wireframe(X, Y, Z)          # 3D wireframe
-ax.contour(X, Y, Z)                 # 3D contour
-ax.bar3d(x, y, z, dx, dy, dz)       # 3D bar
+ax.plot(x, y, z)  # 3D line
+ax.scatter(x, y, z)  # 3D scatter
+ax.plot_surface(X, Y, Z)  # 3D surface
+ax.plot_wireframe(X, Y, Z)  # 3D wireframe
+ax.contour(X, Y, Z)  # 3D contour
+ax.bar3d(x, y, z, dx, dy, dz)  # 3D bar
 
 # Customization
-ax.set_xlabel('X')
-ax.set_ylabel('Y')
-ax.set_zlabel('Z')
-ax.view_init(elev=30, azim=45)      # Set viewing angle
+ax.set_xlabel("X")
+ax.set_ylabel("Y")
+ax.set_zlabel("Z")
+ax.view_init(elev=30, azim=45)  # Set viewing angle
 ```
 
 ## Animation
@@ -325,41 +331,42 @@ ax.view_init(elev=30, azim=45)      # Set viewing angle
 from matplotlib.animation import FuncAnimation
 
 fig, ax = plt.subplots()
-line, = ax.plot([], [])
+(line,) = ax.plot([], [])
+
 
 def init():
-    ax.set_xlim(0, 2*np.pi)
+    ax.set_xlim(0, 2 * np.pi)
     ax.set_ylim(-1, 1)
-    return line,
+    return (line,)
+
 
 def update(frame):
-    x = np.linspace(0, 2*np.pi, 100)
-    y = np.sin(x + frame/10)
+    x = np.linspace(0, 2 * np.pi, 100)
+    y = np.sin(x + frame / 10)
     line.set_data(x, y)
-    return line,
+    return (line,)
 
-anim = FuncAnimation(fig, update, init_func=init,
-                     frames=100, interval=50, blit=True)
+
+anim = FuncAnimation(fig, update, init_func=init, frames=100, interval=50, blit=True)
 
 # Save animation
-anim.save('animation.gif', writer='pillow', fps=20)
-anim.save('animation.mp4', writer='ffmpeg', fps=20)
+anim.save("animation.gif", writer="pillow", fps=20)
+anim.save("animation.mp4", writer="ffmpeg", fps=20)
 ```
 
 ## Image Operations
 
 ```python
 # Read and display image
-img = plt.imread('image.png')
+img = plt.imread("image.png")
 ax.imshow(img)
 
 # Display matrix as image
-ax.imshow(matrix, cmap='viridis', aspect='auto',
-          interpolation='nearest', origin='lower')
+ax.imshow(matrix, cmap="viridis", aspect="auto", interpolation="nearest", origin="lower")
 
 # Colorbar
 cbar = plt.colorbar(im, ax=ax)
-cbar.set_label('Values')
+cbar.set_label("Values")
 
 # Image extent (set coordinates)
 ax.imshow(img, extent=[x_min, x_max, y_min, y_max])
@@ -371,15 +378,18 @@ ax.imshow(img, extent=[x_min, x_max, y_min, y_max])
 # Mouse click event
 def on_click(event):
     if event.inaxes:
-        print(f'Clicked at x={event.xdata:.2f}, y={event.ydata:.2f}')
+        print(f"Clicked at x={event.xdata:.2f}, y={event.ydata:.2f}")
 
-fig.canvas.mpl_connect('button_press_event', on_click)
+
+fig.canvas.mpl_connect("button_press_event", on_click)
+
 
 # Key press event
 def on_key(event):
-    print(f'Key pressed: {event.key}')
+    print(f"Key pressed: {event.key}")
 
-fig.canvas.mpl_connect('key_press_event', on_key)
+
+fig.canvas.mpl_connect("key_press_event", on_key)
 ```
 
 ## Useful Utilities
@@ -390,7 +400,7 @@ xlims = ax.get_xlim()
 ylims = ax.get_ylim()
 
 # Set equal aspect ratio
-ax.set_aspect('equal', adjustable='box')
+ax.set_aspect("equal", adjustable="box")
 
 # Share axes between subplots
 fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
@@ -403,10 +413,11 @@ ax.set_xticklabels([])
 ax.set_yticklabels([])
 
 # Scientific notation
-ax.ticklabel_format(style='scientific', axis='y', scilimits=(0,0))
+ax.ticklabel_format(style="scientific", axis="y", scilimits=(0, 0))
 
 # Date formatting
 import matplotlib.dates as mdates
-ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
+
+ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
 ax.xaxis.set_major_locator(mdates.DayLocator(interval=7))
 ```

@@ -65,11 +65,12 @@ def safe_float(val):
 import time
 import requests
 
+
 def get_with_retry(url, params, retries=3):
     for attempt in range(retries):
         resp = requests.get(url, params=params)
         if resp.status_code == 429:
-            time.sleep(2 ** attempt)
+            time.sleep(2**attempt)
             continue
         resp.raise_for_status()
         return resp.json()

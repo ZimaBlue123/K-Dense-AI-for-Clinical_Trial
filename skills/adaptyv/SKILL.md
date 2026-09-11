@@ -52,10 +52,7 @@ load_dotenv()
 api_key = os.getenv("ADAPTYV_API_KEY")
 base_url = "https://kq5jp7qj7wdqklhsxmovkzn4l40obksv.lambda-url.eu-central-1.on.aws"
 
-headers = {
-    "Authorization": f"Bearer {api_key}",
-    "Content-Type": "application/json"
-}
+headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
 
 # Submit experiment
 response = requests.post(
@@ -64,8 +61,8 @@ response = requests.post(
     json={
         "sequences": ">protein1\nMKVLWALLGLLGAA...",
         "experiment_type": "binding",
-        "webhook_url": "https://your-webhook.com/callback"
-    }
+        "webhook_url": "https://your-webhook.com/callback",
+    },
 )
 
 experiment_id = response.json()["experiment_id"]

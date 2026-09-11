@@ -35,8 +35,8 @@ from qiskit.primitives import StatevectorSampler
 
 # Create Bell state (entangled qubits)
 qc = QuantumCircuit(2)
-qc.h(0)           # Hadamard on qubit 0
-qc.cx(0, 1)       # CNOT from qubit 0 to 1
+qc.h(0)  # Hadamard on qubit 0
+qc.cx(0, 1)  # CNOT from qubit 0 to 1
 qc.measure_all()  # Measure both qubits
 
 # Run locally
@@ -51,8 +51,8 @@ print(counts)  # {'00': ~512, '11': ~512}
 ```python
 from qiskit.visualization import plot_histogram
 
-qc.draw('mpl')           # Circuit diagram
-plot_histogram(counts)   # Results histogram
+qc.draw("mpl")  # Circuit diagram
+plot_histogram(counts)  # Results histogram
 ```
 
 ## Core Capabilities
@@ -178,12 +178,14 @@ Topics covered:
 1. **Start with simulators**: Test locally before using hardware
    ```python
    from qiskit.primitives import StatevectorSampler
+
    sampler = StatevectorSampler()
    ```
 
 2. **Always transpile**: Optimize circuits before execution
    ```python
    from qiskit import transpile
+
    qc_optimized = transpile(qc, backend=backend, optimization_level=3)
    ```
 
@@ -261,7 +263,7 @@ with Session(backend=backend) as session:
         result = estimator.run([(qc_isa, hamiltonian)]).result()
         return result[0].data.evs
 
-    result = minimize(cost_function, initial_params, method='COBYLA')
+    result = minimize(cost_function, initial_params, method="COBYLA")
 ```
 
 ## Additional Resources

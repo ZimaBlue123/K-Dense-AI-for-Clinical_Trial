@@ -40,6 +40,7 @@ sim.output.spatial_means.plot()
 
 # Load from file
 from fluidsim import load_sim_for_plot
+
 sim = load_sim_for_plot("simulation_dir")
 sim.output.spatial_means.load()
 spatial_means_data = sim.output.spatial_means
@@ -181,6 +182,7 @@ k, E_k = sim.output.spectra.load1d_mean(tmin=5.0, tmax=10.0)
 
 # Check for power law
 import numpy as np
+
 log_k = np.log(k)
 log_E = np.log(E_k)
 # fit power law in inertial range
@@ -210,11 +212,7 @@ for sim_dir in os.listdir("simulations"):
     # Get parameters
     nu = sim.params.nu_2
 
-    results.append({
-        "nu": nu,
-        "final_energy": final_energy,
-        "sim_dir": sim_dir
-    })
+    results.append({"nu": nu, "final_energy": final_energy, "sim_dir": sim_dir})
 
 # Analyze results
 results_df = pd.DataFrame(results)
@@ -236,6 +234,7 @@ vorticity = field_file.get_var("rot")
 
 # Compute derived quantities
 import numpy as np
+
 vorticity_rms = np.sqrt(np.mean(vorticity**2))
 vorticity_max = np.max(np.abs(vorticity))
 ```

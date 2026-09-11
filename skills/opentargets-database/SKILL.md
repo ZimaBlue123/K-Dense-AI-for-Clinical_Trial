@@ -120,16 +120,11 @@ Get detailed evidence supporting a target-disease association.
 from scripts.query_opentargets import get_target_disease_evidence
 
 # Get all evidence
-evidence = get_target_disease_evidence(
-    ensembl_id="ENSG00000157764",
-    efo_id="EFO_0000249"
-)
+evidence = get_target_disease_evidence(ensembl_id="ENSG00000157764", efo_id="EFO_0000249")
 
 # Filter by evidence type
 genetic_evidence = get_target_disease_evidence(
-    ensembl_id="ENSG00000157764",
-    efo_id="EFO_0000249",
-    data_types=["genetic_association"]
+    ensembl_id="ENSG00000157764", efo_id="EFO_0000249", data_types=["genetic_association"]
 )
 
 # Each evidence record contains:
@@ -203,10 +198,7 @@ Find all diseases associated with a target, optionally filtering by score.
 from scripts.query_opentargets import get_target_associations
 
 # Get associations with score >= 0.5
-associations = get_target_associations(
-    ensembl_id="ENSG00000157764",
-    min_score=0.5
-)
+associations = get_target_associations(ensembl_id="ENSG00000157764", min_score=0.5)
 
 # Each association contains:
 # - disease: {id, name}

@@ -54,9 +54,7 @@ def format_search_results(results: list[dict], output_format: str = "json") -> s
         bibtex = ""
         for i, result in enumerate(results, 1):
             entry_type = result.get("type", "article")
-            cite_key = (
-                f"{result.get('first_author', 'unknown')}{result.get('year', '0000')}"
-            )
+            cite_key = f"{result.get('first_author', 'unknown')}{result.get('year', '0000')}"
 
             bibtex += f"@{entry_type}{{{cite_key},\n"
             bibtex += f"  title = {{{result.get('title', '')}}},\n"
@@ -141,9 +139,7 @@ def rank_results(results: list[dict], criteria: str = "citations") -> list[dict]
         return results
 
 
-def filter_by_year(
-    results: list[dict], start_year: int = None, end_year: int = None
-) -> list[dict]:
+def filter_by_year(results: list[dict], start_year: int = None, end_year: int = None) -> list[dict]:
     """
     Filter results by publication year range.
 
@@ -199,9 +195,7 @@ def generate_search_summary(results: list[dict]) -> dict:
 
         # Count by year
         year = result.get("year", "Unknown")
-        summary["year_distribution"][year] = (
-            summary["year_distribution"].get(year, 0) + 1
-        )
+        summary["year_distribution"][year] = summary["year_distribution"].get(year, 0) + 1
 
         # Collect citations
         if result.get("citations"):

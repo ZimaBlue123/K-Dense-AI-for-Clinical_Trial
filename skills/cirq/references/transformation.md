@@ -12,19 +12,14 @@ import cirq
 # Example circuit
 qubits = cirq.LineQubit.range(3)
 circuit = cirq.Circuit(
-    cirq.H(qubits[0]),
-    cirq.CNOT(qubits[0], qubits[1]),
-    cirq.CNOT(qubits[1], qubits[2])
+    cirq.H(qubits[0]), cirq.CNOT(qubits[0], qubits[1]), cirq.CNOT(qubits[1], qubits[2])
 )
 
 # Apply built-in transformer
 from cirq.transformers import optimize_for_target_gateset
 
 # Optimize to specific gate set
-optimized = optimize_for_target_gateset(
-    circuit,
-    gateset=cirq.SqrtIswapTargetGateset()
-)
+optimized = optimize_for_target_gateset(circuit, gateset=cirq.SqrtIswapTargetGateset())
 ```
 
 ### Merge Single-Qubit Gates
@@ -33,12 +28,7 @@ optimized = optimize_for_target_gateset(
 from cirq.transformers import merge_single_qubit_gates_to_phxz
 
 # Circuit with multiple single-qubit gates
-circuit = cirq.Circuit(
-    cirq.H(q),
-    cirq.T(q),
-    cirq.S(q),
-    cirq.H(q)
-)
+circuit = cirq.Circuit(cirq.H(q), cirq.T(q), cirq.S(q), cirq.H(q))
 
 # Merge into single operation
 merged = merge_single_qubit_gates_to_phxz(circuit)
@@ -52,7 +42,7 @@ from cirq.transformers import drop_negligible_operations
 # Remove gates below threshold
 circuit_with_small_rotations = cirq.Circuit(
     cirq.rz(1e-10)(q),  # Very small rotation
-    cirq.H(q)
+    cirq.H(q),
 )
 
 cleaned = drop_negligible_operations(circuit_with_small_rotations, atol=1e-8)
@@ -65,6 +55,7 @@ cleaned = drop_negligible_operations(circuit_with_small_rotations, atol=1e-8)
 ```python
 from cirq.transformers import transformer_api
 
+
 @transformer_api.transformer
 def remove_z_gates(circuit: cirq.Circuit) -> cirq.Circuit:
     """Remove all Z gates from circuit."""
@@ -75,6 +66,7 @@ def remove_z_gates(circuit: cirq.Circuit) -> cirq.Circuit:
             new_moments.append(cirq.Moment(new_ops))
     return cirq.Circuit(new_moments)
 
+
 # Use custom transformer
 transformed = remove_z_gates(circuit)
 ```
@@ -84,20 +76,20 @@ transformed = remove_z_gates(circuit)
 ```python
 from cirq.transformers import transformer_primitives
 
+
 class HToRyTransformer(transformer_primitives.Transformer):
     """Replace H gates with Ry(π/2)."""
 
     def __call__(self, circuit: cirq.Circuit, *, context=None) -> cirq.Circuit:
         def map_op(op: cirq.Operation, _) -> cirq.OP_TREE:
             if isinstance(op.gate, cirq.HPowGate):
-                return cirq.ry(np.pi/2)(op.qubits[0])
+                return cirq.ry(np.pi / 2)(op.qubits[0])
             return op
 
-        return transformer_primitives.map_operations(
-            circuit,
-            map_op,
-            deep=True
-        ).unfreeze(copy=False)
+        return transformer_primitives.map_operations(circuit, map_op, deep=True).unfreeze(
+            copy=False
+        )
+
 
 # Apply transformer
 transformer = HToRyTransformer()
@@ -133,20 +125,21 @@ class Toffoli(cirq.Gate):
         return [
             cirq.H(t),
             cirq.CNOT(c2, t),
-            cirq.T(t)**-1,
+            cirq.T(t) ** -1,
             cirq.CNOT(c1, t),
             cirq.T(t),
             cirq.CNOT(c2, t),
-            cirq.T(t)**-1,
+            cirq.T(t) ** -1,
             cirq.CNOT(c1, t),
             cirq.T(c2),
             cirq.T(t),
             cirq.H(t),
             cirq.CNOT(c1, c2),
             cirq.T(c1),
-            cirq.T(c2)**-1,
-            cirq.CNOT(c1, c2)
+            cirq.T(c2) ** -1,
+            cirq.CNOT(c1, c2),
         ]
+
 
 # Use decomposition
 circuit = cirq.Circuit(Toffoli()(q0, q1, q2))
@@ -161,11 +154,7 @@ decomposed = cirq.decompose(circuit)
 from cirq.transformers import eject_z
 
 # Move Z gates to end of circuit
-circuit = cirq.Circuit(
-    cirq.H(q0),
-    cirq.Z(q0),
-    cirq.CNOT(q0, q1)
-)
+circuit = cirq.Circuit(cirq.H(q0), cirq.Z(q0), cirq.CNOT(q0, q1))
 
 ejected = eject_z(circuit)
 ```
@@ -210,10 +199,7 @@ device = cirq_google.Sycamore
 # Compile circuit to device
 from cirq.transformers import optimize_for_target_gateset
 
-compiled = optimize_for_target_gateset(
-    circuit,
-    gateset=cirq_google.SycamoreTargetGateset()
-)
+compiled = optimize_for_target_gateset(circuit, gateset=cirq_google.SycamoreTargetGateset())
 
 # Validate compiled circuit
 device.validate_circuit(compiled)
@@ -248,15 +234,13 @@ device_graph = cirq.NamedTopology(
         (0, 0): [(0, 1), (1, 0)],
         (0, 1): [(0, 0), (1, 1)],
         (1, 0): [(0, 0), (1, 1)],
-        (1, 1): [(0, 1), (1, 0)]
+        (1, 1): [(0, 1), (1, 0)],
     }
 )
 
 # Route logical qubits to physical qubits
 routed_circuit = route_circuit(
-    circuit,
-    device_graph=device_graph,
-    routing_algo=cirq.RouteCQC(device_graph)
+    circuit, device_graph=device_graph, routing_algo=cirq.RouteCQC(device_graph)
 )
 ```
 
@@ -285,6 +269,7 @@ def insert_swaps(circuit, swap_locations):
 ```python
 import scipy.linalg
 
+
 # Compile arbitrary unitary to gate sequence
 def compile_unitary(unitary, qubits):
     """Compile 2x2 unitary using KAK decomposition."""
@@ -299,9 +284,9 @@ def compile_unitary(unitary, qubits):
 
     # Add interaction (two-qubit) part
     x, y, z = decomp.interaction_coefficients
-    operations.append(cirq.XXPowGate(exponent=x/np.pi)(qubits[0], qubits[1]))
-    operations.append(cirq.YYPowGate(exponent=y/np.pi)(qubits[0], qubits[1]))
-    operations.append(cirq.ZZPowGate(exponent=z/np.pi)(qubits[0], qubits[1]))
+    operations.append(cirq.XXPowGate(exponent=x / np.pi)(qubits[0], qubits[1]))
+    operations.append(cirq.YYPowGate(exponent=y / np.pi)(qubits[0], qubits[1]))
+    operations.append(cirq.ZZPowGate(exponent=z / np.pi)(qubits[0], qubits[1]))
 
     # Add single-qubit gates after
     operations.append(cirq.MatrixGate(decomp.single_qubit_operations_after[0])(qubits[0]))
@@ -313,10 +298,7 @@ def compile_unitary(unitary, qubits):
 ### Circuit Simplification
 
 ```python
-from cirq.transformers import (
-    merge_k_qubit_unitaries,
-    merge_single_qubit_gates_to_phxz
-)
+from cirq.transformers import merge_k_qubit_unitaries, merge_single_qubit_gates_to_phxz
 
 # Merge adjacent single-qubit gates
 simplified = merge_single_qubit_gates_to_phxz(circuit)
@@ -355,6 +337,7 @@ def commute_z_through_cnot(circuit):
 ```python
 from cirq.transformers import transformer_api
 
+
 # Build transformation pipeline
 @transformer_api.transformer
 def optimization_pipeline(circuit: cirq.Circuit) -> cirq.Circuit:
@@ -371,6 +354,7 @@ def optimization_pipeline(circuit: cirq.Circuit) -> cirq.Circuit:
     circuit = drop_empty_moments(circuit)
 
     return circuit
+
 
 # Apply pipeline
 optimized = optimization_pipeline(circuit)
@@ -398,6 +382,7 @@ def count_gates(circuit):
             gate_type = type(op.gate).__name__
             counts[gate_type] = counts.get(gate_type, 0) + 1
     return counts
+
 
 original_counts = count_gates(circuit)
 optimized_counts = count_gates(optimized)

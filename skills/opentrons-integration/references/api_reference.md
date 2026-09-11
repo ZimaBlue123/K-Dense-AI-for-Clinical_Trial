@@ -252,7 +252,7 @@ Access via `pipette.flow_rate`:
 
 **Profile step format:**
 ```python
-{'temperature': 95, 'hold_time_seconds': 30, 'hold_time_minutes': 0}
+{"temperature": 95, "hold_time_seconds": 30, "hold_time_minutes": 0}
 ```
 
 **Properties:**
@@ -339,12 +339,12 @@ Common exceptions:
 Check simulation status:
 ```python
 if protocol.is_simulating():
-    protocol.comment('Running in simulation')
+    protocol.comment("Running in simulation")
 ```
 
 Access bundled data files:
 ```python
-data_file = protocol.bundled_data['data.csv']
+data_file = protocol.bundled_data["data.csv"]
 with open(data_file) as f:
     data = f.read()
 ```

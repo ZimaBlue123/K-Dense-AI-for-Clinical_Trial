@@ -162,9 +162,7 @@ Examples:
     )
 
     parser.add_argument("input", type=str, help="Input DICOM file")
-    parser.add_argument(
-        "--output", "-o", type=str, help="Output file (default: print to console)"
-    )
+    parser.add_argument("--output", "-o", type=str, help="Output file (default: print to console)")
     parser.add_argument(
         "--format",
         type=str,

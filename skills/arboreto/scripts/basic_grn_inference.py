@@ -48,9 +48,7 @@ def run_grn_inference(expression_file, output_file, tf_file=None, seed=777):
 
     # Run GRN inference
     print(f"Running GRNBoost2 with seed={seed}...")
-    network = grnboost2(
-        expression_data=expression_data, tf_names=tf_names, seed=seed, verbose=True
-    )
+    network = grnboost2(expression_data=expression_data, tf_names=tf_names, seed=seed, verbose=True)
 
     # Save results
     print(f"Saving network to {output_file}...")
@@ -62,9 +60,7 @@ def run_grn_inference(expression_file, output_file, tf_file=None, seed=777):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Infer gene regulatory network using GRNBoost2"
-    )
+    parser = argparse.ArgumentParser(description="Infer gene regulatory network using GRNBoost2")
     parser.add_argument(
         "expression_file",
         help="Path to expression matrix (TSV format, genes as columns)",

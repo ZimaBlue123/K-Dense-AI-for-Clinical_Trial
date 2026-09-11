@@ -67,11 +67,7 @@ Compute descriptors for multiple molecules in parallel.
 - **Example**:
   ```python
   mols = [dm.to_mol(smi) for smi in smiles_list]
-  df = dm.descriptors.batch_compute_many_descriptors(
-      mols,
-      n_jobs=-1,
-      progress=True
-  )
+  df = dm.descriptors.batch_compute_many_descriptors(mols, n_jobs=-1, progress=True)
   ```
 
 ### RDKit Descriptor Access
@@ -83,7 +79,7 @@ Retrieve any descriptor function from RDKit by name.
 - **Available descriptors**: From `rdkit.Chem.Descriptors` and `rdkit.Chem.rdMolDescriptors`
 - **Example**:
   ```python
-  tpsa_fn = dm.descriptors.any_rdkit_descriptor('TPSA')
+  tpsa_fn = dm.descriptors.any_rdkit_descriptor("TPSA")
   tpsa_value = tpsa_fn(mol)
   ```
 
@@ -93,10 +89,10 @@ Retrieve any descriptor function from RDKit by name.
 ```python
 descriptors = dm.descriptors.compute_many_descriptors(mol)
 is_druglike = (
-    descriptors['mw'] <= 500 and
-    descriptors['logp'] <= 5 and
-    descriptors['hbd'] <= 5 and
-    descriptors['hba'] <= 10
+    descriptors["mw"] <= 500
+    and descriptors["logp"] <= 5
+    and descriptors["hbd"] <= 5
+    and descriptors["hba"] <= 10
 )
 ```
 
@@ -104,7 +100,7 @@ is_druglike = (
 ```python
 df = dm.descriptors.batch_compute_many_descriptors(compound_library)
 # Filter by TPSA for blood-brain barrier penetration
-bbb_candidates = df[df['tpsa'] < 90]
+bbb_candidates = df[df["tpsa"] < 90]
 ```
 
 ---
@@ -179,10 +175,7 @@ Create concentric ring visualization with central molecule.
 - **Example**:
   ```python
   # Show a reference molecule surrounded by similar compounds
-  dm.viz.circle_grid(
-      center_mol=reference,
-      circle_mols=[nearest_neighbors, second_tier]
-  )
+  dm.viz.circle_grid(center_mol=reference, circle_mols=[nearest_neighbors, second_tier])
   ```
 
 ### Visualization Best Practices

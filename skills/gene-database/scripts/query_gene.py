@@ -85,9 +85,7 @@ def esummary(gene_ids: list[str], api_key: str | None = None) -> dict[str, Any]:
         return {}
 
 
-def efetch(
-    gene_ids: list[str], retmode: str = "xml", api_key: str | None = None
-) -> str:
+def efetch(gene_ids: list[str], retmode: str = "xml", api_key: str | None = None) -> str:
     """
     Fetch full gene records.
 
@@ -160,9 +158,7 @@ def search_and_summarize(
                 print(f"Gene ID: {gene_id}")
                 print(f"  Symbol: {gene.get('name', 'N/A')}")
                 print(f"  Description: {gene.get('description', 'N/A')}")
-                print(
-                    f"  Organism: {gene.get('organism', {}).get('scientificname', 'N/A')}"
-                )
+                print(f"  Organism: {gene.get('organism', {}).get('scientificname', 'N/A')}")
                 print(f"  Chromosome: {gene.get('chromosome', 'N/A')}")
                 print(f"  Map Location: {gene.get('maplocation', 'N/A')}")
                 print(f"  Type: {gene.get('geneticsource', 'N/A')}")

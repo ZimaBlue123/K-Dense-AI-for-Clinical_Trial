@@ -169,9 +169,7 @@ def detect_apple_silicon_gpu() -> dict[str, Any] | None:
         cpu_brand = result.stdout.strip()
 
         # Check for Apple Silicon (M1, M2, M3, etc.)
-        if "Apple" in cpu_brand and any(
-            chip in cpu_brand for chip in ["M1", "M2", "M3", "M4"]
-        ):
+        if "Apple" in cpu_brand and any(chip in cpu_brand for chip in ["M1", "M2", "M3", "M4"]):
             # Get GPU core count if possible
             gpu_info = {
                 "name": cpu_brand,
@@ -293,9 +291,7 @@ def generate_recommendations(resources: dict[str, Any]) -> dict[str, Any]:
     cpu_cores = resources["cpu"]["logical_cores"]
     if cpu_cores >= 8:
         recommendations["parallel_processing"]["strategy"] = "high_parallelism"
-        recommendations["parallel_processing"]["suggested_workers"] = max(
-            cpu_cores - 2, 1
-        )
+        recommendations["parallel_processing"]["suggested_workers"] = max(cpu_cores - 2, 1)
         recommendations["parallel_processing"]["libraries"] = [
             "joblib",
             "multiprocessing",
@@ -303,18 +299,16 @@ def generate_recommendations(resources: dict[str, Any]) -> dict[str, Any]:
         ]
     elif cpu_cores >= 4:
         recommendations["parallel_processing"]["strategy"] = "moderate_parallelism"
-        recommendations["parallel_processing"]["suggested_workers"] = max(
-            cpu_cores - 1, 1
-        )
+        recommendations["parallel_processing"]["suggested_workers"] = max(cpu_cores - 1, 1)
         recommendations["parallel_processing"]["libraries"] = [
             "joblib",
             "multiprocessing",
         ]
     else:
         recommendations["parallel_processing"]["strategy"] = "sequential"
-        recommendations["parallel_processing"][
-            "note"
-        ] = "Limited cores, prefer sequential processing"
+        recommendations["parallel_processing"]["note"] = (
+            "Limited cores, prefer sequential processing"
+        )
 
     # Memory recommendations
     available_memory_gb = resources["memory"]["available_gb"]
@@ -323,20 +317,14 @@ def generate_recommendations(resources: dict[str, Any]) -> dict[str, Any]:
     if available_memory_gb < 4:
         recommendations["memory_strategy"]["strategy"] = "memory_constrained"
         recommendations["memory_strategy"]["libraries"] = ["zarr", "dask", "h5py"]
-        recommendations["memory_strategy"][
-            "note"
-        ] = "Use out-of-core processing for large datasets"
+        recommendations["memory_strategy"]["note"] = "Use out-of-core processing for large datasets"
     elif available_memory_gb < 16:
         recommendations["memory_strategy"]["strategy"] = "moderate_memory"
         recommendations["memory_strategy"]["libraries"] = ["dask", "zarr"]
-        recommendations["memory_strategy"][
-            "note"
-        ] = "Consider chunking for datasets > 2GB"
+        recommendations["memory_strategy"]["note"] = "Consider chunking for datasets > 2GB"
     else:
         recommendations["memory_strategy"]["strategy"] = "memory_abundant"
-        recommendations["memory_strategy"][
-            "note"
-        ] = "Can load most datasets into memory"
+        recommendations["memory_strategy"]["note"] = "Can load most datasets into memory"
 
     # GPU recommendations
     gpu_info = resources["gpu"]
@@ -365,17 +353,15 @@ def generate_recommendations(resources: dict[str, Any]) -> dict[str, Any]:
             ]
     else:
         recommendations["gpu_acceleration"]["available"] = False
-        recommendations["gpu_acceleration"][
-            "note"
-        ] = "No GPU detected, use CPU-based libraries"
+        recommendations["gpu_acceleration"]["note"] = "No GPU detected, use CPU-based libraries"
 
     # Large data handling recommendations
     disk_available_gb = resources["disk"]["available_gb"]
     if disk_available_gb < 10:
         recommendations["large_data_handling"]["strategy"] = "disk_constrained"
-        recommendations["large_data_handling"][
-            "note"
-        ] = "Limited disk space, use streaming or compression"
+        recommendations["large_data_handling"]["note"] = (
+            "Limited disk space, use streaming or compression"
+        )
     elif disk_available_gb < 100:
         recommendations["large_data_handling"]["strategy"] = "moderate_disk"
         recommendations["large_data_handling"]["libraries"] = [
@@ -385,9 +371,9 @@ def generate_recommendations(resources: dict[str, Any]) -> dict[str, Any]:
         ]
     else:
         recommendations["large_data_handling"]["strategy"] = "disk_abundant"
-        recommendations["large_data_handling"][
-            "note"
-        ] = "Sufficient space for large intermediate files"
+        recommendations["large_data_handling"]["note"] = (
+            "Sufficient space for large intermediate files"
+        )
 
     return recommendations
 
@@ -396,18 +382,14 @@ def main():
     """Main entry point for CLI usage."""
     import argparse
 
-    parser = argparse.ArgumentParser(
-        description="Detect system resources for scientific computing"
-    )
+    parser = argparse.ArgumentParser(description="Detect system resources for scientific computing")
     parser.add_argument(
         "-o",
         "--output",
         default=".claude_resources.json",
         help="Output JSON file path (default: .claude_resources.json)",
     )
-    parser.add_argument(
-        "-v", "--verbose", action="store_true", help="Print resources to stdout"
-    )
+    parser.add_argument("-v", "--verbose", action="store_true", help="Print resources to stdout")
 
     args = parser.parse_args()
 
@@ -443,9 +425,7 @@ def main():
 
     print("\n💡 Recommendations:")
     recs = resources["recommendations"]
-    print(
-        f"  Parallel Processing: {recs['parallel_processing'].get('strategy', 'N/A')}"
-    )
+    print(f"  Parallel Processing: {recs['parallel_processing'].get('strategy', 'N/A')}")
     print(f"  Memory Strategy: {recs['memory_strategy'].get('strategy', 'N/A')}")
     print(
         f"  GPU Acceleration: {'Available' if recs['gpu_acceleration'].get('available') else 'Not Available'}"

@@ -25,7 +25,7 @@ def explore_recording(data_path: str, stream_id: str = "imec0.ap"):
     print("=" * 50)
     print(f"Channels: {recording.get_num_channels()}")
     print(
-        f"Duration: {recording.get_total_duration():.2f} s ({recording.get_total_duration()/60:.2f} min)"
+        f"Duration: {recording.get_total_duration():.2f} s ({recording.get_total_duration() / 60:.2f} min)"
     )
     print(f"Sampling rate: {recording.get_sampling_frequency()} Hz")
     print(f"Total samples: {recording.get_num_samples()}")
@@ -93,9 +93,7 @@ def plot_traces(recording, duration=1.0, output_path=None):
 
     # Plot subset of channels
     n_channels = min(20, recording.get_num_channels())
-    channel_idx = np.linspace(
-        0, recording.get_num_channels() - 1, n_channels, dtype=int
-    )
+    channel_idx = np.linspace(0, recording.get_num_channels() - 1, n_channels, dtype=int)
 
     time = np.arange(n_samples) / recording.get_sampling_frequency()
 
@@ -120,9 +118,7 @@ def plot_power_spectrum(recording, output_path=None):
 
     # Get data from middle channel
     mid_ch = recording.get_num_channels() // 2
-    n_samples = min(
-        int(10 * recording.get_sampling_frequency()), recording.get_num_samples()
-    )
+    n_samples = min(int(10 * recording.get_sampling_frequency()), recording.get_num_samples())
 
     traces = recording.get_traces(
         start_frame=0, end_frame=n_samples, channel_ids=[recording.channel_ids[mid_ch]]

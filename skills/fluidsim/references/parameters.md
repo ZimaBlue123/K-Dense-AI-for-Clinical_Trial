@@ -22,9 +22,9 @@ params.oper.nz = 128  # number of grid points in z (3D only)
 
 params.oper.Lx = 2 * pi  # domain length in x
 params.oper.Ly = 2 * pi  # domain length in y
-params.oper.Lz = pi      # domain length in z (3D only)
+params.oper.Lz = pi  # domain length in z (3D only)
 
-params.oper.coef_dealiasing = 2./3.  # dealiasing cutoff (default 2/3)
+params.oper.coef_dealiasing = 2.0 / 3.0  # dealiasing cutoff (default 2/3)
 ```
 
 **Resolution guidance**: Use powers of 2 for optimal FFT performance (128, 256, 512, 1024, etc.)
@@ -35,8 +35,8 @@ params.oper.coef_dealiasing = 2./3.  # dealiasing cutoff (default 2/3)
 
 ```python
 params.nu_2 = 1e-3  # Laplacian viscosity (negative Laplacian)
-params.nu_4 = 0     # hyperviscosity (optional)
-params.nu_8 = 0     # hyper-hyperviscosity (very high wavenumber damping)
+params.nu_4 = 0  # hyperviscosity (optional)
+params.nu_8 = 0  # hyper-hyperviscosity (very high wavenumber damping)
 ```
 
 Higher-order viscosity (`nu_4`, `nu_8`) damps high wavenumbers without affecting large scales.
@@ -125,7 +125,7 @@ Directory created within `$FLUIDSIM_PATH` or current directory.
 
 ```python
 params.output.periods_save.phys_fields = 1.0  # save fields every 1.0 time units
-params.output.periods_save.spectra = 0.5      # save spectra
+params.output.periods_save.spectra = 0.5  # save spectra
 params.output.periods_save.spatial_means = 0.1  # save spatial averages
 params.output.periods_save.spect_energy_budg = 0.5  # spectral energy budget
 ```
@@ -173,7 +173,7 @@ The Parameters object raises `AttributeError` when accessing non-existent parame
 
 ```python
 params.nu_2 = 1e-3  # OK
-params.nu2 = 1e-3   # ERROR: AttributeError
+params.nu2 = 1e-3  # ERROR: AttributeError
 ```
 
 This prevents typos that would be silently ignored in text-based configuration files.

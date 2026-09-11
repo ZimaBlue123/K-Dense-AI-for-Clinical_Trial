@@ -184,9 +184,7 @@ beta_samples = idata.posterior["beta"]
 for i, name in enumerate(predictor_names):
     mean = beta_samples.sel(predictors=name).mean().item()
     hdi = az.hdi(beta_samples.sel(predictors=name), hdi_prob=0.95)
-    print(
-        f"{name:20s}: {mean:7.3f}  [95% HDI: {hdi.values[0]:7.3f}, {hdi.values[1]:7.3f}]"
-    )
+    print(f"{name:20s}: {mean:7.3f}  [95% HDI: {hdi.values[0]:7.3f}, {hdi.values[1]:7.3f}]")
 
 # =============================================================================
 # 8. PREDICTIONS FOR NEW DATA
@@ -203,9 +201,7 @@ X_new_scaled = (X_new - X_mean) / X_std
 with linear_model:
     pm.set_data({"X_scaled": X_new_scaled, "obs_id": np.arange(len(X_new))})
 
-    post_pred = pm.sample_posterior_predictive(
-        idata.posterior, var_names=["y_obs"], random_seed=42
-    )
+    post_pred = pm.sample_posterior_predictive(idata.posterior, var_names=["y_obs"], random_seed=42)
 
 # Extract predictions
 y_pred_samples = post_pred.posterior_predictive["y_obs"]
@@ -218,9 +214,7 @@ print("=" * 60)
 print(f"{'Index':<10} {'Mean':<15} {'95% HDI Lower':<15} {'95% HDI Upper':<15}")
 print("-" * 60)
 for i in range(len(X_new)):
-    print(
-        f"{i:<10} {y_pred_mean[i]:<15.3f} {y_pred_hdi[i, 0]:<15.3f} {y_pred_hdi[i, 1]:<15.3f}"
-    )
+    print(f"{i:<10} {y_pred_mean[i]:<15.3f} {y_pred_hdi[i, 0]:<15.3f} {y_pred_hdi[i, 1]:<15.3f}")
 
 # =============================================================================
 # 9. SAVE RESULTS

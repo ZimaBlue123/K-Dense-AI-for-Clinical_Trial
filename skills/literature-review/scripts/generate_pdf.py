@@ -47,9 +47,7 @@ def generate_pdf(
         subprocess.run(["pandoc", "--version"], capture_output=True, check=True)
     except (subprocess.CalledProcessError, FileNotFoundError):
         print("Error: pandoc is not installed.")
-        print(
-            "Install with: brew install pandoc (macOS) or apt-get install pandoc (Linux)"
-        )
+        print("Install with: brew install pandoc (macOS) or apt-get install pandoc (Linux)")
         return False
 
     # Build pandoc command
@@ -134,9 +132,7 @@ def check_dependencies():
         print("Missing dependencies:")
         for dep in missing:
             if dep == "pandoc":
-                print(
-                    "  - pandoc: brew install pandoc (macOS) or apt-get install pandoc (Linux)"
-                )
+                print("  - pandoc: brew install pandoc (macOS) or apt-get install pandoc (Linux)")
             elif dep == "xelatex":
                 print(
                     "  - xelatex: brew install --cask mactex (macOS) or apt-get install texlive-xetex (Linux)"
@@ -149,9 +145,7 @@ def check_dependencies():
 def main():
     """Command-line interface."""
     if len(sys.argv) < 2:
-        print(
-            "Usage: python generate_pdf.py <markdown_file> [output_pdf] [--citation-style STYLE]"
-        )
+        print("Usage: python generate_pdf.py <markdown_file> [output_pdf] [--citation-style STYLE]")
         print("\nOptions:")
         print("  --citation-style STYLE    Citation style (default: apa)")
         print("  --no-toc                  Disable table of contents")
@@ -166,9 +160,7 @@ def main():
 
     # Parse arguments
     markdown_file = sys.argv[1]
-    output_pdf = (
-        sys.argv[2] if len(sys.argv) > 2 and not sys.argv[2].startswith("--") else None
-    )
+    output_pdf = sys.argv[2] if len(sys.argv) > 2 and not sys.argv[2].startswith("--") else None
 
     citation_style = "apa"
     toc = True

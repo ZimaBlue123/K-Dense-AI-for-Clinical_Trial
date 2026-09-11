@@ -71,9 +71,7 @@ class MyEnvironment(PufferEnv):
         """
         # Reset state
         self.agent_pos = np.array([0, 0], dtype=np.float32)
-        self.goal_pos = np.array(
-            [self.grid_size - 1, self.grid_size - 1], dtype=np.float32
-        )
+        self.goal_pos = np.array([self.grid_size - 1, self.grid_size - 1], dtype=np.float32)
         self.step_count = 0
 
         # Return initial observation
@@ -260,16 +258,12 @@ class MultiAgentEnvironment(PufferEnv):
 
     def _compute_reward(self, agent_idx):
         """Compute reward for specific agent."""
-        distance = np.linalg.norm(
-            self.agent_positions[agent_idx] - self.goal_positions[agent_idx]
-        )
+        distance = np.linalg.norm(self.agent_positions[agent_idx] - self.goal_positions[agent_idx])
         return -distance / self.grid_size
 
     def _is_done(self, agent_idx):
         """Check if specific agent is done."""
-        distance = np.linalg.norm(
-            self.agent_positions[agent_idx] - self.goal_positions[agent_idx]
-        )
+        distance = np.linalg.norm(self.agent_positions[agent_idx] - self.goal_positions[agent_idx])
         return distance < 0.5
 
     def _get_obs(self, agent_idx):
@@ -311,9 +305,7 @@ def test_environment():
     print(f"Number of agents: {len(obs)}")
 
     for step in range(10):
-        actions = {
-            agent_id: multi_env.single_action_space.sample() for agent_id in obs.keys()
-        }
+        actions = {agent_id: multi_env.single_action_space.sample() for agent_id in obs.keys()}
         obs, rewards, dones, infos = multi_env.step(actions)
 
         print(f"Step {step}: mean_reward={np.mean(list(rewards.values())):.3f}")

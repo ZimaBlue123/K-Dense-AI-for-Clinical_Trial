@@ -391,7 +391,7 @@ import spikeinterface.full as si
 import neuropixels_analysis as npa
 
 # SpikeInterface recording works with npa functions
-recording = si.read_spikeglx('/path/')
+recording = si.read_spikeglx("/path/")
 rec = npa.preprocess(recording)
 
 # Access SpikeInterface directly for advanced usage

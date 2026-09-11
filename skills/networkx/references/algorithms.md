@@ -5,15 +5,15 @@
 ### Single Source Shortest Paths
 ```python
 # Dijkstra's algorithm (weighted graphs)
-path = nx.shortest_path(G, source=1, target=5, weight='weight')
-length = nx.shortest_path_length(G, source=1, target=5, weight='weight')
+path = nx.shortest_path(G, source=1, target=5, weight="weight")
+length = nx.shortest_path_length(G, source=1, target=5, weight="weight")
 
 # All shortest paths from source
 paths = nx.single_source_shortest_path(G, source=1)
 lengths = nx.single_source_shortest_path_length(G, source=1)
 
 # Bellman-Ford (handles negative weights)
-path = nx.bellman_ford_path(G, source=1, target=5, weight='weight')
+path = nx.bellman_ford_path(G, source=1, target=5, weight="weight")
 ```
 
 ### All Pairs Shortest Paths
@@ -33,7 +33,8 @@ def heuristic(u, v):
     # Custom heuristic function
     return abs(u - v)
 
-path = nx.astar_path(G, source=1, target=5, heuristic=heuristic, weight='weight')
+
+path = nx.astar_path(G, source=1, target=5, heuristic=heuristic, weight="weight")
 
 # Average shortest path length
 avg_length = nx.average_shortest_path_length(G)
@@ -98,10 +99,10 @@ out_degree_cent = nx.out_degree_centrality(G)
 ### Betweenness Centrality
 ```python
 # Fraction of shortest paths passing through node
-betweenness = nx.betweenness_centrality(G, weight='weight')
+betweenness = nx.betweenness_centrality(G, weight="weight")
 
 # Edge betweenness
-edge_betweenness = nx.edge_betweenness_centrality(G, weight='weight')
+edge_betweenness = nx.edge_betweenness_centrality(G, weight="weight")
 
 # Approximate for large graphs
 approx_betweenness = nx.betweenness_centrality(G, k=100)  # Sample 100 nodes
@@ -146,7 +147,7 @@ clustering = nx.clustering(G)
 avg_clustering = nx.average_clustering(G)
 
 # Weighted clustering
-weighted_clustering = nx.clustering(G, weight='weight')
+weighted_clustering = nx.clustering(G, weight="weight")
 ```
 
 ### Transitivity
@@ -218,10 +219,10 @@ min_edge_dom = nx.approximation.min_edge_dominating_set(G)
 ### Minimum Spanning Tree
 ```python
 # Kruskal's or Prim's algorithm
-mst = nx.minimum_spanning_tree(G, weight='weight')
+mst = nx.minimum_spanning_tree(G, weight="weight")
 
 # Maximum spanning tree
-mst_max = nx.maximum_spanning_tree(G, weight='weight')
+mst_max = nx.maximum_spanning_tree(G, weight="weight")
 
 # Enumerate all spanning trees
 all_spanning = nx.all_spanning_trees(G)
@@ -242,20 +243,20 @@ is_arborescence = nx.is_arborescence(G)
 ### Maximum Flow
 ```python
 # Maximum flow value
-flow_value = nx.maximum_flow_value(G, s=1, t=5, capacity='capacity')
+flow_value = nx.maximum_flow_value(G, s=1, t=5, capacity="capacity")
 
 # Maximum flow with flow dict
-flow_value, flow_dict = nx.maximum_flow(G, s=1, t=5, capacity='capacity')
+flow_value, flow_dict = nx.maximum_flow(G, s=1, t=5, capacity="capacity")
 
 # Minimum cut
-cut_value, partition = nx.minimum_cut(G, s=1, t=5, capacity='capacity')
+cut_value, partition = nx.minimum_cut(G, s=1, t=5, capacity="capacity")
 ```
 
 ### Cost Flow
 ```python
 # Minimum cost flow
-flow_dict = nx.min_cost_flow(G, demand='demand', capacity='capacity', weight='weight')
-cost = nx.cost_of_flow(G, flow_dict, weight='weight')
+flow_dict = nx.min_cost_flow(G, demand="demand", capacity="capacity", weight="weight")
+cost = nx.cost_of_flow(G, flow_dict, weight="weight")
 ```
 
 ## Cycles
@@ -306,10 +307,10 @@ clique_counts = nx.node_clique_number(G)
 ### Node Coloring
 ```python
 # Greedy coloring
-coloring = nx.greedy_color(G, strategy='largest_first')
+coloring = nx.greedy_color(G, strategy="largest_first")
 
 # Different strategies: 'largest_first', 'smallest_last', 'random_sequential'
-coloring = nx.greedy_color(G, strategy='smallest_last')
+coloring = nx.greedy_color(G, strategy="smallest_last")
 ```
 
 ## Isomorphism
@@ -321,6 +322,7 @@ is_isomorphic = nx.is_isomorphic(G1, G2)
 
 # Get isomorphism mapping
 from networkx.algorithms import isomorphism
+
 GM = isomorphism.GraphMatcher(G1, G2)
 if GM.is_isomorphic():
     mapping = GM.mapping

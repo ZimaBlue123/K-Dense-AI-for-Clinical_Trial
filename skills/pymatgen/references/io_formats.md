@@ -144,6 +144,7 @@ incar.write_file("INCAR")
 
 # KPOINTS (k-point mesh)
 from pymatgen.io.vasp.inputs import Kpoints
+
 kpoints = Kpoints.automatic(20)  # 20x20x20 Gamma-centered mesh
 kpoints = Kpoints.automatic_density(struct, 1000)  # By density
 kpoints.write_file("KPOINTS")
@@ -183,11 +184,11 @@ Pymatgen provides pre-configured input sets for common calculations:
 
 ```python
 from pymatgen.io.vasp.sets import (
-    MPRelaxSet,      # Materials Project relaxation
-    MPStaticSet,     # Static calculation
-    MPNonSCFSet,     # Non-self-consistent (band structure)
-    MPSOCSet,        # Spin-orbit coupling
-    MPHSERelaxSet,   # HSE06 hybrid functional
+    MPRelaxSet,  # Materials Project relaxation
+    MPStaticSet,  # Static calculation
+    MPNonSCFSet,  # Non-self-consistent (band structure)
+    MPSOCSet,  # Spin-orbit coupling
+    MPHSERelaxSet,  # HSE06 hybrid functional
 )
 
 # Create input set
@@ -213,7 +214,7 @@ gin = GaussianInput(
     spin_multiplicity=1,
     functional="B3LYP",
     basis_set="6-31G(d)",
-    route_parameters={"Opt": None, "Freq": None}
+    route_parameters={"Opt": None, "Freq": None},
 )
 gin.write_file("input.gjf")
 
@@ -250,7 +251,7 @@ pwin = PWInput(
     struct,
     control={"calculation": "scf"},
     system={"ecutwfc": 50, "ecutrho": 400},
-    electrons={"conv_thr": 1e-8}
+    electrons={"conv_thr": 1e-8},
 )
 pwin.write_file("pw.in")
 
@@ -308,10 +309,7 @@ from pymatgen.io.qchem.inputs import QCInput
 from pymatgen.io.qchem.outputs import QCOutput
 
 # Input
-qc_input = QCInput(
-    mol,
-    rem={"method": "B3LYP", "basis": "6-31G*", "job_type": "opt"}
-)
+qc_input = QCInput(mol, rem={"method": "B3LYP", "basis": "6-31G*", "job_type": "opt"})
 qc_input.write_file("mol.qin")
 
 # Output
@@ -399,12 +397,12 @@ Structures that track their transformation history.
 from pymatgen.alchemy.materials import TransformedStructure
 from pymatgen.transformations.standard_transformations import (
     SupercellTransformation,
-    SubstitutionTransformation
+    SubstitutionTransformation,
 )
 
 # Create transformed structure
 ts = TransformedStructure(struct, [])
-ts.append_transformation(SupercellTransformation([[2,0,0],[0,2,0],[0,0,2]]))
+ts.append_transformation(SupercellTransformation([[2, 0, 0], [0, 2, 0], [0, 0, 2]]))
 ts.append_transformation(SubstitutionTransformation({"Fe": "Mn"}))
 
 # Write with history
@@ -425,7 +423,7 @@ from pymatgen.alchemy.transmuters import CifTransmuter
 
 transmuter = CifTransmuter.from_filenames(
     ["structure1.cif", "structure2.cif"],
-    [SupercellTransformation([[2,0,0],[0,2,0],[0,0,2]])]
+    [SupercellTransformation([[2, 0, 0], [0, 2, 0], [0, 0, 2]])],
 )
 
 # Write all structures
@@ -440,8 +438,7 @@ Similar for POSCAR files.
 from pymatgen.alchemy.transmuters import PoscarTransmuter
 
 transmuter = PoscarTransmuter.from_filenames(
-    ["POSCAR1", "POSCAR2"],
-    [transformation1, transformation2]
+    ["POSCAR1", "POSCAR2"], [transformation1, transformation2]
 )
 ```
 

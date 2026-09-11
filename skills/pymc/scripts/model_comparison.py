@@ -114,9 +114,7 @@ def compare_models(
     return comparison
 
 
-def check_loo_reliability(
-    models_dict: dict[str, az.InferenceData], threshold=0.7, verbose=True
-):
+def check_loo_reliability(models_dict: dict[str, az.InferenceData], threshold=0.7, verbose=True):
     """
     Check LOO-CV reliability using Pareto-k diagnostics.
 
@@ -266,7 +264,7 @@ def model_averaging(
     print("=" * 70)
     print("\nModel weights:")
     for name, weight in zip(model_names, weights):
-        print(f"  {name}: {weight:.4f} ({weight*100:.2f}%)")
+        print(f"  {name}: {weight:.4f} ({weight * 100:.2f}%)")
 
     # Extract predictions and average
     predictions = []
@@ -288,9 +286,7 @@ def model_averaging(
     return averaged, weights
 
 
-def cross_validation_comparison(
-    models_dict: dict[str, az.InferenceData], k=10, verbose=True
-):
+def cross_validation_comparison(models_dict: dict[str, az.InferenceData], k=10, verbose=True):
     """
     Perform k-fold cross-validation comparison (conceptual guide).
 

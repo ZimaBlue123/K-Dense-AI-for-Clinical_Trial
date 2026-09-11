@@ -150,9 +150,7 @@ def parse_reaction_entry(entry: str) -> dict[str, Any]:
 
 def extract_organism_data(entry: str) -> dict[str, Any]:
     """Extract organism-specific information from BRENDA entry."""
-    parsed = (
-        parse_km_entry(entry) if "kmValue" in entry else parse_reaction_entry(entry)
-    )
+    parsed = parse_km_entry(entry) if "kmValue" in entry else parse_reaction_entry(entry)
 
     if "organism" in parsed:
         return {
@@ -170,9 +168,7 @@ def extract_organism_data(entry: str) -> dict[str, Any]:
     return {}
 
 
-def search_enzymes_by_substrate(
-    substrate: str, limit: int = 50
-) -> list[dict[str, Any]]:
+def search_enzymes_by_substrate(substrate: str, limit: int = 50) -> list[dict[str, Any]]:
     """Search for enzymes that act on a specific substrate."""
     validate_dependencies()
 
@@ -245,9 +241,7 @@ def search_enzymes_by_product(product: str, limit: int = 50) -> list[dict[str, A
     return enzymes[:limit]
 
 
-def compare_across_organisms(
-    ec_number: str, organisms: list[str]
-) -> list[dict[str, Any]]:
+def compare_across_organisms(ec_number: str, organisms: list[str]) -> list[dict[str, Any]]:
     """Compare enzyme properties across different organisms."""
     validate_dependencies()
 
@@ -278,9 +272,7 @@ def compare_across_organisms(
                     "organism": organism,
                     "ec_number": ec_number,
                     "data_points": len(km_data),
-                    "average_km": (
-                        sum(numeric_kms) / len(numeric_kms) if numeric_kms else None
-                    ),
+                    "average_km": (sum(numeric_kms) / len(numeric_kms) if numeric_kms else None),
                     "min_km": min(numeric_kms) if numeric_kms else None,
                     "max_km": max(numeric_kms) if numeric_kms else None,
                     "optimal_ph": sum(phs) / len(phs) if phs else None,
@@ -305,9 +297,7 @@ def compare_across_organisms(
 
         except Exception as e:
             print(f"Error comparing organism {organism}: {e}")
-            comparison.append(
-                {"organism": organism, "ec_number": ec_number, "error": str(e)}
-            )
+            comparison.append({"organism": organism, "ec_number": ec_number, "error": str(e)})
 
     return comparison
 
@@ -358,9 +348,7 @@ def get_environmental_parameters(ec_number: str) -> dict[str, Any]:
             commentary = parsed.get("commentary", "").lower()
             if "stable" in commentary and "ph" in commentary:
                 # Extract pH stability range
-                ph_range_match = re.search(
-                    r"ph\s*([\d.]+)\s*[-–]\s*([\d.]+)", commentary
-                )
+                ph_range_match = re.search(r"ph\s*([\d.]+)\s*[-–]\s*([\d.]+)", commentary)
                 if ph_range_match:
                     ph_stabilities.append(
                         (float(ph_range_match.group(1)), float(ph_range_match.group(2)))
@@ -370,9 +358,7 @@ def get_environmental_parameters(ec_number: str) -> dict[str, Any]:
                 # Extract temperature stability
                 temp_match = re.search(r"(\d+)\s*[-–]\s*(\d+)\s*°?c", commentary)
                 if temp_match:
-                    temp_stabilities.append(
-                        (int(temp_match.group(1)), int(temp_match.group(2)))
-                    )
+                    temp_stabilities.append((int(temp_match.group(1)), int(temp_match.group(2))))
 
         params = {
             "ec_number": ec_number,
@@ -382,9 +368,7 @@ def get_environmental_parameters(ec_number: str) -> dict[str, Any]:
             "optimal_temperature": (
                 sum(temperatures) / len(temperatures) if temperatures else None
             ),
-            "temperature_range": (
-                (min(temperatures), max(temperatures)) if temperatures else None
-            ),
+            "temperature_range": ((min(temperatures), max(temperatures)) if temperatures else None),
             "stability_ph": ph_stabilities[0] if ph_stabilities else None,
             "temperature_stability": temp_stabilities[0] if temp_stabilities else None,
         }
@@ -436,11 +420,7 @@ def get_cofactor_requirements(ec_number: str) -> list[dict[str, Any]]:
                                 {
                                     "name": cofactor,
                                     "full_name": reactant,
-                                    "type": (
-                                        "oxidoreductase"
-                                        if "NAD" in cofactor
-                                        else "other"
-                                    ),
+                                    "type": ("oxidoreductase" if "NAD" in cofactor else "other"),
                                     "organism": parsed.get("organism", ""),
                                     "ec_number": ec_number,
                                 }
@@ -486,9 +466,7 @@ def get_substrate_specificity(ec_number: str) -> list[dict[str, Any]]:
                         "kcat_values": [],  # If available
                     }
 
-                substrate_data[substrate]["km_values"].append(
-                    parsed["km_value_numeric"]
-                )
+                substrate_data[substrate]["km_values"].append(parsed["km_value_numeric"])
                 if "organism" in parsed:
                     substrate_data[substrate]["organisms"].add(parsed["organism"])
 
@@ -578,8 +556,7 @@ def get_inhibitors(ec_number: str) -> list[dict[str, Any]]:
                                 "name": inhibitor,
                                 "type": (
                                     "irreversible"
-                                    if "iodoacetate" in inhibitor
-                                    or "maleimide" in inhibitor
+                                    if "iodoacetate" in inhibitor or "maleimide" in inhibitor
                                     else "reversible"
                                 ),
                                 "organism": parsed.get("organism", ""),
@@ -653,11 +630,7 @@ def get_activators(ec_number: str) -> list[dict[str, Any]]:
                                 "mechanism": (
                                     "allosteric"
                                     if "allosteric" in commentary
-                                    else (
-                                        "cofactor"
-                                        if "cofactor" in commentary
-                                        else "unknown"
-                                    )
+                                    else ("cofactor" if "cofactor" in commentary else "unknown")
                                 ),
                                 "organism": parsed.get("organism", ""),
                                 "ec_number": ec_number,
@@ -680,9 +653,7 @@ def get_activators(ec_number: str) -> list[dict[str, Any]]:
     return unique_activators
 
 
-def find_thermophilic_homologs(
-    ec_number: str, min_temp: int = 50
-) -> list[dict[str, Any]]:
+def find_thermophilic_homologs(ec_number: str, min_temp: int = 50) -> list[dict[str, Any]]:
     """Find thermophilic homologs of an enzyme."""
     validate_dependencies()
 
@@ -765,9 +736,7 @@ def find_ph_stable_variants(
                             "ph_range": ph_range,
                             "optimal_ph": sum(phs) / len(phs),
                             "km": sum(kms) / len(kms) if kms else None,
-                            "stability_type": (
-                                "alkaline" if is_alkaline_stable else "acidic"
-                            ),
+                            "stability_type": ("alkaline" if is_alkaline_stable else "acidic"),
                             "data_points": len(km_data),
                         }
                     )
@@ -850,9 +819,7 @@ def get_modeling_parameters(ec_number: str, substrate: str = None) -> dict[str, 
         return {"ec_number": ec_number, "error": str(e)}
 
 
-def export_kinetic_data(
-    ec_number: str, format: str = "csv", filename: str = None
-) -> str:
+def export_kinetic_data(ec_number: str, format: str = "csv", filename: str = None) -> str:
     """Export kinetic data to file."""
     validate_dependencies()
 

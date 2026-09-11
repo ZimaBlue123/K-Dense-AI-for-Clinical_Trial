@@ -110,10 +110,7 @@ query = """
 }
 """
 
-response = requests.post(
-    "https://data.rcsb.org/graphql",
-    json={"query": query}
-)
+response = requests.post("https://data.rcsb.org/graphql", json={"query": query})
 data = response.json()
 ```
 
@@ -175,22 +172,14 @@ from rcsbapi.search import AttributeQuery
 from rcsbapi.search.attrs import rcsb_entry_info
 
 # High-resolution structures
-query = AttributeQuery(
-    attribute=rcsb_entry_info.resolution_combined,
-    operator="less",
-    value=2.0
-)
+query = AttributeQuery(attribute=rcsb_entry_info.resolution_combined, operator="less", value=2.0)
 ```
 
 **Experimental Method:**
 ```python
 from rcsbapi.search.attrs import exptl
 
-query = AttributeQuery(
-    attribute=exptl.method,
-    operator="exact_match",
-    value="X-RAY DIFFRACTION"
-)
+query = AttributeQuery(attribute=exptl.method, operator="exact_match", value="X-RAY DIFFRACTION")
 ```
 
 **Organism:**
@@ -200,7 +189,7 @@ from rcsbapi.search.attrs import rcsb_entity_source_organism
 query = AttributeQuery(
     attribute=rcsb_entity_source_organism.scientific_name,
     operator="exact_match",
-    value="Homo sapiens"
+    value="Homo sapiens",
 )
 ```
 
@@ -211,7 +200,7 @@ from rcsbapi.search.attrs import rcsb_polymer_entity
 query = AttributeQuery(
     attribute=rcsb_polymer_entity.formula_weight,
     operator="range",
-    value=(10000, 50000)  # 10-50 kDa
+    value=(10000, 50000),  # 10-50 kDa
 )
 ```
 
@@ -223,7 +212,7 @@ from rcsbapi.search.attrs import rcsb_accession_info
 query = AttributeQuery(
     attribute=rcsb_accession_info.initial_release_date,
     operator="range",
-    value=("2024-01-01", "2024-12-31")
+    value=("2024-01-01", "2024-12-31"),
 )
 ```
 
@@ -238,7 +227,7 @@ from rcsbapi.search import SequenceQuery
 query = SequenceQuery(
     value="MTEYKLVVVGAGGVGKSALTIQLIQNHFVDEYDPTIEDSYRKQVVIDGETCLLDILDTAGQEEYSAMRDQYMRTGEGFLCVFAINNTKSFEDIHHYREQIKRVKDSEDVPMVLVGNKCDLPSRTVDTKQAQDLARSYGIPFIETSAKTRQGVDDAFYTLVREIRKHKEKMSKDGKKKKKKSKTKCVIM",
     evalue_cutoff=0.1,
-    identity_cutoff=0.9
+    identity_cutoff=0.9,
 )
 
 # With sequence type specified
@@ -246,7 +235,7 @@ query = SequenceQuery(
     value="ACGTACGTACGT",
     evalue_cutoff=1e-5,
     identity_cutoff=0.8,
-    sequence_type="dna"  # or "rna" or "protein"
+    sequence_type="dna",  # or "rna" or "protein"
 )
 ```
 
@@ -258,24 +247,13 @@ Find structures with similar 3D geometry using BioZernike:
 from rcsbapi.search import StructSimilarityQuery
 
 # Search by entry
-query = StructSimilarityQuery(
-    structure_search_type="entry",
-    entry_id="4HHB"
-)
+query = StructSimilarityQuery(structure_search_type="entry", entry_id="4HHB")
 
 # Search by chain
-query = StructSimilarityQuery(
-    structure_search_type="chain",
-    entry_id="4HHB",
-    chain_id="A"
-)
+query = StructSimilarityQuery(structure_search_type="chain", entry_id="4HHB", chain_id="A")
 
 # Search by assembly
-query = StructSimilarityQuery(
-    structure_search_type="assembly",
-    entry_id="4HHB",
-    assembly_id="1"
-)
+query = StructSimilarityQuery(structure_search_type="assembly", entry_id="4HHB", assembly_id="1")
 ```
 
 ### Combining Queries
@@ -291,7 +269,7 @@ query1 = TextQuery("kinase")
 query2 = AttributeQuery(
     attribute=rcsb_entity_source_organism.scientific_name,
     operator="exact_match",
-    value="Homo sapiens"
+    value="Homo sapiens",
 )
 combined = query1 & query2
 
@@ -299,37 +277,31 @@ combined = query1 & query2
 organism1 = AttributeQuery(
     attribute=rcsb_entity_source_organism.scientific_name,
     operator="exact_match",
-    value="Homo sapiens"
+    value="Homo sapiens",
 )
 organism2 = AttributeQuery(
     attribute=rcsb_entity_source_organism.scientific_name,
     operator="exact_match",
-    value="Mus musculus"
+    value="Mus musculus",
 )
 combined = organism1 | organism2
 
 # NOT operation (~)
 all_structures = TextQuery("protein")
 low_res = AttributeQuery(
-    attribute=rcsb_entry_info.resolution_combined,
-    operator="greater",
-    value=3.0
+    attribute=rcsb_entry_info.resolution_combined, operator="greater", value=3.0
 )
 high_res_only = all_structures & (~low_res)
 
 # Complex combinations
 high_res_human_kinases = (
-    TextQuery("kinase") &
-    AttributeQuery(
+    TextQuery("kinase")
+    & AttributeQuery(
         attribute=rcsb_entity_source_organism.scientific_name,
         operator="exact_match",
-        value="Homo sapiens"
-    ) &
-    AttributeQuery(
-        attribute=rcsb_entry_info.resolution_combined,
-        operator="less",
-        value=2.5
+        value="Homo sapiens",
     )
+    & AttributeQuery(attribute=rcsb_entry_info.resolution_combined, operator="less", value=2.5)
 )
 ```
 
@@ -389,6 +361,7 @@ https://www.rcsb.org/fasta/entry/{PDB_ID}
 ```python
 import requests
 
+
 def download_pdb_file(pdb_id, format="pdb", output_dir="."):
     """
     Download PDB structure file.
@@ -412,6 +385,7 @@ def download_pdb_file(pdb_id, format="pdb", output_dir="."):
         print(f"Error downloading {pdb_id}: {response.status_code}")
         return None
 
+
 # Usage
 download_pdb_file("4HHB", format="pdb")
 download_pdb_file("4HHB", format="cif")
@@ -431,6 +405,7 @@ download_pdb_file("4HHB", format="cif")
 ```python
 import time
 import requests
+
 
 def fetch_with_retry(url, max_retries=5, initial_delay=1):
     """
@@ -471,6 +446,7 @@ import time
 from rcsbapi.search import TextQuery
 from rcsbapi.data import fetch, Schema
 
+
 def batch_fetch_structures(query, delay=0.5):
     """
     Fetch structures matching a query with rate limiting.
@@ -489,7 +465,7 @@ def batch_fetch_structures(query, delay=0.5):
         try:
             data = fetch(pdb_id, schema=Schema.ENTRY)
             results[pdb_id] = data
-            print(f"Fetched {i+1}/{len(pdb_ids)}: {pdb_id}")
+            print(f"Fetched {i + 1}/{len(pdb_ids)}: {pdb_id}")
             time.sleep(delay)  # Rate limiting
         except Exception as e:
             print(f"Error fetching {pdb_id}: {e}")
@@ -503,13 +479,16 @@ def batch_fetch_structures(query, delay=0.5):
 
 ```python
 from rcsbapi.search import AttributeQuery
-from rcsbapi.search.attrs import rcsb_polymer_entity, rcsb_nonpolymer_entity_instance_container_identifiers
+from rcsbapi.search.attrs import (
+    rcsb_polymer_entity,
+    rcsb_nonpolymer_entity_instance_container_identifiers,
+)
 
 # Find structures with specific drug molecule
 query = AttributeQuery(
     attribute=rcsb_nonpolymer_entity_instance_container_identifiers.comp_id,
     operator="exact_match",
-    value="ATP"  # or other ligand code
+    value="ATP",  # or other ligand code
 )
 
 results = list(query())
@@ -524,16 +503,10 @@ from rcsbapi.search.attrs import rcsb_entry_info, refine
 
 # High-quality X-ray structures
 resolution_query = AttributeQuery(
-    attribute=rcsb_entry_info.resolution_combined,
-    operator="less",
-    value=2.0
+    attribute=rcsb_entry_info.resolution_combined, operator="less", value=2.0
 )
 
-rfactor_query = AttributeQuery(
-    attribute=refine.ls_R_factor_R_free,
-    operator="less",
-    value=0.25
-)
+rfactor_query = AttributeQuery(attribute=refine.ls_R_factor_R_free, operator="less", value=0.25)
 
 high_quality = resolution_query & rfactor_query
 results = list(high_quality())
@@ -554,7 +527,7 @@ today = datetime.date.today().isoformat()
 query = AttributeQuery(
     attribute=rcsb_accession_info.initial_release_date,
     operator="range",
-    value=(one_month_ago, today)
+    value=(one_month_ago, today),
 )
 
 recent_structures = list(query())
@@ -595,14 +568,14 @@ print(query.to_dict())  # See query structure
 
 # Check query JSON
 import json
+
 print(json.dumps(query.to_dict(), indent=2))
 
 # Test with curl
 import subprocess
+
 result = subprocess.run(
-    ["curl", "https://data.rcsb.org/rest/v1/core/entry/4HHB"],
-    capture_output=True,
-    text=True
+    ["curl", "https://data.rcsb.org/rest/v1/core/entry/4HHB"], capture_output=True, text=True
 )
 print(result.stdout)
 ```

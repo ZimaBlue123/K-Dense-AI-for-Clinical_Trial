@@ -49,9 +49,7 @@ def check_bed_file(bed_file):
     """Basic validation of BED file format."""
     try:
         with open(bed_file) as f:
-            lines = [
-                line.strip() for line in f if line.strip() and not line.startswith("#")
-            ]
+            lines = [line.strip() for line in f if line.strip() and not line.startswith("#")]
 
         if len(lines) == 0:
             return False, f"✗ BED file is empty: {bed_file}"

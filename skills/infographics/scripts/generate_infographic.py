@@ -153,19 +153,11 @@ Environment Variables:
         """,
     )
 
-    parser.add_argument(
-        "prompt", nargs="?", help="Description of the infographic content"
-    )
+    parser.add_argument("prompt", nargs="?", help="Description of the infographic content")
     parser.add_argument("-o", "--output", help="Output file path")
-    parser.add_argument(
-        "--type", "-t", choices=INFOGRAPHIC_TYPES, help="Infographic type preset"
-    )
-    parser.add_argument(
-        "--style", "-s", choices=STYLE_PRESETS, help="Industry style preset"
-    )
-    parser.add_argument(
-        "--palette", "-p", choices=PALETTE_PRESETS, help="Colorblind-safe palette"
-    )
+    parser.add_argument("--type", "-t", choices=INFOGRAPHIC_TYPES, help="Infographic type preset")
+    parser.add_argument("--style", "-s", choices=STYLE_PRESETS, help="Industry style preset")
+    parser.add_argument("--palette", "-p", choices=PALETTE_PRESETS, help="Colorblind-safe palette")
     parser.add_argument(
         "--background", "-b", default="white", help="Background color (default: white)"
     )
@@ -181,9 +173,7 @@ Environment Variables:
         default=3,
         help="Maximum refinement iterations (default: 3)",
     )
-    parser.add_argument(
-        "--api-key", help="OpenRouter API key (or use OPENROUTER_API_KEY env var)"
-    )
+    parser.add_argument("--api-key", help="OpenRouter API key (or use OPENROUTER_API_KEY env var)")
     parser.add_argument("-v", "--verbose", action="store_true", help="Verbose output")
     parser.add_argument(
         "--research",

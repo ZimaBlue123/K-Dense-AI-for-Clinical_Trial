@@ -33,7 +33,7 @@ Search UniProt using natural language queries or structured search syntax.
 **Common search patterns:**
 ```python
 # Search by protein name
-query = "insulin AND organism_name:\"Homo sapiens\""
+query = 'insulin AND organism_name:"Homo sapiens"'
 
 # Search by gene name
 query = "gene:BRCA1 AND reviewed:true"

@@ -367,9 +367,7 @@ IMPORTANT - NO META CONTENT:
 
     # ========== RESEARCH METHODS ==========
 
-    def research_topic(
-        self, topic: str, infographic_type: str | None = None
-    ) -> dict[str, Any]:
+    def research_topic(self, topic: str, infographic_type: str | None = None) -> dict[str, Any]:
         """
         Research a topic using Perplexity Sonar Pro to gather facts and data.
 
@@ -386,29 +384,19 @@ IMPORTANT - NO META CONTENT:
         type_context = ""
         if infographic_type:
             if infographic_type == "statistical":
-                type_context = (
-                    "Focus on statistics, numbers, percentages, and quantitative data."
-                )
+                type_context = "Focus on statistics, numbers, percentages, and quantitative data."
             elif infographic_type == "timeline":
-                type_context = (
-                    "Focus on key dates, milestones, and chronological events."
-                )
+                type_context = "Focus on key dates, milestones, and chronological events."
             elif infographic_type == "process":
                 type_context = "Focus on steps, procedures, and sequential information."
             elif infographic_type == "comparison":
-                type_context = (
-                    "Focus on comparing different options, pros/cons, and differences."
-                )
+                type_context = "Focus on comparing different options, pros/cons, and differences."
             elif infographic_type == "list":
-                type_context = (
-                    "Focus on key points, tips, facts, and organized information."
-                )
+                type_context = "Focus on key points, tips, facts, and organized information."
             elif infographic_type == "geographic":
                 type_context = "Focus on regional data, location-based statistics, and geographic distribution."
             elif infographic_type == "hierarchical":
-                type_context = (
-                    "Focus on levels, rankings, and hierarchical relationships."
-                )
+                type_context = "Focus on levels, rankings, and hierarchical relationships."
 
         research_prompt = f"""You are a research assistant gathering information for an infographic.
 
@@ -563,9 +551,7 @@ Be concise and factual. Focus on information useful for an infographic."""
             self._log(f"Web search failed: {str(e)}")
             return {"success": False, "error": str(e)}
 
-    def _enhance_prompt_with_research(
-        self, user_prompt: str, research_data: dict[str, Any]
-    ) -> str:
+    def _enhance_prompt_with_research(self, user_prompt: str, research_data: dict[str, Any]) -> str:
         """
         Enhance the user prompt with researched information.
 
@@ -582,7 +568,7 @@ Be concise and factual. Focus on information useful for an infographic."""
         enhanced = f"""{user_prompt}
 
 RESEARCHED DATA AND FACTS (use these in the infographic):
-{research_data['content']}
+{research_data["content"]}
 
 Use the above researched facts, statistics, and data points to create an accurate, informative infographic.
 Incorporate specific numbers, percentages, and dates from the research."""
@@ -664,13 +650,9 @@ Incorporate specific numbers, percentages, and dates from the research."""
                             if "," in url:
                                 base64_str = url.split(",", 1)[1]
                                 base64_str = (
-                                    base64_str.replace("\n", "")
-                                    .replace("\r", "")
-                                    .replace(" ", "")
+                                    base64_str.replace("\n", "").replace("\r", "").replace(" ", "")
                                 )
-                                self._log(
-                                    f"Extracted base64 data (length: {len(base64_str)})"
-                                )
+                                self._log(f"Extracted base64 data (length: {len(base64_str)})")
                                 return base64.b64decode(base64_str)
 
             # Fallback: check content field
@@ -683,15 +665,8 @@ Incorporate specific numbers, percentages, and dates from the research."""
                     r"data:image/[^;]+;base64,([A-Za-z0-9+/=\n\r]+)", content, re.DOTALL
                 )
                 if match:
-                    base64_str = (
-                        match.group(1)
-                        .replace("\n", "")
-                        .replace("\r", "")
-                        .replace(" ", "")
-                    )
-                    self._log(
-                        f"Found image in content field (length: {len(base64_str)})"
-                    )
+                    base64_str = match.group(1).replace("\n", "").replace("\r", "").replace(" ", "")
+                    self._log(f"Found image in content field (length: {len(base64_str)})")
                     return base64.b64decode(base64_str)
 
             if isinstance(content, list):
@@ -955,12 +930,8 @@ If score < {threshold}, mark as NEEDS_IMPROVEMENT with specific suggestions."""
             if "NEEDS_IMPROVEMENT" in content.upper() or score < threshold:
                 needs_improvement = True
 
-            self._log(
-                f"✓ Review complete (Score: {score}/10, Threshold: {threshold}/10)"
-            )
-            self._log(
-                f"  Verdict: {'Needs improvement' if needs_improvement else 'Acceptable'}"
-            )
+            self._log(f"✓ Review complete (Score: {score}/10, Threshold: {threshold}/10)")
+            self._log(f"  Verdict: {'Needs improvement' if needs_improvement else 'Acceptable'}")
 
             return (
                 content if content else "Image generated successfully",
@@ -1081,9 +1052,9 @@ Generate an improved version that:
             "early_stop_reason": None,
         }
 
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print("Generating Infographic with Nano Banana Pro")
-        print(f"{'='*60}")
+        print(f"{'=' * 60}")
         print(f"Content: {user_prompt}")
         print(f"Type: {type_name}")
         print(f"Style: {style_name}")
@@ -1091,7 +1062,7 @@ Generate an improved version that:
         print(f"Quality Threshold: {threshold}/10")
         print(f"Max Iterations: {iterations}")
         print(f"Output: {output_path}")
-        print(f"{'='*60}\n")
+        print(f"{'=' * 60}\n")
 
         # ===== RESEARCH PHASE =====
         enhanced_prompt = user_prompt
@@ -1107,9 +1078,7 @@ Generate an improved version that:
                 results["research_data"] = research_result
 
                 # Enhance the prompt with researched data
-                enhanced_prompt = self._enhance_prompt_with_research(
-                    user_prompt, research_result
-                )
+                enhanced_prompt = self._enhance_prompt_with_research(user_prompt, research_result)
 
                 # Save research data to file
                 research_path = output_dir / f"{base_name}_research.json"
@@ -1117,9 +1086,7 @@ Generate an improved version that:
                     json.dump(research_result, f, indent=2)
                 print(f"✓ Research saved: {research_path}")
             else:
-                print(
-                    f"⚠ Research failed: {research_result.get('error', 'Unknown error')}"
-                )
+                print(f"⚠ Research failed: {research_result.get('error', 'Unknown error')}")
                 print("  Proceeding with original prompt...")
 
         # Build initial prompt (using enhanced prompt if research was done)
@@ -1138,9 +1105,7 @@ Generate an improved version that:
             if not image_data:
                 error_msg = getattr(self, "_last_error", "Generation failed")
                 print(f"✗ Generation failed: {error_msg}")
-                results["iterations"].append(
-                    {"iteration": i, "success": False, "error": error_msg}
-                )
+                results["iterations"].append({"iteration": i, "success": False, "error": error_msg})
                 continue
 
             # Save iteration image
@@ -1176,9 +1141,7 @@ Generate an improved version that:
                 results["final_score"] = score
                 results["success"] = True
                 results["early_stop"] = True
-                results["early_stop_reason"] = (
-                    f"Quality score {score} meets threshold {threshold}"
-                )
+                results["early_stop_reason"] = f"Quality score {score} meets threshold {threshold}"
                 break
 
             # If this is the last iteration, we're done
@@ -1217,15 +1180,13 @@ Generate an improved version that:
             json.dump(results, f, indent=2)
         print(f"✓ Review log: {log_path}")
 
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print("Generation Complete!")
         print(f"Final Score: {results['final_score']}/10")
         if results["early_stop"]:
-            iterations_used = len(
-                [r for r in results["iterations"] if r.get("success")]
-            )
+            iterations_used = len([r for r in results["iterations"] if r.get("success")])
             print(f"Iterations Used: {iterations_used}/{iterations} (early stop)")
-        print(f"{'='*60}\n")
+        print(f"{'=' * 60}\n")
 
         return results
 
@@ -1332,9 +1293,7 @@ Environment:
         ],
         help="Document type for quality threshold (default: default)",
     )
-    parser.add_argument(
-        "--api-key", help="OpenRouter API key (or set OPENROUTER_API_KEY)"
-    )
+    parser.add_argument("--api-key", help="OpenRouter API key (or set OPENROUTER_API_KEY)")
     parser.add_argument("-v", "--verbose", action="store_true", help="Verbose output")
     parser.add_argument(
         "--research",
@@ -1371,12 +1330,8 @@ Environment:
         if results["success"]:
             print(f"\n✓ Success! Infographic saved to: {args.output}")
             if results.get("early_stop"):
-                iterations_used = len(
-                    [r for r in results["iterations"] if r.get("success")]
-                )
-                print(
-                    f"  (Completed in {iterations_used} iteration(s) - quality threshold met)"
-                )
+                iterations_used = len([r for r in results["iterations"] if r.get("success")])
+                print(f"  (Completed in {iterations_used} iteration(s) - quality threshold met)")
             sys.exit(0)
         else:
             print("\n✗ Generation failed. Check review log for details.")

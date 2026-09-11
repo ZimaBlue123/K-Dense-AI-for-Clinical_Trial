@@ -8,7 +8,7 @@ searches = zot.searches()
 # Returns list of dicts with name, key, conditions, version
 
 for search in searches:
-    print(search['data']['name'], search['data']['key'])
+    print(search["data"]["name"], search["data"]["key"])
 ```
 
 **Note**: Saved search *results* cannot be retrieved via the API (as of 2025). Only metadata is returned.
@@ -18,25 +18,19 @@ for search in searches:
 Each condition dict must have `condition`, `operator`, and `value`:
 
 ```python
-conditions = [
-    {
-        'condition': 'title',
-        'operator': 'contains',
-        'value': 'machine learning'
-    }
-]
-zot.saved_search('ML Papers', conditions)
+conditions = [{"condition": "title", "operator": "contains", "value": "machine learning"}]
+zot.saved_search("ML Papers", conditions)
 ```
 
 ### Multiple Conditions (AND logic)
 
 ```python
 conditions = [
-    {'condition': 'itemType', 'operator': 'is', 'value': 'journalArticle'},
-    {'condition': 'tag', 'operator': 'is', 'value': 'unread'},
-    {'condition': 'date', 'operator': 'isAfter', 'value': '2023-01-01'},
+    {"condition": "itemType", "operator": "is", "value": "journalArticle"},
+    {"condition": "tag", "operator": "is", "value": "unread"},
+    {"condition": "date", "operator": "isAfter", "value": "2023-01-01"},
 ]
-zot.saved_search('Recent Unread Articles', conditions)
+zot.saved_search("Recent Unread Articles", conditions)
 ```
 
 ## Deleting Saved Searches
@@ -44,7 +38,7 @@ zot.saved_search('Recent Unread Articles', conditions)
 ```python
 # Get search keys first
 searches = zot.searches()
-keys = [s['data']['key'] for s in searches if s['data']['name'] == 'Old Search']
+keys = [s["data"]["key"] for s in searches if s["data"]["name"] == "Old Search"]
 zot.delete_saved_search(keys)
 ```
 
@@ -58,7 +52,7 @@ operators = zot.show_operators()
 conditions = zot.show_conditions()
 
 # Operators valid for a specific condition
-title_operators = zot.show_condition_operators('title')
+title_operators = zot.show_condition_operators("title")
 # e.g. ['is', 'isNot', 'contains', 'doesNotContain', 'beginsWith']
 ```
 

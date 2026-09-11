@@ -20,11 +20,7 @@ Average interest rates for marketable and non-marketable Treasury securities, br
 # Get average rates for all marketable securities, most recent month
 resp = requests.get(
     "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v2/accounting/od/avg_interest_rates",
-    params={
-        "filter": "security_type_desc:eq:Marketable",
-        "sort": "-record_date",
-        "page[size]": 50
-    }
+    params={"filter": "security_type_desc:eq:Marketable", "sort": "-record_date", "page[size]": 50},
 )
 df = pd.DataFrame(resp.json()["data"])
 latest = df[df["record_date"] == df["record_date"].max()]
@@ -36,8 +32,8 @@ resp = requests.get(
     params={
         "fields": "record_date,avg_interest_rate_amt",
         "filter": "security_desc:eq:Treasury Notes,record_date:gte:2010-01-01",
-        "sort": "-record_date"
-    }
+        "sort": "-record_date",
+    },
 )
 ```
 
@@ -78,7 +74,7 @@ Official Treasury exchange rates for foreign currencies used by federal agencies
 # Get all current exchange rates (latest quarter)
 resp = requests.get(
     "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v1/accounting/od/rates_of_exchange",
-    params={"sort": "-record_date", "page[size]": 200}
+    params={"sort": "-record_date", "page[size]": 200},
 )
 df = pd.DataFrame(resp.json()["data"])
 latest_date = df["record_date"].max()
@@ -93,8 +89,8 @@ resp = requests.get(
         "fields": "record_date,exchange_rate",
         "filter": "country_currency_desc:eq:Euro Zone-Euro",
         "sort": "-record_date",
-        "page[size]": 100
-    }
+        "page[size]": 100,
+    },
 )
 euro_df = pd.DataFrame(resp.json()["data"])
 euro_df["exchange_rate"] = euro_df["exchange_rate"].astype(float)

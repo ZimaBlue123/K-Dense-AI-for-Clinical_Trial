@@ -23,10 +23,7 @@ Qiskit is backend-agnostic and supports execution on simulators and real quantum
 from qiskit_ibm_runtime import QiskitRuntimeService
 
 # First time: save credentials
-QiskitRuntimeService.save_account(
-    channel="ibm_quantum",
-    token="YOUR_IBM_QUANTUM_TOKEN"
-)
+QiskitRuntimeService.save_account(channel="ibm_quantum", token="YOUR_IBM_QUANTUM_TOKEN")
 
 # Subsequent sessions: load credentials
 service = QiskitRuntimeService()
@@ -229,7 +226,7 @@ result = job.result()
 
 ```python
 # Use GPU for faster simulation
-simulator = AerSimulator(method='statevector', device='GPU')
+simulator = AerSimulator(method="statevector", device="GPU")
 ```
 
 ## Third-Party Providers
@@ -383,7 +380,7 @@ import time
 
 job = sampler.run([qc], shots=1024)
 
-while job.status().name not in ['DONE', 'ERROR', 'CANCELLED']:
+while job.status().name not in ["DONE", "ERROR", "CANCELLED"]:
     print(f"Status: {job.status().name}")
     time.sleep(10)
 
@@ -401,11 +398,7 @@ print([b.name for b in service.backends()])
 ### Issue: "Invalid credentials"
 ```python
 # Re-save credentials
-QiskitRuntimeService.save_account(
-    channel="ibm_quantum",
-    token="YOUR_TOKEN",
-    overwrite=True
-)
+QiskitRuntimeService.save_account(channel="ibm_quantum", token="YOUR_TOKEN", overwrite=True)
 ```
 
 ### Issue: Long queue times

@@ -138,15 +138,12 @@ model = models.RotatE(
     num_entity=dataset.num_entity,
     num_relation=dataset.num_relation,
     embedding_dim=2000,
-    max_score=9
+    max_score=9,
 )
 
 # Define task
 task = tasks.KnowledgeGraphCompletion(
-    model,
-    num_negative=128,
-    adversarial_temperature=2,
-    criterion="bce"
+    model, num_negative=128, adversarial_temperature=2, criterion="bce"
 )
 
 # Train with PyTorch Lightning or custom loop

@@ -63,11 +63,7 @@ Get geographic shape files in GeoJSON format for mapping.
 ```python
 # Get US state boundaries
 response = requests.get(
-    "https://api.stlouisfed.org/geofred/shapes/file",
-    params={
-        "api_key": API_KEY,
-        "shape": "state"
-    }
+    "https://api.stlouisfed.org/geofred/shapes/file", params={"api_key": API_KEY, "shape": "state"}
 )
 geojson = response.json()
 ```
@@ -111,8 +107,7 @@ import plotly.express as px
 
 # Get shapes
 shapes = requests.get(
-    "https://api.stlouisfed.org/geofred/shapes/file",
-    params={"api_key": API_KEY, "shape": "state"}
+    "https://api.stlouisfed.org/geofred/shapes/file", params={"api_key": API_KEY, "shape": "state"}
 ).json()
 
 # Get unemployment data
@@ -126,8 +121,8 @@ data = requests.get(
         "units": "Percent",
         "frequency": "a",
         "season": "NSA",
-        "file_type": "json"
-    }
+        "file_type": "json",
+    },
 ).json()
 
 # Create choropleth
@@ -138,7 +133,7 @@ fig = px.choropleth(
     featureidkey="properties.fips",
     color="value",
     scope="usa",
-    title="Unemployment Rate by State"
+    title="Unemployment Rate by State",
 )
 fig.show()
 ```
@@ -170,11 +165,7 @@ Get meta information for a regional data series.
 # Get info about Texas employment series
 response = requests.get(
     "https://api.stlouisfed.org/geofred/series/group",
-    params={
-        "api_key": API_KEY,
-        "series_id": "TXNA",
-        "file_type": "json"
-    }
+    params={"api_key": API_KEY, "series_id": "TXNA", "file_type": "json"},
 )
 ```
 
@@ -241,12 +232,7 @@ Get regional data for a specific series.
 # Get Wisconsin per capita income data
 response = requests.get(
     "https://api.stlouisfed.org/geofred/series/data",
-    params={
-        "api_key": API_KEY,
-        "series_id": "WIPCPI",
-        "file_type": "json",
-        "date": "2022-01-01"
-    }
+    params={"api_key": API_KEY, "series_id": "WIPCPI", "file_type": "json", "date": "2022-01-01"},
 )
 ```
 
@@ -346,8 +332,8 @@ response = requests.get(
         "units": "Percent",
         "frequency": "a",
         "season": "NSA",
-        "file_type": "json"
-    }
+        "file_type": "json",
+    },
 )
 ```
 
@@ -394,8 +380,8 @@ response = requests.get(
         "units": "Dollars",
         "frequency": "a",
         "season": "NSA",
-        "file_type": "json"
-    }
+        "file_type": "json",
+    },
 )
 ```
 
@@ -412,8 +398,8 @@ response = requests.get(
         "units": "Millions of Chained 2017 Dollars",
         "frequency": "a",
         "season": "NSA",
-        "file_type": "json"
-    }
+        "file_type": "json",
+    },
 )
 ```
 
@@ -441,7 +427,7 @@ def get_state_dashboard(api_key, state_code, date):
     indicators = {
         "unemployment": {"group": "1220", "units": "Percent"},
         "income": {"group": "882", "units": "Dollars"},
-        "employment": {"group": "1223", "units": "Thousands of Persons"}
+        "employment": {"group": "1223", "units": "Thousands of Persons"},
     }
 
     dashboard = {}
@@ -457,8 +443,8 @@ def get_state_dashboard(api_key, state_code, date):
                 "units": params["units"],
                 "frequency": "a",
                 "season": "NSA",
-                "file_type": "json"
-            }
+                "file_type": "json",
+            },
         )
         data = response.json()
 
@@ -468,11 +454,12 @@ def get_state_dashboard(api_key, state_code, date):
                 dashboard[name] = {
                     "value": region["value"],
                     "units": params["units"],
-                    "series_id": region["series_id"]
+                    "series_id": region["series_id"],
                 }
                 break
 
     return dashboard
+
 
 # Get California dashboard
 ca_data = get_state_dashboard(API_KEY, "06", "2023-01-01")
@@ -484,13 +471,14 @@ ca_data = get_state_dashboard(API_KEY, "06", "2023-01-01")
 import pandas as pd
 import plotly.express as px
 
+
 def create_state_map(api_key, series_group, date, title):
     """Create a choropleth map of state-level data."""
 
     # Get shapes
     shapes = requests.get(
         f"https://api.stlouisfed.org/geofred/shapes/file",
-        params={"api_key": api_key, "shape": "state"}
+        params={"api_key": api_key, "shape": "state"},
     ).json()
 
     # Get data
@@ -504,8 +492,8 @@ def create_state_map(api_key, series_group, date, title):
             "units": "Percent",
             "frequency": "a",
             "season": "NSA",
-            "file_type": "json"
-        }
+            "file_type": "json",
+        },
     )
     data = response.json()
 
@@ -523,17 +511,15 @@ def create_state_map(api_key, series_group, date, title):
         hover_name="region",
         scope="usa",
         title=title,
-        color_continuous_scale="RdYlGn_r"
+        color_continuous_scale="RdYlGn_r",
     )
 
     return fig
 
+
 # Create unemployment map
 map_fig = create_state_map(
-    API_KEY,
-    series_group="1220",
-    date="2023-01-01",
-    title="Unemployment Rate by State (2023)"
+    API_KEY, series_group="1220", date="2023-01-01", title="Unemployment Rate by State (2023)"
 )
 map_fig.show()
 ```
@@ -564,8 +550,8 @@ def get_regional_time_series(api_key, series_group, region_type, start_date, end
                 "units": "Percent",
                 "frequency": "a",
                 "season": "NSA",
-                "file_type": "json"
-            }
+                "file_type": "json",
+            },
         )
         data = response.json()
 
@@ -577,12 +563,13 @@ def get_regional_time_series(api_key, series_group, region_type, start_date, end
 
     return all_data
 
+
 # Get 5-year unemployment trends by state
 trends = get_regional_time_series(
     API_KEY,
     series_group="1220",
     region_type="state",
     start_date="2019-01-01",
-    end_date="2023-01-01"
+    end_date="2023-01-01",
 )
 ```

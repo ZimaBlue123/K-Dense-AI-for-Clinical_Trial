@@ -28,14 +28,17 @@ Change robots by swapping the backend without rewriting protocols:
 ```python
 # Hamilton STAR
 from pylabrobot.liquid_handling.backends import STAR
+
 lh = LiquidHandler(backend=STAR(), deck=STARLetDeck())
 
 # Opentrons OT-2
 from pylabrobot.liquid_handling.backends import OpentronsBackend
+
 lh = LiquidHandler(backend=OpentronsBackend(host="192.168.1.100"), deck=OTDeck())
 
 # Simulation (no hardware required)
 from pylabrobot.liquid_handling.backends.simulation import ChatterboxBackend
+
 lh = LiquidHandler(backend=ChatterboxBackend(), deck=STARLetDeck())
 ```
 
@@ -47,13 +50,13 @@ Picking up and dropping tips is fundamental to liquid handling operations:
 
 ```python
 # Pick up tips from specific positions
-await lh.pick_up_tips(tip_rack["A1"])           # Single tip
-await lh.pick_up_tips(tip_rack["A1:H1"])        # Row of 8 tips
-await lh.pick_up_tips(tip_rack["A1:A12"])       # Column of 12 tips
+await lh.pick_up_tips(tip_rack["A1"])  # Single tip
+await lh.pick_up_tips(tip_rack["A1:H1"])  # Row of 8 tips
+await lh.pick_up_tips(tip_rack["A1:A12"])  # Column of 12 tips
 
 # Drop tips
-await lh.drop_tips()                             # Drop at current location
-await lh.drop_tips(waste)                        # Drop at specific location
+await lh.drop_tips()  # Drop at current location
+await lh.drop_tips(waste)  # Drop at specific location
 
 # Return tips to original rack
 await lh.return_tips()
@@ -63,6 +66,7 @@ await lh.return_tips()
 
 ```python
 from pylabrobot.resources import set_tip_tracking
+
 set_tip_tracking(True)  # Enable globally
 ```
 
@@ -72,24 +76,24 @@ Draw liquid from wells or containers:
 
 ```python
 # Basic aspiration
-await lh.aspirate(plate["A1"], vols=100)         # 100 µL from A1
+await lh.aspirate(plate["A1"], vols=100)  # 100 µL from A1
 
 # Multiple wells with same volume
-await lh.aspirate(plate["A1:H1"], vols=100)      # 100 µL from each well
+await lh.aspirate(plate["A1:H1"], vols=100)  # 100 µL from each well
 
 # Multiple wells with different volumes
 await lh.aspirate(
     plate["A1:A3"],
-    vols=[100, 150, 200]                          # Different volumes
+    vols=[100, 150, 200],  # Different volumes
 )
 
 # Advanced parameters
 await lh.aspirate(
     plate["A1"],
     vols=100,
-    flow_rate=50,                                 # µL/s
-    liquid_height=5,                              # mm from bottom
-    blow_out_air_volume=10                        # µL air
+    flow_rate=50,  # µL/s
+    liquid_height=5,  # mm from bottom
+    blow_out_air_volume=10,  # µL air
 )
 ```
 
@@ -99,24 +103,21 @@ Dispense liquid into wells or containers:
 
 ```python
 # Basic dispensing
-await lh.dispense(plate["A2"], vols=100)         # 100 µL to A2
+await lh.dispense(plate["A2"], vols=100)  # 100 µL to A2
 
 # Multiple wells
-await lh.dispense(plate["A1:H1"], vols=100)      # 100 µL to each
+await lh.dispense(plate["A1:H1"], vols=100)  # 100 µL to each
 
 # Different volumes
-await lh.dispense(
-    plate["A1:A3"],
-    vols=[100, 150, 200]
-)
+await lh.dispense(plate["A1:A3"], vols=[100, 150, 200])
 
 # Advanced parameters
 await lh.dispense(
     plate["A2"],
     vols=100,
-    flow_rate=50,                                 # µL/s
-    liquid_height=2,                              # mm from bottom
-    blow_out_air_volume=10                        # µL air
+    flow_rate=50,  # µL/s
+    liquid_height=2,  # mm from bottom
+    blow_out_air_volume=10,  # µL air
 )
 ```
 
@@ -126,33 +127,17 @@ Transfer combines aspirate and dispense in a single operation:
 
 ```python
 # Basic transfer
-await lh.transfer(
-    source=source_plate["A1"],
-    dest=dest_plate["A1"],
-    vols=100
-)
+await lh.transfer(source=source_plate["A1"], dest=dest_plate["A1"], vols=100)
 
 # Multiple transfers (same tips)
-await lh.transfer(
-    source=source_plate["A1:H1"],
-    dest=dest_plate["A1:H1"],
-    vols=100
-)
+await lh.transfer(source=source_plate["A1:H1"], dest=dest_plate["A1:H1"], vols=100)
 
 # Different volumes per well
-await lh.transfer(
-    source=source_plate["A1:A3"],
-    dest=dest_plate["B1:B3"],
-    vols=[50, 100, 150]
-)
+await lh.transfer(source=source_plate["A1:A3"], dest=dest_plate["B1:B3"], vols=[50, 100, 150])
 
 # With tip handling
 await lh.pick_up_tips(tip_rack["A1:H1"])
-await lh.transfer(
-    source=source_plate["A1:H12"],
-    dest=dest_plate["A1:H12"],
-    vols=100
-)
+await lh.transfer(source=source_plate["A1:H12"], dest=dest_plate["A1:H12"], vols=100)
 await lh.drop_tips()
 ```
 
@@ -169,21 +154,17 @@ dest_vols = [0, 50, 50, 50, 50, 50, 50, 50]
 
 # Add diluent first
 await lh.pick_up_tips(tip_rack["A1"])
-await lh.transfer(
-    source=buffer["A1"],
-    dest=plate["A2:A8"],
-    vols=50
-)
+await lh.transfer(source=buffer["A1"], dest=plate["A2:A8"], vols=50)
 await lh.drop_tips()
 
 # Perform serial dilution
 await lh.pick_up_tips(tip_rack["A2"])
 for i in range(7):
-    await lh.aspirate(plate[f"A{i+1}"], vols=50)
-    await lh.dispense(plate[f"A{i+2}"], vols=50)
+    await lh.aspirate(plate[f"A{i + 1}"], vols=50)
+    await lh.dispense(plate[f"A{i + 2}"], vols=50)
     # Mix
-    await lh.aspirate(plate[f"A{i+2}"], vols=50)
-    await lh.dispense(plate[f"A{i+2}"], vols=50)
+    await lh.aspirate(plate[f"A{i + 2}"], vols=50)
+    await lh.dispense(plate[f"A{i + 2}"], vols=50)
 await lh.drop_tips()
 ```
 
@@ -198,9 +179,7 @@ await lh.pick_up_tips(tip_rack["A1:H1"])
 # Replicate 96-well plate (12 columns)
 for col in range(1, 13):
     await lh.transfer(
-        source=source_plate[f"A{col}:H{col}"],
-        dest=dest_plate[f"A{col}:H{col}"],
-        vols=100
+        source=source_plate[f"A{col}:H{col}"], dest=dest_plate[f"A{col}:H{col}"], vols=100
     )
 
 await lh.drop_tips()
@@ -213,20 +192,14 @@ Use multiple channels simultaneously for parallel operations:
 ```python
 # 8-channel transfer (entire row)
 await lh.pick_up_tips(tip_rack["A1:H1"])
-await lh.transfer(
-    source=source_plate["A1:H1"],
-    dest=dest_plate["A1:H1"],
-    vols=100
-)
+await lh.transfer(source=source_plate["A1:H1"], dest=dest_plate["A1:H1"], vols=100)
 await lh.drop_tips()
 
 # Process entire plate with 8-channel
 for col in range(1, 13):
     await lh.pick_up_tips(tip_rack[f"A{col}:H{col}"])
     await lh.transfer(
-        source=source_plate[f"A{col}:H{col}"],
-        dest=dest_plate[f"A{col}:H{col}"],
-        vols=100
+        source=source_plate[f"A{col}:H{col}"], dest=dest_plate[f"A{col}:H{col}"], vols=100
     )
     await lh.drop_tips()
 ```
@@ -283,15 +256,11 @@ water = LiquidClass(
     dispense_flow_rate=150,
     aspiration_mix_flow_rate=100,
     dispense_mix_flow_rate=100,
-    air_transport_retract_dist=10
+    air_transport_retract_dist=10,
 )
 
 # Use with operations
-await lh.aspirate(
-    plate["A1"],
-    vols=100,
-    liquid_class=water
-)
+await lh.aspirate(plate["A1"], vols=100, liquid_class=water)
 ```
 
 ## Error Handling
@@ -363,11 +332,7 @@ try:
 
     # Execute protocol
     await lh.pick_up_tips(tip_rack["A1:H1"])
-    await lh.transfer(
-        source=source["A1:H12"],
-        dest=dest["A1:H12"],
-        vols=100
-    )
+    await lh.transfer(source=source["A1:H12"], dest=dest["A1:H12"], vols=100)
     await lh.drop_tips()
 
 finally:

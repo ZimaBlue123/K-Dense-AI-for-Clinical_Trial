@@ -11,6 +11,7 @@ PyOpenMS provides specialized tools for untargeted metabolomics analysis includi
 ```python
 import pyopenms as ms
 
+
 def metabolomics_pipeline(input_files, output_dir):
     """
     Complete untargeted metabolomics workflow.
@@ -118,6 +119,7 @@ def metabolomics_pipeline(input_files, output_dir):
 
     return consensus_map
 
+
 # Run pipeline
 input_files = ["sample1.mzML", "sample2.mzML", "sample3.mzML"]
 consensus = metabolomics_pipeline(input_files, "output")
@@ -135,21 +137,14 @@ adduct_detector = ms.MetaboliteAdductDecharger()
 params = adduct_detector.getParameters()
 
 # Positive mode adducts
-positive_adducts = [
-    "[M+H]+",
-    "[M+Na]+",
-    "[M+K]+",
-    "[M+NH4]+",
-    "[2M+H]+",
-    "[M+H-H2O]+"
-]
+positive_adducts = ["[M+H]+", "[M+Na]+", "[M+K]+", "[M+NH4]+", "[2M+H]+", "[M+H-H2O]+"]
 
 # Negative mode adducts
 negative_adducts = [
     "[M-H]-",
     "[M+Cl]-",
     "[M+FA-H]-",  # Formate
-    "[2M-H]-"
+    "[2M-H]-",
 ]
 
 # Set for positive mode
@@ -284,7 +279,7 @@ import numpy as np
 df = consensus_map.get_df()
 
 # Assume QC samples are columns with 'QC' in name
-qc_cols = [col for col in df.columns if 'QC' in col]
+qc_cols = [col for col in df.columns if "QC" in col]
 
 if qc_cols:
     # Calculate CV for each feature in QC samples
@@ -302,8 +297,8 @@ if qc_cols:
 
 ```python
 # Remove features present in blank samples
-blank_cols = [col for col in df.columns if 'Blank' in col]
-sample_cols = [col for col in df.columns if 'Sample' in col]
+blank_cols = [col for col in df.columns if "Blank" in col]
+sample_cols = [col for col in df.columns if "Sample" in col]
 
 if blank_cols and sample_cols:
     # Calculate mean intensity in blanks and samples
@@ -332,7 +327,7 @@ df = df.replace(0, np.nan)
 
 # Count missing values
 missing_per_feature = df.isnull().sum(axis=1)
-print(f"Features with >50% missing: {sum(missing_per_feature > len(df.columns)/2)}")
+print(f"Features with >50% missing: {sum(missing_per_feature > len(df.columns) / 2)}")
 
 # Simple imputation: replace with minimum value
 for col in df.columns:
@@ -348,6 +343,7 @@ for col in df.columns:
 ```python
 import pandas as pd
 
+
 def create_metabolite_table(consensus_map, output_file):
     """
     Create metabolite quantification table for statistical analysis.
@@ -357,11 +353,7 @@ def create_metabolite_table(consensus_map, output_file):
     headers = consensus_map.getColumnHeaders()
 
     # Initialize data structure
-    data = {
-        'mz': [],
-        'rt': [],
-        'feature_id': []
-    }
+    data = {"mz": [], "rt": [], "feature_id": []}
 
     # Add sample columns
     for map_idx, header in headers.items():
@@ -370,9 +362,9 @@ def create_metabolite_table(consensus_map, output_file):
 
     # Extract feature data
     for idx, cons_feature in enumerate(consensus_map):
-        data['mz'].append(cons_feature.getMZ())
-        data['rt'].append(cons_feature.getRT())
-        data['feature_id'].append(f"F{idx:06d}")
+        data["mz"].append(cons_feature.getMZ())
+        data["rt"].append(cons_feature.getRT())
+        data["feature_id"].append(f"F{idx:06d}")
 
         # Initialize intensities
         intensities = {map_idx: 0.0 for map_idx in headers.keys()}
@@ -391,7 +383,7 @@ def create_metabolite_table(consensus_map, output_file):
     df = pd.DataFrame(data)
 
     # Sort by RT
-    df = df.sort_values('rt')
+    df = df.sort_values("rt")
 
     # Save to CSV
     df.to_csv(output_file, index=False)
@@ -399,6 +391,7 @@ def create_metabolite_table(consensus_map, output_file):
     print(f"Metabolite table with {len(df)} features saved to {output_file}")
 
     return df
+
 
 # Create table
 df = create_metabolite_table(consensus_map, "metabolite_table.csv")
@@ -418,7 +411,7 @@ def export_for_metaboanalyst(df, output_file):
 
     # Transpose DataFrame
     # Remove metadata columns
-    sample_cols = [col for col in df.columns if col not in ['mz', 'rt', 'feature_id']]
+    sample_cols = [col for col in df.columns if col not in ["mz", "rt", "feature_id"]]
 
     # Extract sample data
     sample_data = df[sample_cols]
@@ -427,12 +420,13 @@ def export_for_metaboanalyst(df, output_file):
     df_transposed = sample_data.T
 
     # Add feature identifiers as column names
-    df_transposed.columns = df['feature_id']
+    df_transposed.columns = df["feature_id"]
 
     # Save
     df_transposed.to_csv(output_file)
 
     print(f"MetaboAnalyst format saved to {output_file}")
+
 
 # Export
 export_for_metaboanalyst(df, "for_metaboanalyst.csv")

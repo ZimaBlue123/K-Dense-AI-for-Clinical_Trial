@@ -11,8 +11,9 @@ Event-related analysis examines physiological responses time-locked to specific 
 Automatically detect events/triggers in a signal based on threshold crossings or changes.
 
 ```python
-events = nk.events_find(event_channel, threshold=0.5, threshold_keep='above',
-                        duration_min=1, inter_min=0)
+events = nk.events_find(
+    event_channel, threshold=0.5, threshold_keep="above", duration_min=1, inter_min=0
+)
 ```
 
 **Parameters:**
@@ -33,20 +34,21 @@ events = nk.events_find(event_channel, threshold=0.5, threshold_keep='above',
 **TTL triggers from experiments:**
 ```python
 # Trigger channel: 0V baseline, 5V pulses during events
-events = nk.events_find(trigger_channel, threshold=2.5, threshold_keep='above')
+events = nk.events_find(trigger_channel, threshold=2.5, threshold_keep="above")
 ```
 
 **Button presses:**
 ```python
 # Detect when button signal goes high
-button_events = nk.events_find(button_signal, threshold=0.5, threshold_keep='above',
-                               duration_min=10)  # Debounce
+button_events = nk.events_find(
+    button_signal, threshold=0.5, threshold_keep="above", duration_min=10
+)  # Debounce
 ```
 
 **State changes:**
 ```python
 # Detect periods above/below threshold
-high_arousal = nk.events_find(eda_signal, threshold='auto', duration_min=100)
+high_arousal = nk.events_find(eda_signal, threshold="auto", duration_min=100)
 ```
 
 ### events_plot()
@@ -74,10 +76,16 @@ nk.events_plot(events, signal)
 Create epochs (segments) of data around events for event-related analysis.
 
 ```python
-epochs = nk.epochs_create(data, events, sampling_rate=1000,
-                          epochs_start=-0.5, epochs_end=2.0,
-                          event_labels=None, event_conditions=None,
-                          baseline_correction=False)
+epochs = nk.epochs_create(
+    data,
+    events,
+    sampling_rate=1000,
+    epochs_start=-0.5,
+    epochs_end=2.0,
+    event_labels=None,
+    event_conditions=None,
+    baseline_correction=False,
+)
 ```
 
 **Parameters:**
@@ -108,22 +116,27 @@ Organize events by type and experimental conditions:
 ```python
 # Example: Emotional picture experiment
 event_times = [1000, 2500, 4200, 5800]  # Event onsets in samples
-event_labels = ['trial1', 'trial2', 'trial3', 'trial4']
-event_conditions = ['positive', 'negative', 'positive', 'neutral']
+event_labels = ["trial1", "trial2", "trial3", "trial4"]
+event_conditions = ["positive", "negative", "positive", "neutral"]
 
-epochs = nk.epochs_create(signals, events=event_times, sampling_rate=1000,
-                          epochs_start=-1, epochs_end=5,
-                          event_labels=event_labels,
-                          event_conditions=event_conditions)
+epochs = nk.epochs_create(
+    signals,
+    events=event_times,
+    sampling_rate=1000,
+    epochs_start=-1,
+    epochs_end=5,
+    event_labels=event_labels,
+    event_conditions=event_conditions,
+)
 ```
 
 **Access epochs:**
 ```python
 # Epoch by number
-epoch_1 = epochs['1']
+epoch_1 = epochs["1"]
 
 # Filter by condition
-positive_epochs = {k: v for k, v in epochs.items() if v['Condition'][0] == 'positive'}
+positive_epochs = {k: v for k, v in epochs.items() if v["Condition"][0] == "positive"}
 ```
 
 ### Baseline Correction
@@ -132,16 +145,16 @@ Remove pre-stimulus baseline from epochs to isolate event-related changes:
 
 **Automatic (during epoch creation):**
 ```python
-epochs = nk.epochs_create(data, events, sampling_rate=1000,
-                          epochs_start=-0.5, epochs_end=2.0,
-                          baseline_correction=True)  # Subtracts mean of entire baseline
+epochs = nk.epochs_create(
+    data, events, sampling_rate=1000, epochs_start=-0.5, epochs_end=2.0, baseline_correction=True
+)  # Subtracts mean of entire baseline
 ```
 
 **Manual (after epoch creation):**
 ```python
 # Subtract baseline period mean
 baseline_start = -0.5  # seconds
-baseline_end = 0.0     # seconds
+baseline_end = 0.0  # seconds
 
 for key, epoch in epochs.items():
     baseline_mask = (epoch.index >= baseline_start) & (epoch.index < baseline_end)
@@ -161,7 +174,7 @@ for key, epoch in epochs.items():
 Visualize individual or averaged epochs.
 
 ```python
-nk.epochs_plot(epochs, column='ECG_Rate', condition=None, show=True)
+nk.epochs_plot(epochs, column="ECG_Rate", condition=None, show=True)
 ```
 
 **Parameters:**
@@ -183,7 +196,7 @@ nk.epochs_plot(epochs, column='ECG_Rate', condition=None, show=True)
 Compute grand average across epochs with statistics.
 
 ```python
-average_epochs = nk.epochs_average(epochs, output='dict')
+average_epochs = nk.epochs_average(epochs, output="dict")
 ```
 
 **Parameters:**
@@ -204,8 +217,8 @@ average_epochs = nk.epochs_average(epochs, output='dict')
 **Condition-specific averaging:**
 ```python
 # Separate averages by condition
-positive_epochs = {k: v for k, v in epochs.items() if v['Condition'][0] == 'positive'}
-negative_epochs = {k: v for k, v in epochs.items() if v['Condition'][0] == 'negative'}
+positive_epochs = {k: v for k, v in epochs.items() if v["Condition"][0] == "positive"}
+negative_epochs = {k: v for k, v in epochs.items() if v["Condition"][0] == "negative"}
 
 avg_positive = nk.epochs_average(positive_epochs)
 avg_negative = nk.epochs_average(negative_epochs)
@@ -234,7 +247,7 @@ epochs_df = nk.epochs_to_df(epochs)
 Convert epochs to 3D NumPy array.
 
 ```python
-epochs_array = nk.epochs_to_array(epochs, column='ECG_Rate')
+epochs_array = nk.epochs_to_array(epochs, column="ECG_Rate")
 ```
 
 **Returns:**
@@ -251,8 +264,9 @@ NeuroKit2 provides specialized event-related analysis for each signal type:
 
 ### ECG Event-Related
 ```python
-ecg_epochs = nk.epochs_create(ecg_signals, events, sampling_rate=1000,
-                              epochs_start=-1, epochs_end=10)
+ecg_epochs = nk.epochs_create(
+    ecg_signals, events, sampling_rate=1000, epochs_start=-1, epochs_end=10
+)
 ecg_results = nk.ecg_eventrelated(ecg_epochs)
 ```
 
@@ -264,8 +278,9 @@ ecg_results = nk.ecg_eventrelated(ecg_epochs)
 
 ### EDA Event-Related
 ```python
-eda_epochs = nk.epochs_create(eda_signals, events, sampling_rate=100,
-                              epochs_start=-1, epochs_end=10)
+eda_epochs = nk.epochs_create(
+    eda_signals, events, sampling_rate=100, epochs_start=-1, epochs_end=10
+)
 eda_results = nk.eda_eventrelated(eda_epochs)
 ```
 
@@ -278,8 +293,9 @@ eda_results = nk.eda_eventrelated(eda_epochs)
 
 ### RSP Event-Related
 ```python
-rsp_epochs = nk.epochs_create(rsp_signals, events, sampling_rate=100,
-                              epochs_start=-0.5, epochs_end=5)
+rsp_epochs = nk.epochs_create(
+    rsp_signals, events, sampling_rate=100, epochs_start=-0.5, epochs_end=5
+)
 rsp_results = nk.rsp_eventrelated(rsp_epochs)
 ```
 
@@ -291,8 +307,9 @@ rsp_results = nk.rsp_eventrelated(rsp_epochs)
 
 ### EMG Event-Related
 ```python
-emg_epochs = nk.epochs_create(emg_signals, events, sampling_rate=1000,
-                              epochs_start=-0.1, epochs_end=1.0)
+emg_epochs = nk.epochs_create(
+    emg_signals, events, sampling_rate=1000, epochs_start=-0.1, epochs_end=1.0
+)
 emg_results = nk.emg_eventrelated(emg_epochs)
 ```
 
@@ -304,8 +321,9 @@ emg_results = nk.emg_eventrelated(emg_epochs)
 
 ### EOG Event-Related
 ```python
-eog_epochs = nk.epochs_create(eog_signals, events, sampling_rate=500,
-                              epochs_start=-0.5, epochs_end=2.0)
+eog_epochs = nk.epochs_create(
+    eog_signals, events, sampling_rate=500, epochs_start=-0.5, epochs_end=2.0
+)
 eog_results = nk.eog_eventrelated(eog_epochs)
 ```
 
@@ -316,8 +334,9 @@ eog_results = nk.eog_eventrelated(eog_epochs)
 
 ### PPG Event-Related
 ```python
-ppg_epochs = nk.epochs_create(ppg_signals, events, sampling_rate=100,
-                              epochs_start=-1, epochs_end=10)
+ppg_epochs = nk.epochs_create(
+    ppg_signals, events, sampling_rate=100, epochs_start=-1, epochs_end=10
+)
 ppg_results = nk.ppg_eventrelated(ppg_epochs)
 ```
 
@@ -336,8 +355,9 @@ ecg_signals, ecg_info = nk.ecg_process(ecg, sampling_rate=1000)
 eda_signals, eda_info = nk.eda_process(eda, sampling_rate=100)
 
 # 2. Align sampling rates if needed
-eda_signals_resampled = nk.signal_resample(eda_signals, sampling_rate=100,
-                                           desired_sampling_rate=1000)
+eda_signals_resampled = nk.signal_resample(
+    eda_signals, sampling_rate=100, desired_sampling_rate=1000
+)
 
 # 3. Merge signals into single DataFrame
 signals = pd.concat([ecg_signals, eda_signals_resampled], axis=1)
@@ -346,15 +366,20 @@ signals = pd.concat([ecg_signals, eda_signals_resampled], axis=1)
 events = nk.events_find(trigger_channel, threshold=0.5)
 
 # 5. Add event labels and conditions
-event_labels = ['trial1', 'trial2', 'trial3', ...]
-event_conditions = ['condition_A', 'condition_B', 'condition_A', ...]
+event_labels = ["trial1", "trial2", "trial3", ...]
+event_conditions = ["condition_A", "condition_B", "condition_A", ...]
 
 # 6. Create epochs
-epochs = nk.epochs_create(signals, events, sampling_rate=1000,
-                          epochs_start=-1.0, epochs_end=5.0,
-                          event_labels=event_labels,
-                          event_conditions=event_conditions,
-                          baseline_correction=True)
+epochs = nk.epochs_create(
+    signals,
+    events,
+    sampling_rate=1000,
+    epochs_start=-1.0,
+    epochs_end=5.0,
+    event_labels=event_labels,
+    event_conditions=event_conditions,
+    baseline_correction=True,
+)
 
 # 7. Signal-specific event-related analysis
 ecg_results = nk.ecg_eventrelated(epochs)
@@ -364,8 +389,8 @@ eda_results = nk.eda_eventrelated(epochs)
 results = pd.merge(ecg_results, eda_results, left_index=True, right_index=True)
 
 # 9. Statistical analysis by condition
-results['Condition'] = event_conditions
-condition_comparison = results.groupby('Condition').mean()
+results["Condition"] = event_conditions
+condition_comparison = results.groupby("Condition").mean()
 ```
 
 ### Handling Multiple Event Types
@@ -376,8 +401,8 @@ event_type1 = nk.events_find(trigger_ch1, threshold=0.5)
 event_type2 = nk.events_find(trigger_ch2, threshold=0.5)
 
 # Combine events with labels
-all_events = np.concatenate([event_type1['onset'], event_type2['onset']])
-event_labels = ['type1'] * len(event_type1['onset']) + ['type2'] * len(event_type2['onset'])
+all_events = np.concatenate([event_type1["onset"], event_type2["onset"]])
+event_labels = ["type1"] * len(event_type1["onset"]) + ["type2"] * len(event_type2["onset"])
 
 # Sort by time
 sort_idx = np.argsort(all_events)
@@ -385,13 +410,18 @@ all_events = all_events[sort_idx]
 event_labels = [event_labels[i] for i in sort_idx]
 
 # Create epochs
-epochs = nk.epochs_create(signals, all_events, sampling_rate=1000,
-                          epochs_start=-0.5, epochs_end=3.0,
-                          event_labels=event_labels)
+epochs = nk.epochs_create(
+    signals,
+    all_events,
+    sampling_rate=1000,
+    epochs_start=-0.5,
+    epochs_end=3.0,
+    event_labels=event_labels,
+)
 
 # Separate by type
-type1_epochs = {k: v for k, v in epochs.items() if v['Label'][0] == 'type1'}
-type2_epochs = {k: v for k, v in epochs.items() if v['Label'][0] == 'type2'}
+type1_epochs = {k: v for k, v in epochs.items() if v["Label"][0] == "type1"}
+type2_epochs = {k: v for k, v in epochs.items() if v["Label"][0] == "type2"}
 ```
 
 ### Quality Control and Artifact Rejection
@@ -401,9 +431,9 @@ type2_epochs = {k: v for k, v in epochs.items() if v['Label'][0] == 'type2'}
 clean_epochs = {}
 for key, epoch in epochs.items():
     # Example: reject if EDA amplitude too high (movement artifact)
-    if epoch['EDA_Phasic'].abs().max() < 5.0:  # Threshold
+    if epoch["EDA_Phasic"].abs().max() < 5.0:  # Threshold
         # Example: reject if heart rate change too large (invalid)
-        if epoch['ECG_Rate'].max() - epoch['ECG_Rate'].min() < 50:
+        if epoch["ECG_Rate"].max() - epoch["ECG_Rate"].min() < 50:
             clean_epochs[key] = epoch
 
 print(f"Kept {len(clean_epochs)}/{len(epochs)} epochs")

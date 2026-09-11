@@ -49,10 +49,7 @@ vis = Visualizer()
 await vis.start()
 
 # Create liquid handler with simulation backend
-lh = LiquidHandler(
-    backend=ChatterboxBackend(num_channels=8),
-    deck=STARLetDeck()
-)
+lh = LiquidHandler(backend=ChatterboxBackend(num_channels=8), deck=STARLetDeck())
 
 # Connect liquid handler to visualizer
 lh.visualizer = vis
@@ -86,15 +83,14 @@ Define initial liquid contents for visualization:
 
 ```python
 # Set liquid in a single well
-plate["A1"].tracker.set_liquids([
-    (None, 200)  # (liquid_type, volume_in_µL)
-])
+plate["A1"].tracker.set_liquids(
+    [
+        (None, 200)  # (liquid_type, volume_in_µL)
+    ]
+)
 
 # Set multiple liquids in one well
-plate["A2"].tracker.set_liquids([
-    ("water", 100),
-    ("ethanol", 50)
-])
+plate["A2"].tracker.set_liquids([("water", 100), ("ethanol", 50)])
 
 # Set liquids in multiple wells
 for well in plate["A1:H1"]:
@@ -110,7 +106,7 @@ for well in plate.children:
 ```python
 # Tips are automatically tracked when using pick_up/drop operations
 await lh.pick_up_tips(tip_rack["A1:H1"])  # Tips shown as absent in visualizer
-await lh.return_tips()                     # Tips shown as present in visualizer
+await lh.return_tips()  # Tips shown as present in visualizer
 ```
 
 ### Complete Visualizer Example
@@ -123,7 +119,7 @@ from pylabrobot.resources import (
     TIP_CAR_480_A00,
     Cos_96_DW_1mL,
     set_tip_tracking,
-    set_volume_tracking
+    set_volume_tracking,
 )
 from pylabrobot.visualizer import Visualizer
 
@@ -136,10 +132,7 @@ vis = Visualizer()
 await vis.start()
 
 # Create liquid handler
-lh = LiquidHandler(
-    backend=ChatterboxBackend(num_channels=8),
-    deck=STARLetDeck()
-)
+lh = LiquidHandler(backend=ChatterboxBackend(num_channels=8), deck=STARLetDeck())
 lh.visualizer = vis
 await lh.setup()
 
@@ -159,11 +152,7 @@ for well in source_plate.children:
 
 # Execute protocol with visualization
 await lh.pick_up_tips(tip_rack["A1:H1"])
-await lh.transfer(
-    source_plate["A1:H12"],
-    dest_plate["A1:H12"],
-    vols=100
-)
+await lh.transfer(source_plate["A1:H12"], dest_plate["A1:H12"], vols=100)
 await lh.drop_tips()
 
 # Keep visualizer open to inspect final state
@@ -246,10 +235,7 @@ async def develop_protocol():
     """Develop protocol using simulation"""
 
     # Use simulation for development
-    lh = LiquidHandler(
-        backend=ChatterboxBackend(),
-        deck=STARLetDeck()
-    )
+    lh = LiquidHandler(backend=ChatterboxBackend(), deck=STARLetDeck())
 
     # Connect visualizer
     vis = Visualizer()
@@ -280,10 +266,7 @@ async def validate_protocol():
     set_tip_tracking(True)
     set_volume_tracking(True)
 
-    lh = LiquidHandler(
-        backend=ChatterboxBackend(),
-        deck=STARLetDeck()
-    )
+    lh = LiquidHandler(backend=ChatterboxBackend(), deck=STARLetDeck())
     await lh.setup()
 
     try:
@@ -304,18 +287,14 @@ async def validate_protocol():
         # Test different volumes
         test_volumes = [50, 100, 150]
         for i, vol in enumerate(test_volumes):
-            await lh.transfer(
-                plate[f"A{i+1}:H{i+1}"],
-                plate[f"A{i+4}:H{i+4}"],
-                vols=vol
-            )
+            await lh.transfer(plate[f"A{i + 1}:H{i + 1}"], plate[f"A{i + 4}:H{i + 4}"], vols=vol)
 
         await lh.drop_tips()
 
         # Validate volumes
         for i, vol in enumerate(test_volumes):
             for row in "ABCDEFGH":
-                well = plate[f"{row}{i+4}"]
+                well = plate[f"{row}{i + 4}"]
                 actual_vol = well.tracker.get_volume()
                 assert actual_vol == vol, f"Volume mismatch in {well.name}"
 
@@ -331,10 +310,7 @@ async def validate_protocol():
 async def test_edge_cases():
     """Test protocol edge cases in simulation"""
 
-    lh = LiquidHandler(
-        backend=ChatterboxBackend(),
-        deck=STARLetDeck()
-    )
+    lh = LiquidHandler(backend=ChatterboxBackend(), deck=STARLetDeck())
     await lh.setup()
 
     try:
@@ -373,14 +349,12 @@ import pytest
 from pylabrobot.liquid_handling import LiquidHandler
 from pylabrobot.liquid_handling.backends.simulation import ChatterboxBackend
 
+
 @pytest.mark.asyncio
 async def test_transfer_protocol():
     """Test liquid transfer protocol"""
 
-    lh = LiquidHandler(
-        backend=ChatterboxBackend(),
-        deck=STARLetDeck()
-    )
+    lh = LiquidHandler(backend=ChatterboxBackend(), deck=STARLetDeck())
     await lh.setup()
 
     try:
@@ -433,10 +407,12 @@ USE_HARDWARE = os.getenv("USE_HARDWARE", "false").lower() == "true"
 # Create appropriate backend
 if USE_HARDWARE:
     from pylabrobot.liquid_handling.backends import STAR
+
     backend = STAR()
     print("Running on Hamilton STAR hardware")
 else:
     from pylabrobot.liquid_handling.backends.simulation import ChatterboxBackend
+
     backend = ChatterboxBackend()
     print("Running in simulation mode")
 
@@ -467,10 +443,7 @@ async def visual_verification():
     vis = Visualizer()
     await vis.start()
 
-    lh = LiquidHandler(
-        backend=ChatterboxBackend(),
-        deck=STARLetDeck()
-    )
+    lh = LiquidHandler(backend=ChatterboxBackend(), deck=STARLetDeck())
     lh.visualizer = vis
     await lh.setup()
 

@@ -1576,3 +1576,11 @@ Balance medical recommendations with patient autonomy and values while promoting
 ## License
 
 Part of the Claude Scientific Writer project. See main LICENSE file.
+
+## Scripts
+
+See the scripts/ directory for automation tools:
+- generate_template.py - Generates LaTeX treatment plan templates
+- 	imeline_generator.py - Generates treatment timeline visuals
+- check_completeness.py - Checks if all required fields are present
+- alidate_treatment_plan.py - Validates plan against medical standards

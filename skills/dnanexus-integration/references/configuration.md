@@ -292,6 +292,7 @@ Packages are installed using `apt-get` from Ubuntu repositories.
 Then in your app script:
 ```python
 import subprocess
+
 subprocess.check_call(["pip", "install", "numpy==1.24.0", "pandas==2.0.0"])
 ```
 
@@ -360,6 +361,7 @@ Assets are pre-built bundles of dependencies that can be shared across apps.
 Assets are mounted at runtime and accessible via environment variable:
 ```python
 import os
+
 asset_dir = os.environ.get("DX_ASSET_BWA")
 bwa_path = os.path.join(asset_dir, "bin", "bwa")
 ```
@@ -411,12 +413,18 @@ import subprocess
 subprocess.check_call(["docker", "pull", "biocontainers/samtools:v1.9"])
 
 # Run command in container
-subprocess.check_call([
-    "docker", "run",
-    "-v", f"{os.getcwd()}:/data",
-    "biocontainers/samtools:v1.9",
-    "samtools", "view", "/data/input.bam"
-])
+subprocess.check_call(
+    [
+        "docker",
+        "run",
+        "-v",
+        f"{os.getcwd()}:/data",
+        "biocontainers/samtools:v1.9",
+        "samtools",
+        "view",
+        "/data/input.bam",
+    ]
+)
 ```
 
 ### Docker as Base Image

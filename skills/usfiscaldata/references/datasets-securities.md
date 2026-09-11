@@ -30,8 +30,8 @@ resp = requests.get(
     params={
         "filter": "security_type:eq:Note,security_term:eq:10-Year",
         "sort": "-record_date",
-        "page[size]": 10
-    }
+        "page[size]": 10,
+    },
 )
 df = pd.DataFrame(resp.json()["data"])
 
@@ -41,8 +41,8 @@ resp = requests.get(
     params={
         "filter": "record_date:gte:2024-01-01,record_date:lte:2024-12-31",
         "sort": "-record_date",
-        "page[size]": 10000
-    }
+        "page[size]": 10000,
+    },
 )
 ```
 
@@ -66,7 +66,7 @@ Announced but not yet settled auction schedule.
 # Get upcoming auctions
 resp = requests.get(
     "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v1/accounting/od/upcoming_auctions",
-    params={"sort": "auction_date"}
+    params={"sort": "auction_date"},
 )
 upcoming = pd.DataFrame(resp.json()["data"])
 print(upcoming[["auction_date", "security_type", "security_term", "offering_amt"]])
@@ -108,7 +108,7 @@ Composite interest rates for Series I Savings Bonds, including fixed rate and in
 # Current I Bond rates
 resp = requests.get(
     "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v2/accounting/od/i_bond_interest_rates",
-    params={"sort": "-effective_date", "page[size]": 5}
+    params={"sort": "-effective_date", "page[size]": 5},
 )
 df = pd.DataFrame(resp.json()["data"])
 latest = df.iloc[0]

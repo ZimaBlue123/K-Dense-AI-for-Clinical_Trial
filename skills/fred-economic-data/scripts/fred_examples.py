@@ -49,7 +49,10 @@ def example_transformations():
     # Get GDP with different transformations
     print("\n2a. GDP - Percent Change from Year Ago:")
     gdp_pch = fred.get_observations(
-        "GDP", units="pc1", limit=4, sort_order="desc"  # Percent change from year ago
+        "GDP",
+        units="pc1",
+        limit=4,
+        sort_order="desc",  # Percent change from year ago
     )
     if "observations" in gdp_pch:
         for obs in gdp_pch["observations"]:
@@ -58,7 +61,10 @@ def example_transformations():
 
     print("\n2b. CPI - Change from Previous Month:")
     cpi_chg = fred.get_observations(
-        "CPIAUCSL", units="chg", limit=6, sort_order="desc"  # Change
+        "CPIAUCSL",
+        units="chg",
+        limit=6,
+        sort_order="desc",  # Change
     )
     if "observations" in cpi_chg:
         for obs in cpi_chg["observations"]:
@@ -108,9 +114,7 @@ def example_categories():
 
     # Get series from a specific category
     print("\n4b. Popular Series in GDP Category (53):")
-    series = fred.get_category_series(
-        53, limit=5, order_by="popularity", sort_order="desc"
-    )
+    series = fred.get_category_series(53, limit=5, order_by="popularity", sort_order="desc")
     if "seriess" in series:
         for s in series["seriess"]:
             print(f"  {s['id']}: {s['title'][:50]}...")
@@ -144,9 +148,7 @@ def example_releases():
 
     # Get series from GDP release
     print("\n5b. Top Series in GDP Release (53):")
-    release_series = fred.get_release_series(
-        53, limit=5, order_by="popularity", sort_order="desc"
-    )
+    release_series = fred.get_release_series(53, limit=5, order_by="popularity", sort_order="desc")
     if "seriess" in release_series:
         for s in release_series["seriess"]:
             print(f"  {s['id']}: {s['title'][:50]}...")
@@ -193,9 +195,7 @@ def example_time_series_analysis():
     start_date = (datetime.now() - timedelta(days=730)).strftime("%Y-%m-%d")
 
     print(f"\nUnemployment Rate Trend (since {start_date}):")
-    data = fred.get_observations(
-        "UNRATE", observation_start=start_date, sort_order="asc"
-    )
+    data = fred.get_observations("UNRATE", observation_start=start_date, sort_order="asc")
 
     if "observations" in data:
         obs = data["observations"]
@@ -205,7 +205,7 @@ def example_time_series_analysis():
             print(f"  Data points: {len(values)}")
             print(f"  Min: {min(values):.1f}%")
             print(f"  Max: {max(values):.1f}%")
-            print(f"  Average: {sum(values)/len(values):.1f}%")
+            print(f"  Average: {sum(values) / len(values):.1f}%")
             print(f"  Latest: {values[-1]:.1f}%")
 
             # Simple trend

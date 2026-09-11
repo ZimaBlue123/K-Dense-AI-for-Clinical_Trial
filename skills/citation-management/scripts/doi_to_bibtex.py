@@ -89,7 +89,7 @@ class DOIConverter:
         bibtex_entries = []
 
         for i, doi in enumerate(dois):
-            print(f"Converting DOI {i+1}/{len(dois)}: {doi}", file=sys.stderr)
+            print(f"Converting DOI {i + 1}/{len(dois)}: {doi}", file=sys.stderr)
             bibtex = self.doi_to_bibtex(doi)
 
             if bibtex:
@@ -109,15 +109,11 @@ def main():
         epilog="Example: python doi_to_bibtex.py 10.1038/s41586-021-03819-2",
     )
 
-    parser.add_argument(
-        "dois", nargs="*", help="DOI(s) to convert (can provide multiple)"
-    )
+    parser.add_argument("dois", nargs="*", help="DOI(s) to convert (can provide multiple)")
 
     parser.add_argument("-i", "--input", help="Input file with DOIs (one per line)")
 
-    parser.add_argument(
-        "-o", "--output", help="Output file for BibTeX (default: stdout)"
-    )
+    parser.add_argument("-o", "--output", help="Output file for BibTeX (default: stdout)")
 
     parser.add_argument(
         "--delay",
@@ -177,9 +173,7 @@ def main():
     if args.format == "bibtex":
         output = "\n\n".join(bibtex_entries) + "\n"
     else:  # json
-        output = json.dumps(
-            {"count": len(bibtex_entries), "entries": bibtex_entries}, indent=2
-        )
+        output = json.dumps({"count": len(bibtex_entries), "entries": bibtex_entries}, indent=2)
 
     # Write output
     if args.output:

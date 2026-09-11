@@ -67,11 +67,7 @@ This allows you to see data as it appeared at specific points in time:
 
 ```python
 # Get GDP as it was reported on Jan 1, 2020
-params = {
-    "series_id": "GDP",
-    "realtime_start": "2020-01-01",
-    "realtime_end": "2020-01-01"
-}
+params = {"series_id": "GDP", "realtime_start": "2020-01-01", "realtime_end": "2020-01-01"}
 ```
 
 ### FRED vs ALFRED
@@ -185,8 +181,8 @@ response = requests.get(
         "series_id": "GDP",
         "file_type": "json",
         "observation_start": "2020-01-01",
-        "units": "pch"
-    }
+        "units": "pch",
+    },
 )
 
 data = response.json()
@@ -208,5 +204,6 @@ export FRED_API_KEY="your_32_character_key"
 
 ```python
 import os
+
 api_key = os.environ.get("FRED_API_KEY")
 ```

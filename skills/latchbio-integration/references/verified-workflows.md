@@ -10,14 +10,7 @@ The `latch.verified` module provides programmatic access to verified workflows f
 ### Importing Verified Workflows
 
 ```python
-from latch.verified import (
-    bulk_rnaseq,
-    deseq2,
-    mafft,
-    trim_galore,
-    alphafold,
-    colabfold
-)
+from latch.verified import bulk_rnaseq, deseq2, mafft, trim_galore, alphafold, colabfold
 ```
 
 ## Core Verified Workflows
@@ -34,7 +27,7 @@ results = bulk_rnaseq(
     fastq_r1=LatchFile("latch:///data/sample_R1.fastq.gz"),
     fastq_r2=LatchFile("latch:///data/sample_R2.fastq.gz"),
     reference_genome="hg38",
-    output_dir="latch:///results/rnaseq"
+    output_dir="latch:///results/rnaseq",
 )
 ```
 
@@ -57,7 +50,7 @@ results = deseq2(
     count_matrix=LatchFile("latch:///data/counts.csv"),
     sample_metadata=LatchFile("latch:///data/metadata.csv"),
     design_formula="~ condition",
-    output_dir="latch:///results/deseq2"
+    output_dir="latch:///results/deseq2",
 )
 ```
 
@@ -78,7 +71,7 @@ results = pathway_enrichment(
     gene_list=LatchFile("latch:///data/deg_list.txt"),
     organism="human",
     databases=["GO_Biological_Process", "KEGG", "Reactome"],
-    output_dir="latch:///results/pathways"
+    output_dir="latch:///results/pathways",
 )
 ```
 
@@ -97,9 +90,7 @@ from latch.verified import mafft
 from latch.types import LatchFile
 
 aligned = mafft(
-    input_fasta=LatchFile("latch:///data/sequences.fasta"),
-    algorithm="auto",
-    output_format="fasta"
+    input_fasta=LatchFile("latch:///data/sequences.fasta"), algorithm="auto", output_format="fasta"
 )
 ```
 
@@ -119,7 +110,7 @@ trimmed = trim_galore(
     fastq_r1=LatchFile("latch:///data/sample_R1.fastq.gz"),
     fastq_r2=LatchFile("latch:///data/sample_R2.fastq.gz"),
     quality_threshold=20,
-    adapter_auto_detect=True
+    adapter_auto_detect=True,
 )
 ```
 
@@ -142,7 +133,7 @@ structure = alphafold(
     sequence_fasta=LatchFile("latch:///data/protein.fasta"),
     model_preset="monomer",
     use_templates=True,
-    output_dir="latch:///results/alphafold"
+    output_dir="latch:///results/alphafold",
 )
 ```
 
@@ -169,7 +160,7 @@ structure = colabfold(
     sequence_fasta=LatchFile("latch:///data/protein.fasta"),
     num_models=5,
     use_amber_relax=True,
-    output_dir="latch:///results/colabfold"
+    output_dir="latch:///results/colabfold",
 )
 ```
 
@@ -196,7 +187,7 @@ from latch.verified import archr
 results = archr(
     fragments_file=LatchFile("latch:///data/fragments.tsv.gz"),
     genome="hg38",
-    output_dir="latch:///results/archr"
+    output_dir="latch:///results/archr",
 )
 ```
 
@@ -217,7 +208,7 @@ from latch.verified import scvelo
 results = scvelo(
     adata_file=LatchFile("latch:///data/adata.h5ad"),
     mode="dynamical",
-    output_dir="latch:///results/scvelo"
+    output_dir="latch:///results/scvelo",
 )
 ```
 
@@ -235,8 +226,7 @@ results = scvelo(
 from latch.verified import emptydrops
 
 filtered_matrix = emptydrops(
-    raw_matrix_dir=LatchDir("latch:///data/raw_feature_bc_matrix"),
-    fdr_threshold=0.01
+    raw_matrix_dir=LatchDir("latch:///data/raw_feature_bc_matrix"), fdr_threshold=0.01
 )
 ```
 
@@ -258,7 +248,7 @@ results = crispresso2(
     fastq_r1=LatchFile("latch:///data/sample_R1.fastq.gz"),
     amplicon_sequence="AGCTAGCTAG...",
     guide_rna="GCTAGCTAGC",
-    output_dir="latch:///results/crispresso"
+    output_dir="latch:///results/crispresso",
 )
 ```
 
@@ -280,7 +270,7 @@ tree = phylogenetics(
     alignment_file=LatchFile("latch:///data/aligned.fasta"),
     method="maximum_likelihood",
     bootstrap_replicates=1000,
-    output_dir="latch:///results/phylo"
+    output_dir="latch:///results/phylo",
 )
 ```
 
@@ -299,11 +289,10 @@ from latch import workflow, small_task
 from latch.verified import bulk_rnaseq, deseq2
 from latch.types import LatchFile, LatchDir
 
+
 @workflow
 def complete_rnaseq_analysis(
-    fastq_files: List[LatchFile],
-    metadata: LatchFile,
-    output_dir: LatchDir
+    fastq_files: List[LatchFile], metadata: LatchFile, output_dir: LatchDir
 ) -> LatchFile:
     """
     Complete RNA-seq analysis pipeline using verified workflows
@@ -311,19 +300,13 @@ def complete_rnaseq_analysis(
     # Run alignment for each sample
     aligned_samples = []
     for fastq in fastq_files:
-        result = bulk_rnaseq(
-            fastq_r1=fastq,
-            reference_genome="hg38",
-            output_dir=output_dir
-        )
+        result = bulk_rnaseq(fastq_r1=fastq, reference_genome="hg38", output_dir=output_dir)
         aligned_samples.append(result)
 
     # Aggregate counts and run differential expression
     count_matrix = aggregate_counts(aligned_samples)
     deseq_results = deseq2(
-        count_matrix=count_matrix,
-        sample_metadata=metadata,
-        design_formula="~ condition"
+        count_matrix=count_matrix, sample_metadata=metadata, design_formula="~ condition"
     )
 
     return deseq_results
@@ -354,17 +337,20 @@ from latch import workflow, small_task
 from latch.verified import alphafold
 from latch.types import LatchFile
 
+
 @small_task
 def preprocess_sequence(raw_fasta: LatchFile) -> LatchFile:
     """Custom preprocessing"""
     # Custom logic here
     return processed_fasta
 
+
 @small_task
 def postprocess_structure(pdb_file: LatchFile) -> LatchFile:
     """Custom post-analysis"""
     # Custom analysis here
     return analysis_results
+
 
 @workflow
 def custom_structure_pipeline(input_fasta: LatchFile) -> LatchFile:
@@ -375,10 +361,7 @@ def custom_structure_pipeline(input_fasta: LatchFile) -> LatchFile:
     processed = preprocess_sequence(raw_fasta=input_fasta)
 
     # Use verified AlphaFold
-    structure = alphafold(
-        sequence_fasta=processed,
-        model_preset="monomer_ptm"
-    )
+    structure = alphafold(sequence_fasta=processed, model_preset="monomer_ptm")
 
     # Custom post-processing
     results = postprocess_structure(pdb_file=structure)
@@ -425,11 +408,7 @@ Verified workflows are versioned and maintained:
 from latch.verified import bulk_rnaseq
 
 # Use specific version
-results = bulk_rnaseq(
-    fastq_r1=input_file,
-    reference_genome="hg38",
-    workflow_version="2.1.0"
-)
+results = bulk_rnaseq(fastq_r1=input_file, reference_genome="hg38", workflow_version="2.1.0")
 ```
 
 ## Support and Updates

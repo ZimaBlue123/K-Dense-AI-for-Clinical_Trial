@@ -51,8 +51,8 @@ summaries = esummary(gene_ids, api_key="YOUR_KEY")
 
 # Extract relevant information
 for gene_id in gene_ids:
-    if gene_id in summaries['result']:
-        gene = summaries['result'][gene_id]
+    if gene_id in summaries["result"]:
+        gene = summaries["result"][gene_id]
         print(f"{gene['name']}: {gene['description']}")
 ```
 
@@ -93,11 +93,11 @@ python scripts/batch_gene_lookup.py --file genes.txt --organism human --output a
 ```python
 import json
 
-with open('annotations.json', 'r') as f:
+with open("annotations.json", "r") as f:
     genes = json.load(f)
 
 for gene in genes:
-    if 'gene_id' in gene:
+    if "gene_id" in gene:
         print(f"Symbol: {gene['symbol']}")
         print(f"ID: {gene['gene_id']}")
         print(f"Description: {gene['description']}")
@@ -146,13 +146,9 @@ python scripts/fetch_gene_data.py --symbol TP53 --taxon zebrafish
 
 ```python
 # Compare gene information across species
-species = {
-    'human': '9606',
-    'mouse': '10090',
-    'rat': '10116'
-}
+species = {"human": "9606", "mouse": "10090", "rat": "10116"}
 
-gene_symbol = 'TP53'
+gene_symbol = "TP53"
 
 for organism, taxon_id in species.items():
     # Fetch gene data
@@ -211,7 +207,7 @@ url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=gene&term=
 
 with urllib.request.urlopen(url) as response:
     data = json.loads(response.read().decode())
-    gene_ids = data['esearchresult']['idlist']
+    gene_ids = data["esearchresult"]["idlist"]
 
 print(f"Found {len(gene_ids)} genes in MAPK signaling pathway")
 ```
@@ -272,7 +268,7 @@ gene_ids = esearch("has variants[filter] AND human[organism]", retmax=100)
 
 # Fetch detailed records
 for gene_id in gene_ids[:10]:  # First 10
-    data = efetch([gene_id], retmode='xml')
+    data = efetch([gene_id], retmode="xml")
     # Parse XML for variant information
     print(f"Gene {gene_id} variant data...")
 ```
@@ -324,7 +320,7 @@ import urllib.request
 import json
 
 # Get gene
-gene_id = '672'
+gene_id = "672"
 
 # Get publications for gene
 url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi?dbfrom=gene&db=pubmed&id={gene_id}&retmode=json"
@@ -334,9 +330,9 @@ with urllib.request.urlopen(url) as response:
 
 # Extract PMIDs
 pmids = []
-for linkset in data.get('linksets', []):
-    for linksetdb in linkset.get('linksetdbs', []):
-        pmids.extend(linksetdb.get('links', []))
+for linkset in data.get("linksets", []):
+    for linksetdb in linkset.get("linksetdbs", []):
+        pmids.extend(linksetdb.get("links", []))
 
 print(f"Gene {gene_id} has {len(pmids)} publications")
 ```
@@ -356,7 +352,7 @@ print(f"Gene {gene_id} has {len(pmids)} publications")
 
 ```python
 # Example: Find genes at intersection of multiple criteria
-def find_genes_multi_criteria(organism='human'):
+def find_genes_multi_criteria(organism="human"):
     # Criteria 1: Disease association
     disease_genes = set(esearch("diabetes[disease] AND human[organism]"))
 
@@ -377,11 +373,12 @@ def find_genes_multi_criteria(organism='human'):
 ```python
 import time
 
+
 def process_genes_with_rate_limit(gene_ids, batch_size=200, delay=0.1):
     results = []
 
     for i in range(0, len(gene_ids), batch_size):
-        batch = gene_ids[i:i + batch_size]
+        batch = gene_ids[i : i + batch_size]
 
         # Process batch
         batch_results = esummary(batch)
@@ -398,6 +395,7 @@ def process_genes_with_rate_limit(gene_ids, batch_size=200, delay=0.1):
 ```python
 import time
 
+
 def robust_gene_fetch(gene_id, max_retries=3):
     for attempt in range(max_retries):
         try:
@@ -405,7 +403,7 @@ def robust_gene_fetch(gene_id, max_retries=3):
             return data
         except Exception as e:
             if attempt < max_retries - 1:
-                wait = 2 ** attempt  # Exponential backoff
+                wait = 2**attempt  # Exponential backoff
                 time.sleep(wait)
             else:
                 print(f"Failed to fetch gene {gene_id}: {e}")

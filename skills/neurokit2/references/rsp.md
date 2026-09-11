@@ -11,7 +11,7 @@ Respiratory signal processing in NeuroKit2 enables analysis of breathing pattern
 Automated processing of respiratory signals with peak/trough detection and feature extraction.
 
 ```python
-signals, info = nk.rsp_process(rsp_signal, sampling_rate=100, method='khodadad2018')
+signals, info = nk.rsp_process(rsp_signal, sampling_rate=100, method="khodadad2018")
 ```
 
 **Pipeline steps:**
@@ -44,7 +44,7 @@ signals, info = nk.rsp_process(rsp_signal, sampling_rate=100, method='khodadad20
 Remove noise and smooth respiratory signal.
 
 ```python
-cleaned_rsp = nk.rsp_clean(rsp_signal, sampling_rate=100, method='khodadad2018')
+cleaned_rsp = nk.rsp_clean(rsp_signal, sampling_rate=100, method="khodadad2018")
 ```
 
 **Methods:**
@@ -60,7 +60,7 @@ cleaned_rsp = nk.rsp_clean(rsp_signal, sampling_rate=100, method='khodadad2018')
 
 **3. Hampel filter:**
 ```python
-cleaned_rsp = nk.rsp_clean(rsp_signal, sampling_rate=100, method='hampel')
+cleaned_rsp = nk.rsp_clean(rsp_signal, sampling_rate=100, method="hampel")
 ```
 - Median-based outlier removal
 - Robust to artifacts and spikes
@@ -76,7 +76,7 @@ cleaned_rsp = nk.rsp_clean(rsp_signal, sampling_rate=100, method='hampel')
 Identify inhalation troughs and exhalation peaks in respiratory signal.
 
 ```python
-peaks, info = nk.rsp_peaks(cleaned_rsp, sampling_rate=100, method='khodadad2018')
+peaks, info = nk.rsp_peaks(cleaned_rsp, sampling_rate=100, method="khodadad2018")
 ```
 
 **Detection methods:**
@@ -98,7 +98,7 @@ peaks, info = nk.rsp_peaks(cleaned_rsp, sampling_rate=100, method='khodadad2018'
 Low-level peak detection with multiple algorithm options.
 
 ```python
-peaks_dict = nk.rsp_findpeaks(cleaned_rsp, sampling_rate=100, method='scipy')
+peaks_dict = nk.rsp_findpeaks(cleaned_rsp, sampling_rate=100, method="scipy")
 ```
 
 **Methods:**
@@ -323,8 +323,14 @@ results = nk.rsp_intervalrelated(signals, sampling_rate=100)
 Generate synthetic respiratory signals for testing.
 
 ```python
-synthetic_rsp = nk.rsp_simulate(duration=60, sampling_rate=100, respiratory_rate=15,
-                                method='sinusoidal', noise=0.1, random_state=42)
+synthetic_rsp = nk.rsp_simulate(
+    duration=60,
+    sampling_rate=100,
+    respiratory_rate=15,
+    method="sinusoidal",
+    noise=0.1,
+    random_state=42,
+)
 ```
 
 **Methods:**
@@ -419,7 +425,7 @@ nk.rsp_plot(signals, info, static=True)
 **Standard workflow:**
 ```python
 # 1. Clean signal
-cleaned = nk.rsp_clean(rsp_raw, sampling_rate=100, method='khodadad2018')
+cleaned = nk.rsp_clean(rsp_raw, sampling_rate=100, method="khodadad2018")
 
 # 2. Detect peaks/troughs
 peaks, info = nk.rsp_peaks(cleaned, sampling_rate=100)
@@ -443,7 +449,7 @@ ecg_signals, ecg_info = nk.ecg_process(ecg, sampling_rate=1000)
 rsp_signals, rsp_info = nk.rsp_process(rsp, sampling_rate=100)
 
 # Respiratory sinus arrhythmia (RSA)
-rsa = nk.hrv_rsa(ecg_info['ECG_R_Peaks'], rsp_signals['RSP_Clean'], sampling_rate=1000)
+rsa = nk.hrv_rsa(ecg_info["ECG_R_Peaks"], rsp_signals["RSP_Clean"], sampling_rate=1000)
 
 # Or use bio_process for multi-signal integration
 bio_signals, bio_info = nk.bio_process(ecg=ecg, rsp=rsp, sampling_rate=1000)

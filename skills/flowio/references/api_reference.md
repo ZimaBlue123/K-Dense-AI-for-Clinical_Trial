@@ -21,13 +21,15 @@ The primary class for working with FCS files.
 #### Constructor
 
 ```python
-FlowData(fcs_file,
-         ignore_offset_error=False,
-         ignore_offset_discrepancy=False,
-         use_header_offsets=False,
-         only_text=False,
-         nextdata_offset=None,
-         null_channel_list=None)
+FlowData(
+    fcs_file,
+    ignore_offset_error=False,
+    ignore_offset_discrepancy=False,
+    use_header_offsets=False,
+    only_text=False,
+    nextdata_offset=None,
+    null_channel_list=None,
+)
 ```
 
 **Parameters:**
@@ -85,7 +87,7 @@ Return event data as a 2-D NumPy array.
 
 **Example:**
 ```python
-flow_data = FlowData('sample.fcs')
+flow_data = FlowData("sample.fcs")
 events_array = flow_data.as_array()  # Preprocessed data
 raw_array = flow_data.as_array(preprocess=False)  # Raw data
 ```
@@ -104,8 +106,8 @@ Export the FlowData instance as a new FCS file.
 
 **Example:**
 ```python
-flow_data = FlowData('sample.fcs')
-flow_data.write_fcs('output.fcs', metadata={'$SRC': 'Modified data'})
+flow_data = FlowData("sample.fcs")
+flow_data.write_fcs("output.fcs", metadata={"$SRC": "Modified data"})
 ```
 
 **Note:** Exports as FCS 3.1 with single-precision floating-point data.
@@ -115,10 +117,9 @@ flow_data.write_fcs('output.fcs', metadata={'$SRC': 'Modified data'})
 ### read_multiple_data_sets()
 
 ```python
-read_multiple_data_sets(fcs_file,
-                        ignore_offset_error=False,
-                        ignore_offset_discrepancy=False,
-                        use_header_offsets=False)
+read_multiple_data_sets(
+    fcs_file, ignore_offset_error=False, ignore_offset_discrepancy=False, use_header_offsets=False
+)
 ```
 
 Read all datasets from an FCS file containing multiple datasets.
@@ -133,7 +134,7 @@ Read all datasets from an FCS file containing multiple datasets.
 ```python
 from flowio import read_multiple_data_sets
 
-datasets = read_multiple_data_sets('multi_dataset.fcs')
+datasets = read_multiple_data_sets("multi_dataset.fcs")
 print(f"Found {len(datasets)} datasets")
 for i, dataset in enumerate(datasets):
     print(f"Dataset {i}: {dataset.event_count} events")
@@ -142,11 +143,7 @@ for i, dataset in enumerate(datasets):
 ### create_fcs()
 
 ```python
-create_fcs(filename,
-           event_data,
-           channel_names,
-           opt_channel_names=None,
-           metadata=None)
+create_fcs(filename, event_data, channel_names, opt_channel_names=None, metadata=None)
 ```
 
 Create a new FCS file from event data.
@@ -165,14 +162,16 @@ from flowio import create_fcs
 
 # Create synthetic data
 events = np.random.rand(10000, 5)
-channels = ['FSC-A', 'SSC-A', 'FL1-A', 'FL2-A', 'Time']
-opt_channels = ['Forward Scatter', 'Side Scatter', 'FITC', 'PE', 'Time']
+channels = ["FSC-A", "SSC-A", "FL1-A", "FL2-A", "Time"]
+opt_channels = ["Forward Scatter", "Side Scatter", "FITC", "PE", "Time"]
 
-create_fcs('synthetic.fcs',
-           events,
-           channels,
-           opt_channel_names=opt_channels,
-           metadata={'$SRC': 'Synthetic data'})
+create_fcs(
+    "synthetic.fcs",
+    events,
+    channels,
+    opt_channel_names=opt_channels,
+    metadata={"$SRC": "Synthetic data"},
+)
 ```
 
 ## Exception Classes
@@ -273,7 +272,7 @@ For advanced flow cytometry analysis including compensation, gating, and GatingM
 from flowio import FlowData
 
 # Read FCS file
-flow = FlowData('experiment.fcs')
+flow = FlowData("experiment.fcs")
 
 # Print basic info
 print(f"Version: {flow.version}")
@@ -291,7 +290,7 @@ print(f"Data shape: {events.shape}")
 ```python
 from flowio import FlowData
 
-flow = FlowData('sample.fcs', only_text=True)
+flow = FlowData("sample.fcs", only_text=True)
 
 # Access metadata
 print(f"Acquisition date: {flow.text.get('$DATE', 'N/A')}")
@@ -312,18 +311,17 @@ from flowio import create_fcs
 data = np.random.rand(5000, 3) * 1000
 
 # Define channels
-channels = ['FSC-A', 'SSC-A', 'FL1-A']
-stains = ['Forward Scatter', 'Side Scatter', 'GFP']
+channels = ["FSC-A", "SSC-A", "FL1-A"]
+stains = ["Forward Scatter", "Side Scatter", "GFP"]
 
 # Create FCS file
-create_fcs('output.fcs',
-           data,
-           channels,
-           opt_channel_names=stains,
-           metadata={
-               '$SRC': 'Python script',
-               '$DATE': '19-OCT-2025'
-           })
+create_fcs(
+    "output.fcs",
+    data,
+    channels,
+    opt_channel_names=stains,
+    metadata={"$SRC": "Python script", "$DATE": "19-OCT-2025"},
+)
 ```
 
 ### Processing Multi-Dataset Files
@@ -332,7 +330,7 @@ create_fcs('output.fcs',
 from flowio import read_multiple_data_sets
 
 # Read all datasets
-datasets = read_multiple_data_sets('multi.fcs')
+datasets = read_multiple_data_sets("multi.fcs")
 
 # Process each dataset
 for i, dataset in enumerate(datasets):
@@ -352,7 +350,7 @@ for i, dataset in enumerate(datasets):
 from flowio import FlowData
 
 # Read original file
-flow = FlowData('original.fcs')
+flow = FlowData("original.fcs")
 
 # Get event data
 events = flow.as_array(preprocess=False)
@@ -364,9 +362,7 @@ events[:, 0] = events[:, 0] * 1.5  # Scale first channel
 # For modifications, use create_fcs() instead:
 from flowio import create_fcs
 
-create_fcs('modified.fcs',
-           events,
-           flow.pnn_labels,
-           opt_channel_names=flow.pns_labels,
-           metadata=flow.text)
+create_fcs(
+    "modified.fcs", events, flow.pnn_labels, opt_channel_names=flow.pns_labels, metadata=flow.text
+)
 ```

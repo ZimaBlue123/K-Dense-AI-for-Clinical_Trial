@@ -151,10 +151,7 @@ from pylabrobot.liquid_handling.backends import OpentronsBackend
 from pylabrobot.resources import OTDeck
 
 # Initialize with robot IP
-lh = LiquidHandler(
-    backend=OpentronsBackend(host="192.168.1.100"),
-    deck=OTDeck()
-)
+lh = LiquidHandler(backend=OpentronsBackend(host="192.168.1.100"), deck=OTDeck())
 await lh.setup()
 
 # Load deck layout
@@ -252,10 +249,7 @@ set_tip_tracking(True)
 set_volume_tracking(True)
 
 # Initialize with simulation backend
-lh = LiquidHandler(
-    backend=ChatterboxBackend(num_channels=8),
-    deck=STARLetDeck()
-)
+lh = LiquidHandler(backend=ChatterboxBackend(num_channels=8), deck=STARLetDeck())
 await lh.setup()
 
 # Define resources
@@ -292,29 +286,37 @@ def get_backend(robot_type: str):
     """Factory function to create appropriate backend"""
     if robot_type == "star":
         from pylabrobot.liquid_handling.backends import STAR
+
         return STAR()
     elif robot_type == "opentrons":
         from pylabrobot.liquid_handling.backends import OpentronsBackend
+
         return OpentronsBackend(host="192.168.1.100")
     elif robot_type == "simulation":
         from pylabrobot.liquid_handling.backends.simulation import ChatterboxBackend
+
         return ChatterboxBackend()
     else:
         raise ValueError(f"Unknown robot type: {robot_type}")
+
 
 def get_deck(robot_type: str):
     """Factory function to create appropriate deck"""
     if robot_type == "star":
         from pylabrobot.resources import STARLetDeck
+
         return STARLetDeck()
     elif robot_type == "opentrons":
         from pylabrobot.resources import OTDeck
+
         return OTDeck()
     elif robot_type == "simulation":
         from pylabrobot.resources import STARLetDeck
+
         return STARLetDeck()
     else:
         raise ValueError(f"Unknown robot type: {robot_type}")
+
 
 # Use in protocol
 robot_type = "simulation"  # Change to "star" or "opentrons" as needed
@@ -357,7 +359,7 @@ Some backends accept configuration parameters:
 # Opentrons with custom parameters
 backend = OpentronsBackend(
     host="192.168.1.100",
-    port=31950  # Default Opentrons API port
+    port=31950,  # Default Opentrons API port
 )
 
 # ChatterboxBackend with custom channels
@@ -428,23 +430,26 @@ ot_backend = lh.backend
 import asyncio
 from typing import Literal
 
+
 async def run_protocol(
-    robot_type: Literal["star", "opentrons", "simulation"],
-    visualize: bool = False
+    robot_type: Literal["star", "opentrons", "simulation"], visualize: bool = False
 ):
     """Run protocol on specified backend"""
 
     # Create backend
     if robot_type == "star":
         from pylabrobot.liquid_handling.backends import STAR
+
         backend = STAR()
         deck = STARLetDeck()
     elif robot_type == "opentrons":
         from pylabrobot.liquid_handling.backends import OpentronsBackend
+
         backend = OpentronsBackend(host="192.168.1.100")
         deck = OTDeck()
     elif robot_type == "simulation":
         from pylabrobot.liquid_handling.backends.simulation import ChatterboxBackend
+
         backend = ChatterboxBackend()
         deck = STARLetDeck()
 
@@ -466,10 +471,11 @@ async def run_protocol(
     finally:
         await lh.stop()
 
+
 # Run on different backends
-await run_protocol("simulation")      # Test in simulation
-await run_protocol("star")            # Run on Hamilton STAR
-await run_protocol("opentrons")       # Run on Opentrons OT-2
+await run_protocol("simulation")  # Test in simulation
+await run_protocol("star")  # Run on Hamilton STAR
+await run_protocol("opentrons")  # Run on Opentrons OT-2
 ```
 
 ## Additional Resources

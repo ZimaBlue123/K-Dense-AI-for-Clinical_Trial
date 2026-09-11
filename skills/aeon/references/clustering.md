@@ -92,7 +92,7 @@ X_train, _ = load_classification("GunPoint", split="train")
 clusterer = TimeSeriesKMeans(
     n_clusters=3,
     distance="dtw",  # Use DTW distance
-    averaging_method="ba"  # Barycentric averaging
+    averaging_method="ba",  # Barycentric averaging
 )
 labels = clusterer.fit_predict(X_train)
 centers = clusterer.cluster_centers_

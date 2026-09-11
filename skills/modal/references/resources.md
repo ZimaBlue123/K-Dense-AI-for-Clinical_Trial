@@ -51,9 +51,9 @@ Set explicit CPU limit:
 cpu_request = 1.0
 cpu_limit = 4.0
 
+
 @app.function(cpu=(cpu_request, cpu_limit))
-def f():
-    ...
+def f(): ...
 ```
 
 ### Memory Limits
@@ -62,7 +62,8 @@ Set hard memory limit to OOM kill containers at threshold:
 
 ```python
 mem_request = 1024  # MB
-mem_limit = 2048    # MB
+mem_limit = 2048  # MB
+
 
 @app.function(memory=(mem_request, mem_limit))
 def f():
@@ -84,8 +85,7 @@ Request larger disk with `ephemeral_disk`:
 
 ```python
 @app.function(ephemeral_disk=10240)  # 10 GiB
-def process_large_files():
-    ...
+def process_large_files(): ...
 ```
 
 Maximum disk size: 3.0 TiB (3,145,728 MiB)
@@ -108,10 +108,10 @@ Contact support if you need higher limits.
 
 ```python
 @app.function(
-    cpu=4.0,              # 4 physical cores
-    memory=16384,         # 16 GiB RAM
-    ephemeral_disk=51200, # 50 GiB disk
-    timeout=3600,         # 1 hour timeout
+    cpu=4.0,  # 4 physical cores
+    memory=16384,  # 16 GiB RAM
+    ephemeral_disk=51200,  # 50 GiB disk
+    timeout=3600,  # 1 hour timeout
 )
 def process_data():
     # Heavy processing with large files

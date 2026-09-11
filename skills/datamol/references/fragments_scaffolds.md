@@ -27,6 +27,7 @@ scaffold_smiles = [dm.to_smiles(s) for s in scaffolds]
 
 # Count scaffold frequency
 from collections import Counter
+
 scaffold_counts = Counter(scaffold_smiles)
 most_common = scaffold_counts.most_common(10)
 ```
@@ -137,13 +138,15 @@ for mol in molecule_library:
 
 # 3. Identify common fragments
 from collections import Counter
+
 fragment_counts = Counter(all_fragments)
 common_fragments = fragment_counts.most_common(20)
+
 
 # 4. Convert fragments back to molecules (remove attachment points)
 def clean_fragment(frag_smiles):
     # Remove [1*], [2*], etc. attachment point markers
-    clean = frag_smiles.replace('[1*]', '[H]')
+    clean = frag_smiles.replace("[1*]", "[H]")
     return dm.to_mol(clean)
 ```
 
@@ -156,11 +159,13 @@ for active_mol in active_compounds:
     frags = dm.fragment.brics(active_mol)
     active_fragments.update(frags)
 
+
 # Screen compounds for presence of active fragments
 def score_by_fragments(mol, fragment_set):
     mol_frags = dm.fragment.brics(mol)
     overlap = mol_frags.intersection(fragment_set)
     return len(overlap) / len(mol_frags)
+
 
 # Score screening library
 scores = [score_by_fragments(mol, active_fragments) for mol in screening_lib]

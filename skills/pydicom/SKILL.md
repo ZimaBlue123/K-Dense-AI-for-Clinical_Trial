@@ -53,7 +53,7 @@ Read a DICOM file using `pydicom.dcmread()`:
 import pydicom
 
 # Read a DICOM file
-ds = pydicom.dcmread('path/to/file.dcm')
+ds = pydicom.dcmread("path/to/file.dcm")
 
 # Access metadata
 print(f"Patient Name: {ds.PatientName}")
@@ -80,7 +80,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Read DICOM file
-ds = pydicom.dcmread('image.dcm')
+ds = pydicom.dcmread("image.dcm")
 
 # Get pixel array (requires numpy)
 pixel_array = ds.pixel_array
@@ -91,16 +91,17 @@ print(f"Data type: {pixel_array.dtype}")
 print(f"Rows: {ds.Rows}, Columns: {ds.Columns}")
 
 # Apply windowing for display (CT/MRI)
-if hasattr(ds, 'WindowCenter') and hasattr(ds, 'WindowWidth'):
+if hasattr(ds, "WindowCenter") and hasattr(ds, "WindowWidth"):
     from pydicom.pixel_data_handlers.util import apply_voi_lut
+
     windowed_image = apply_voi_lut(pixel_array, ds)
 else:
     windowed_image = pixel_array
 
 # Display image
-plt.imshow(windowed_image, cmap='gray')
+plt.imshow(windowed_image, cmap="gray")
 plt.title(f"{ds.Modality} - {ds.StudyDescription}")
-plt.axis('off')
+plt.axis("off")
 plt.show()
 ```
 
@@ -108,12 +109,13 @@ plt.show()
 
 ```python
 # RGB images have shape (rows, columns, 3)
-if ds.PhotometricInterpretation == 'RGB':
+if ds.PhotometricInterpretation == "RGB":
     rgb_image = ds.pixel_array
     plt.imshow(rgb_image)
-elif ds.PhotometricInterpretation == 'YBR_FULL':
+elif ds.PhotometricInterpretation == "YBR_FULL":
     from pydicom.pixel_data_handlers.util import convert_color_space
-    rgb_image = convert_color_space(ds.pixel_array, 'YBR_FULL', 'RGB')
+
+    rgb_image = convert_color_space(ds.pixel_array, "YBR_FULL", "RGB")
     plt.imshow(rgb_image)
 ```
 
@@ -121,12 +123,12 @@ elif ds.PhotometricInterpretation == 'YBR_FULL':
 
 ```python
 # For multi-frame DICOM files
-if hasattr(ds, 'NumberOfFrames') and ds.NumberOfFrames > 1:
+if hasattr(ds, "NumberOfFrames") and ds.NumberOfFrames > 1:
     frames = ds.pixel_array  # Shape: (num_frames, rows, columns)
     print(f"Number of frames: {frames.shape[0]}")
 
     # Display specific frame
-    plt.imshow(frames[0], cmap='gray')
+    plt.imshow(frames[0], cmap="gray")
 ```
 
 ### Converting DICOM to Image Formats
@@ -138,17 +140,18 @@ from PIL import Image
 import pydicom
 import numpy as np
 
-ds = pydicom.dcmread('input.dcm')
+ds = pydicom.dcmread("input.dcm")
 pixel_array = ds.pixel_array
 
 # Normalize to 0-255 range
 if pixel_array.dtype != np.uint8:
-    pixel_array = ((pixel_array - pixel_array.min()) /
-                   (pixel_array.max() - pixel_array.min()) * 255).astype(np.uint8)
+    pixel_array = (
+        (pixel_array - pixel_array.min()) / (pixel_array.max() - pixel_array.min()) * 255
+    ).astype(np.uint8)
 
 # Save as PNG
 image = Image.fromarray(pixel_array)
-image.save('output.png')
+image.save("output.png")
 ```
 
 Use the script: `python scripts/dicom_to_image.py input.dcm output.png`
@@ -161,11 +164,11 @@ Modify DICOM data elements:
 import pydicom
 from datetime import datetime
 
-ds = pydicom.dcmread('input.dcm')
+ds = pydicom.dcmread("input.dcm")
 
 # Modify existing elements
 ds.PatientName = "Doe^John"
-ds.StudyDate = datetime.now().strftime('%Y%m%d')
+ds.StudyDate = datetime.now().strftime("%Y%m%d")
 ds.StudyDescription = "Modified Study"
 
 # Add new elements
@@ -173,14 +176,14 @@ ds.SeriesNumber = 1
 ds.SeriesDescription = "New Series"
 
 # Remove elements
-if hasattr(ds, 'PatientComments'):
-    delattr(ds, 'PatientComments')
+if hasattr(ds, "PatientComments"):
+    delattr(ds, "PatientComments")
 # Or using del
-if 'PatientComments' in ds:
+if "PatientComments" in ds:
     del ds.PatientComments
 
 # Save modified file
-ds.save_as('modified.dcm')
+ds.save_as("modified.dcm")
 ```
 
 ### Anonymizing DICOM Files
@@ -191,34 +194,42 @@ Remove or replace patient identifiable information:
 import pydicom
 from datetime import datetime
 
-ds = pydicom.dcmread('input.dcm')
+ds = pydicom.dcmread("input.dcm")
 
 # Tags commonly containing PHI (Protected Health Information)
 tags_to_anonymize = [
-    'PatientName', 'PatientID', 'PatientBirthDate',
-    'PatientSex', 'PatientAge', 'PatientAddress',
-    'InstitutionName', 'InstitutionAddress',
-    'ReferringPhysicianName', 'PerformingPhysicianName',
-    'OperatorsName', 'StudyDescription', 'SeriesDescription',
+    "PatientName",
+    "PatientID",
+    "PatientBirthDate",
+    "PatientSex",
+    "PatientAge",
+    "PatientAddress",
+    "InstitutionName",
+    "InstitutionAddress",
+    "ReferringPhysicianName",
+    "PerformingPhysicianName",
+    "OperatorsName",
+    "StudyDescription",
+    "SeriesDescription",
 ]
 
 # Remove or replace sensitive data
 for tag in tags_to_anonymize:
     if hasattr(ds, tag):
-        if tag in ['PatientName', 'PatientID']:
-            setattr(ds, tag, 'ANONYMOUS')
-        elif tag == 'PatientBirthDate':
-            setattr(ds, tag, '19000101')
+        if tag in ["PatientName", "PatientID"]:
+            setattr(ds, tag, "ANONYMOUS")
+        elif tag == "PatientBirthDate":
+            setattr(ds, tag, "19000101")
         else:
             delattr(ds, tag)
 
 # Update dates to maintain temporal relationships
-if hasattr(ds, 'StudyDate'):
+if hasattr(ds, "StudyDate"):
     # Shift dates by a random offset
-    ds.StudyDate = '20000101'
+    ds.StudyDate = "20000101"
 
 # Keep pixel data intact
-ds.save_as('anonymized.dcm')
+ds.save_as("anonymized.dcm")
 ```
 
 Use the provided script: `python scripts/anonymize_dicom.py input.dcm output.dcm`
@@ -240,14 +251,14 @@ file_meta.MediaStorageSOPInstanceUID = pydicom.uid.generate_uid()
 file_meta.TransferSyntaxUID = pydicom.uid.ExplicitVRLittleEndian
 
 # Create the FileDataset instance
-ds = FileDataset('new_dicom.dcm', {}, file_meta=file_meta, preamble=b"\0" * 128)
+ds = FileDataset("new_dicom.dcm", {}, file_meta=file_meta, preamble=b"\0" * 128)
 
 # Add required DICOM elements
 ds.PatientName = "Test^Patient"
 ds.PatientID = "123456"
 ds.Modality = "CT"
-ds.StudyDate = datetime.now().strftime('%Y%m%d')
-ds.StudyTime = datetime.now().strftime('%H%M%S')
+ds.StudyDate = datetime.now().strftime("%Y%m%d")
+ds.StudyTime = datetime.now().strftime("%H%M%S")
 ds.ContentDate = ds.StudyDate
 ds.ContentTime = ds.StudyTime
 
@@ -272,7 +283,7 @@ ds.SeriesInstanceUID = pydicom.uid.generate_uid()
 ds.StudyInstanceUID = pydicom.uid.generate_uid()
 
 # Save the file
-ds.save_as('new_dicom.dcm')
+ds.save_as("new_dicom.dcm")
 ```
 
 ### Compression and Decompression
@@ -283,7 +294,7 @@ Handle compressed DICOM files:
 import pydicom
 
 # Read compressed DICOM file
-ds = pydicom.dcmread('compressed.dcm')
+ds = pydicom.dcmread("compressed.dcm")
 
 # Check transfer syntax
 print(f"Transfer Syntax: {ds.file_meta.TransferSyntaxUID}")
@@ -291,12 +302,12 @@ print(f"Transfer Syntax Name: {ds.file_meta.TransferSyntaxUID.name}")
 
 # Decompress and save as uncompressed
 ds.decompress()
-ds.save_as('uncompressed.dcm', write_like_original=False)
+ds.save_as("uncompressed.dcm", write_like_original=False)
 
 # Or compress when saving (requires appropriate encoder)
-ds_uncompressed = pydicom.dcmread('uncompressed.dcm')
+ds_uncompressed = pydicom.dcmread("uncompressed.dcm")
 ds_uncompressed.compress(pydicom.uid.JPEGBaseline8Bit)
-ds_uncompressed.save_as('compressed_jpeg.dcm')
+ds_uncompressed.save_as("compressed_jpeg.dcm")
 ```
 
 **Common transfer syntaxes:**
@@ -315,10 +326,10 @@ Handle nested data structures:
 ```python
 import pydicom
 
-ds = pydicom.dcmread('file.dcm')
+ds = pydicom.dcmread("file.dcm")
 
 # Access sequences
-if 'ReferencedStudySequence' in ds:
+if "ReferencedStudySequence" in ds:
     for item in ds.ReferencedStudySequence:
         print(f"Referenced SOP Instance UID: {item.ReferencedSOPInstanceUID}")
 
@@ -342,10 +353,10 @@ import numpy as np
 from pathlib import Path
 
 # Read all DICOM files in a directory
-dicom_dir = Path('dicom_series/')
+dicom_dir = Path("dicom_series/")
 slices = []
 
-for file_path in dicom_dir.glob('*.dcm'):
+for file_path in dicom_dir.glob("*.dcm"):
     ds = pydicom.dcmread(file_path)
     slices.append(ds)
 

@@ -34,9 +34,9 @@ backend = CLARIOstarBackend()
 pr = PlateReader(
     name="CLARIOstar",
     backend=backend,
-    size_x=0.0,    # Physical dimensions not critical for plate readers
+    size_x=0.0,  # Physical dimensions not critical for plate readers
     size_y=0.0,
-    size_z=0.0
+    size_z=0.0,
 )
 
 # Setup (initializes device)
@@ -82,7 +82,7 @@ data = await pr.read_luminescence()
 # Fluorescence reading
 data = await pr.read_fluorescence(
     excitation_wavelength=485,  # nm
-    emission_wavelength=535     # nm
+    emission_wavelength=535,  # nm
 )
 ```
 
@@ -103,6 +103,7 @@ print(f"Well H12: {data[7][11]}")
 
 # Convert to DataFrame for easier handling
 import pandas as pd
+
 df = pd.DataFrame(data)
 ```
 
@@ -140,11 +141,7 @@ try:
 
     # Transfer samples
     await lh.pick_up_tips(tip_rack["A1:H1"])
-    await lh.transfer(
-        reagent_plate["A1:H12"],
-        assay_plate["A1:H12"],
-        vols=100
-    )
+    await lh.transfer(reagent_plate["A1:H12"], assay_plate["A1:H12"], vols=100)
     await lh.drop_tips()
 
     # Move plate to reader (manual or robotic arm)
@@ -215,21 +212,13 @@ async def run_plate_reading_assay():
 
         # Transfer samples
         await lh.pick_up_tips(tip_rack["A1:H1"])
-        await lh.transfer(
-            samples["A1:H12"],
-            assay_plate["A1:H12"],
-            vols=50
-        )
+        await lh.transfer(samples["A1:H12"], assay_plate["A1:H12"], vols=50)
         await lh.drop_tips()
 
         # Add substrate
         await lh.pick_up_tips(tip_rack["A2:H2"])
         for col in range(1, 13):
-            await lh.transfer(
-                substrate["channel_1"],
-                assay_plate[f"A{col}:H{col}"],
-                vols=50
-            )
+            await lh.transfer(substrate["channel_1"], assay_plate[f"A{col}:H{col}"], vols=50)
         await lh.drop_tips()
 
         # Incubate (if needed)
@@ -248,10 +237,9 @@ async def run_plate_reading_assay():
 
         # Process results
         import pandas as pd
+
         df = pd.DataFrame(
-            data,
-            index=[f"{r}" for r in "ABCDEFGH"],
-            columns=[f"{c}" for c in range(1, 13)]
+            data, index=[f"{r}" for r in "ABCDEFGH"], columns=[f"{c}" for c in range(1, 13)]
         )
 
         print("Absorbance Results:")
@@ -265,6 +253,7 @@ async def run_plate_reading_assay():
     finally:
         await lh.stop()
         await pr.stop()
+
 
 # Run assay
 results = await run_plate_reading_assay()
@@ -283,10 +272,7 @@ from pylabrobot.scales import Scale
 from pylabrobot.scales.mettler_toledo_backend import MettlerToledoBackend
 
 # Create scale
-scale = Scale(
-    name="analytical_scale",
-    backend=MettlerToledoBackend()
-)
+scale = Scale(name="analytical_scale", backend=MettlerToledoBackend())
 
 await scale.setup()
 ```
@@ -393,10 +379,7 @@ async def multi_device_workflow():
         await pr.close()
         data = await pr.read_absorbance(wavelength=450)
 
-        return {
-            "reagent_weight": reagent_weight,
-            "absorbance_data": data
-        }
+        return {"reagent_weight": reagent_weight, "absorbance_data": data}
 
     finally:
         await lh.stop()
@@ -438,11 +421,7 @@ async def kinetic_reading(num_reads: int, interval: int):
         for i in range(num_reads):
             data = await pr.read_absorbance(wavelength=450)
             timestamp = time.time()
-            results.append({
-                "read_number": i + 1,
-                "timestamp": timestamp,
-                "data": data
-            })
+            results.append({"read_number": i + 1, "timestamp": timestamp, "data": data})
 
             if i < num_reads - 1:
                 await asyncio.sleep(interval)
@@ -451,6 +430,7 @@ async def kinetic_reading(num_reads: int, interval: int):
 
     finally:
         await pr.stop()
+
 
 # Read every 30 seconds for 10 minutes
 results = await kinetic_reading(num_reads=20, interval=30)

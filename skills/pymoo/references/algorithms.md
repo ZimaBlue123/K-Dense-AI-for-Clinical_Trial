@@ -21,6 +21,7 @@ Comprehensive reference for optimization algorithms available in pymoo.
 **Usage:**
 ```python
 from pymoo.algorithms.soo.nonconvex.ga import GA
+
 algorithm = GA(pop_size=100, eliminate_duplicates=True)
 ```
 
@@ -70,6 +71,7 @@ algorithm = GA(pop_size=100, eliminate_duplicates=True)
 **Usage:**
 ```python
 from pymoo.algorithms.moo.nsga2 import NSGA2
+
 algorithm = NSGA2(pop_size=100)
 ```
 

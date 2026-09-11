@@ -169,11 +169,7 @@ print(f"Distance: {distance:.2f} Å")
 from Bio.PDB.vectors import calc_angle
 
 # Calculate angle between three atoms
-angle = calc_angle(
-    atom1.get_vector(),
-    atom2.get_vector(),
-    atom3.get_vector()
-)
+angle = calc_angle(atom1.get_vector(), atom2.get_vector(), atom3.get_vector())
 print(f"Angle: {angle:.2f} radians")
 ```
 
@@ -184,10 +180,7 @@ from Bio.PDB.vectors import calc_dihedral
 
 # Calculate dihedral angle between four atoms
 dihedral = calc_dihedral(
-    atom1.get_vector(),
-    atom2.get_vector(),
-    atom3.get_vector(),
-    atom4.get_vector()
+    atom1.get_vector(), atom2.get_vector(), atom3.get_vector(), atom4.get_vector()
 )
 print(f"Dihedral: {dihedral:.2f} radians")
 ```
@@ -292,6 +285,7 @@ def calculate_contact_map(chain, distance_threshold=8.0):
 ```python
 from Bio.PDB import Polypeptide
 
+
 def get_phi_psi(structure):
     """Extract phi and psi angles for Ramachandran plot."""
     phi_psi = []
@@ -336,15 +330,20 @@ def check_missing_atoms(structure):
 ```python
 from Bio.PDB import Select
 
+
 class CASelect(Select):
     """Select only CA atoms."""
+
     def accept_atom(self, atom):
         return atom.name == "CA"
 
+
 class ChainASelect(Select):
     """Select only chain A."""
+
     def accept_chain(self, chain):
         return chain.id == "A"
+
 
 # Use with PDBIO
 from Bio.PDB import PDBIO
@@ -402,6 +401,7 @@ print(f"RMSD: {rmsd:.2f} Å")
 
 # Save superimposed structure
 from Bio.PDB import PDBIO
+
 io = PDBIO()
 io.set_structure(structure2)
 io.save("superimposed.pdb")
@@ -460,9 +460,7 @@ for model in structure:
     for chain in model:
         for pp in ppb.build_peptides(chain):
             seq_record = SeqRecord(
-                pp.get_sequence(),
-                id=f"{structure.id}_{chain.id}",
-                description=f"Chain {chain.id}"
+                pp.get_sequence(), id=f"{structure.id}_{chain.id}", description=f"Chain {chain.id}"
             )
             records.append(seq_record)
 
@@ -542,6 +540,7 @@ def find_binding_site(structure, ligand_chain, ligand_res_id, distance=5.0):
 
 ```python
 import numpy as np
+
 
 def center_of_mass(entity):
     """Calculate center of mass for structure entity."""

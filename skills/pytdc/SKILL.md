@@ -62,8 +62,9 @@ Where:
 
 ```python
 from tdc.single_pred import ADME
-data = ADME(name='Caco2_Wang')
-split = data.get_split(method='scaffold')
+
+data = ADME(name="Caco2_Wang")
+split = data.get_split(method="scaffold")
 # Returns dict with 'train', 'valid', 'test' DataFrames
 ```
 
@@ -79,7 +80,8 @@ Predict pharmacokinetic properties of drug molecules.
 
 ```python
 from tdc.single_pred import ADME
-data = ADME(name='Caco2_Wang')  # Intestinal permeability
+
+data = ADME(name="Caco2_Wang")  # Intestinal permeability
 # Other datasets: HIA_Hou, Bioavailability_Ma, Lipophilicity_AstraZeneca, etc.
 ```
 
@@ -98,7 +100,8 @@ Predict toxicity and adverse effects of compounds.
 
 ```python
 from tdc.single_pred import Tox
-data = Tox(name='hERG')  # Cardiotoxicity
+
+data = Tox(name="hERG")  # Cardiotoxicity
 # Other datasets: AMES, DILI, Carcinogens_Lagunin, etc.
 ```
 
@@ -115,7 +118,8 @@ Bioactivity predictions from screening data.
 
 ```python
 from tdc.single_pred import HTS
-data = HTS(name='SARSCoV2_Vitro_Touret')
+
+data = HTS(name="SARSCoV2_Vitro_Touret")
 ```
 
 #### 4. QM (Quantum Mechanics)
@@ -124,7 +128,8 @@ Quantum mechanical properties of molecules.
 
 ```python
 from tdc.single_pred import QM
-data = QM(name='QM7')
+
+data = QM(name="QM7")
 ```
 
 #### 5. Other Single Prediction Tasks
@@ -153,7 +158,8 @@ Predict binding affinity between drugs and protein targets.
 
 ```python
 from tdc.multi_pred import DTI
-data = DTI(name='BindingDB_Kd')
+
+data = DTI(name="BindingDB_Kd")
 split = data.get_split()
 ```
 
@@ -171,7 +177,8 @@ Predict interactions between drug pairs.
 
 ```python
 from tdc.multi_pred import DDI
-data = DDI(name='DrugBank')
+
+data = DDI(name="DrugBank")
 split = data.get_split()
 ```
 
@@ -183,7 +190,8 @@ Predict protein-protein interactions.
 
 ```python
 from tdc.multi_pred import PPI
-data = PPI(name='HuRI')
+
+data = PPI(name="HuRI")
 ```
 
 #### 4. Other Multi-Prediction Tasks
@@ -207,7 +215,8 @@ Generate diverse, novel molecules with desirable chemical properties.
 
 ```python
 from tdc.generation import MolGen
-data = MolGen(name='ChEMBL_V29')
+
+data = MolGen(name="ChEMBL_V29")
 split = data.get_split()
 ```
 
@@ -215,8 +224,9 @@ Use with oracles to optimize for specific properties:
 
 ```python
 from tdc import Oracle
-oracle = Oracle(name='GSK3B')
-score = oracle('CC(C)Cc1ccc(cc1)C(C)C(O)=O')  # Evaluate SMILES
+
+oracle = Oracle(name="GSK3B")
+score = oracle("CC(C)Cc1ccc(cc1)C(C)C(O)=O")  # Evaluate SMILES
 ```
 
 See `references/oracles.md` for all available oracle functions.
@@ -227,7 +237,8 @@ Predict reactants needed to synthesize a target molecule.
 
 ```python
 from tdc.generation import RetroSyn
-data = RetroSyn(name='USPTO')
+
+data = RetroSyn(name="USPTO")
 split = data.get_split()
 ```
 
@@ -239,7 +250,8 @@ Generate molecule pairs (e.g., prodrug-drug pairs).
 
 ```python
 from tdc.generation import PairMolGen
-data = PairMolGen(name='Prodrug')
+
+data = PairMolGen(name="Prodrug")
 ```
 
 For detailed oracle documentation and molecular generation workflows, refer to `references/oracles.md` and `scripts/molecular_generation.py`.
@@ -252,16 +264,17 @@ Benchmark groups provide curated collections of related datasets for systematic 
 
 ```python
 from tdc.benchmark_group import admet_group
-group = admet_group(path='data/')
+
+group = admet_group(path="data/")
 
 # Get benchmark datasets
-benchmark = group.get('Caco2_Wang')
+benchmark = group.get("Caco2_Wang")
 predictions = {}
 
 for seed in [1, 2, 3, 4, 5]:
-    train, valid = benchmark['train'], benchmark['valid']
+    train, valid = benchmark["train"], benchmark["valid"]
     # Train model here
-    predictions[seed] = model.predict(benchmark['test'])
+    predictions[seed] = model.predict(benchmark["test"])
 
 # Evaluate with required 5 seeds
 results = group.evaluate(predictions)
@@ -289,14 +302,14 @@ Retrieve train/validation/test partitions with various strategies:
 
 ```python
 # Scaffold split (default for most tasks)
-split = data.get_split(method='scaffold', seed=1, frac=[0.7, 0.1, 0.2])
+split = data.get_split(method="scaffold", seed=1, frac=[0.7, 0.1, 0.2])
 
 # Random split
-split = data.get_split(method='random', seed=42, frac=[0.8, 0.1, 0.1])
+split = data.get_split(method="random", seed=42, frac=[0.8, 0.1, 0.1])
 
 # Cold split (for DTI/DDI tasks)
-split = data.get_split(method='cold_drug', seed=1)  # Unseen drugs in test
-split = data.get_split(method='cold_target', seed=1)  # Unseen targets in test
+split = data.get_split(method="cold_drug", seed=1)  # Unseen drugs in test
+split = data.get_split(method="cold_target", seed=1)  # Unseen targets in test
 ```
 
 **Available split strategies:**
@@ -313,11 +326,11 @@ Use standardized metrics for evaluation:
 from tdc import Evaluator
 
 # For binary classification
-evaluator = Evaluator(name='ROC-AUC')
+evaluator = Evaluator(name="ROC-AUC")
 score = evaluator(y_true, y_pred)
 
 # For regression
-evaluator = Evaluator(name='RMSE')
+evaluator = Evaluator(name="RMSE")
 score = evaluator(y_true, y_pred)
 ```
 
@@ -331,8 +344,8 @@ TDC provides 11 key processing utilities:
 from tdc.chem_utils import MolConvert
 
 # Molecule format conversion
-converter = MolConvert(src='SMILES', dst='PyG')
-pyg_graph = converter('CC(C)Cc1ccc(cc1)C(C)C(O)=O')
+converter = MolConvert(src="SMILES", dst="PyG")
+pyg_graph = converter("CC(C)Cc1ccc(cc1)C(C)C(O)=O")
 ```
 
 **Processing utilities include:**
@@ -354,12 +367,12 @@ TDC provides 17+ oracle functions for molecular optimization:
 from tdc import Oracle
 
 # Single oracle
-oracle = Oracle(name='DRD2')
-score = oracle('CC(C)Cc1ccc(cc1)C(C)C(O)=O')
+oracle = Oracle(name="DRD2")
+score = oracle("CC(C)Cc1ccc(cc1)C(C)C(O)=O")
 
 # Multiple oracles
-oracle = Oracle(name='JNK3')
-scores = oracle(['SMILES1', 'SMILES2', 'SMILES3'])
+oracle = Oracle(name="JNK3")
+scores = oracle(["SMILES1", "SMILES2", "SMILES3"])
 ```
 
 For complete oracle documentation, see `references/oracles.md`.
@@ -372,21 +385,22 @@ For complete oracle documentation, see `references/oracles.md`.
 from tdc.utils import retrieve_dataset_names
 
 # Get all ADME datasets
-adme_datasets = retrieve_dataset_names('ADME')
+adme_datasets = retrieve_dataset_names("ADME")
 
 # Get all DTI datasets
-dti_datasets = retrieve_dataset_names('DTI')
+dti_datasets = retrieve_dataset_names("DTI")
 ```
 
 ### Label Transformations
 
 ```python
 # Get label mapping
-label_map = data.get_label_map(name='DrugBank')
+label_map = data.get_label_map(name="DrugBank")
 
 # Convert labels
 from tdc.chem_utils import label_transform
-transformed = label_transform(y, from_unit='nM', to_unit='p')
+
+transformed = label_transform(y, from_unit="nM", to_unit="p")
 ```
 
 ### Database Queries
@@ -398,7 +412,7 @@ from tdc.utils import cid2smiles, uniprot2seq
 smiles = cid2smiles(2244)
 
 # Convert UniProt ID to amino acid sequence
-sequence = uniprot2seq('P12345')
+sequence = uniprot2seq("P12345")
 ```
 
 ## Common Workflows
@@ -412,16 +426,16 @@ from tdc.single_pred import ADME
 from tdc import Evaluator
 
 # Load data
-data = ADME(name='Caco2_Wang')
-split = data.get_split(method='scaffold', seed=42)
+data = ADME(name="Caco2_Wang")
+split = data.get_split(method="scaffold", seed=42)
 
-train, valid, test = split['train'], split['valid'], split['test']
+train, valid, test = split["train"], split["valid"], split["test"]
 
 # Train model (user implements)
 # model.fit(train['Drug'], train['Y'])
 
 # Evaluate
-evaluator = Evaluator(name='MAE')
+evaluator = Evaluator(name="MAE")
 # score = evaluator(test['Y'], predictions)
 ```
 

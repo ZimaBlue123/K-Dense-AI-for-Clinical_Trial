@@ -146,7 +146,7 @@ import rasterio
 import numpy as np
 
 # Open Sentinel-2 imagery
-with rasterio.open('sentinel2.tif') as src:
+with rasterio.open("sentinel2.tif") as src:
     # Read red (B04) and NIR (B08) bands
     red = src.read(4)
     nir = src.read(8)
@@ -159,7 +159,7 @@ with rasterio.open('sentinel2.tif') as src:
     profile = src.profile
     profile.update(count=1, dtype=rasterio.float32)
 
-    with rasterio.open('ndvi.tif', 'w', **profile) as dst:
+    with rasterio.open("ndvi.tif", "w", **profile) as dst:
         dst.write(ndvi.astype(rasterio.float32), 1)
 
 print(f"NDVI range: {ndvi.min():.3f} to {ndvi.max():.3f}")
@@ -171,20 +171,18 @@ print(f"NDVI range: {ndvi.min():.3f} to {ndvi.max():.3f}")
 import geopandas as gpd
 
 # Load spatial data
-zones = gpd.read_file('zones.geojson')
-points = gpd.read_file('points.geojson')
+zones = gpd.read_file("zones.geojson")
+points = gpd.read_file("points.geojson")
 
 # Ensure same CRS
 if zones.crs != points.crs:
     points = points.to_crs(zones.crs)
 
 # Spatial join (points within zones)
-joined = gpd.sjoin(points, zones, how='inner', predicate='within')
+joined = gpd.sjoin(points, zones, how="inner", predicate="within")
 
 # Calculate statistics per zone
-stats = joined.groupby('zone_id').agg({
-    'value': ['count', 'mean', 'std', 'min', 'max']
-}).round(2)
+stats = joined.groupby("zone_id").agg({"value": ["count", "mean", "std", "min", "max"]}).round(2)
 
 print(stats)
 ```
@@ -196,40 +194,40 @@ import ee
 import pandas as pd
 
 # Initialize Earth Engine
-ee.Initialize(project='your-project-id')
+ee.Initialize(project="your-project-id")
 
 # Define region of interest
 roi = ee.Geometry.Point([-122.4, 37.7]).buffer(10000)
 
 # Get Sentinel-2 collection
-s2 = (ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED')
-      .filterBounds(roi)
-      .filterDate('2020-01-01', '2023-12-31')
-      .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 20)))
+s2 = (
+    ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED")
+    .filterBounds(roi)
+    .filterDate("2020-01-01", "2023-12-31")
+    .filter(ee.Filter.lt("CLOUDY_PIXEL_PERCENTAGE", 20))
+)
+
 
 # Add NDVI band
 def add_ndvi(image):
-    ndvi = image.normalizedDifference(['B8', 'B4']).rename('NDVI')
+    ndvi = image.normalizedDifference(["B8", "B4"]).rename("NDVI")
     return image.addBands(ndvi)
 
+
 s2_ndvi = s2.map(add_ndvi)
+
 
 # Extract time series
 def extract_series(image):
     stats = image.reduceRegion(
-        reducer=ee.Reducer.mean(),
-        geometry=roi.centroid(),
-        scale=10,
-        maxPixels=1e9
+        reducer=ee.Reducer.mean(), geometry=roi.centroid(), scale=10, maxPixels=1e9
     )
-    return ee.Feature(None, {
-        'date': image.date().format('YYYY-MM-dd'),
-        'ndvi': stats.get('NDVI')
-    })
+    return ee.Feature(None, {"date": image.date().format("YYYY-MM-dd"), "ndvi": stats.get("NDVI")})
+
 
 series = s2_ndvi.map(extract_series).getInfo()
-df = pd.DataFrame([f['properties'] for f in series['features']])
-df['date'] = pd.to_datetime(df['date'])
+df = pd.DataFrame([f["properties"] for f in series["features"]])
+df["date"] = pd.to_datetime(df["date"])
 print(df.head())
 ```
 
@@ -284,6 +282,7 @@ Key Open Geospatial Consortium standards:
 import rasterio
 import numpy as np
 
+
 def calculate_indices(image_path, output_path):
     """Calculate NDVI, EVI, SAVI, and NDWI from Sentinel-2."""
     with rasterio.open(image_path) as src:
@@ -296,7 +295,7 @@ def calculate_indices(image_path, output_path):
 
         # Calculate indices
         ndvi = (nir - red) / (nir + red + 1e-8)
-        evi = 2.5 * (nir - red) / (nir + 6*red - 7.5*blue + 1)
+        evi = 2.5 * (nir - red) / (nir + 6 * red - 7.5 * blue + 1)
         savi = ((nir - red) / (nir + red + 0.5)) * 1.5
         ndwi = (green - nir) / (green + nir + 1e-8)
 
@@ -305,11 +304,12 @@ def calculate_indices(image_path, output_path):
         profile = src.profile
         profile.update(count=4, dtype=rasterio.float32)
 
-        with rasterio.open(output_path, 'w', **profile) as dst:
+        with rasterio.open(output_path, "w", **profile) as dst:
             dst.write(indices)
 
+
 # Usage
-calculate_indices('sentinel2.tif', 'indices.tif')
+calculate_indices("sentinel2.tif", "indices.tif")
 ```
 
 #### Image Classification
@@ -320,6 +320,7 @@ import geopandas as gpd
 import rasterio
 from rasterio.features import rasterize
 import numpy as np
+
 
 def classify_imagery(raster_path, training_gdf, output_path):
     """Train Random Forest classifier and classify imagery."""
@@ -335,14 +336,14 @@ def classify_imagery(raster_path, training_gdf, output_path):
     for _, row in training_gdf.iterrows():
         mask = rasterize(
             [(row.geometry, 1)],
-            out_shape=(profile['height'], profile['width']),
+            out_shape=(profile["height"], profile["width"]),
             transform=transform,
             fill=0,
-            dtype=np.uint8
+            dtype=np.uint8,
         )
         pixels = image[:, mask > 0].T
         X_train.extend(pixels)
-        y_train.extend([row['class_id']] * len(pixels))
+        y_train.extend([row["class_id"]] * len(pixels))
 
     X_train = np.array(X_train)
     y_train = np.array(y_train)
@@ -354,11 +355,11 @@ def classify_imagery(raster_path, training_gdf, output_path):
     # Predict full image
     image_reshaped = image.reshape(image.shape[0], -1).T
     prediction = rf.predict(image_reshaped)
-    prediction = prediction.reshape(profile['height'], profile['width'])
+    prediction = prediction.reshape(profile["height"], profile["width"])
 
     # Save result
     profile.update(dtype=rasterio.uint8, count=1)
-    with rasterio.open(output_path, 'w', **profile) as dst:
+    with rasterio.open(output_path, "w", **profile) as dst:
         dst.write(prediction.astype(rasterio.uint8), 1)
 
     return rf
@@ -371,21 +372,21 @@ import geopandas as gpd
 from shapely.ops import unary_union
 
 # Buffer analysis
-gdf['buffer_1km'] = gdf.geometry.to_crs(epsg=32633).buffer(1000)
+gdf["buffer_1km"] = gdf.geometry.to_crs(epsg=32633).buffer(1000)
 
 # Spatial relationships
 intersects = gdf[gdf.geometry.intersects(other_geometry)]
 contains = gdf[gdf.geometry.contains(point_geometry)]
 
 # Geometric operations
-gdf['centroid'] = gdf.geometry.centroid
-gdf['convex_hull'] = gdf.geometry.convex_hull
-gdf['simplified'] = gdf.geometry.simplify(tolerance=0.001)
+gdf["centroid"] = gdf.geometry.centroid
+gdf["convex_hull"] = gdf.geometry.convex_hull
+gdf["simplified"] = gdf.geometry.simplify(tolerance=0.001)
 
 # Overlay operations
-intersection = gpd.overlay(gdf1, gdf2, how='intersection')
-union = gpd.overlay(gdf1, gdf2, how='union')
-difference = gpd.overlay(gdf1, gdf2, how='difference')
+intersection = gpd.overlay(gdf1, gdf2, how="intersection")
+union = gpd.overlay(gdf1, gdf2, how="union")
+difference = gpd.overlay(gdf1, gdf2, how="difference")
 ```
 
 ### Terrain Analysis
@@ -394,6 +395,7 @@ difference = gpd.overlay(gdf1, gdf2, how='difference')
 import rasterio
 from rasterio.features import shapes
 import numpy as np
+
 
 def calculate_terrain_metrics(dem_path):
     """Calculate slope, aspect, hillshade from DEM."""
@@ -417,9 +419,9 @@ def calculate_terrain_metrics(dem_path):
     azimuth_rad = np.radians(azimuth)
     altitude_rad = np.radians(altitude)
 
-    hillshade = (np.sin(altitude_rad) * np.sin(np.radians(slope)) +
-                 np.cos(altitude_rad) * np.cos(np.radians(slope)) *
-                 np.cos(np.radians(aspect) - azimuth_rad))
+    hillshade = np.sin(altitude_rad) * np.sin(np.radians(slope)) + np.cos(altitude_rad) * np.cos(
+        np.radians(slope)
+    ) * np.cos(np.radians(aspect) - azimuth_rad)
 
     return slope, aspect, hillshade
 ```
@@ -431,7 +433,7 @@ import osmnx as ox
 import networkx as nx
 
 # Download street network
-G = ox.graph_from_place('San Francisco, CA', network_type='drive')
+G = ox.graph_from_place("San Francisco, CA", network_type="drive")
 
 # Add speeds and travel times
 G = ox.add_edge_speeds(G)
@@ -440,12 +442,12 @@ G = ox.add_edge_travel_times(G)
 # Find shortest path
 orig_node = ox.distance.nearest_nodes(G, -122.4, 37.7)
 dest_node = ox.distance.nearest_nodes(G, -122.3, 37.8)
-route = nx.shortest_path(G, orig_node, dest_node, weight='travel_time')
+route = nx.shortest_path(G, orig_node, dest_node, weight="travel_time")
 
 # Calculate accessibility
 accessibility = {}
 for node in G.nodes():
-    subgraph = nx.ego_graph(G, node, radius=5, distance='time')
+    subgraph = nx.ego_graph(G, node, radius=5, distance="time")
     accessibility[node] = len(subgraph.nodes())
 ```
 
@@ -477,10 +479,10 @@ from sklearn.ensemble import RandomForestClassifier
 import numpy as np
 
 # 1. Load training data
-training = gpd.read_file('training_polygons.gpkg')
+training = gpd.read_file("training_polygons.gpkg")
 
 # 2. Load satellite imagery
-with rasterio.open('sentinel2.tif') as src:
+with rasterio.open("sentinel2.tif") as src:
     bands = src.read()
     profile = src.profile
     meta = src.meta
@@ -488,10 +490,10 @@ with rasterio.open('sentinel2.tif') as src:
 # 3. Extract training pixels
 X, y = [], []
 for _, row in training.iterrows():
-    mask = rasterize_features(row.geometry, profile['shape'])
+    mask = rasterize_features(row.geometry, profile["shape"])
     pixels = bands[:, mask > 0].T
     X.extend(pixels)
-    y.extend([row['class']] * len(pixels))
+    y.extend([row["class"]] * len(pixels))
 
 # 4. Train model
 model = RandomForestClassifier(n_estimators=100, max_depth=20)
@@ -504,7 +506,7 @@ classified = prediction.reshape(bands.shape[1], bands.shape[2])
 
 # 6. Save result
 profile.update(dtype=rasterio.uint8, count=1, nodata=255)
-with rasterio.open('classified.tif', 'w', **profile) as dst:
+with rasterio.open("classified.tif", "w", **profile) as dst:
     dst.write(classified.astype(rasterio.uint8), 1)
 
 # 7. Accuracy assessment (with validation data)
@@ -533,34 +535,37 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Initialize GEE
-ee.Initialize(project='your-project')
+ee.Initialize(project="your-project")
 
 # Define ROI
 roi = ee.Geometry.Point([x, y]).buffer(5000)
 
 # Get Landsat collection
-landsat = ee.ImageCollection('LANDSAT/LC08/C02/T1_L2')\
-    .filterBounds(roi)\
-    .filterDate('2015-01-01', '2024-12-31')\
-    .filter(ee.Filter.lt('CLOUD_COVER', 20))
+landsat = (
+    ee.ImageCollection("LANDSAT/LC08/C02/T1_L2")
+    .filterBounds(roi)
+    .filterDate("2015-01-01", "2024-12-31")
+    .filter(ee.Filter.lt("CLOUD_COVER", 20))
+)
+
 
 # Calculate NDVI time series
 def add_ndvi(img):
-    ndvi = img.normalizedDifference(['SR_B5', 'SR_B4']).rename('NDVI')
+    ndvi = img.normalizedDifference(["SR_B5", "SR_B4"]).rename("NDVI")
     return img.addBands(ndvi)
+
 
 landsat_ndvi = landsat.map(add_ndvi)
 
 # Extract time series
 ts = landsat_ndvi.getRegion(roi, 30).getInfo()
 df = pd.DataFrame(ts[1:], columns=ts[0])
-df['date'] = pd.to_datetime(df['time'])
+df["date"] = pd.to_datetime(df["time"])
 
 # Analyze trends
 from scipy import stats
-slope, intercept, r_value, p_value, std_err = stats.linregress(
-    range(len(df)), df['NDVI']
-)
+
+slope, intercept, r_value, p_value, std_err = stats.linregress(range(len(df)), df["NDVI"])
 
 print(f"Trend: {slope:.6f} NDVI/year (p={p_value:.4f})")
 ```
@@ -575,20 +580,19 @@ from sklearn.preprocessing import MinMaxScaler
 
 # 1. Load criteria rasters
 criteria = {
-    'slope': rasterio.open('slope.tif').read(1),
-    'distance_to_water': rasterio.open('water_dist.tif').read(1),
-    'soil_quality': rasterio.open('soil.tif').read(1),
-    'land_use': rasterio.open('landuse.tif').read(1)
+    "slope": rasterio.open("slope.tif").read(1),
+    "distance_to_water": rasterio.open("water_dist.tif").read(1),
+    "soil_quality": rasterio.open("soil.tif").read(1),
+    "land_use": rasterio.open("landuse.tif").read(1),
 }
 
 # 2. Reclassify (lower is better for slope/distance)
-weights = {'slope': 0.3, 'distance_to_water': 0.2,
-           'soil_quality': 0.3, 'land_use': 0.2}
+weights = {"slope": 0.3, "distance_to_water": 0.2, "soil_quality": 0.3, "land_use": 0.2}
 
 # 3. Normalize (0-1, using fuzzy membership)
 normalized = {}
 for key, raster in criteria.items():
-    if key in ['slope', 'distance_to_water']:
+    if key in ["slope", "distance_to_water"]:
         # Decreasing suitability
         normalized[key] = 1 - MinMaxScaler().fit_transform(raster.reshape(-1, 1))
     else:
@@ -596,15 +600,15 @@ for key, raster in criteria.items():
 
 # 4. Weighted overlay
 suitability = sum(normalized[key] * weights[key] for key in criteria)
-suitability = suitability.reshape(criteria['slope'].shape)
+suitability = suitability.reshape(criteria["slope"].shape)
 
 # 5. Classify suitability levels
 # (Low, Medium, High, Very High)
 
 # 6. Save result
-profile = rasterio.open('slope.tif').profile
+profile = rasterio.open("slope.tif").profile
 profile.update(dtype=rasterio.float32, count=1)
-with rasterio.open('suitability.tif', 'w', **profile) as dst:
+with rasterio.open("suitability.tif", "w", **profile) as dst:
     dst.write(suitability.astype(rasterio.float32), 1)
 ```
 
@@ -617,7 +621,7 @@ with rasterio.open('suitability.tif', 'w', **profile) as dst:
 
 2. **Chunk Large Rasters**: Process in blocks to avoid memory errors
    ```python
-   with rasterio.open('large.tif') as src:
+   with rasterio.open("large.tif") as src:
        for window in src.block_windows():
            block = src.read(window=window)
    ```
@@ -625,25 +629,27 @@ with rasterio.open('suitability.tif', 'w', **profile) as dst:
 3. **Use Dask for Big Data**: Parallel processing on large datasets
    ```python
    import dask.array as da
-   dask_array = da.from_rasterio('large.tif', chunks=(1, 1024, 1024))
+
+   dask_array = da.from_rasterio("large.tif", chunks=(1, 1024, 1024))
    ```
 
 4. **Enable GDAL Caching**: Speed up repeated reads
    ```python
    import gdal
+
    gdal.SetCacheMax(2**30)  # 1GB cache
    ```
 
 5. **Use Arrow for I/O**: Faster file reading/writing
    ```python
-   gdf.to_file('output.gpkg', use_arrow=True)
+   gdf.to_file("output.gpkg", use_arrow=True)
    ```
 
 6. **Reproject Once**: Do all analysis in a single projected CRS
 7. **Use Efficient Formats**: GeoPackage > Shapefile, Parquet for large datasets
 8. **Simplify Geometries**: Reduce complexity when precision isn't critical
    ```python
-   gdf['geometry'] = gdf.geometry.simplify(tolerance=0.0001)
+   gdf["geometry"] = gdf.geometry.simplify(tolerance=0.0001)
    ```
 
 9. **Use COG for Cloud**: Cloud-Optimized GeoTIFF for remote data
@@ -664,12 +670,12 @@ with rasterio.open('suitability.tif', 'w', **profile) as dst:
 3. **Validate Geometries** before operations
    ```python
    gdf = gdf[gdf.is_valid]
-   gdf['geometry'] = gdf.geometry.make_valid()
+   gdf["geometry"] = gdf.geometry.make_valid()
    ```
 
 4. **Handle Missing Data** appropriately
    ```python
-   gdf['geometry'] = gdf['geometry'].fillna(None)
+   gdf["geometry"] = gdf["geometry"].fillna(None)
    ```
 
 5. **Document Projections** in metadata

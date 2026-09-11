@@ -145,9 +145,7 @@ Examples:
     parser.add_argument("output", help="Output image file (png, pdf, or svg)")
 
     # Tree format
-    parser.add_argument(
-        "--format", type=int, default=0, help="Newick format number (default: 0)"
-    )
+    parser.add_argument("--format", type=int, default=0, help="Newick format number (default: 0)")
 
     # Display options
     display = parser.add_argument_group("Display options")
@@ -157,12 +155,8 @@ Examples:
         action="store_false",
         help="Don't show leaf names",
     )
-    display.add_argument(
-        "--show-lengths", action="store_true", help="Show branch lengths"
-    )
-    display.add_argument(
-        "--show-support", action="store_true", help="Show support values"
-    )
+    display.add_argument("--show-lengths", action="store_true", help="Show branch lengths")
+    display.add_argument("--show-support", action="store_true", help="Show support values")
     display.add_argument("--show-scale", action="store_true", help="Show scale bar")
 
     # Layout options
@@ -191,12 +185,8 @@ Examples:
 
     # Styling options
     styling = parser.add_argument_group("Styling options")
-    styling.add_argument(
-        "--leaf-color", default="blue", help="Leaf node color (default: blue)"
-    )
-    styling.add_argument(
-        "--leaf-size", type=int, default=6, help="Leaf node size (default: 6)"
-    )
+    styling.add_argument("--leaf-color", default="blue", help="Leaf node color (default: blue)")
+    styling.add_argument("--leaf-size", type=int, default=6, help="Leaf node size (default: 6)")
     styling.add_argument(
         "--internal-color", default="gray", help="Internal node color (default: gray)"
     )
@@ -213,9 +203,7 @@ Examples:
     size = parser.add_argument_group("Size and spacing")
     size.add_argument("--width", type=int, help="Output width")
     size.add_argument("--height", type=int, help="Output height")
-    size.add_argument(
-        "--units", choices=["px", "mm", "in"], help="Size units (px, mm, in)"
-    )
+    size.add_argument("--units", choices=["px", "mm", "in"], help="Size units (px, mm, in)")
     size.add_argument("--dpi", type=int, help="DPI for raster output")
     size.add_argument(
         "--scale-factor", type=int, help="Branch length scale factor (pixels per unit)"

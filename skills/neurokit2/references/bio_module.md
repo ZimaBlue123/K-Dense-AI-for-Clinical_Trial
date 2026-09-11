@@ -11,8 +11,9 @@ The Bio module provides unified functions for processing and analyzing multiple 
 Process multiple physiological signals simultaneously with a single function call.
 
 ```python
-bio_signals, bio_info = nk.bio_process(ecg=None, rsp=None, eda=None, emg=None,
-                                       ppg=None, eog=None, sampling_rate=1000)
+bio_signals, bio_info = nk.bio_process(
+    ecg=None, rsp=None, eda=None, emg=None, ppg=None, eog=None, sampling_rate=1000
+)
 ```
 
 **Parameters:**
@@ -35,20 +36,17 @@ bio_signals, bio_info = nk.bio_process(ecg=None, rsp=None, eda=None, emg=None,
 ```python
 # Process ECG, respiration, and EDA simultaneously
 bio_signals, bio_info = nk.bio_process(
-    ecg=ecg_signal,
-    rsp=rsp_signal,
-    eda=eda_signal,
-    sampling_rate=1000
+    ecg=ecg_signal, rsp=rsp_signal, eda=eda_signal, sampling_rate=1000
 )
 
 # Access processed signals
-ecg_clean = bio_signals['ECG_Clean']
-rsp_rate = bio_signals['RSP_Rate']
-eda_phasic = bio_signals['EDA_Phasic']
+ecg_clean = bio_signals["ECG_Clean"]
+rsp_rate = bio_signals["RSP_Rate"]
+eda_phasic = bio_signals["EDA_Phasic"]
 
 # Access detected peaks
-ecg_peaks = bio_info['ECG']['ECG_R_Peaks']
-rsp_peaks = bio_info['RSP']['RSP_Peaks']
+ecg_peaks = bio_info["ECG"]["ECG_R_Peaks"]
+rsp_peaks = bio_info["RSP"]["RSP_Peaks"]
 ```
 
 **Internal workflow:**
@@ -107,11 +105,11 @@ bio_results = nk.bio_analyze(bio_signals, sampling_rate=1000)
 results = nk.bio_analyze(bio_signals, sampling_rate=1000)
 
 # Access results
-heart_rate_mean = results['ECG_Rate_Mean']
-hrv_rmssd = results['HRV_RMSSD']
-breathing_rate = results['RSP_Rate_Mean']
-scr_count = results['SCR_Peaks_N']
-rsa_value = results['RSA']  # If both ECG and RSP present
+heart_rate_mean = results["ECG_Rate_Mean"]
+hrv_rmssd = results["HRV_RMSSD"]
+breathing_rate = results["RSP_Rate_Mean"]
+scr_count = results["SCR_Peaks_N"]
+rsa_value = results["RSA"]  # If both ECG and RSP present
 ```
 
 ## Cross-Signal Features
@@ -126,7 +124,7 @@ Automatically computed when both ECG and respiratory signals are present.
 bio_signals, bio_info = nk.bio_process(ecg=ecg, rsp=rsp, sampling_rate=1000)
 results = nk.bio_analyze(bio_signals, sampling_rate=1000)
 
-rsa = results['RSA']  # Automatically included
+rsa = results["RSA"]  # Automatically included
 ```
 
 **Computation:**
@@ -147,7 +145,7 @@ If respiratory signal unavailable, NeuroKit2 can estimate from ECG:
 ecg_signals, ecg_info = nk.ecg_process(ecg, sampling_rate=1000)
 
 # Extract EDR
-edr = nk.ecg_rsp(ecg_signals['ECG_Clean'], sampling_rate=1000)
+edr = nk.ecg_rsp(ecg_signals["ECG_Clean"], sampling_rate=1000)
 ```
 
 **Use case:**
@@ -162,8 +160,8 @@ Synchronized cardiac and electrodermal activity:
 bio_signals, bio_info = nk.bio_process(ecg=ecg, eda=eda, sampling_rate=1000)
 
 # Both signals available for integrated analysis
-ecg_rate = bio_signals['ECG_Rate']
-eda_phasic = bio_signals['EDA_Phasic']
+ecg_rate = bio_signals["ECG_Rate"]
+eda_phasic = bio_signals["EDA_Phasic"]
 
 # Compute correlations or coupling metrics
 correlation = ecg_rate.corr(eda_phasic)
@@ -178,19 +176,13 @@ import neurokit2 as nk
 import pandas as pd
 
 # 1. Load multi-modal physiological data
-ecg = load_ecg()        # Your data loading function
+ecg = load_ecg()  # Your data loading function
 rsp = load_rsp()
 eda = load_eda()
 emg = load_emg()
 
 # 2. Process all signals simultaneously
-bio_signals, bio_info = nk.bio_process(
-    ecg=ecg,
-    rsp=rsp,
-    eda=eda,
-    emg=emg,
-    sampling_rate=1000
-)
+bio_signals, bio_info = nk.bio_process(ecg=ecg, rsp=rsp, eda=eda, emg=emg, sampling_rate=1000)
 
 # 3. Visualize processed signals
 import matplotlib.pyplot as plt
@@ -198,22 +190,22 @@ import matplotlib.pyplot as plt
 fig, axes = plt.subplots(4, 1, figsize=(15, 12), sharex=True)
 
 # ECG
-axes[0].plot(bio_signals.index / 1000, bio_signals['ECG_Clean'])
-axes[0].set_ylabel('ECG')
-axes[0].set_title('Multi-Modal Physiological Recording')
+axes[0].plot(bio_signals.index / 1000, bio_signals["ECG_Clean"])
+axes[0].set_ylabel("ECG")
+axes[0].set_title("Multi-Modal Physiological Recording")
 
 # Respiration
-axes[1].plot(bio_signals.index / 1000, bio_signals['RSP_Clean'])
-axes[1].set_ylabel('Respiration')
+axes[1].plot(bio_signals.index / 1000, bio_signals["RSP_Clean"])
+axes[1].set_ylabel("Respiration")
 
 # EDA
-axes[2].plot(bio_signals.index / 1000, bio_signals['EDA_Phasic'])
-axes[2].set_ylabel('EDA (Phasic)')
+axes[2].plot(bio_signals.index / 1000, bio_signals["EDA_Phasic"])
+axes[2].set_ylabel("EDA (Phasic)")
 
 # EMG
-axes[3].plot(bio_signals.index / 1000, bio_signals['EMG_Amplitude'])
-axes[3].set_ylabel('EMG Amplitude')
-axes[3].set_xlabel('Time (s)')
+axes[3].plot(bio_signals.index / 1000, bio_signals["EMG_Amplitude"])
+axes[3].set_ylabel("EMG Amplitude")
+axes[3].set_xlabel("Time (s)")
 
 plt.tight_layout()
 plt.show()
@@ -222,11 +214,11 @@ plt.show()
 results = nk.bio_analyze(bio_signals, sampling_rate=1000)
 
 # 5. Extract key metrics
-print("Heart Rate (mean):", results['ECG_Rate_Mean'])
-print("HRV (RMSSD):", results['HRV_RMSSD'])
-print("Breathing Rate:", results['RSP_Rate_Mean'])
-print("SCRs (count):", results['SCR_Peaks_N'])
-print("RSA:", results['RSA'])
+print("Heart Rate (mean):", results["ECG_Rate_Mean"])
+print("HRV (RMSSD):", results["HRV_RMSSD"])
+print("Breathing Rate:", results["RSP_Rate_Mean"])
+print("SCRs (count):", results["SCR_Peaks_N"])
+print("RSA:", results["RSA"])
 ```
 
 ### Event-Related Multi-Modal Analysis
@@ -239,10 +231,15 @@ bio_signals, bio_info = nk.bio_process(ecg=ecg, rsp=rsp, eda=eda, sampling_rate=
 events = nk.events_find(trigger_channel, threshold=0.5)
 
 # 3. Create epochs for all signals
-epochs = nk.epochs_create(bio_signals, events, sampling_rate=1000,
-                          epochs_start=-1.0, epochs_end=10.0,
-                          event_labels=event_labels,
-                          event_conditions=event_conditions)
+epochs = nk.epochs_create(
+    bio_signals,
+    events,
+    sampling_rate=1000,
+    epochs_start=-1.0,
+    epochs_end=10.0,
+    event_labels=event_labels,
+    event_conditions=event_conditions,
+)
 
 # 4. Signal-specific event-related analysis
 ecg_eventrelated = nk.ecg_eventrelated(epochs)
@@ -250,14 +247,12 @@ rsp_eventrelated = nk.rsp_eventrelated(epochs)
 eda_eventrelated = nk.eda_eventrelated(epochs)
 
 # 5. Merge results
-all_results = pd.merge(ecg_eventrelated, rsp_eventrelated,
-                       left_index=True, right_index=True)
-all_results = pd.merge(all_results, eda_eventrelated,
-                       left_index=True, right_index=True)
+all_results = pd.merge(ecg_eventrelated, rsp_eventrelated, left_index=True, right_index=True)
+all_results = pd.merge(all_results, eda_eventrelated, left_index=True, right_index=True)
 
 # 6. Statistical comparison by condition
-all_results['Condition'] = event_conditions
-condition_means = all_results.groupby('Condition').mean()
+all_results["Condition"] = event_conditions
+condition_means = all_results.groupby("Condition").mean()
 ```
 
 ### Different Sampling Rates
@@ -269,7 +264,7 @@ Handle signals with different native sampling rates:
 bio_signals, bio_info = nk.bio_process(
     ecg=ecg_1000hz,
     eda=eda_100hz,
-    sampling_rate=1000  # Target sampling rate
+    sampling_rate=1000,  # Target sampling rate
 )
 # EDA will be automatically resampled to 1000 Hz internally
 ```
@@ -282,8 +277,7 @@ ecg_signals, ecg_info = nk.ecg_process(ecg, sampling_rate=1000)
 eda_signals, eda_info = nk.eda_process(eda, sampling_rate=100)
 
 # Resample to common rate
-eda_resampled = nk.signal_resample(eda_signals, sampling_rate=100,
-                                   desired_sampling_rate=1000)
+eda_resampled = nk.signal_resample(eda_signals, sampling_rate=100, desired_sampling_rate=1000)
 
 # Merge manually
 bio_signals = pd.concat([ecg_signals, eda_resampled], axis=1)

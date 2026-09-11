@@ -109,9 +109,7 @@ class PEDSHelper:
         # Filter for office action transaction codes
         oa_codes = ["CTNF", "CTFR", "AOPF", "NOA"]
 
-        office_actions = [
-            trans for trans in transactions if trans.get("code") in oa_codes
-        ]
+        office_actions = [trans for trans in transactions if trans.get("code") in oa_codes]
 
         return office_actions
 
@@ -250,18 +248,12 @@ Examples:
 
     # Main operation arguments (mutually exclusive)
     group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument(
-        "--application", "-a", help="Get application by application number"
-    )
+    group.add_argument("--application", "-a", help="Get application by application number")
     group.add_argument("--patent", "-p", help="Get patent by patent number")
     group.add_argument("--status", "-s", help="Get status summary for application")
     group.add_argument("--analyze", help="Analyze prosecution history for application")
-    group.add_argument(
-        "--transactions", "-t", help="Get transaction history for application"
-    )
-    group.add_argument(
-        "--office-actions", "-o", help="Get office actions for application"
-    )
+    group.add_argument("--transactions", "-t", help="Get transaction history for application")
+    group.add_argument("--office-actions", "-o", help="Get office actions for application")
 
     args = parser.parse_args()
 

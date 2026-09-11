@@ -20,16 +20,16 @@ import spikeinterface.full as si
 import neuropixels_analysis as npa
 
 # SpikeGLX (most common)
-recording = si.read_spikeglx('/path/to/run/', stream_id='imec0.ap')
+recording = si.read_spikeglx("/path/to/run/", stream_id="imec0.ap")
 
 # Open Ephys
-recording = si.read_openephys('/path/to/experiment/')
+recording = si.read_openephys("/path/to/experiment/")
 
 # NWB format
-recording = si.read_nwb('/path/to/file.nwb')
+recording = si.read_nwb("/path/to/file.nwb")
 
 # Or use our convenience wrapper
-recording = npa.load_recording('/path/to/data/', format='spikeglx')
+recording = npa.load_recording("/path/to/data/", format="spikeglx")
 ```
 
 ### Verify Recording Properties
@@ -60,7 +60,7 @@ rec = si.bandpass_filter(recording, freq_min=300, freq_max=6000)
 rec = si.phase_shift(rec)  # Correct ADC phase
 bad_channels = si.detect_bad_channels(rec)
 rec = rec.remove_channels(bad_channels)
-rec = si.common_reference(rec, operator='median')
+rec = si.common_reference(rec, operator="median")
 rec_preprocessed = rec
 ```
 
@@ -75,14 +75,14 @@ from ibldsp.voltage import decompress_destripe_cbin
 rec = si.highpass_filter(recording, freq_min=400)
 rec = si.phase_shift(rec)
 rec = si.highpass_spatial_filter(rec)  # Destriping
-rec = si.common_reference(rec, reference='global', operator='median')
+rec = si.common_reference(rec, reference="global", operator="median")
 ```
 
 ### Save Preprocessed Data
 
 ```python
 # Save for reuse (speeds up iteration)
-rec_preprocessed.save(folder='preprocessed/', n_jobs=4)
+rec_preprocessed.save(folder="preprocessed/", n_jobs=4)
 ```
 
 ## 3. Motion/Drift Correction
@@ -91,13 +91,13 @@ rec_preprocessed.save(folder='preprocessed/', n_jobs=4)
 
 ```python
 # Estimate motion
-motion_info = npa.estimate_motion(rec_preprocessed, preset='kilosort_like')
+motion_info = npa.estimate_motion(rec_preprocessed, preset="kilosort_like")
 
 # Visualize drift
-npa.plot_drift(rec_preprocessed, motion_info, output='drift_map.png')
+npa.plot_drift(rec_preprocessed, motion_info, output="drift_map.png")
 
 # Check magnitude
-if motion_info['motion'].max() > 10:  # microns
+if motion_info["motion"].max() > 10:  # microns
     print("Significant drift detected - correction recommended")
 ```
 
@@ -107,7 +107,7 @@ if motion_info['motion'].max() > 10:  # microns
 # DREDge-based correction (default)
 rec_corrected = npa.correct_motion(
     rec_preprocessed,
-    preset='nonrigid_accurate',  # or 'kilosort_like' for speed
+    preset="nonrigid_accurate",  # or 'kilosort_like' for speed
 )
 
 # Or full control
@@ -115,8 +115,8 @@ from spikeinterface.preprocessing import correct_motion
 
 rec_corrected = correct_motion(
     rec_preprocessed,
-    preset='nonrigid_accurate',
-    folder='motion_output/',
+    preset="nonrigid_accurate",
+    folder="motion_output/",
     output_motion=True,
 )
 ```
@@ -129,19 +129,19 @@ rec_corrected = correct_motion(
 # Run Kilosort4 (requires GPU)
 sorting = npa.run_sorting(
     rec_corrected,
-    sorter='kilosort4',
-    output_folder='sorting_KS4/',
+    sorter="kilosort4",
+    output_folder="sorting_KS4/",
 )
 
 # With custom parameters
 sorting = npa.run_sorting(
     rec_corrected,
-    sorter='kilosort4',
-    output_folder='sorting_KS4/',
+    sorter="kilosort4",
+    output_folder="sorting_KS4/",
     sorter_params={
-        'batch_size': 30000,
-        'nblocks': 5,  # For nonrigid drift
-        'Th_learned': 8,  # Detection threshold
+        "batch_size": 30000,
+        "nblocks": 5,  # For nonrigid drift
+        "Th_learned": 8,  # Detection threshold
     },
 )
 ```
@@ -150,10 +150,10 @@ sorting = npa.run_sorting(
 
 ```python
 # SpykingCircus2 (CPU-based)
-sorting = npa.run_sorting(rec_corrected, sorter='spykingcircus2')
+sorting = npa.run_sorting(rec_corrected, sorter="spykingcircus2")
 
 # Mountainsort5 (fast, good for short recordings)
-sorting = npa.run_sorting(rec_corrected, sorter='mountainsort5')
+sorting = npa.run_sorting(rec_corrected, sorter="mountainsort5")
 ```
 
 ### Compare Multiple Sorters
@@ -161,7 +161,7 @@ sorting = npa.run_sorting(rec_corrected, sorter='mountainsort5')
 ```python
 # Run multiple sorters
 sortings = {}
-for sorter in ['kilosort4', 'spykingcircus2']:
+for sorter in ["kilosort4", "spykingcircus2"]:
     sortings[sorter] = npa.run_sorting(rec_corrected, sorter=sorter)
 
 # Compare results
@@ -178,14 +178,14 @@ agreement_matrix = comparison.get_agreement_matrix()
 analyzer = npa.create_analyzer(
     sorting,
     rec_corrected,
-    output_folder='analyzer/',
+    output_folder="analyzer/",
 )
 
 # Compute all standard extensions
 analyzer = npa.postprocess(
     sorting,
     rec_corrected,
-    output_folder='analyzer/',
+    output_folder="analyzer/",
     compute_all=True,  # Waveforms, templates, metrics, etc.
 )
 ```
@@ -194,22 +194,22 @@ analyzer = npa.postprocess(
 
 ```python
 # Waveforms
-analyzer.compute('waveforms', ms_before=1.0, ms_after=2.0, max_spikes_per_unit=500)
+analyzer.compute("waveforms", ms_before=1.0, ms_after=2.0, max_spikes_per_unit=500)
 
 # Templates
-analyzer.compute('templates', operators=['average', 'std'])
+analyzer.compute("templates", operators=["average", "std"])
 
 # Spike amplitudes
-analyzer.compute('spike_amplitudes')
+analyzer.compute("spike_amplitudes")
 
 # Correlograms
-analyzer.compute('correlograms', window_ms=50.0, bin_ms=1.0)
+analyzer.compute("correlograms", window_ms=50.0, bin_ms=1.0)
 
 # Unit locations
-analyzer.compute('unit_locations', method='monopolar_triangulation')
+analyzer.compute("unit_locations", method="monopolar_triangulation")
 
 # Spike locations
-analyzer.compute('spike_locations', method='center_of_mass')
+analyzer.compute("spike_locations", method="center_of_mass")
 ```
 
 ## 6. Quality Metrics
@@ -221,15 +221,15 @@ analyzer.compute('spike_locations', method='center_of_mass')
 metrics = npa.compute_quality_metrics(
     analyzer,
     metric_names=[
-        'snr',
-        'isi_violations_ratio',
-        'presence_ratio',
-        'amplitude_cutoff',
-        'firing_rate',
-        'amplitude_cv',
-        'sliding_rp_violation',
-        'd_prime',
-        'nearest_neighbor',
+        "snr",
+        "isi_violations_ratio",
+        "presence_ratio",
+        "amplitude_cutoff",
+        "firing_rate",
+        "amplitude_cv",
+        "sliding_rp_violation",
+        "d_prime",
+        "nearest_neighbor",
     ],
 )
 
@@ -253,10 +253,10 @@ print(metrics.head())
 
 ```python
 # Allen Institute criteria
-labels = npa.curate(metrics, method='allen')
+labels = npa.curate(metrics, method="allen")
 
 # IBL criteria
-labels = npa.curate(metrics, method='ibl')
+labels = npa.curate(metrics, method="ibl")
 
 # Custom thresholds
 labels = npa.curate(
@@ -276,18 +276,18 @@ from anthropic import Anthropic
 client = Anthropic()
 
 # Visual analysis for uncertain units
-uncertain = metrics.query('snr > 3 and snr < 8').index.tolist()
+uncertain = metrics.query("snr > 3 and snr < 8").index.tolist()
 
 for unit_id in uncertain:
     result = npa.analyze_unit_visually(analyzer, unit_id, api_client=client)
-    labels[unit_id] = result['classification']
+    labels[unit_id] = result["classification"]
 ```
 
 ### Interactive Curation Session
 
 ```python
 # Create session
-session = npa.CurationSession.create(analyzer, output_dir='curation/')
+session = npa.CurationSession.create(analyzer, output_dir="curation/")
 
 # Review units
 while session.current_unit():
@@ -312,7 +312,7 @@ from spikeinterface.exporters import export_to_phy
 
 export_to_phy(
     analyzer,
-    output_folder='phy_export/',
+    output_folder="phy_export/",
     copy_binary=True,
 )
 ```
@@ -324,10 +324,10 @@ from spikeinterface.exporters import export_to_nwb
 
 export_to_nwb(
     analyzer,
-    nwbfile_path='results.nwb',
+    nwbfile_path="results.nwb",
     metadata={
-        'session_description': 'Neuropixels recording',
-        'experimenter': 'Lab Name',
+        "session_description": "Neuropixels recording",
+        "experimenter": "Lab Name",
     },
 )
 ```
@@ -336,15 +336,16 @@ export_to_nwb(
 
 ```python
 # Save metrics CSV
-metrics.to_csv('quality_metrics.csv')
+metrics.to_csv("quality_metrics.csv")
 
 # Save labels
 import json
-with open('curation_labels.json', 'w') as f:
+
+with open("curation_labels.json", "w") as f:
     json.dump(labels, f, indent=2)
 
 # Generate summary report
-npa.plot_quality_metrics(analyzer, metrics, output='quality_summary.png')
+npa.plot_quality_metrics(analyzer, metrics, output="quality_summary.png")
 ```
 
 ## Full Pipeline Example
@@ -353,7 +354,7 @@ npa.plot_quality_metrics(analyzer, metrics, output='quality_summary.png')
 import neuropixels_analysis as npa
 
 # Load
-recording = npa.load_recording('/data/experiment/', format='spikeglx')
+recording = npa.load_recording("/data/experiment/", format="spikeglx")
 
 # Preprocess
 rec = npa.preprocess(recording)
@@ -362,16 +363,16 @@ rec = npa.preprocess(recording)
 rec = npa.correct_motion(rec)
 
 # Sort
-sorting = npa.run_sorting(rec, sorter='kilosort4')
+sorting = npa.run_sorting(rec, sorter="kilosort4")
 
 # Postprocess
 analyzer, metrics = npa.postprocess(sorting, rec)
 
 # Curate
-labels = npa.curate(metrics, method='allen')
+labels = npa.curate(metrics, method="allen")
 
 # Export good units
-good_units = [uid for uid, label in labels.items() if label == 'good']
+good_units = [uid for uid, label in labels.items() if label == "good"]
 print(f"Good units: {len(good_units)}/{len(labels)}")
 ```
 

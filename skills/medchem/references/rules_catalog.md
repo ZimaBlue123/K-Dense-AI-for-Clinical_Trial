@@ -288,11 +288,7 @@ has_alerts, details = alert_filter.check_mol(mol)
 
 **Return Format:**
 ```python
-{
-    "has_alerts": True,
-    "alert_details": ["reactive_epoxide", "metabolic_hydrazine"],
-    "num_alerts": 2
-}
+{"has_alerts": True, "alert_details": ["reactive_epoxide", "metabolic_hydrazine"], "num_alerts": 2}
 ```
 
 ---
@@ -360,8 +356,8 @@ results = lilly_filter(mols=mol_list, n_jobs=-1)
     "passes": True,  # (demerits ≤ 100)
     "matched_patterns": [
         {"pattern": "phenolic_ester", "demerits": 20},
-        {"pattern": "aniline_derivative", "demerits": 15}
-    ]
+        {"pattern": "aniline_derivative", "demerits": 15},
+    ],
 }
 ```
 
@@ -456,10 +452,7 @@ custom_patterns = {
     "my_scaffold": "c1ccc2c(c1)ncc(n2)N",  # Aminobenzimidazole
 }
 
-group = mc.groups.ChemicalGroup(
-    groups=["hinge_binders"],
-    custom_smarts=custom_patterns
-)
+group = mc.groups.ChemicalGroup(groups=["hinge_binders"], custom_smarts=custom_patterns)
 ```
 
 ---
@@ -520,11 +513,7 @@ Recommended filters:
 
 ```python
 rfilter = mc.rules.RuleFilters(rule_list=["rule_of_cns"])
-constraints = mc.constraints.Constraints(
-    tpsa_max=90,
-    hbd_max=2,
-    mw_range=(300, 450)
-)
+constraints = mc.constraints.Constraints(tpsa_max=90, hbd_max=2, mw_range=(300, 450))
 ```
 
 ---
@@ -583,10 +572,7 @@ filtered_mols = [mol for mol, r in zip(mols, rule_results) if r["passes"]]
 ml_scores = ml_model.predict(filtered_mols)
 
 # Combined decision
-final_candidates = [
-    mol for mol, score in zip(filtered_mols, ml_scores)
-    if score > threshold
-]
+final_candidates = [mol for mol, score in zip(filtered_mols, ml_scores) if score > threshold]
 ```
 
 ---

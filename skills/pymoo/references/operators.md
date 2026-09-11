@@ -17,6 +17,7 @@ Sampling operators initialize populations at the start of optimization.
 **Usage:**
 ```python
 from pymoo.operators.sampling.rnd import FloatRandomSampling
+
 sampling = FloatRandomSampling()
 ```
 
@@ -29,6 +30,7 @@ sampling = FloatRandomSampling()
 **Usage:**
 ```python
 from pymoo.operators.sampling.lhs import LHS
+
 sampling = LHS()
 ```
 
@@ -49,6 +51,7 @@ Selection operators choose parents for reproduction.
 **Usage:**
 ```python
 from pymoo.operators.selection.tournament import TournamentSelection
+
 selection = TournamentSelection(pressure=2)
 ```
 
@@ -59,6 +62,7 @@ selection = TournamentSelection(pressure=2)
 **Usage:**
 ```python
 from pymoo.operators.selection.rnd import RandomSelection
+
 selection = RandomSelection()
 ```
 
@@ -80,6 +84,7 @@ Crossover operators recombine parent solutions to create offspring.
 **Usage:**
 ```python
 from pymoo.operators.crossover.sbx import SBX
+
 crossover = SBX(prob=0.9, eta=15)
 ```
 
@@ -103,6 +108,7 @@ crossover = SBX(prob=0.9, eta=15)
 **Usage:**
 ```python
 from pymoo.operators.crossover.pntx import SinglePointCrossover
+
 crossover = SinglePointCrossover()
 ```
 
@@ -111,6 +117,7 @@ crossover = SinglePointCrossover()
 **Usage:**
 ```python
 from pymoo.operators.crossover.pntx import TwoPointCrossover
+
 crossover = TwoPointCrossover()
 ```
 
@@ -127,6 +134,7 @@ crossover = TwoPointCrossover()
 **Usage:**
 ```python
 from pymoo.operators.crossover.ux import UniformCrossover
+
 crossover = UniformCrossover(prob=0.5)
 ```
 
@@ -143,6 +151,7 @@ crossover = UniformCrossover(prob=0.5)
 **Usage:**
 ```python
 from pymoo.operators.crossover.ox import OrderCrossover
+
 crossover = OrderCrossover()
 ```
 
@@ -171,6 +180,7 @@ Mutation operators introduce variation to maintain diversity.
 **Usage:**
 ```python
 from pymoo.operators.mutation.pm import PM
+
 mutation = PM(prob=None, eta=20)  # prob=None means 1/n_var
 ```
 
@@ -191,6 +201,7 @@ mutation = PM(prob=None, eta=20)  # prob=None means 1/n_var
 **Usage:**
 ```python
 from pymoo.operators.mutation.bitflip import BitflipMutation
+
 mutation = BitflipMutation(prob=0.05)
 ```
 
@@ -209,6 +220,7 @@ mutation = BitflipMutation(prob=0.05)
 **Usage:**
 ```python
 from pymoo.operators.mutation.inversion import InversionMutation
+
 mutation = InversionMutation()
 ```
 
@@ -241,6 +253,7 @@ Repair operators fix constraint violations or ensure solution feasibility.
 **Example:**
 ```python
 from pymoo.core.repair import Repair
+
 
 class MyRepair(Repair):
     def _do(self, problem, X, **kwargs):
@@ -294,12 +307,7 @@ Pymoo supports convenient string-based operator specification:
 ```python
 from pymoo.algorithms.soo.nonconvex.ga import GA
 
-algorithm = GA(
-    pop_size=100,
-    sampling="real_random",
-    crossover="real_sbx",
-    mutation="real_pm"
-)
+algorithm = GA(pop_size=100, sampling="real_random", crossover="real_sbx", mutation="real_pm")
 ```
 
 **Available strings:**

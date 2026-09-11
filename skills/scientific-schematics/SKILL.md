@@ -257,16 +257,13 @@ All iterations are saved with a JSON review log that includes early-stop informa
 from scripts.generate_schematic_ai import ScientificSchematicGenerator
 
 # Initialize generator
-generator = ScientificSchematicGenerator(
-    api_key="your_openrouter_key",
-    verbose=True
-)
+generator = ScientificSchematicGenerator(api_key="your_openrouter_key", verbose=True)
 
 # Generate with iterative refinement (max 2 iterations)
 results = generator.generate_iterative(
     user_prompt="Transformer architecture diagram",
     output_path="figures/transformer.png",
-    iterations=2
+    iterations=2,
 )
 
 # Access results
@@ -274,7 +271,7 @@ print(f"Final score: {results['final_score']}/10")
 print(f"Final image: {results['final_image']}")
 
 # Review individual iterations
-for iteration in results['iterations']:
+for iteration in results["iterations"]:
     print(f"Iteration {iteration['iteration']}: {iteration['score']}/10")
     print(f"Critique: {iteration['critique']}")
 ```

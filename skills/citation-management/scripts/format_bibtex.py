@@ -100,7 +100,7 @@ class BibTeXFormatter:
         Returns:
             Formatted BibTeX string
         """
-        lines = [f'@{entry["type"]}{{{entry["key"]},']
+        lines = [f"@{entry['type']}{{{entry['key']},"]
 
         # Order fields according to standard order
         ordered_fields = OrderedDict()
@@ -116,9 +116,7 @@ class BibTeXFormatter:
                 ordered_fields[field_name] = field_value
 
         # Format each field
-        max_field_len = (
-            max(len(f) for f in ordered_fields.keys()) if ordered_fields else 0
-        )
+        max_field_len = max(len(f) for f in ordered_fields.keys()) if ordered_fields else 0
 
         for field_name, field_value in ordered_fields.items():
             # Pad field name for alignment
@@ -201,17 +199,13 @@ class BibTeXFormatter:
             # Check DOI first (more reliable)
             if doi:
                 if doi in seen_dois:
-                    print(
-                        f"Duplicate DOI found: {doi} (skipping {key})", file=sys.stderr
-                    )
+                    print(f"Duplicate DOI found: {doi} (skipping {key})", file=sys.stderr)
                     continue
                 seen_dois.add(doi)
 
             # Check citation key
             if key in seen_keys:
-                print(
-                    f"Duplicate citation key found: {key} (skipping)", file=sys.stderr
-                )
+                print(f"Duplicate citation key found: {key} (skipping)", file=sys.stderr)
                 continue
             seen_keys.add(key)
 
@@ -331,13 +325,9 @@ def main():
 
     parser.add_argument("file", help="BibTeX file to format")
 
-    parser.add_argument(
-        "-o", "--output", help="Output file (default: overwrite input file)"
-    )
+    parser.add_argument("-o", "--output", help="Output file (default: overwrite input file)")
 
-    parser.add_argument(
-        "--deduplicate", action="store_true", help="Remove duplicate entries"
-    )
+    parser.add_argument("--deduplicate", action="store_true", help="Remove duplicate entries")
 
     parser.add_argument(
         "--sort",
@@ -345,13 +335,9 @@ def main():
         help="Sort entries by field",
     )
 
-    parser.add_argument(
-        "--descending", action="store_true", help="Sort in descending order"
-    )
+    parser.add_argument("--descending", action="store_true", help="Sort in descending order")
 
-    parser.add_argument(
-        "--no-fix", action="store_true", help="Do not fix common issues"
-    )
+    parser.add_argument("--no-fix", action="store_true", help="Do not fix common issues")
 
     args = parser.parse_args()
 

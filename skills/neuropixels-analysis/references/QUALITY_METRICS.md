@@ -19,24 +19,30 @@ import spikeinterface.full as si
 
 # Create analyzer with computed waveforms
 analyzer = si.create_sorting_analyzer(sorting, recording, sparse=True)
-analyzer.compute('random_spikes', max_spikes_per_unit=500)
-analyzer.compute('waveforms', ms_before=1.5, ms_after=2.0)
-analyzer.compute('templates')
-analyzer.compute('noise_levels')
-analyzer.compute('spike_amplitudes')
-analyzer.compute('principal_components', n_components=5)
+analyzer.compute("random_spikes", max_spikes_per_unit=500)
+analyzer.compute("waveforms", ms_before=1.5, ms_after=2.0)
+analyzer.compute("templates")
+analyzer.compute("noise_levels")
+analyzer.compute("spike_amplitudes")
+analyzer.compute("principal_components", n_components=5)
 
 # Compute all quality metrics
-analyzer.compute('quality_metrics')
+analyzer.compute("quality_metrics")
 
 # Or compute specific metrics
-analyzer.compute('quality_metrics', metric_names=[
-    'firing_rate', 'snr', 'isi_violations_ratio',
-    'presence_ratio', 'amplitude_cutoff'
-])
+analyzer.compute(
+    "quality_metrics",
+    metric_names=[
+        "firing_rate",
+        "snr",
+        "isi_violations_ratio",
+        "presence_ratio",
+        "amplitude_cutoff",
+    ],
+)
 
 # Get results
-qm = analyzer.get_extension('quality_metrics').get_data()
+qm = analyzer.get_extension("quality_metrics").get_data()
 print(qm.columns.tolist())  # Available metrics
 ```
 
@@ -49,10 +55,9 @@ Fraction of spikes violating refractory period. All neurons have a ~1.5ms refrac
 
 ```python
 # Compute with custom refractory period
-analyzer.compute('quality_metrics',
-                 metric_names=['isi_violations_ratio'],
-                 isi_threshold_ms=1.5,
-                 min_isi_ms=0.0)
+analyzer.compute(
+    "quality_metrics", metric_names=["isi_violations_ratio"], isi_threshold_ms=1.5, min_isi_ms=0.0
+)
 ```
 
 | Value | Interpretation |
@@ -68,7 +73,7 @@ analyzer.compute('quality_metrics',
 Ratio of peak waveform amplitude to background noise.
 
 ```python
-analyzer.compute('quality_metrics', metric_names=['snr'])
+analyzer.compute("quality_metrics", metric_names=["snr"])
 ```
 
 | Value | Interpretation |
@@ -82,9 +87,7 @@ analyzer.compute('quality_metrics', metric_names=['snr'])
 Mahalanobis distance to nearest cluster in PCA space.
 
 ```python
-analyzer.compute('quality_metrics',
-                 metric_names=['isolation_distance'],
-                 n_neighbors=4)
+analyzer.compute("quality_metrics", metric_names=["isolation_distance"], n_neighbors=4)
 ```
 
 | Value | Interpretation |
@@ -117,9 +120,9 @@ Discriminability between unit and nearest neighbor.
 Estimates fraction of spikes below detection threshold.
 
 ```python
-analyzer.compute('quality_metrics',
-                 metric_names=['amplitude_cutoff'],
-                 peak_sign='neg')  # 'neg', 'pos', or 'both'
+analyzer.compute(
+    "quality_metrics", metric_names=["amplitude_cutoff"], peak_sign="neg"
+)  # 'neg', 'pos', or 'both'
 ```
 
 | Value | Interpretation |
@@ -135,9 +138,9 @@ analyzer.compute('quality_metrics',
 Fraction of recording time with detected spikes.
 
 ```python
-analyzer.compute('quality_metrics',
-                 metric_names=['presence_ratio'],
-                 bin_duration_s=60)  # 1-minute bins
+analyzer.compute(
+    "quality_metrics", metric_names=["presence_ratio"], bin_duration_s=60
+)  # 1-minute bins
 ```
 
 | Value | Interpretation |
@@ -153,8 +156,7 @@ analyzer.compute('quality_metrics',
 Measure unit movement over time.
 
 ```python
-analyzer.compute('quality_metrics',
-                 metric_names=['drift_ptp', 'drift_std', 'drift_mad'])
+analyzer.compute("quality_metrics", metric_names=["drift_ptp", "drift_std", "drift_mad"])
 ```
 
 | Metric | Description | Good Value |
@@ -186,9 +188,7 @@ Cluster cohesion vs separation (-1 to 1).
 #### Nearest-Neighbor Metrics
 
 ```python
-analyzer.compute('quality_metrics',
-                 metric_names=['nn_hit_rate', 'nn_miss_rate'],
-                 n_neighbors=4)
+analyzer.compute("quality_metrics", metric_names=["nn_hit_rate", "nn_miss_rate"], n_neighbors=4)
 ```
 
 | Metric | Description | Good Value |
@@ -266,20 +266,26 @@ import matplotlib.pyplot as plt
 
 fig, axes = plt.subplots(2, 3, figsize=(15, 10))
 
-metrics = ['snr', 'isi_violations_ratio', 'presence_ratio',
-           'amplitude_cutoff', 'firing_rate', 'drift_ptp']
+metrics = [
+    "snr",
+    "isi_violations_ratio",
+    "presence_ratio",
+    "amplitude_cutoff",
+    "firing_rate",
+    "drift_ptp",
+]
 
 for ax, metric in zip(axes.flat, metrics):
-    ax.hist(qm[metric].dropna(), bins=50, edgecolor='black')
+    ax.hist(qm[metric].dropna(), bins=50, edgecolor="black")
     ax.set_xlabel(metric)
-    ax.set_ylabel('Count')
+    ax.set_ylabel("Count")
     # Add threshold line
-    if metric == 'snr':
-        ax.axvline(5, color='r', linestyle='--', label='threshold')
-    elif metric == 'isi_violations_ratio':
-        ax.axvline(0.01, color='r', linestyle='--')
-    elif metric == 'presence_ratio':
-        ax.axvline(0.9, color='r', linestyle='--')
+    if metric == "snr":
+        ax.axvline(5, color="r", linestyle="--", label="threshold")
+    elif metric == "isi_violations_ratio":
+        ax.axvline(0.01, color="r", linestyle="--")
+    elif metric == "presence_ratio":
+        ax.axvline(0.9, color="r", linestyle="--")
 
 plt.tight_layout()
 ```
@@ -295,13 +301,13 @@ si.plot_unit_summary(analyzer, unit_id=0)
 
 ```python
 fig, ax = plt.subplots()
-scatter = ax.scatter(qm['firing_rate'], qm['snr'],
-                     c=qm['isi_violations_ratio'],
-                     cmap='RdYlGn_r', alpha=0.6)
-ax.set_xlabel('Firing Rate (Hz)')
-ax.set_ylabel('SNR')
-plt.colorbar(scatter, label='ISI Violations')
-ax.set_xscale('log')
+scatter = ax.scatter(
+    qm["firing_rate"], qm["snr"], c=qm["isi_violations_ratio"], cmap="RdYlGn_r", alpha=0.6
+)
+ax.set_xlabel("Firing Rate (Hz)")
+ax.set_ylabel("SNR")
+plt.colorbar(scatter, label="ISI Violations")
+ax.set_xscale("log")
 ```
 
 ## Compute All Metrics at Once
@@ -310,32 +316,44 @@ ax.set_xscale('log')
 # Full quality metrics computation
 all_metric_names = [
     # Firing properties
-    'firing_rate', 'presence_ratio',
+    "firing_rate",
+    "presence_ratio",
     # Waveform
-    'snr', 'amplitude_cutoff', 'amplitude_cv_median', 'amplitude_cv_range',
+    "snr",
+    "amplitude_cutoff",
+    "amplitude_cv_median",
+    "amplitude_cv_range",
     # ISI
-    'isi_violations_ratio', 'isi_violations_count',
+    "isi_violations_ratio",
+    "isi_violations_count",
     # Drift
-    'drift_ptp', 'drift_std', 'drift_mad',
+    "drift_ptp",
+    "drift_std",
+    "drift_mad",
     # Isolation (require PCA)
-    'isolation_distance', 'l_ratio', 'd_prime',
+    "isolation_distance",
+    "l_ratio",
+    "d_prime",
     # Nearest neighbor (require PCA)
-    'nn_hit_rate', 'nn_miss_rate',
+    "nn_hit_rate",
+    "nn_miss_rate",
     # Cluster quality
-    'silhouette_score',
+    "silhouette_score",
     # Synchrony
-    'sync_spike_2', 'sync_spike_4', 'sync_spike_8',
+    "sync_spike_2",
+    "sync_spike_4",
+    "sync_spike_8",
 ]
 
 # Compute PCA first (required for some metrics)
-analyzer.compute('principal_components', n_components=5)
+analyzer.compute("principal_components", n_components=5)
 
 # Compute metrics
-analyzer.compute('quality_metrics', metric_names=all_metric_names)
-qm = analyzer.get_extension('quality_metrics').get_data()
+analyzer.compute("quality_metrics", metric_names=all_metric_names)
+qm = analyzer.get_extension("quality_metrics").get_data()
 
 # Save to CSV
-qm.to_csv('quality_metrics.csv')
+qm.to_csv("quality_metrics.csv")
 ```
 
 ## Custom Metrics
@@ -348,7 +366,7 @@ firing_rates = compute_firing_rates(sorting)
 snrs = compute_snrs(analyzer)
 
 # Add custom metric to DataFrame
-qm['custom_score'] = qm['snr'] * qm['presence_ratio'] / (qm['isi_violations_ratio'] + 0.001)
+qm["custom_score"] = qm["snr"] * qm["presence_ratio"] / (qm["isi_violations_ratio"] + 0.001)
 ```
 
 ## References

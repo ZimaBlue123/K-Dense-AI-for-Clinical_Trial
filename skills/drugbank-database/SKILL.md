@@ -158,7 +158,8 @@ Always specify the DrugBank version for reproducible research:
 
 ```python
 from drugbank_downloader import download_drugbank
-path = download_drugbank(version='5.1.10')  # Specify exact version
+
+path = download_drugbank(version="5.1.10")  # Specify exact version
 ```
 
 Document the version used in publications and analysis scripts.

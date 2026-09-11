@@ -76,9 +76,7 @@ def train(args):
 
     # Create environment
     print(f"Creating environment with {args.num_envs} parallel environments...")
-    env = pufferlib.make(
-        args.env_name, num_envs=args.num_envs, num_workers=args.num_workers
-    )
+    env = pufferlib.make(args.env_name, num_envs=args.num_envs, num_workers=args.num_workers)
 
     # Create policy
     print("Initializing policy...")
@@ -94,9 +92,7 @@ def train(args):
     if args.logger == "wandb":
         from pufferlib import WandbLogger
 
-        logger = WandbLogger(
-            project=args.project, name=args.exp_name, config=vars(args)
-        )
+        logger = WandbLogger(project=args.project, name=args.exp_name, config=vars(args))
     elif args.logger == "neptune":
         from pufferlib import NeptuneLogger
 
@@ -167,12 +163,8 @@ def main():
     parser = argparse.ArgumentParser(description="PufferLib Training")
 
     # Environment
-    parser.add_argument(
-        "--env-name", type=str, default="procgen-coinrun", help="Environment name"
-    )
-    parser.add_argument(
-        "--num-envs", type=int, default=256, help="Number of parallel environments"
-    )
+    parser.add_argument("--env-name", type=str, default="procgen-coinrun", help="Environment name")
+    parser.add_argument("--num-envs", type=int, default=256, help="Number of parallel environments")
     parser.add_argument(
         "--num-workers", type=int, default=8, help="Number of vectorization workers"
     )
@@ -184,12 +176,8 @@ def main():
         default=10000,
         help="Number of training iterations",
     )
-    parser.add_argument(
-        "--learning-rate", type=float, default=3e-4, help="Learning rate"
-    )
-    parser.add_argument(
-        "--batch-size", type=int, default=32768, help="Batch size for training"
-    )
+    parser.add_argument("--learning-rate", type=float, default=3e-4, help="Learning rate")
+    parser.add_argument("--batch-size", type=int, default=32768, help="Batch size for training")
     parser.add_argument(
         "--n-epochs", type=int, default=4, help="Number of training epochs per batch"
     )
@@ -204,18 +192,10 @@ def main():
     # PPO Parameters
     parser.add_argument("--gamma", type=float, default=0.99, help="Discount factor")
     parser.add_argument("--gae-lambda", type=float, default=0.95, help="GAE lambda")
-    parser.add_argument(
-        "--clip-coef", type=float, default=0.2, help="PPO clipping coefficient"
-    )
-    parser.add_argument(
-        "--ent-coef", type=float, default=0.01, help="Entropy coefficient"
-    )
-    parser.add_argument(
-        "--vf-coef", type=float, default=0.5, help="Value function coefficient"
-    )
-    parser.add_argument(
-        "--max-grad-norm", type=float, default=0.5, help="Maximum gradient norm"
-    )
+    parser.add_argument("--clip-coef", type=float, default=0.2, help="PPO clipping coefficient")
+    parser.add_argument("--ent-coef", type=float, default=0.01, help="Entropy coefficient")
+    parser.add_argument("--vf-coef", type=float, default=0.5, help="Value function coefficient")
+    parser.add_argument("--max-grad-norm", type=float, default=0.5, help="Maximum gradient norm")
 
     # Logging
     parser.add_argument(
@@ -231,15 +211,9 @@ def main():
         default="pufferlib-training",
         help="Project name for logging",
     )
-    parser.add_argument(
-        "--exp-name", type=str, default="experiment", help="Experiment name"
-    )
-    parser.add_argument(
-        "--neptune-token", type=str, default=None, help="Neptune API token"
-    )
-    parser.add_argument(
-        "--log-freq", type=int, default=10, help="Logging frequency (iterations)"
-    )
+    parser.add_argument("--exp-name", type=str, default="experiment", help="Experiment name")
+    parser.add_argument("--neptune-token", type=str, default=None, help="Neptune API token")
+    parser.add_argument("--log-freq", type=int, default=10, help="Logging frequency (iterations)")
 
     # Checkpointing
     parser.add_argument(

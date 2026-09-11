@@ -155,9 +155,11 @@ from ete3 import PhyloTree
 tree = PhyloTree("gene_tree.nw", format=1)
 tree.link_to_alignment("alignment.fasta", alg_format="fasta")
 
+
 # Set species naming function (e.g., gene_species format)
 def extract_species(node_name):
     return node_name.split("_")[0]
+
 
 tree.set_species_naming_function(extract_species)
 
@@ -280,10 +282,7 @@ tree = Tree("tree.nw")
 
 # Test if a group is monophyletic
 target_species = ["species1", "species2", "species3"]
-is_mono, clade_type, base_node = tree.check_monophyly(
-    values=target_species,
-    target_attr="name"
-)
+is_mono, clade_type, base_node = tree.check_monophyly(values=target_species, target_attr="name")
 
 if is_mono:
     print(f"Group is monophyletic")
@@ -322,7 +321,7 @@ rf, max_rf, common_leaves, parts_t1, parts_t2 = tree1.robinson_foulds(tree2)
 
 print(f"Robinson-Foulds distance: {rf}")
 print(f"Maximum RF distance: {max_rf}")
-print(f"Normalized RF: {rf/max_rf:.3f}")
+print(f"Normalized RF: {rf / max_rf:.3f}")
 print(f"Common leaves: {len(common_leaves)}")
 
 # Find unique partitions
@@ -348,7 +347,7 @@ n = len(trees)
 dist_matrix = np.zeros((n, n))
 
 for i in range(n):
-    for j in range(i+1, n):
+    for j in range(i + 1, n):
         rf, max_rf, _, _, _ = trees[i].robinson_foulds(trees[j])
         norm_rf = rf / max_rf if max_rf > 0 else 0
         dist_matrix[i, j] = norm_rf
@@ -358,11 +357,11 @@ print("Normalized RF distance matrix:")
 print(dist_matrix)
 
 # Find most similar pair
-min_dist = float('inf')
+min_dist = float("inf")
 best_pair = None
 
 for i in range(n):
-    for j in range(i+1, n):
+    for j in range(i + 1, n):
         if dist_matrix[i, j] < min_dist:
             min_dist = dist_matrix[i, j]
             best_pair = (i, j)
@@ -393,8 +392,7 @@ for tree in bootstrap_trees:
 # Filter by support threshold
 threshold = 70  # 70% support
 supported_bipartitions = {
-    k: v for k, v in bipartition_counts.items()
-    if (v / len(bootstrap_trees)) * 100 >= threshold
+    k: v for k, v in bipartition_counts.items() if (v / len(bootstrap_trees)) * 100 >= threshold
 }
 
 print(f"Bipartitions with >{threshold}% support: {len(supported_bipartitions)}")
@@ -412,8 +410,13 @@ from ete3 import NCBITaxa
 ncbi = NCBITaxa()
 
 # Define species of interest
-species = ["Homo sapiens", "Pan troglodytes", "Gorilla gorilla",
-           "Mus musculus", "Rattus norvegicus"]
+species = [
+    "Homo sapiens",
+    "Pan troglodytes",
+    "Gorilla gorilla",
+    "Mus musculus",
+    "Rattus norvegicus",
+]
 
 # Get taxids
 name2taxid = ncbi.get_name_translator(species)
@@ -632,6 +635,7 @@ for leaf in tree:
     leaf.add_feature("habitat", "marine" if "fish" in leaf.name else "terrestrial")
     leaf.add_feature("temp", 20)
 
+
 # Layout function to add faces
 def layout(node):
     if node.is_leaf():
@@ -647,6 +651,7 @@ def layout(node):
         # Add attribute face
         temp_face = AttrFace("temp", fsize=8)
         node.add_face(temp_face, column=2, position="branch-right")
+
 
 ts = TreeStyle()
 ts.layout_fn = layout
@@ -722,13 +727,16 @@ ortho_groups = gene_tree.get_speciation_trees()
 for i, ortho_tree in enumerate(ortho_groups):
     ortho_tree.write(outfile=f"ortholog_group_{i}.nw")
 
+
 # 6. Visualize with evolutionary events marked
 def layout(node):
     from ete3 import TextFace
+
     if hasattr(node, "evoltype"):
         if node.evoltype == "D":
             dup_face = TextFace("DUPLICATION", fsize=8, fgcolor="red")
             node.add_face(dup_face, column=0, position="branch-top")
+
 
 ts = TreeStyle()
 ts.layout_fn = layout

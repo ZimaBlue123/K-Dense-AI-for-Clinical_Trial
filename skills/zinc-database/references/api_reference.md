@@ -246,6 +246,7 @@ ZINC organizes compounds into tranches based on molecular properties for efficie
 ```python
 import re
 
+
 def parse_tranche(tranche_str):
     """
     Parse ZINC tranche code.
@@ -256,18 +257,19 @@ def parse_tranche(tranche_str):
     Returns:
         dict with h_donors, logp, mw, phase
     """
-    pattern = r'H(\d+)P(-?\d+)M(\d+)-(\d+)'
+    pattern = r"H(\d+)P(-?\d+)M(\d+)-(\d+)"
     match = re.match(pattern, tranche_str)
 
     if not match:
         return None
 
     return {
-        'h_donors': int(match.group(1)),
-        'logp': int(match.group(2)) / 10.0,
-        'mw': int(match.group(3)),
-        'phase': int(match.group(4))
+        "h_donors": int(match.group(1)),
+        "logp": int(match.group(2)) / 10.0,
+        "mw": int(match.group(3)),
+        "phase": int(match.group(4)),
     }
+
 
 # Example usage
 tranche = "H05P035M400-0"
@@ -357,8 +359,10 @@ import subprocess
 import pandas as pd
 from io import StringIO
 
-def advanced_zinc_search(smiles=None, zinc_ids=None, dist=0,
-                         subset=None, count=None, output_fields=None):
+
+def advanced_zinc_search(
+    smiles=None, zinc_ids=None, dist=0, subset=None, count=None, output_fields=None
+):
     """
     Flexible ZINC search with multiple criteria.
 
@@ -374,9 +378,9 @@ def advanced_zinc_search(smiles=None, zinc_ids=None, dist=0,
         pandas DataFrame with results
     """
     if output_fields is None:
-        output_fields = ['zinc_id', 'smiles', 'tranche', 'catalogs']
+        output_fields = ["zinc_id", "smiles", "tranche", "catalogs"]
 
-    fields_str = ','.join(output_fields)
+    fields_str = ",".join(output_fields)
 
     # Structure search
     if smiles:
@@ -384,7 +388,7 @@ def advanced_zinc_search(smiles=None, zinc_ids=None, dist=0,
 
     # Batch retrieval
     elif zinc_ids:
-        zinc_ids_str = ','.join(zinc_ids)
+        zinc_ids_str = ",".join(zinc_ids)
         url = f"https://cartblanche22.docking.org/substances.txt:zinc_id={zinc_ids_str}&output_fields={fields_str}"
 
     # Random sampling
@@ -397,11 +401,10 @@ def advanced_zinc_search(smiles=None, zinc_ids=None, dist=0,
         raise ValueError("Must specify smiles, zinc_ids, or count")
 
     # Execute query
-    result = subprocess.run(['curl', '-s', url],
-                          capture_output=True, text=True)
+    result = subprocess.run(["curl", "-s", url], capture_output=True, text=True)
 
     # Parse to DataFrame
-    df = pd.read_csv(StringIO(result.stdout), sep='\t')
+    df = pd.read_csv(StringIO(result.stdout), sep="\t")
 
     return df
 ```
@@ -411,9 +414,7 @@ def advanced_zinc_search(smiles=None, zinc_ids=None, dist=0,
 ```python
 # Find similar compounds
 df = advanced_zinc_search(
-    smiles="CC(C)Cc1ccc(cc1)C(C)C(=O)O",
-    dist=3,
-    output_fields=['zinc_id', 'smiles', 'catalogs']
+    smiles="CC(C)Cc1ccc(cc1)C(C)C(=O)O", dist=3, output_fields=["zinc_id", "smiles", "catalogs"]
 )
 
 # Batch retrieval
@@ -422,9 +423,7 @@ df = advanced_zinc_search(zinc_ids=zinc_ids)
 
 # Random drug-like set
 df = advanced_zinc_search(
-    count=1000,
-    subset='drug-like',
-    output_fields=['zinc_id', 'smiles', 'tranche']
+    count=1000, subset="drug-like", output_fields=["zinc_id", "smiles", "tranche"]
 )
 ```
 
@@ -433,8 +432,7 @@ df = advanced_zinc_search(
 Filter compounds by molecular properties using tranche data:
 
 ```python
-def filter_by_properties(df, mw_range=None, logp_range=None,
-                        max_hbd=None, phase=0):
+def filter_by_properties(df, mw_range=None, logp_range=None, max_hbd=None, phase=0):
     """
     Filter DataFrame by molecular properties.
 
@@ -449,38 +447,33 @@ def filter_by_properties(df, mw_range=None, logp_range=None,
         Filtered DataFrame
     """
     # Parse tranches
-    df['tranche_props'] = df['tranche'].apply(parse_tranche)
-    df['mw'] = df['tranche_props'].apply(lambda x: x['mw'] if x else None)
-    df['logp'] = df['tranche_props'].apply(lambda x: x['logp'] if x else None)
-    df['hbd'] = df['tranche_props'].apply(lambda x: x['h_donors'] if x else None)
-    df['phase'] = df['tranche_props'].apply(lambda x: x['phase'] if x else None)
+    df["tranche_props"] = df["tranche"].apply(parse_tranche)
+    df["mw"] = df["tranche_props"].apply(lambda x: x["mw"] if x else None)
+    df["logp"] = df["tranche_props"].apply(lambda x: x["logp"] if x else None)
+    df["hbd"] = df["tranche_props"].apply(lambda x: x["h_donors"] if x else None)
+    df["phase"] = df["tranche_props"].apply(lambda x: x["phase"] if x else None)
 
     # Apply filters
     mask = pd.Series([True] * len(df))
 
     if mw_range:
-        mask &= (df['mw'] >= mw_range[0]) & (df['mw'] <= mw_range[1])
+        mask &= (df["mw"] >= mw_range[0]) & (df["mw"] <= mw_range[1])
 
     if logp_range:
-        mask &= (df['logp'] >= logp_range[0]) & (df['logp'] <= logp_range[1])
+        mask &= (df["logp"] >= logp_range[0]) & (df["logp"] <= logp_range[1])
 
     if max_hbd is not None:
-        mask &= df['hbd'] <= max_hbd
+        mask &= df["hbd"] <= max_hbd
 
     if phase is not None:
-        mask &= df['phase'] == phase
+        mask &= df["phase"] == phase
 
     return df[mask]
 
+
 # Example: Get drug-like compounds with specific properties
-df = advanced_zinc_search(count=10000, subset='drug-like')
-filtered = filter_by_properties(
-    df,
-    mw_range=(300, 450),
-    logp_range=(1.0, 4.0),
-    max_hbd=3,
-    phase=0
-)
+df = advanced_zinc_search(count=10000, subset="drug-like")
+filtered = filter_by_properties(df, mw_range=(300, 450), logp_range=(1.0, 4.0), max_hbd=3, phase=0)
 ```
 
 ## Rate Limiting and Best Practices
@@ -498,6 +491,7 @@ ZINC does not publish explicit rate limits, but users should:
 
 ```python
 import time
+
 
 def polite_zinc_query(query_func, *args, delay=1.0, **kwargs):
     """Wrapper to add delay between queries."""
@@ -527,21 +521,21 @@ def robust_zinc_query(url, max_retries=3, timeout=30):
     for attempt in range(max_retries):
         try:
             result = subprocess.run(
-                ['curl', '-s', '--max-time', str(timeout), url],
+                ["curl", "-s", "--max-time", str(timeout), url],
                 capture_output=True,
                 text=True,
-                check=True
+                check=True,
             )
 
             # Check for empty or error responses
-            if not result.stdout or 'error' in result.stdout.lower():
+            if not result.stdout or "error" in result.stdout.lower():
                 raise ValueError("Invalid response")
 
             return result.stdout
 
         except (subprocess.CalledProcessError, ValueError) as e:
             if attempt < max_retries - 1:
-                wait_time = 2 ** attempt  # Exponential backoff
+                wait_time = 2**attempt  # Exponential backoff
                 print(f"Retry {attempt + 1}/{max_retries} after {wait_time}s...")
                 time.sleep(wait_time)
             else:
@@ -587,6 +581,7 @@ from rdkit import Chem
 from rdkit.Chem import AllChem, Descriptors
 import pandas as pd
 
+
 def process_zinc_results(zinc_df):
     """
     Process ZINC results with RDKit.
@@ -598,32 +593,33 @@ def process_zinc_results(zinc_df):
         DataFrame with calculated properties
     """
     # Convert SMILES to molecules
-    zinc_df['mol'] = zinc_df['smiles'].apply(Chem.MolFromSmiles)
+    zinc_df["mol"] = zinc_df["smiles"].apply(Chem.MolFromSmiles)
 
     # Calculate properties
-    zinc_df['mw'] = zinc_df['mol'].apply(Descriptors.MolWt)
-    zinc_df['logp'] = zinc_df['mol'].apply(Descriptors.MolLogP)
-    zinc_df['hbd'] = zinc_df['mol'].apply(Descriptors.NumHDonors)
-    zinc_df['hba'] = zinc_df['mol'].apply(Descriptors.NumHAcceptors)
-    zinc_df['tpsa'] = zinc_df['mol'].apply(Descriptors.TPSA)
-    zinc_df['rotatable'] = zinc_df['mol'].apply(Descriptors.NumRotatableBonds)
+    zinc_df["mw"] = zinc_df["mol"].apply(Descriptors.MolWt)
+    zinc_df["logp"] = zinc_df["mol"].apply(Descriptors.MolLogP)
+    zinc_df["hbd"] = zinc_df["mol"].apply(Descriptors.NumHDonors)
+    zinc_df["hba"] = zinc_df["mol"].apply(Descriptors.NumHAcceptors)
+    zinc_df["tpsa"] = zinc_df["mol"].apply(Descriptors.TPSA)
+    zinc_df["rotatable"] = zinc_df["mol"].apply(Descriptors.NumRotatableBonds)
 
     # Generate 3D conformers
-    for mol in zinc_df['mol']:
+    for mol in zinc_df["mol"]:
         if mol:
             AllChem.EmbedMolecule(mol, randomSeed=42)
             AllChem.MMFFOptimizeMolecule(mol)
 
     return zinc_df
 
+
 # Save to SDF for docking
 def save_to_sdf(zinc_df, output_file):
     """Save molecules to SDF file."""
     writer = Chem.SDWriter(output_file)
     for idx, row in zinc_df.iterrows():
-        if row['mol']:
-            row['mol'].SetProp('ZINC_ID', row['zinc_id'])
-            writer.write(row['mol'])
+        if row["mol"]:
+            row["mol"].SetProp("ZINC_ID", row["zinc_id"])
+            writer.write(row["mol"])
     writer.close()
 ```
 
@@ -650,8 +646,7 @@ def debug_zinc_query(url):
     """Print query details for debugging."""
     print(f"Query URL: {url}")
 
-    result = subprocess.run(['curl', '-v', url],
-                          capture_output=True, text=True)
+    result = subprocess.run(["curl", "-v", url], capture_output=True, text=True)
 
     print(f"Status: {result.returncode}")
     print(f"Stderr: {result.stderr}")

@@ -68,10 +68,7 @@ artifact = ln.Artifact("data.csv", key="experiments/data.csv").save()
 
 ```python
 # Access remote files without copying
-artifact = ln.Artifact(
-    "https://example.com/data.csv",
-    key="remote/data.csv"
-).save()
+artifact = ln.Artifact("https://example.com/data.csv", key="remote/data.csv").save()
 
 # Stream remote content
 with artifact.open() as f:
@@ -90,7 +87,7 @@ dataset = load_dataset("squad", split="train")
 artifact = ln.Artifact.from_dataframe(
     dataset.to_pandas(),
     key="hf/squad_train.parquet",
-    description="SQuAD training data from HuggingFace"
+    description="SQuAD training data from HuggingFace",
 ).save()
 ```
 
@@ -115,10 +112,7 @@ data = input_artifact.load()
 result = process_data(data)
 
 # Save output
-output_artifact = ln.Artifact.from_dataframe(
-    result,
-    key="${output_key}"
-).save()
+output_artifact = ln.Artifact.from_dataframe(result, key="${output_key}").save()
 
 ln.finish()
 ```
@@ -182,6 +176,7 @@ Track Redun task execution:
 from redun import task
 import lamindb as ln
 
+
 @task()
 @ln.tracked()
 def process_dataset(input_key: str, output_key: str):
@@ -197,6 +192,7 @@ def process_dataset(input_key: str, output_key: str):
     ln.Artifact.from_dataframe(result, key=output_key).save()
 
     return output_key
+
 
 # Redun automatically tracks lineage alongside LaminDB
 ```
@@ -227,11 +223,10 @@ wandb.log({"accuracy": 0.95, "loss": 0.05})
 
 # Save model in LaminDB
 import joblib
+
 joblib.dump(model, "model.pkl")
 model_artifact = ln.Artifact(
-    "model.pkl",
-    key="models/experiment-1.pkl",
-    description=f"Model from W&B run {wandb.run.id}"
+    "model.pkl", key="models/experiment-1.pkl", description=f"Model from W&B run {wandb.run.id}"
 ).save()
 
 # Link W&B run ID
@@ -268,10 +263,10 @@ mlflow.sklearn.log_model(model, "model")
 
 # Save to LaminDB
 import joblib
+
 joblib.dump(model, "model.pkl")
 model_artifact = ln.Artifact(
-    "model.pkl",
-    key=f"models/{mlflow.active_run().info.run_id}.pkl"
+    "model.pkl", key=f"models/{mlflow.active_run().info.run_id}.pkl"
 ).save()
 
 mlflow.end_run()
@@ -310,9 +305,7 @@ trainer.train()
 # Save model to LaminDB
 trainer.save_model("./model")
 model_artifact = ln.Artifact(
-    "./model",
-    key="models/bert_finetuned",
-    description="BERT fine-tuned on custom dataset"
+    "./model", key="models/bert_finetuned", description="BERT fine-tuned on custom dataset"
 ).save()
 
 ln.finish()
@@ -344,9 +337,7 @@ adata.obsm["X_scvi"] = model.get_latent_representation()
 
 # Save results
 result_artifact = ln.Artifact.from_anndata(
-    adata,
-    key="scrna/scvi_latent.h5ad",
-    description="scVI latent representation"
+    adata, key="scrna/scvi_latent.h5ad", description="scVI latent representation"
 ).save()
 
 ln.finish()
@@ -371,9 +362,7 @@ with soma.Experiment.create(uri) as exp:
 
     # Register in LaminDB
     artifact = ln.Artifact(
-        uri,
-        key="cellxgene/experiment.soma",
-        description="TileDB-SOMA experiment"
+        uri, key="cellxgene/experiment.soma", description="TileDB-SOMA experiment"
     ).save()
 
 # Query with SOMA
@@ -402,10 +391,7 @@ result = duckdb.query(f"""
 """).to_df()
 
 # Save query result
-result_artifact = ln.Artifact.from_dataframe(
-    result,
-    key="analysis/cell_type_counts.parquet"
-).save()
+result_artifact = ln.Artifact.from_dataframe(result, key="analysis/cell_type_counts.parquet").save()
 ```
 
 ## Visualization Integrations
@@ -427,6 +413,7 @@ vc = VitessceConfig.from_object(adata)
 
 # Save configuration
 import json
+
 config_file = "vitessce_config.json"
 with open(config_file, "w") as f:
     json.dump(vc.to_dict(), f)
@@ -435,7 +422,7 @@ with open(config_file, "w") as f:
 config_artifact = ln.Artifact(
     config_file,
     key="visualizations/spatial_config.json",
-    description="Vitessce visualization config"
+    description="Vitessce visualization config",
 ).save()
 ```
 
@@ -537,13 +524,12 @@ data = response.json()
 
 # Convert to DataFrame
 import pandas as pd
+
 df = pd.DataFrame(data)
 
 # Save to LaminDB
 artifact = ln.Artifact.from_dataframe(
-    df,
-    key="api/fetched_data.parquet",
-    description="Data fetched from external API"
+    df, key="api/fetched_data.parquet", description="Data fetched from external API"
 ).save()
 
 artifact.features.add_values({"api_url": response.url})
@@ -568,9 +554,7 @@ df = pd.read_sql(query, engine)
 
 # Save to LaminDB
 artifact = ln.Artifact.from_dataframe(
-    df,
-    key="external_db/experiments_2025.parquet",
-    description="Experiments from external database"
+    df, key="external_db/experiments_2025.parquet", description="Experiments from external database"
 ).save()
 
 ln.finish()
@@ -585,7 +569,7 @@ Export datasets with Croissant metadata format:
 artifact = ln.Artifact.from_dataframe(
     df,
     key="datasets/published_data.parquet",
-    description="Published dataset with Croissant metadata"
+    description="Published dataset with Croissant metadata",
 ).save()
 
 # Export Croissant metadata (requires additional configuration)

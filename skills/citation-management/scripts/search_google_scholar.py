@@ -36,9 +36,7 @@ class GoogleScholarSearcher:
             use_proxy: Use free proxy (helps avoid rate limiting)
         """
         if not SCHOLARLY_AVAILABLE:
-            raise ImportError(
-                "scholarly library required. Install with: pip install scholarly"
-            )
+            raise ImportError("scholarly library required. Install with: pip install scholarly")
 
         # Setup proxy if requested
         if use_proxy:
@@ -88,7 +86,7 @@ class GoogleScholarSearcher:
                 if i >= max_results:
                     break
 
-                print(f"Retrieved {i+1}/{max_results}", file=sys.stderr)
+                print(f"Retrieved {i + 1}/{max_results}", file=sys.stderr)
 
                 # Extract metadata
                 metadata = {
@@ -165,19 +163,19 @@ class GoogleScholarSearcher:
             lines.append(f"  author  = {{{authors}}},")
 
         if metadata.get("title"):
-            lines.append(f'  title   = {{{metadata["title"]}}},')
+            lines.append(f"  title   = {{{metadata['title']}}},")
 
         if metadata.get("venue"):
-            lines.append(f'  {venue_field} = {{{metadata["venue"]}}},')
+            lines.append(f"  {venue_field} = {{{metadata['venue']}}},")
 
         if metadata.get("year"):
-            lines.append(f'  year    = {{{metadata["year"]}}},')
+            lines.append(f"  year    = {{{metadata['year']}}},")
 
         if metadata.get("url"):
-            lines.append(f'  url     = {{{metadata["url"]}}},')
+            lines.append(f"  url     = {{{metadata['url']}}},")
 
         if metadata.get("citations"):
-            lines.append(f'  note    = {{Cited by: {metadata["citations"]}}},')
+            lines.append(f"  note    = {{Cited by: {metadata['citations']}}},")
 
         # Remove trailing comma
         if lines[-1].endswith(","):

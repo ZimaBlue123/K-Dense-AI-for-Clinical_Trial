@@ -239,17 +239,17 @@ def infer_transformation_type(substrate: str, product: str) -> list[str]:
     transformations = []
 
     # Check for oxidation/reduction patterns
-    if "alcohol" in substrate_info.get(
+    if "alcohol" in substrate_info.get("class", "") and "carboxylic_acid" in product_info.get(
         "class", ""
-    ) and "carboxylic_acid" in product_info.get("class", ""):
+    ):
         transformations.append("oxidation")
-    elif "aldehyde" in substrate_info.get(
+    elif "aldehyde" in substrate_info.get("class", "") and "alcohol" in product_info.get(
         "class", ""
-    ) and "alcohol" in product_info.get("class", ""):
+    ):
         transformations.append("reduction")
-    elif "alcohol" in substrate_info.get(
+    elif "alcohol" in substrate_info.get("class", "") and "aldehyde" in product_info.get(
         "class", ""
-    ) and "aldehyde" in product_info.get("class", ""):
+    ):
         transformations.append("oxidation")
 
     # Check for phosphorylation/dephosphorylation
@@ -272,9 +272,9 @@ def infer_transformation_type(substrate: str, product: str) -> list[str]:
         transformations.append("hydrolysis")
 
     # Check for transamination
-    if "amino_acid" in product_info.get(
+    if "amino_acid" in product_info.get("class", "") and "amino_acid" not in substrate_info.get(
         "class", ""
-    ) and "amino_acid" not in substrate_info.get("class", ""):
+    ):
         transformations.append("transamination")
 
     # Default to generic transformation
@@ -301,9 +301,7 @@ def find_enzymes_for_transformation(
         for enzyme in product_enzymes:
             # Check if substrate is in the reactants
             if substrate.lower() in enzyme.get("reaction", "").lower():
-                enzyme["transformation"] = (
-                    transformations[0] if transformations else "generic"
-                )
+                enzyme["transformation"] = transformations[0] if transformations else "generic"
                 enzyme["substrate"] = substrate
                 enzyme["product"] = product
                 enzyme["confidence"] = "high"
@@ -317,9 +315,7 @@ def find_enzymes_for_transformation(
         substrate_enzymes = search_enzymes_by_substrate(substrate, limit=limit)
         for enzyme in substrate_enzymes:
             # Check if product is mentioned in substrate data (limited approach)
-            enzyme["transformation"] = (
-                transformations[0] if transformations else "generic"
-            )
+            enzyme["transformation"] = transformations[0] if transformations else "generic"
             enzyme["substrate"] = substrate
             enzyme["product"] = product
             enzyme["confidence"] = "medium"
@@ -346,9 +342,7 @@ def find_enzymes_for_transformation(
                         time.sleep(0.5)
                         break
                     except Exception as e:
-                        print(
-                            f"Error searching for transformation type {trans_type}: {e}"
-                        )
+                        print(f"Error searching for transformation type {trans_type}: {e}")
 
     # Remove duplicates and sort by confidence
     unique_enzymes = []
@@ -391,9 +385,7 @@ def find_pathway_for_product(
     # Simple breadth-first search for pathway
     from collections import deque
 
-    queue = deque(
-        [(product, 0, [product])]
-    )  # (current_metabolite, step_count, pathway)
+    queue = deque([(product, 0, [product])])  # (current_metabolite, step_count, pathway)
     visited = set()
 
     while queue and len(pathway["steps"]) == 0:
@@ -411,9 +403,7 @@ def find_pathway_for_product(
             for i in range(len(current_path) - 1):
                 substrate = current_path[i + 1]
                 product_step = current_path[i]
-                enzymes = find_enzymes_for_transformation(
-                    substrate, product_step, limit=5
-                )
+                enzymes = find_enzymes_for_transformation(substrate, product_step, limit=5)
 
                 if enzymes:
                     pathway["steps"].append(
@@ -422,9 +412,7 @@ def find_pathway_for_product(
                             "substrate": substrate,
                             "product": product_step,
                             "enzymes": enzymes,
-                            "transformation": infer_transformation_type(
-                                substrate, product_step
-                            ),
+                            "transformation": infer_transformation_type(substrate, product_step),
                         }
                     )
                 else:
@@ -450,9 +438,7 @@ def find_pathway_for_product(
                 "oxaloacetate",
             ]
             for precursor in common_precursors:
-                enzymes = find_enzymes_for_transformation(
-                    precursor, current_metabolite, limit=2
-                )
+                enzymes = find_enzymes_for_transformation(precursor, current_metabolite, limit=2)
                 if enzymes:
                     possible_substrates.append(precursor)
                     pathway["alternative_pathways"].append(
@@ -489,9 +475,7 @@ def find_pathway_for_product(
             }
         ]
         pathway["confidence"] = 0.3  # Low confidence for partial pathway
-        pathway["warnings"].append(
-            "Partial pathway only - complete synthesis route not found"
-        )
+        pathway["warnings"].append("Partial pathway only - complete synthesis route not found")
 
     elif not pathway["steps"]:
         pathway["warnings"].append("No enzymatic pathway found for target product")
@@ -513,9 +497,7 @@ def build_retrosynthetic_tree(target: str, depth: int = 2) -> dict[str, Any]:
     }
 
     # Build tree recursively
-    def build_node_recursive(
-        metabolite: str, current_depth: int, parent: str = None
-    ) -> None:
+    def build_node_recursive(metabolite: str, current_depth: int, parent: str = None) -> None:
         if current_depth >= depth:
             return
 
@@ -548,9 +530,7 @@ def build_retrosynthetic_tree(target: str, depth: int = 2) -> dict[str, Any]:
                             "from": precursor,
                             "to": metabolite,
                             "enzymes": enzymes,
-                            "transformation": infer_transformation_type(
-                                precursor, metabolite
-                            ),
+                            "transformation": infer_transformation_type(precursor, metabolite),
                         }
                     )
 
@@ -579,9 +559,7 @@ def build_retrosynthetic_tree(target: str, depth: int = 2) -> dict[str, Any]:
                             "enzymes": generic_enzymes,
                             "hypothetical": True,
                         }
-                        tree["nodes"][metabolite]["children"].append(
-                            hypothetical_precursor
-                        )
+                        tree["nodes"][metabolite]["children"].append(hypothetical_precursor)
                         tree["edges"].append(
                             {
                                 "from": hypothetical_precursor,
@@ -642,9 +620,7 @@ def suggest_enzyme_substitutions(
     # Find thermophilic homologs if temperature is a criterion
     if criteria.get("min_thermostability"):
         try:
-            thermophilic = find_thermophilic_homologs(
-                ec_number, criteria["min_thermostability"]
-            )
+            thermophilic = find_thermophilic_homologs(ec_number, criteria["min_thermostability"])
             time.sleep(0.5)
 
             for enzyme in thermophilic:
@@ -652,9 +628,7 @@ def suggest_enzyme_substitutions(
                     f"Thermostable (optimal temp: {enzyme['optimal_temperature']}°C)"
                 )
                 enzyme["score"] = (
-                    8.0
-                    if enzyme["optimal_temperature"] >= criteria["min_thermostability"]
-                    else 6.0
+                    8.0 if enzyme["optimal_temperature"] >= criteria["min_thermostability"] else 6.0
                 )
                 substitutions.append(enzyme)
         except Exception as e:
@@ -680,12 +654,8 @@ def suggest_enzyme_substitutions(
     # Add organism comparison results
     for org_data in organisms:
         if org_data.get("data_points", 0) > 0:
-            org_data["substitution_reason"] = (
-                f"Well-characterized in {org_data['organism']}"
-            )
-            org_data["score"] = (
-                6.5 if org_data["organism"] in criteria["prefer_organisms"] else 5.0
-            )
+            org_data["substitution_reason"] = f"Well-characterized in {org_data['organism']}"
+            org_data["score"] = 6.5 if org_data["organism"] in criteria["prefer_organisms"] else 5.0
             substitutions.append(org_data)
 
     # Sort by score
@@ -744,9 +714,7 @@ def calculate_pathway_feasibility(pathway: dict[str, Any]) -> dict[str, Any]:
             "Saccharomyces cerevisiae",
             "Bacillus subtilis",
         ]
-        industrial_enzymes = sum(
-            1 for e in enzymes if e.get("organism") in industrial_organisms
-        )
+        industrial_enzymes = sum(1 for e in enzymes if e.get("organism") in industrial_organisms)
         if industrial_enzymes > 0:
             step_score += 1
 
@@ -771,9 +739,7 @@ def calculate_pathway_feasibility(pathway: dict[str, Any]) -> dict[str, Any]:
             print(f"Error analyzing cofactors: {e}")
 
     feasibility["step_scores"] = step_scores
-    feasibility["enzyme_availability"] = total_score / (
-        len(step_scores) * 5
-    )  # Normalize to 0-1
+    feasibility["enzyme_availability"] = total_score / (len(step_scores) * 5)  # Normalize to 0-1
     feasibility["overall_score"] = (
         feasibility["enzyme_availability"] * 0.7
     )  # Weight enzyme availability
@@ -781,9 +747,7 @@ def calculate_pathway_feasibility(pathway: dict[str, Any]) -> dict[str, Any]:
     # Thermodynamic feasibility (simplified heuristic)
     pathway_length = len(pathway["steps"])
     if pathway_length <= 2:
-        feasibility["thermodynamic_feasibility"] = (
-            0.8  # Short pathways are often feasible
-        )
+        feasibility["thermodynamic_feasibility"] = 0.8  # Short pathways are often feasible
     elif pathway_length <= 4:
         feasibility["thermodynamic_feasibility"] = 0.6
     else:
@@ -793,8 +757,7 @@ def calculate_pathway_feasibility(pathway: dict[str, Any]) -> dict[str, Any]:
 
     # Overall feasibility is weighted combination
     feasibility["overall_score"] = (
-        feasibility["enzyme_availability"] * 0.6
-        + feasibility["thermodynamic_feasibility"] * 0.4
+        feasibility["enzyme_availability"] * 0.6 + feasibility["thermodynamic_feasibility"] * 0.4
     )
 
     # Generate recommendations
@@ -805,9 +768,7 @@ def calculate_pathway_feasibility(pathway: dict[str, Any]) -> dict[str, Any]:
         )
     elif feasibility["overall_score"] < 0.6:
         feasibility["warnings"].append("Moderate pathway feasibility")
-        feasibility["recommendations"].append(
-            "Consider enzyme engineering or cofactor recycling"
-        )
+        feasibility["recommendations"].append("Consider enzyme engineering or cofactor recycling")
 
     if feasibility["cofactor_requirements"]:
         feasibility["recommendations"].append(
@@ -866,14 +827,10 @@ def optimize_pathway_conditions(pathway: dict[str, Any]) -> dict[str, Any]:
                             env_params["optimal_temperature"]
                         )
                     if env_params.get("optimal_ph"):
-                        organism_preferences[organism]["ph_optima"].append(
-                            env_params["optimal_ph"]
-                        )
+                        organism_preferences[organism]["ph_optima"].append(env_params["optimal_ph"])
 
                 except Exception as e:
-                    print(
-                        f"Error getting environmental parameters for {ec_number}: {e}"
-                    )
+                    print(f"Error getting environmental parameters for {ec_number}: {e}")
 
     # Calculate optimal conditions
     if temperatures:
@@ -890,9 +847,9 @@ def optimize_pathway_conditions(pathway: dict[str, Any]) -> dict[str, Any]:
     # Find best organism compatibility
     for organism, data in organism_preferences.items():
         if data["temperature_optima"] and data["ph_optima"]:
-            organism_preferences[organism]["avg_temp"] = sum(
+            organism_preferences[organism]["avg_temp"] = sum(data["temperature_optima"]) / len(
                 data["temperature_optima"]
-            ) / len(data["temperature_optima"])
+            )
             organism_preferences[organism]["avg_ph"] = sum(data["ph_optima"]) / len(
                 data["ph_optima"]
             )
@@ -909,9 +866,7 @@ def optimize_pathway_conditions(pathway: dict[str, Any]) -> dict[str, Any]:
         reverse=True,
     )
 
-    optimization["organism_compatibility"] = dict(
-        compatible_organisms[:5]
-    )  # Top 5 organisms
+    optimization["organism_compatibility"] = dict(compatible_organisms[:5])  # Top 5 organisms
 
     # Generate process recommendations
     if len(optimization["organism_compatibility"]) > 1:
@@ -982,9 +937,7 @@ def generate_pathway_report(pathway: dict[str, Any], filename: str = None) -> st
 
         for i, step in enumerate(pathway["steps"], 1):
             report.append(f"\nStep {i}: {step['substrate']} -> {step['product']}")
-            report.append(
-                f"Transformation: {', '.join(step.get('transformation', ['Unknown']))}"
-            )
+            report.append(f"Transformation: {', '.join(step.get('transformation', ['Unknown']))}")
 
             if step.get("enzymes"):
                 report.append(f"Available enzymes: {len(step['enzymes'])}")
@@ -992,25 +945,17 @@ def generate_pathway_report(pathway: dict[str, Any], filename: str = None) -> st
                     report.append(
                         f"  {j}. EC {enzyme.get('ec_number', 'Unknown')} - {enzyme.get('organism', 'Unknown')}"
                     )
-                    report.append(
-                        f"     Confidence: {enzyme.get('confidence', 'Unknown')}"
-                    )
+                    report.append(f"     Confidence: {enzyme.get('confidence', 'Unknown')}")
                     if enzyme.get("reaction"):
                         report.append(f"     Reaction: {enzyme['reaction'][:100]}...")
 
                 if len(step["enzymes"]) > 3:
-                    report.append(
-                        f"  ... and {len(step['enzymes']) - 3} additional enzymes"
-                    )
+                    report.append(f"  ... and {len(step['enzymes']) - 3} additional enzymes")
             else:
                 report.append("  No enzymes found for this step")
 
-            if feasibility.get("step_scores") and i - 1 < len(
-                feasibility["step_scores"]
-            ):
-                report.append(
-                    f"Step feasibility score: {feasibility['step_scores'][i-1]}/5.0"
-                )
+            if feasibility.get("step_scores") and i - 1 < len(feasibility["step_scores"]):
+                report.append(f"Step feasibility score: {feasibility['step_scores'][i - 1]}/5.0")
 
     # Cofactor requirements
     if feasibility.get("cofactor_requirements"):
@@ -1088,12 +1033,8 @@ def generate_pathway_report(pathway: dict[str, Any], filename: str = None) -> st
     report.append("FEASIBILITY ANALYSIS")
     report.append("=" * 40)
 
-    report.append(
-        f"Enzyme availability score: {feasibility['enzyme_availability']:.2f}/1.00"
-    )
-    report.append(
-        f"Thermodynamic feasibility: {feasibility['thermodynamic_feasibility']:.2f}/1.00"
-    )
+    report.append(f"Enzyme availability score: {feasibility['enzyme_availability']:.2f}/1.00")
+    report.append(f"Thermodynamic feasibility: {feasibility['thermodynamic_feasibility']:.2f}/1.00")
 
     # Write report to file
     with open(filename, "w") as f:
@@ -1139,9 +1080,7 @@ def visualize_pathway(pathway: dict[str, Any], save_path: str = None) -> str:
         pos = nx.spring_layout(G, k=2, iterations=50)
 
         # Draw nodes
-        substrate_nodes = [
-            n for n, d in G.nodes(data=True) if d.get("type") == "substrate"
-        ]
+        substrate_nodes = [n for n, d in G.nodes(data=True) if d.get("type") == "substrate"]
         product_nodes = [n for n, d in G.nodes(data=True) if d.get("type") == "product"]
         intermediate_nodes = [
             n for n in G.nodes() if n not in substrate_nodes and n not in product_nodes

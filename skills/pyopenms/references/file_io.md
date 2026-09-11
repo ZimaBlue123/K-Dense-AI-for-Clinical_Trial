@@ -82,6 +82,7 @@ class SpectrumProcessor(ms.MSExperimentConsumer):
         if spec.getMSLevel() == 2:
             self.count += 1
 
+
 # Stream file
 consumer = SpectrumProcessor()
 ms.MzMLFile().transform("large.mzML", consumer)

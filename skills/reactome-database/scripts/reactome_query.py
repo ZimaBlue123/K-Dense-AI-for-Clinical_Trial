@@ -53,9 +53,7 @@ class ReactomeClient:
 
     def search_pathways(self, term: str) -> list[dict]:
         """Search for pathways by name"""
-        response = requests.get(
-            f"{self.CONTENT_BASE}/data/query", params={"name": term}
-        )
+        response = requests.get(f"{self.CONTENT_BASE}/data/query", params={"name": term})
         response.raise_for_status()
         return response.json()
 

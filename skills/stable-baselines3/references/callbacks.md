@@ -22,13 +22,13 @@ Evaluates the agent periodically and saves the best model.
 from stable_baselines3.common.callbacks import EvalCallback
 
 eval_callback = EvalCallback(
-    eval_env,                                    # Separate evaluation environment
+    eval_env,  # Separate evaluation environment
     best_model_save_path="./logs/best_model/",  # Where to save best model
-    log_path="./logs/eval/",                    # Where to save evaluation logs
-    eval_freq=10000,                            # Evaluate every N steps
-    n_eval_episodes=5,                          # Number of episodes per evaluation
-    deterministic=True,                         # Use deterministic actions
-    render=False,                               # Render during evaluation
+    log_path="./logs/eval/",  # Where to save evaluation logs
+    eval_freq=10000,  # Evaluate every N steps
+    n_eval_episodes=5,  # Number of episodes per evaluation
+    deterministic=True,  # Use deterministic actions
+    render=False,  # Render during evaluation
     verbose=1,
     warn=True,
 )
@@ -55,11 +55,11 @@ Saves model checkpoints at regular intervals.
 from stable_baselines3.common.callbacks import CheckpointCallback
 
 checkpoint_callback = CheckpointCallback(
-    save_freq=10000,                     # Save every N steps
-    save_path="./logs/checkpoints/",     # Directory for checkpoints
-    name_prefix="rl_model",              # Prefix for checkpoint files
-    save_replay_buffer=True,             # Save replay buffer (off-policy only)
-    save_vecnormalize=True,              # Save VecNormalize stats
+    save_freq=10000,  # Save every N steps
+    save_path="./logs/checkpoints/",  # Directory for checkpoints
+    name_prefix="rl_model",  # Prefix for checkpoint files
+    save_replay_buffer=True,  # Save replay buffer (off-policy only)
+    save_vecnormalize=True,  # Save VecNormalize stats
     verbose=2,
 )
 
@@ -105,7 +105,7 @@ from stable_baselines3.common.callbacks import StopTrainingOnNoModelImprovement
 
 stop_callback = StopTrainingOnNoModelImprovement(
     max_no_improvement_evals=10,  # Stop after 10 evals with no improvement
-    min_evals=20,                 # Minimum evaluations before stopping
+    min_evals=20,  # Minimum evaluations before stopping
     verbose=1,
 )
 
@@ -157,6 +157,7 @@ model.learn(total_timesteps=100000, callback=progress_callback)
 
 ```python
 from stable_baselines3.common.callbacks import BaseCallback
+
 
 class CustomCallback(BaseCallback):
     """
@@ -244,8 +245,7 @@ class LogCustomMetricsCallback(BaseCallback):
 
             # Log to TensorBoard
             self.logger.record("custom/episode_reward", episode_reward)
-            self.logger.record("custom/mean_reward_last_100",
-                             np.mean(self.episode_rewards[-100:]))
+            self.logger.record("custom/mean_reward_last_100", np.mean(self.episode_rewards[-100:]))
 
         return True
 ```
@@ -303,7 +303,7 @@ class EarlyStoppingCallback(BaseCallback):
 
         # Check every check_freq steps
         if self.n_calls % self.check_freq == 0 and len(self.rewards) >= self.window:
-            mean_reward = np.mean(self.rewards[-self.window:])
+            mean_reward = np.mean(self.rewards[-self.window :])
             if self.verbose > 0:
                 print(f"Mean reward: {mean_reward:.2f}")
 
@@ -376,12 +376,14 @@ Use `CallbackList` to combine multiple callbacks:
 ```python
 from stable_baselines3.common.callbacks import CallbackList
 
-callback_list = CallbackList([
-    eval_callback,
-    checkpoint_callback,
-    progress_callback,
-    custom_callback,
-])
+callback_list = CallbackList(
+    [
+        eval_callback,
+        checkpoint_callback,
+        progress_callback,
+        custom_callback,
+    ]
+)
 
 model.learn(total_timesteps=100000, callback=callback_list)
 ```
@@ -389,10 +391,7 @@ model.learn(total_timesteps=100000, callback=callback_list)
 Or pass a list directly:
 
 ```python
-model.learn(
-    total_timesteps=100000,
-    callback=[eval_callback, checkpoint_callback, custom_callback]
-)
+model.learn(total_timesteps=100000, callback=[eval_callback, checkpoint_callback, custom_callback])
 ```
 
 ## Event-Based Callbacks

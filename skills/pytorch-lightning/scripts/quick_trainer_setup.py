@@ -59,9 +59,7 @@ def debug_trainer():
 # =============================================================================
 
 
-def production_single_gpu_trainer(
-    max_epochs=100, log_dir="logs", checkpoint_dir="checkpoints"
-):
+def production_single_gpu_trainer(max_epochs=100, log_dir="logs", checkpoint_dir="checkpoints"):
     """
     Production-ready trainer for single GPU with checkpointing and logging.
     Use for: Final training runs on single GPU
@@ -117,9 +115,7 @@ def production_single_gpu_trainer(
 # =============================================================================
 
 
-def multi_gpu_ddp_trainer(
-    max_epochs=100, num_gpus=4, log_dir="logs", checkpoint_dir="checkpoints"
-):
+def multi_gpu_ddp_trainer(max_epochs=100, num_gpus=4, log_dir="logs", checkpoint_dir="checkpoints"):
     """
     Multi-GPU training with Distributed Data Parallel.
     Use for: Models <500M parameters, standard deep learning models
@@ -332,9 +328,7 @@ def overfit_test_trainer(num_batches=10):
 # =============================================================================
 
 
-def time_limited_trainer(
-    max_time_hours=23.5, max_epochs=1000, checkpoint_dir="checkpoints"
-):
+def time_limited_trainer(max_time_hours=23.5, max_epochs=1000, checkpoint_dir="checkpoints"):
     """
     Training with time limit for SLURM clusters.
     Use for: Cluster jobs with time limits

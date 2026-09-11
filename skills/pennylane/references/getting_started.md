@@ -38,7 +38,8 @@ A QNode is a quantum function that can be evaluated on a quantum device. It comb
 import pennylane as qml
 
 # Define a device
-dev = qml.device('default.qubit', wires=2)
+dev = qml.device("default.qubit", wires=2)
+
 
 # Create a QNode
 @qml.qnode(dev)
@@ -57,10 +58,10 @@ Devices execute quantum circuits. PennyLane supports:
 
 ```python
 # Local simulator
-dev = qml.device('default.qubit', wires=4)
+dev = qml.device("default.qubit", wires=4)
 
 # Lightning high-performance simulator
-dev = qml.device('lightning.qubit', wires=10)
+dev = qml.device("lightning.qubit", wires=10)
 ```
 
 ### Measurements
@@ -74,11 +75,13 @@ def measure_circuit():
     # Expectation value
     return qml.expval(qml.PauliZ(0))
 
+
 @qml.qnode(dev)
 def measure_probs():
     qml.Hadamard(wires=0)
     # Probability distribution
     return qml.probs(wires=[0, 1])
+
 
 @qml.qnode(dev)
 def measure_samples():
@@ -95,7 +98,8 @@ def measure_samples():
 import pennylane as qml
 import numpy as np
 
-dev = qml.device('default.qubit', wires=3)
+dev = qml.device("default.qubit", wires=3)
+
 
 @qml.qnode(dev)
 def quantum_circuit(weights):
@@ -140,13 +144,14 @@ Write circuits once, run anywhere:
 
 ```python
 # Same circuit, different backends
-@qml.qnode(qml.device('default.qubit', wires=2))
+@qml.qnode(qml.device("default.qubit", wires=2))
 def circuit_simulator(x):
     qml.RX(x, wires=0)
     return qml.expval(qml.PauliZ(0))
 
+
 # Switch to hardware (if available)
-@qml.qnode(qml.device('qiskit.ibmq', wires=2))
+@qml.qnode(qml.device("qiskit.ibmq", wires=2))
 def circuit_hardware(x):
     qml.RX(x, wires=0)
     return qml.expval(qml.PauliZ(0))
@@ -177,10 +182,12 @@ Use built-in templates for common patterns:
 ```python
 from pennylane.templates import StronglyEntanglingLayers
 
+
 @qml.qnode(dev)
 def template_circuit(weights):
     StronglyEntanglingLayers(weights, wires=range(3))
     return qml.expval(qml.PauliZ(0))
+
 
 # Generate random weights for template
 n_layers = 2

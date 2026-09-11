@@ -72,19 +72,14 @@ mols = [dm.to_mol(smiles) for smiles in smiles_list]
 
 # Create filter with multiple rules
 rfilter = mc.rules.RuleFilters(
-    rule_list=[
-        "rule_of_five",
-        "rule_of_oprea",
-        "rule_of_cns",
-        "rule_of_leadlike_soft"
-    ]
+    rule_list=["rule_of_five", "rule_of_oprea", "rule_of_cns", "rule_of_leadlike_soft"]
 )
 
 # Apply filters with parallelization
 results = rfilter(
     mols=mols,
     n_jobs=-1,  # Use all CPU cores
-    progress=True
+    progress=True,
 )
 ```
 
@@ -114,11 +109,7 @@ mol = dm.to_mol("c1ccccc1")
 has_alerts, details = alert_filter.check_mol(mol)
 
 # Batch filtering with parallelization
-results = alert_filter(
-    mols=mol_list,
-    n_jobs=-1,
-    progress=True
-)
+results = alert_filter(mols=mol_list, n_jobs=-1, progress=True)
 ```
 
 **NIBR Filters:**
@@ -153,16 +144,10 @@ The `medchem.functional` module provides convenient functions for common workflo
 import medchem as mc
 
 # Apply NIBR filters to a list
-filter_ok = mc.functional.nibr_filter(
-    mols=mol_list,
-    n_jobs=-1
-)
+filter_ok = mc.functional.nibr_filter(mols=mol_list, n_jobs=-1)
 
 # Apply common alerts
-alert_results = mc.functional.common_alerts_filter(
-    mols=mol_list,
-    n_jobs=-1
-)
+alert_results = mc.functional.common_alerts_filter(mols=mol_list, n_jobs=-1)
 ```
 
 ### 4. Chemical Groups Detection
@@ -253,10 +238,7 @@ import medchem as mc
 
 # Define constraints
 constraints = mc.constraints.Constraints(
-    mw_range=(200, 500),
-    logp_range=(-2, 5),
-    tpsa_max=140,
-    rotatable_bonds_max=10
+    mw_range=(200, 500), logp_range=(-2, 5), tpsa_max=140, rotatable_bonds_max=10
 )
 
 # Apply constraints
@@ -334,7 +316,7 @@ filters = {
     "rules": mc.rules.RuleFilters(rule_list=["rule_of_leadlike_strict"]),
     "alerts": mc.structural.NIBRFilters(),
     "lilly": mc.structural.LillyDemeritsFilters(),
-    "complexity": mc.complexity.ComplexityFilter(max_complexity=400)
+    "complexity": mc.complexity.ComplexityFilter(max_complexity=400),
 }
 
 # Apply all filters
@@ -354,9 +336,7 @@ Find molecules containing specific functional groups or scaffolds.
 import medchem as mc
 
 # Create group detector for multiple groups
-group_detector = mc.groups.ChemicalGroup(
-    groups=["hinge_binders", "phosphate_binders"]
-)
+group_detector = mc.groups.ChemicalGroup(groups=["hinge_binders", "phosphate_binders"])
 
 # Screen library
 matches = group_detector.get_all_matches(mol_list)

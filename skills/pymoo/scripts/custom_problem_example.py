@@ -152,9 +152,7 @@ def solve_constrained_problem():
         plot.add(F_feasible, color="green", alpha=0.7, label="Feasible")
 
         if np.any(~feasible):
-            plot.add(
-                result.F[~feasible], color="red", alpha=0.3, s=10, label="Infeasible"
-            )
+            plot.add(result.F[~feasible], color="red", alpha=0.3, s=10, label="Infeasible")
 
         plot.show()
 

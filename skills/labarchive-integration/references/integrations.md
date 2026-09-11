@@ -27,6 +27,7 @@ Export protocols directly from Protocols.io to LabArchives notebooks.
 # Export Protocols.io protocol as HTML/PDF
 # Then upload to LabArchives via API
 
+
 def import_protocol_to_labarchives(client, uid, nbid, protocol_id):
     """Import Protocols.io protocol to LabArchives entry"""
     # 1. Fetch protocol from Protocols.io API
@@ -34,22 +35,22 @@ def import_protocol_to_labarchives(client, uid, nbid, protocol_id):
 
     # 2. Create new entry in LabArchives
     entry_params = {
-        'uid': uid,
-        'nbid': nbid,
-        'title': f"Protocol: {protocol_data['title']}",
-        'content': protocol_data['html_content']
+        "uid": uid,
+        "nbid": nbid,
+        "title": f"Protocol: {protocol_data['title']}",
+        "content": protocol_data["html_content"],
     }
-    response = client.make_call('entries', 'create_entry', params=entry_params)
+    response = client.make_call("entries", "create_entry", params=entry_params)
 
     # 3. Add protocol metadata as comment
     entry_id = extract_entry_id(response)
     comment_params = {
-        'uid': uid,
-        'nbid': nbid,
-        'entry_id': entry_id,
-        'comment': f"Protocols.io ID: {protocol_id}<br>Version: {protocol_data['version']}"
+        "uid": uid,
+        "nbid": nbid,
+        "entry_id": entry_id,
+        "comment": f"Protocols.io ID: {protocol_id}<br>Version: {protocol_data['version']}",
     }
-    client.make_call('entries', 'create_comment', params=comment_params)
+    client.make_call("entries", "create_comment", params=comment_params)
 
     return entry_id
 ```
@@ -76,19 +77,20 @@ Export analyses, graphs, and figures directly from Prism to LabArchives.
 ```python
 # Upload Prism files to LabArchives via API
 
+
 def upload_prism_analysis(client, uid, nbid, entry_id, prism_file_path):
     """Upload GraphPad Prism file to LabArchives entry"""
     import requests
 
-    url = f'{client.api_url}/entries/upload_attachment'
-    files = {'file': open(prism_file_path, 'rb')}
+    url = f"{client.api_url}/entries/upload_attachment"
+    files = {"file": open(prism_file_path, "rb")}
     params = {
-        'uid': uid,
-        'nbid': nbid,
-        'entry_id': entry_id,
-        'filename': os.path.basename(prism_file_path),
-        'access_key_id': client.access_key_id,
-        'access_password': client.access_password
+        "uid": uid,
+        "nbid": nbid,
+        "entry_id": entry_id,
+        "filename": os.path.basename(prism_file_path),
+        "access_key_id": client.access_key_id,
+        "access_password": client.access_password,
     }
 
     response = requests.post(url, files=files, data=params)
@@ -177,22 +179,22 @@ def export_jupyter_to_labarchives(notebook_path, client, uid, nbid):
     from nbconvert import HTMLExporter
 
     # Load notebook
-    with open(notebook_path, 'r') as f:
+    with open(notebook_path, "r") as f:
         nb = nbformat.read(f, as_version=4)
 
     # Convert to HTML
     html_exporter = HTMLExporter()
-    html_exporter.template_name = 'classic'
+    html_exporter.template_name = "classic"
     (body, resources) = html_exporter.from_notebook_node(nb)
 
     # Create entry in LabArchives
     entry_params = {
-        'uid': uid,
-        'nbid': nbid,
-        'title': f"Jupyter Notebook: {os.path.basename(notebook_path)}",
-        'content': body
+        "uid": uid,
+        "nbid": nbid,
+        "title": f"Jupyter Notebook: {os.path.basename(notebook_path)}",
+        "content": body,
     }
-    response = client.make_call('entries', 'create_entry', params=entry_params)
+    response = client.make_call("entries", "create_entry", params=entry_params)
 
     # Upload original .ipynb file as attachment
     entry_id = extract_entry_id(response)
@@ -231,12 +233,12 @@ def sync_redcap_to_labarchives(redcap_api_token, client, uid, nbid):
 
     # Create LabArchives entry
     entry_params = {
-        'uid': uid,
-        'nbid': nbid,
-        'title': f"REDCap Data Export {datetime.now().strftime('%Y-%m-%d')}",
-        'content': format_redcap_data_html(redcap_data)
+        "uid": uid,
+        "nbid": nbid,
+        "title": f"REDCap Data Export {datetime.now().strftime('%Y-%m-%d')}",
+        "content": format_redcap_data_html(redcap_data),
     }
-    response = client.make_call('entries', 'create_entry', params=entry_params)
+    response = client.make_call("entries", "create_entry", params=entry_params)
 
     return response
 ```
@@ -290,27 +292,27 @@ def labarchives_oauth_flow(client_id, client_secret, redirect_uri):
     # Step 1: Get authorization code
     auth_url = "https://mynotebook.labarchives.com/oauth/authorize"
     auth_params = {
-        'client_id': client_id,
-        'redirect_uri': redirect_uri,
-        'response_type': 'code',
-        'scope': 'read write'
+        "client_id": client_id,
+        "redirect_uri": redirect_uri,
+        "response_type": "code",
+        "scope": "read write",
     }
     # User visits auth_url and grants permission
 
     # Step 2: Exchange code for access token
     token_url = "https://mynotebook.labarchives.com/oauth/token"
     token_params = {
-        'client_id': client_id,
-        'client_secret': client_secret,
-        'redirect_uri': redirect_uri,
-        'grant_type': 'authorization_code',
-        'code': authorization_code  # From redirect
+        "client_id": client_id,
+        "client_secret": client_secret,
+        "redirect_uri": redirect_uri,
+        "grant_type": "authorization_code",
+        "code": authorization_code,  # From redirect
     }
 
     response = requests.post(token_url, data=token_params)
     tokens = response.json()
 
-    return tokens['access_token'], tokens['refresh_token']
+    return tokens["access_token"], tokens["refresh_token"]
 ```
 
 **OAuth advantages:**
@@ -345,9 +347,7 @@ class LabArchivesIntegration:
         """Initialize LabArchives client"""
         with open(config_path) as f:
             config = yaml.safe_load(f)
-        return Client(config['api_url'],
-                     config['access_key_id'],
-                     config['access_password'])
+        return Client(config["api_url"], config["access_key_id"], config["access_password"])
 
     def _authenticate(self):
         """Get user ID"""
@@ -360,13 +360,8 @@ class LabArchivesIntegration:
         html_content = self._transform_to_html(source_data)
 
         # Create entry
-        params = {
-            'uid': self.uid,
-            'nbid': nbid,
-            'title': title,
-            'content': html_content
-        }
-        response = self.client.make_call('entries', 'create_entry', params=params)
+        params = {"uid": self.uid, "nbid": nbid, "title": title, "content": html_content}
+        response = self.client.make_call("entries", "create_entry", params=params)
 
         return extract_entry_id(response)
 

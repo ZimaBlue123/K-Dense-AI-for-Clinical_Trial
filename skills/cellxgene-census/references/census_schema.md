@@ -108,27 +108,27 @@ Queries use Python-like expressions for filtering. The syntax is processed by Ti
 
 **Single condition:**
 ```python
-value_filter="cell_type == 'B cell'"
+value_filter = "cell_type == 'B cell'"
 ```
 
 **Multiple conditions with AND:**
 ```python
-value_filter="cell_type == 'B cell' and tissue_general == 'lung' and is_primary_data == True"
+value_filter = "cell_type == 'B cell' and tissue_general == 'lung' and is_primary_data == True"
 ```
 
 **Using IN for multiple values:**
 ```python
-value_filter="tissue in ['lung', 'liver', 'kidney']"
+value_filter = "tissue in ['lung', 'liver', 'kidney']"
 ```
 
 **Complex condition:**
 ```python
-value_filter="(cell_type == 'neuron' or cell_type == 'astrocyte') and disease != 'normal'"
+value_filter = "(cell_type == 'neuron' or cell_type == 'astrocyte') and disease != 'normal'"
 ```
 
 **Filtering genes:**
 ```python
-var_value_filter="feature_name in ['CD4', 'CD8A', 'CD19']"
+var_value_filter = "feature_name in ['CD4', 'CD8A', 'CD19']"
 ```
 
 ## Data Inclusion Criteria

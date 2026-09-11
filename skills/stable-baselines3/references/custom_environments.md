@@ -13,6 +13,7 @@ import gymnasium as gym
 from gymnasium import spaces
 import numpy as np
 
+
 class CustomEnv(gym.Env):
     def __init__(self):
         """Initialize environment, define action_space and observation_space"""
@@ -32,7 +33,7 @@ class CustomEnv(gym.Env):
         observation = self.observation_space.sample()
         reward = 0.0
         terminated = False  # Episode ended naturally
-        truncated = False   # Episode ended due to time limit
+        truncated = False  # Episode ended due to time limit
         info = {}
         return observation, reward, terminated, truncated, info
 
@@ -66,9 +67,7 @@ def __init__(self, grid_size=10, max_steps=100):
 
     # Define spaces
     self.action_space = spaces.Discrete(4)
-    self.observation_space = spaces.Box(
-        low=0, high=grid_size-1, shape=(2,), dtype=np.float32
-    )
+    self.observation_space = spaces.Box(low=0, high=grid_size - 1, shape=(2,), dtype=np.float32)
 ```
 
 #### `reset(self, seed=None, options=None)`
@@ -158,14 +157,10 @@ For continuous values within a range.
 self.action_space = spaces.Box(low=-1, high=1, shape=(1,), dtype=np.float32)
 
 # 2D position observation
-self.observation_space = spaces.Box(
-    low=0, high=10, shape=(2,), dtype=np.float32
-)
+self.observation_space = spaces.Box(low=0, high=10, shape=(2,), dtype=np.float32)
 
 # 3D RGB image (channel-first format)
-self.observation_space = spaces.Box(
-    low=0, high=255, shape=(3, 84, 84), dtype=np.uint8
-)
+self.observation_space = spaces.Box(low=0, high=255, shape=(3, 84, 84), dtype=np.uint8)
 ```
 
 **Important for Images:**
@@ -197,11 +192,13 @@ self.action_space = spaces.MultiBinary(5)  # e.g., [0, 1, 1, 0, 1]
 For dictionary observations (e.g., combining image with sensors).
 
 ```python
-self.observation_space = spaces.Dict({
-    "image": spaces.Box(low=0, high=255, shape=(3, 64, 64), dtype=np.uint8),
-    "vector": spaces.Box(low=-10, high=10, shape=(4,), dtype=np.float32),
-    "discrete": spaces.Discrete(3),
-})
+self.observation_space = spaces.Dict(
+    {
+        "image": spaces.Box(low=0, high=255, shape=(3, 64, 64), dtype=np.uint8),
+        "vector": spaces.Box(low=-10, high=10, shape=(4,), dtype=np.float32),
+        "discrete": spaces.Discrete(3),
+    }
+)
 ```
 
 **Important:** When using Dict observations, use `"MultiInputPolicy"` instead of `"MlpPolicy"`.
@@ -215,10 +212,12 @@ model = PPO("MultiInputPolicy", env, verbose=1)
 For tuple observations (less common).
 
 ```python
-self.observation_space = spaces.Tuple((
-    spaces.Box(low=0, high=1, shape=(4,), dtype=np.float32),
-    spaces.Discrete(3),
-))
+self.observation_space = spaces.Tuple(
+    (
+        spaces.Box(low=0, high=1, shape=(4,), dtype=np.float32),
+        spaces.Discrete(3),
+    )
+)
 ```
 
 ## Important Constraints and Best Practices
@@ -315,11 +314,14 @@ def render(self):
 For Hindsight Experience Replay, use specific observation structure:
 
 ```python
-self.observation_space = spaces.Dict({
-    "observation": spaces.Box(low=-10, high=10, shape=(3,), dtype=np.float32),
-    "achieved_goal": spaces.Box(low=-10, high=10, shape=(3,), dtype=np.float32),
-    "desired_goal": spaces.Box(low=-10, high=10, shape=(3,), dtype=np.float32),
-})
+self.observation_space = spaces.Dict(
+    {
+        "observation": spaces.Box(low=-10, high=10, shape=(3,), dtype=np.float32),
+        "achieved_goal": spaces.Box(low=-10, high=10, shape=(3,), dtype=np.float32),
+        "desired_goal": spaces.Box(low=-10, high=10, shape=(3,), dtype=np.float32),
+    }
+)
+
 
 def compute_reward(self, achieved_goal, desired_goal, info):
     """Required for HER environments"""
@@ -395,13 +397,14 @@ def test_environment(env, n_episodes=5):
             steps += 1
             done = terminated or truncated
 
-        print(f"Episode {episode+1}: Reward={episode_reward:.2f}, Steps={steps}")
+        print(f"Episode {episode + 1}: Reward={episode_reward:.2f}, Steps={steps}")
 ```
 
 ### Training Test
 
 ```python
 from stable_baselines3 import PPO
+
 
 def train_test(env, timesteps=10000):
     """Quick training test"""
@@ -427,7 +430,7 @@ class GridWorldEnv(gym.Env):
         super().__init__()
         self.size = size
         self.action_space = spaces.Discrete(4)  # up, down, left, right
-        self.observation_space = spaces.Box(0, size-1, shape=(2,), dtype=np.float32)
+        self.observation_space = spaces.Box(0, size - 1, shape=(2,), dtype=np.float32)
 ```
 
 ### Continuous Control
@@ -448,9 +451,7 @@ class VisionEnv(gym.Env):
         super().__init__()
         self.action_space = spaces.Discrete(4)
         # Channel-first: (channels, height, width)
-        self.observation_space = spaces.Box(
-            low=0, high=255, shape=(3, 84, 84), dtype=np.uint8
-        )
+        self.observation_space = spaces.Box(low=0, high=255, shape=(3, 84, 84), dtype=np.uint8)
 ```
 
 ### Multi-Modal Environment
@@ -460,10 +461,12 @@ class MultiModalEnv(gym.Env):
     def __init__(self):
         super().__init__()
         self.action_space = spaces.Discrete(4)
-        self.observation_space = spaces.Dict({
-            "image": spaces.Box(0, 255, shape=(3, 64, 64), dtype=np.uint8),
-            "sensors": spaces.Box(-10, 10, shape=(4,), dtype=np.float32),
-        })
+        self.observation_space = spaces.Dict(
+            {
+                "image": spaces.Box(0, 255, shape=(3, 64, 64), dtype=np.uint8),
+                "sensors": spaces.Box(-10, 10, shape=(4,), dtype=np.float32),
+            }
+        )
 ```
 
 ## Performance Considerations
@@ -475,6 +478,7 @@ class MultiModalEnv(gym.Env):
 def __init__(self):
     # ...
     self._obs_buffer = np.zeros(self.observation_space.shape, dtype=np.float32)
+
 
 def _get_observation(self):
     # Reuse buffer instead of allocating new array
@@ -490,8 +494,9 @@ Make environment operations vectorizable:
 ```python
 # Good: Uses numpy operations
 def step(self, action):
-    direction = np.array([[0,1], [0,-1], [1,0], [-1,0]])[action]
-    self.pos = np.clip(self.pos + direction, 0, self.size-1)
+    direction = np.array([[0, 1], [0, -1], [1, 0], [-1, 0]])[action]
+    self.pos = np.clip(self.pos + direction, 0, self.size - 1)
+
 
 # Avoid: Python loops when possible
 # for i in range(len(self.agents)):

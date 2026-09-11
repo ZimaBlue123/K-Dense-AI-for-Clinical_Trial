@@ -48,7 +48,8 @@ import pennylane as qml
 from pennylane import numpy as np
 
 # Create device
-dev = qml.device('default.qubit', wires=2)
+dev = qml.device("default.qubit", wires=2)
+
 
 # Define quantum circuit
 @qml.qnode(dev)
@@ -57,6 +58,7 @@ def circuit(params):
     qml.RY(params[1], wires=1)
     qml.CNOT(wires=[0, 1])
     return qml.expval(qml.PauliZ(0))
+
 
 # Optimize parameters
 opt = qml.GradientDescentOptimizer(stepsize=0.1)
@@ -139,13 +141,14 @@ def classifier(x, weights):
 
     return qml.expval(qml.PauliZ(0))
 
+
 # 2. Train
 opt = qml.AdamOptimizer(stepsize=0.01)
 weights = np.random.random((3, 4, 3))  # 3 layers, 4 wires
 
 for epoch in range(100):
     for x, y in zip(X_train, y_train):
-        weights = opt.step(lambda w: (classifier(x, w) - y)**2, weights)
+        weights = opt.step(lambda w: (classifier(x, w) - y) ** 2, weights)
 ```
 
 ### Run VQE for Molecular Ground State
@@ -154,9 +157,10 @@ for epoch in range(100):
 from pennylane import qchem
 
 # 1. Build Hamiltonian
-symbols = ['H', 'H']
+symbols = ["H", "H"]
 coords = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.74])
 H, n_qubits = qchem.molecular_hamiltonian(symbols, coords)
+
 
 # 2. Define ansatz
 @qml.qnode(dev)
@@ -164,6 +168,7 @@ def vqe_circuit(params):
     qml.BasisState(qchem.hf_state(2, n_qubits), wires=range(n_qubits))
     qml.UCCSD(params, wires=range(n_qubits))
     return qml.expval(H)
+
 
 # 3. Optimize
 opt = qml.AdamOptimizer(stepsize=0.1)
@@ -181,11 +186,11 @@ for i in range(100):
 circuit_def = lambda dev: qml.qnode(dev)(circuit_function)
 
 # Test on simulator
-dev_sim = qml.device('default.qubit', wires=4)
+dev_sim = qml.device("default.qubit", wires=4)
 result_sim = circuit_def(dev_sim)(params)
 
 # Run on quantum hardware
-dev_hw = qml.device('qiskit.ibmq', wires=4, backend='ibmq_manila')
+dev_hw = qml.device("qiskit.ibmq", wires=4, backend="ibmq_manila")
 result_hw = circuit_def(dev_hw)(params)
 ```
 

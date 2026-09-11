@@ -202,10 +202,10 @@ To programmatically access all available datasets for a specific task:
 from tdc.utils import retrieve_dataset_names
 
 # Get all datasets for a specific task
-adme_datasets = retrieve_dataset_names('ADME')
-tox_datasets = retrieve_dataset_names('Tox')
-dti_datasets = retrieve_dataset_names('DTI')
-hts_datasets = retrieve_dataset_names('HTS')
+adme_datasets = retrieve_dataset_names("ADME")
+tox_datasets = retrieve_dataset_names("Tox")
+dti_datasets = retrieve_dataset_names("DTI")
+hts_datasets = retrieve_dataset_names("HTS")
 ```
 
 ## Dataset Statistics
@@ -214,7 +214,8 @@ Access dataset statistics directly:
 
 ```python
 from tdc.single_pred import ADME
-data = ADME(name='Caco2_Wang')
+
+data = ADME(name="Caco2_Wang")
 
 # Print basic statistics
 data.print_stats()

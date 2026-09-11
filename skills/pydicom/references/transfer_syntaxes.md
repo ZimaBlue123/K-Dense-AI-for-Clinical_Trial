@@ -20,6 +20,7 @@ A Transfer Syntax UID specifies:
 **Usage:**
 ```python
 import pydicom
+
 ds.file_meta.TransferSyntaxUID = pydicom.uid.ImplicitVRLittleEndian
 ```
 
@@ -178,7 +179,7 @@ ds.decompress()
 ```python
 import pydicom
 
-ds = pydicom.dcmread('image.dcm')
+ds = pydicom.dcmread("image.dcm")
 
 # Get transfer syntax UID
 ts_uid = ds.file_meta.TransferSyntaxUID
@@ -202,11 +203,11 @@ if ts_uid.is_implicit_VR:
     print("Implicit VR")
 
 # Check compression type
-if 'JPEG' in ts_uid.name:
+if "JPEG" in ts_uid.name:
     print("JPEG compressed")
-elif 'JPEG2000' in ts_uid.name:
+elif "JPEG2000" in ts_uid.name:
     print("JPEG 2000 compressed")
-elif 'RLE' in ts_uid.name:
+elif "RLE" in ts_uid.name:
     print("RLE compressed")
 ```
 
@@ -219,7 +220,7 @@ Pydicom can automatically decompress pixel data when accessing `pixel_array`:
 import pydicom
 
 # Read compressed DICOM
-ds = pydicom.dcmread('compressed.dcm')
+ds = pydicom.dcmread("compressed.dcm")
 
 # Pixel data is automatically decompressed
 pixel_array = ds.pixel_array  # Decompresses if needed
@@ -229,13 +230,13 @@ pixel_array = ds.pixel_array  # Decompresses if needed
 ```python
 import pydicom
 
-ds = pydicom.dcmread('compressed.dcm')
+ds = pydicom.dcmread("compressed.dcm")
 
 # Decompress in-place
 ds.decompress()
 
 # Now save as uncompressed
-ds.save_as('uncompressed.dcm', write_like_original=False)
+ds.save_as("uncompressed.dcm", write_like_original=False)
 ```
 
 ## Compression
@@ -244,19 +245,19 @@ ds.save_as('uncompressed.dcm', write_like_original=False)
 ```python
 import pydicom
 
-ds = pydicom.dcmread('uncompressed.dcm')
+ds = pydicom.dcmread("uncompressed.dcm")
 
 # Compress using JPEG 2000 Lossless
 ds.compress(pydicom.uid.JPEG2000Lossless)
-ds.save_as('compressed_j2k.dcm')
+ds.save_as("compressed_j2k.dcm")
 
 # Compress using RLE Lossless (no additional dependencies)
 ds.compress(pydicom.uid.RLELossless)
-ds.save_as('compressed_rle.dcm')
+ds.save_as("compressed_rle.dcm")
 
 # Compress using JPEG Baseline (lossy)
 ds.compress(pydicom.uid.JPEGBaseline8Bit)
-ds.save_as('compressed_jpeg.dcm')
+ds.save_as("compressed_jpeg.dcm")
 ```
 
 ### Compression with Custom Encoding Parameters
@@ -264,10 +265,10 @@ ds.save_as('compressed_jpeg.dcm')
 import pydicom
 from pydicom.encoders import JPEGLSLosslessEncoder
 
-ds = pydicom.dcmread('uncompressed.dcm')
+ds = pydicom.dcmread("uncompressed.dcm")
 
 # Compress with custom parameters
-ds.compress(pydicom.uid.JPEGLSLossless, encoding_plugin='pylibjpeg')
+ds.compress(pydicom.uid.JPEGLSLossless, encoding_plugin="pylibjpeg")
 ```
 
 ## Installing Compression Handlers
@@ -313,6 +314,7 @@ import pydicom
 
 # List available pixel data handlers
 from pydicom.pixel_data_handlers.util import get_pixel_data_handlers
+
 handlers = get_pixel_data_handlers()
 
 print("Available handlers:")

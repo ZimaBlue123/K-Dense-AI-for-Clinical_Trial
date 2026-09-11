@@ -9,6 +9,7 @@ This guide covers running quantum circuits on real quantum hardware through Cirq
 ```python
 import cirq
 
+
 # Define device with connectivity
 class MyDevice(cirq.Device):
     def __init__(self, qubits, connectivity):
@@ -17,10 +18,7 @@ class MyDevice(cirq.Device):
 
     @property
     def metadata(self):
-        return cirq.DeviceMetadata(
-            self.qubits,
-            self.connectivity
-        )
+        return cirq.DeviceMetadata(self.qubits, self.connectivity)
 
     def validate_operation(self, operation):
         # Check if operation is valid on this device
@@ -61,8 +59,9 @@ except ValueError as e:
 import cirq_google
 
 # Get calibration metrics
-processor = cirq_google.get_engine().get_processor('weber')
+processor = cirq_google.get_engine().get_processor("weber")
 calibration = processor.get_current_calibration()
+
 
 # Find qubits with lowest error rates
 def select_best_qubits(calibration, n_qubits):
@@ -70,18 +69,15 @@ def select_best_qubits(calibration, n_qubits):
     qubit_fidelities = {}
 
     for qubit in calibration.keys():
-        if 'single_qubit_rb_average_error_per_gate' in calibration[qubit]:
-            error = calibration[qubit]['single_qubit_rb_average_error_per_gate']
+        if "single_qubit_rb_average_error_per_gate" in calibration[qubit]:
+            error = calibration[qubit]["single_qubit_rb_average_error_per_gate"]
             qubit_fidelities[qubit] = 1 - error
 
     # Sort by fidelity
-    best_qubits = sorted(
-        qubit_fidelities.items(),
-        key=lambda x: x[1],
-        reverse=True
-    )[:n_qubits]
+    best_qubits = sorted(qubit_fidelities.items(), key=lambda x: x[1], reverse=True)[:n_qubits]
 
     return [q for q, _ in best_qubits]
+
 
 best_qubits = select_best_qubits(calibration, n_qubits=10)
 ```
@@ -95,6 +91,7 @@ def select_connected_qubits(device, n_qubits):
 
     # Find connected subgraph
     import networkx as nx
+
     for node in graph.nodes():
         subgraph = nx.ego_graph(graph, node, radius=n_qubits)
         if len(subgraph) >= n_qubits:
@@ -131,15 +128,13 @@ for processor in processors:
 import cirq_google
 
 # Get processor
-processor = engine.get_processor('weber')
+processor = engine.get_processor("weber")
 device = processor.get_device()
 
 # Create circuit on device qubits
 qubits = sorted(device.metadata.qubit_set)[:5]
 circuit = cirq.Circuit(
-    cirq.H(qubits[0]),
-    cirq.CZ(qubits[0], qubits[1]),
-    cirq.measure(*qubits, key='result')
+    cirq.H(qubits[0]), cirq.CZ(qubits[0], qubits[1]), cirq.measure(*qubits, key="result")
 )
 
 # Validate and run
@@ -148,7 +143,7 @@ job = processor.run(circuit, repetitions=1000)
 
 # Get results
 results = job.results()[0]
-print(results.histogram(key='result'))
+print(results.histogram(key="result"))
 ```
 
 ### IonQ
@@ -163,7 +158,7 @@ import cirq_ionq
 # export IONQ_API_KEY=your_api_key
 
 # Option 2: In code
-service = cirq_ionq.Service(api_key='your_api_key')
+service = cirq_ionq.Service(api_key="your_api_key")
 ```
 
 #### Running on IonQ
@@ -172,7 +167,7 @@ service = cirq_ionq.Service(api_key='your_api_key')
 import cirq_ionq
 
 # Create service
-service = cirq_ionq.Service(api_key='your_api_key')
+service = cirq_ionq.Service(api_key="your_api_key")
 
 # Create circuit (IonQ uses generic qubits)
 qubits = cirq.LineQubit.range(3)
@@ -180,30 +175,22 @@ circuit = cirq.Circuit(
     cirq.H(qubits[0]),
     cirq.CNOT(qubits[0], qubits[1]),
     cirq.CNOT(qubits[1], qubits[2]),
-    cirq.measure(*qubits, key='result')
+    cirq.measure(*qubits, key="result"),
 )
 
 # Run on simulator
-result = service.run(
-    circuit=circuit,
-    repetitions=1000,
-    target='simulator'
-)
-print(result.histogram(key='result'))
+result = service.run(circuit=circuit, repetitions=1000, target="simulator")
+print(result.histogram(key="result"))
 
 # Run on hardware
-result = service.run(
-    circuit=circuit,
-    repetitions=1000,
-    target='qpu'
-)
+result = service.run(circuit=circuit, repetitions=1000, target="qpu")
 ```
 
 #### IonQ Job Management
 
 ```python
 # Create job
-job = service.create_job(circuit, repetitions=1000, target='qpu')
+job = service.create_job(circuit, repetitions=1000, target="qpu")
 
 # Check job status
 status = job.status()
@@ -238,7 +225,7 @@ from azure.quantum.cirq import AzureQuantumService
 # Create workspace connection
 workspace = Workspace(
     resource_id="/subscriptions/.../resourceGroups/.../providers/Microsoft.Quantum/Workspaces/...",
-    location="eastus"
+    location="eastus",
 )
 
 # Create Cirq service
@@ -254,32 +241,20 @@ for target in targets:
     print(f"Target: {target.name}")
 
 # Run on IonQ simulator
-result = service.run(
-    circuit=circuit,
-    repetitions=1000,
-    target='ionq.simulator'
-)
+result = service.run(circuit=circuit, repetitions=1000, target="ionq.simulator")
 
 # Run on IonQ QPU
-result = service.run(
-    circuit=circuit,
-    repetitions=1000,
-    target='ionq.qpu'
-)
+result = service.run(circuit=circuit, repetitions=1000, target="ionq.qpu")
 ```
 
 #### Running on Azure Quantum (Honeywell Backend)
 
 ```python
 # Run on Honeywell System Model H1
-result = service.run(
-    circuit=circuit,
-    repetitions=1000,
-    target='honeywell.hqs-lt-s1'
-)
+result = service.run(circuit=circuit, repetitions=1000, target="honeywell.hqs-lt-s1")
 
 # Check Honeywell-specific options
-target_info = service.get_target('honeywell.hqs-lt-s1')
+target_info = service.get_target("honeywell.hqs-lt-s1")
 print(f"Target info: {target_info}")
 ```
 
@@ -294,10 +269,7 @@ import cirq_aqt
 # export AQT_TOKEN=your_token
 
 # Create service
-service = cirq_aqt.AQTSampler(
-    remote_host='https://gateway.aqt.eu',
-    access_token='your_token'
-)
+service = cirq_aqt.AQTSampler(remote_host="https://gateway.aqt.eu", access_token="your_token")
 ```
 
 #### Running on AQT
@@ -306,24 +278,14 @@ service = cirq_aqt.AQTSampler(
 # Create circuit
 qubits = cirq.LineQubit.range(3)
 circuit = cirq.Circuit(
-    cirq.H(qubits[0]),
-    cirq.CNOT(qubits[0], qubits[1]),
-    cirq.measure(*qubits, key='result')
+    cirq.H(qubits[0]), cirq.CNOT(qubits[0], qubits[1]), cirq.measure(*qubits, key="result")
 )
 
 # Run on simulator
-result = service.run(
-    circuit,
-    repetitions=1000,
-    target='simulator'
-)
+result = service.run(circuit, repetitions=1000, target="simulator")
 
 # Run on device
-result = service.run(
-    circuit,
-    repetitions=1000,
-    target='device'
-)
+result = service.run(circuit, repetitions=1000, target="device")
 ```
 
 ### Pasqal
@@ -342,9 +304,7 @@ device = cirq_pasqal.PasqalDevice(qubits=cirq.LineQubit.range(10))
 ```python
 # Create sampler
 sampler = cirq_pasqal.PasqalSampler(
-    remote_host='https://api.pasqal.cloud',
-    access_token='your_token',
-    device=device
+    remote_host="https://api.pasqal.cloud", access_token="your_token", device=device
 )
 
 # Run circuit
@@ -361,11 +321,11 @@ def optimize_for_hardware(circuit, device):
     from cirq.transformers import (
         optimize_for_target_gateset,
         merge_single_qubit_gates_to_phxz,
-        drop_negligible_operations
+        drop_negligible_operations,
     )
 
     # Get device gateset
-    if hasattr(device, 'gateset'):
+    if hasattr(device, "gateset"):
         gateset = device.gateset
     else:
         gateset = cirq.CZTargetGateset()  # Default
@@ -386,12 +346,12 @@ def run_with_readout_error_mitigation(circuit, sampler, repetitions):
 
     # Measure readout error
     cal_circuits = []
-    for state in range(2**len(circuit.qubits)):
+    for state in range(2 ** len(circuit.qubits)):
         cal_circuit = cirq.Circuit()
         for i, q in enumerate(circuit.qubits):
             if state & (1 << i):
                 cal_circuit.append(cirq.X(q))
-        cal_circuit.append(cirq.measure(*circuit.qubits, key='m'))
+        cal_circuit.append(cirq.measure(*circuit.qubits, key="m"))
         cal_circuits.append(cal_circuit)
 
     # Run calibration
@@ -417,7 +377,7 @@ def submit_jobs_in_batches(circuits, sampler, batch_size=10):
     jobs = []
 
     for i in range(0, len(circuits), batch_size):
-        batch = circuits[i:i+batch_size]
+        batch = circuits[i : i + batch_size]
         job_ids = []
 
         for circuit in batch:
@@ -444,7 +404,7 @@ def print_device_info(device):
 
     # Gate support
     print("\nSupported gates:")
-    if hasattr(device, 'gateset'):
+    if hasattr(device, "gateset"):
         for gate in device.gateset.gates:
             print(f"  - {gate}")
 
@@ -455,7 +415,7 @@ def print_device_info(device):
     print(f"  Average degree: {sum(dict(graph.degree()).values()) / graph.number_of_nodes():.2f}")
 
     # Duration constraints
-    if hasattr(device, 'gate_durations'):
+    if hasattr(device, "gate_durations"):
         print("\nGate durations:")
         for gate, duration in device.gate_durations.items():
             print(f"  {gate}: {duration}")

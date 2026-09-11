@@ -17,13 +17,13 @@ Oracles measure molecular properties and serve two main purposes:
 from tdc import Oracle
 
 # Initialize oracle
-oracle = Oracle(name='GSK3B')
+oracle = Oracle(name="GSK3B")
 
 # Evaluate single molecule (SMILES string)
-score = oracle('CC(C)Cc1ccc(cc1)C(C)C(O)=O')
+score = oracle("CC(C)Cc1ccc(cc1)C(C)C(O)=O")
 
 # Evaluate multiple molecules
-scores = oracle(['SMILES1', 'SMILES2', 'SMILES3'])
+scores = oracle(["SMILES1", "SMILES2", "SMILES3"])
 ```
 
 ### Oracle Categories
@@ -38,7 +38,7 @@ Predict binding affinity or activity against biological targets.
 
 **DRD2 - Dopamine Receptor D2**
 ```python
-oracle = Oracle(name='DRD2')
+oracle = Oracle(name="DRD2")
 score = oracle(smiles)
 ```
 - Measures binding affinity to DRD2 receptor
@@ -47,7 +47,7 @@ score = oracle(smiles)
 
 **GSK3B - Glycogen Synthase Kinase-3 Beta**
 ```python
-oracle = Oracle(name='GSK3B')
+oracle = Oracle(name="GSK3B")
 score = oracle(smiles)
 ```
 - Predicts GSK3β inhibition
@@ -56,7 +56,7 @@ score = oracle(smiles)
 
 **JNK3 - c-Jun N-terminal Kinase 3**
 ```python
-oracle = Oracle(name='JNK3')
+oracle = Oracle(name="JNK3")
 score = oracle(smiles)
 ```
 - Measures JNK3 kinase inhibition
@@ -65,7 +65,7 @@ score = oracle(smiles)
 
 **5HT2A - Serotonin 2A Receptor**
 ```python
-oracle = Oracle(name='5HT2A')
+oracle = Oracle(name="5HT2A")
 score = oracle(smiles)
 ```
 - Predicts serotonin receptor binding
@@ -74,7 +74,7 @@ score = oracle(smiles)
 
 **ACE - Angiotensin-Converting Enzyme**
 ```python
-oracle = Oracle(name='ACE')
+oracle = Oracle(name="ACE")
 score = oracle(smiles)
 ```
 - Measures ACE inhibition
@@ -83,7 +83,7 @@ score = oracle(smiles)
 
 **MAPK - Mitogen-Activated Protein Kinase**
 ```python
-oracle = Oracle(name='MAPK')
+oracle = Oracle(name="MAPK")
 score = oracle(smiles)
 ```
 - Predicts MAPK inhibition
@@ -91,7 +91,7 @@ score = oracle(smiles)
 
 **CDK - Cyclin-Dependent Kinase**
 ```python
-oracle = Oracle(name='CDK')
+oracle = Oracle(name="CDK")
 score = oracle(smiles)
 ```
 - Measures CDK inhibition
@@ -99,7 +99,7 @@ score = oracle(smiles)
 
 **P38 - p38 MAP Kinase**
 ```python
-oracle = Oracle(name='P38')
+oracle = Oracle(name="P38")
 score = oracle(smiles)
 ```
 - Predicts p38 MAPK inhibition
@@ -107,7 +107,7 @@ score = oracle(smiles)
 
 **PARP1 - Poly (ADP-ribose) Polymerase 1**
 ```python
-oracle = Oracle(name='PARP1')
+oracle = Oracle(name="PARP1")
 score = oracle(smiles)
 ```
 - Measures PARP1 inhibition
@@ -115,7 +115,7 @@ score = oracle(smiles)
 
 **PIK3CA - Phosphatidylinositol-4,5-Bisphosphate 3-Kinase**
 ```python
-oracle = Oracle(name='PIK3CA')
+oracle = Oracle(name="PIK3CA")
 score = oracle(smiles)
 ```
 - Predicts PIK3CA inhibition
@@ -129,7 +129,7 @@ Evaluate drug-like properties and ADME characteristics.
 
 **QED - Quantitative Estimate of Drug-likeness**
 ```python
-oracle = Oracle(name='QED')
+oracle = Oracle(name="QED")
 score = oracle(smiles)
 ```
 - Combines multiple physicochemical properties
@@ -138,7 +138,7 @@ score = oracle(smiles)
 
 **Lipinski - Rule of Five**
 ```python
-oracle = Oracle(name='Lipinski')
+oracle = Oracle(name="Lipinski")
 score = oracle(smiles)
 ```
 - Number of Lipinski rule violations
@@ -149,7 +149,7 @@ score = oracle(smiles)
 
 **SA - Synthetic Accessibility**
 ```python
-oracle = Oracle(name='SA')
+oracle = Oracle(name="SA")
 score = oracle(smiles)
 ```
 - Estimates ease of synthesis
@@ -158,7 +158,7 @@ score = oracle(smiles)
 
 **LogP - Octanol-Water Partition Coefficient**
 ```python
-oracle = Oracle(name='LogP')
+oracle = Oracle(name="LogP")
 score = oracle(smiles)
 ```
 - Measures lipophilicity
@@ -167,7 +167,7 @@ score = oracle(smiles)
 
 **MW - Molecular Weight**
 ```python
-oracle = Oracle(name='MW')
+oracle = Oracle(name="MW")
 score = oracle(smiles)
 ```
 - Returns molecular weight in Daltons
@@ -179,7 +179,7 @@ Combine multiple properties for multi-objective optimization.
 
 **Isomer Meta**
 ```python
-oracle = Oracle(name='Isomer_Meta')
+oracle = Oracle(name="Isomer_Meta")
 score = oracle(smiles)
 ```
 - Evaluates specific isomeric properties
@@ -195,7 +195,7 @@ score = oracle(smiles)
 
 **Rediscovery**
 ```python
-oracle = Oracle(name='Rediscovery')
+oracle = Oracle(name="Rediscovery")
 score = oracle(smiles)
 ```
 - Measures similarity to known reference molecules
@@ -203,7 +203,7 @@ score = oracle(smiles)
 
 **Similarity**
 ```python
-oracle = Oracle(name='Similarity')
+oracle = Oracle(name="Similarity")
 score = oracle(smiles)
 ```
 - Computes structural similarity to target molecules
@@ -211,7 +211,7 @@ score = oracle(smiles)
 
 **Uniqueness**
 ```python
-oracle = Oracle(name='Uniqueness')
+oracle = Oracle(name="Uniqueness")
 scores = oracle(smiles_list)
 ```
 - Measures diversity in generated molecule set
@@ -219,7 +219,7 @@ scores = oracle(smiles_list)
 
 **Novelty**
 ```python
-oracle = Oracle(name='Novelty')
+oracle = Oracle(name="Novelty")
 scores = oracle(smiles_list, training_set)
 ```
 - Measures how different generated molecules are from training set
@@ -229,7 +229,7 @@ scores = oracle(smiles_list, training_set)
 
 **ASKCOS - Retrosynthesis Scoring**
 ```python
-oracle = Oracle(name='ASKCOS')
+oracle = Oracle(name="ASKCOS")
 score = oracle(smiles)
 ```
 - Evaluates synthetic feasibility using retrosynthesis
@@ -238,7 +238,7 @@ score = oracle(smiles)
 
 **Docking Score**
 ```python
-oracle = Oracle(name='Docking')
+oracle = Oracle(name="Docking")
 score = oracle(smiles)
 ```
 - Molecular docking score against target protein
@@ -247,7 +247,7 @@ score = oracle(smiles)
 
 **Vina - AutoDock Vina Score**
 ```python
-oracle = Oracle(name='Vina')
+oracle = Oracle(name="Vina")
 score = oracle(smiles)
 ```
 - Uses AutoDock Vina for protein-ligand docking
@@ -262,9 +262,10 @@ Combine multiple oracles for multi-property optimization:
 from tdc import Oracle
 
 # Initialize multiple oracles
-qed_oracle = Oracle(name='QED')
-sa_oracle = Oracle(name='SA')
-drd2_oracle = Oracle(name='DRD2')
+qed_oracle = Oracle(name="QED")
+sa_oracle = Oracle(name="SA")
+drd2_oracle = Oracle(name="DRD2")
+
 
 # Define custom scoring function
 def multi_objective_score(smiles):
@@ -275,8 +276,9 @@ def multi_objective_score(smiles):
     # Weighted combination
     return 0.3 * qed + 0.3 * sa + 0.4 * drd2
 
+
 # Evaluate molecule
-score = multi_objective_score('CC(C)Cc1ccc(cc1)C(C)C(O)=O')
+score = multi_objective_score("CC(C)Cc1ccc(cc1)C(C)C(O)=O")
 ```
 
 ## Oracle Performance Considerations
@@ -294,8 +296,8 @@ score = multi_objective_score('CC(C)Cc1ccc(cc1)C(C)C(O)=O')
 ### Batch Processing
 ```python
 # Efficient batch evaluation
-oracle = Oracle(name='GSK3B')
-smiles_list = ['SMILES1', 'SMILES2', ..., 'SMILES1000']
+oracle = Oracle(name="GSK3B")
+smiles_list = ["SMILES1", "SMILES2", ..., "SMILES1000"]
 scores = oracle(smiles_list)  # Faster than individual calls
 ```
 
@@ -307,11 +309,11 @@ from tdc import Oracle
 from tdc.generation import MolGen
 
 # Load training data
-data = MolGen(name='ChEMBL_V29')
-train_smiles = data.get_data()['Drug'].tolist()
+data = MolGen(name="ChEMBL_V29")
+train_smiles = data.get_data()["Drug"].tolist()
 
 # Initialize oracle
-oracle = Oracle(name='GSK3B')
+oracle = Oracle(name="GSK3B")
 
 # Generate molecules (user implements generative model)
 # generated_smiles = generator.generate(n=1000)
@@ -332,7 +334,7 @@ from tdc import Oracle
 import numpy as np
 
 # Initialize oracle
-oracle = Oracle(name='QED')
+oracle = Oracle(name="QED")
 
 # Evaluate training set
 train_scores = oracle(train_smiles)
@@ -355,14 +357,11 @@ print(f"Generated: μ={gen_mean:.3f}, σ={gen_std:.3f}")
 from tdc.generation import MolGen
 
 # Use with GuacaMol benchmark
-data = MolGen(name='GuacaMol')
+data = MolGen(name="GuacaMol")
 
 # Oracles are automatically integrated
 # Each GuacaMol task has associated oracle
-benchmark_results = data.evaluate_guacamol(
-    generated_molecules=your_molecules,
-    oracle_name='GSK3B'
-)
+benchmark_results = data.evaluate_guacamol(generated_molecules=your_molecules, oracle_name="GSK3B")
 ```
 
 ## Notes
@@ -388,9 +387,10 @@ class CustomOracle:
         # Return score or list of scores
         pass
 
+
 # Use like built-in oracles
 custom_oracle = CustomOracle()
-score = custom_oracle('CC(C)Cc1ccc(cc1)C(C)C(O)=O')
+score = custom_oracle("CC(C)Cc1ccc(cc1)C(C)C(O)=O")
 ```
 
 ## References

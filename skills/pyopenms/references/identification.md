@@ -268,6 +268,7 @@ for m, i in zip(mz[:10], intensity[:10]):  # Show first 10
 ```python
 import pyopenms as ms
 
+
 def identification_workflow(spectrum_file, fasta_file, output_file):
     """
     Complete identification workflow with FDR control.
@@ -335,11 +336,10 @@ def identification_workflow(spectrum_file, fasta_file, output_file):
 
     return protein_ids, filtered_peptide_ids
 
+
 # Run workflow
 protein_ids, peptide_ids = identification_workflow(
-    "spectra.mzML",
-    "database.fasta",
-    "identifications_fdr.idXML"
+    "spectra.mzML", "database.fasta", "identifications_fdr.idXML"
 )
 ```
 

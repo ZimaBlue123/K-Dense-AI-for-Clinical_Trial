@@ -127,9 +127,7 @@ def test_authentication(config_path="config.yaml"):
 
         # Initialize client
         print("\nInitializing client...")
-        client = Client(
-            config["api_url"], config["access_key_id"], config["access_password"]
-        )
+        client = Client(config["api_url"], config["access_key_id"], config["access_password"])
 
         # Test authentication
         print("Testing authentication...")
@@ -156,9 +154,7 @@ def test_authentication(config_path="config.yaml"):
 
     except ImportError:
         print("\n⚠️  labarchives-py package not installed")
-        print(
-            "   Install with: pip install git+https://github.com/mcmero/labarchives-py"
-        )
+        print("   Install with: pip install git+https://github.com/mcmero/labarchives-py")
 
     except Exception as e:
         print(f"\n❌ Connection test failed: {e}")

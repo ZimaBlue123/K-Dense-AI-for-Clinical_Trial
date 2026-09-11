@@ -60,16 +60,14 @@ Creates datasets and applies transforms. Runs on every process in distributed tr
 **Example:**
 ```python
 def setup(self, stage):
-    if stage == 'fit':
+    if stage == "fit":
         full_dataset = MyDataset("data/processed/")
-        self.train_dataset, self.val_dataset = random_split(
-            full_dataset, [0.8, 0.2]
-        )
+        self.train_dataset, self.val_dataset = random_split(full_dataset, [0.8, 0.2])
 
-    if stage == 'test':
+    if stage == "test":
         self.test_dataset = MyDataset("data/processed/test/")
 
-    if stage == 'predict':
+    if stage == "predict":
         self.predict_dataset = MyDataset("data/processed/predict/")
 ```
 
@@ -84,7 +82,7 @@ def train_dataloader(self):
         batch_size=self.batch_size,
         shuffle=True,
         num_workers=self.num_workers,
-        pin_memory=True
+        pin_memory=True,
     )
 ```
 
@@ -99,7 +97,7 @@ def val_dataloader(self):
         batch_size=self.batch_size,
         shuffle=False,
         num_workers=self.num_workers,
-        pin_memory=True
+        pin_memory=True,
     )
 ```
 
@@ -110,10 +108,7 @@ Returns the test DataLoader(s).
 ```python
 def test_dataloader(self):
     return DataLoader(
-        self.test_dataset,
-        batch_size=self.batch_size,
-        shuffle=False,
-        num_workers=self.num_workers
+        self.test_dataset, batch_size=self.batch_size, shuffle=False, num_workers=self.num_workers
     )
 ```
 
@@ -127,7 +122,7 @@ def predict_dataloader(self):
         self.predict_dataset,
         batch_size=self.batch_size,
         shuffle=False,
-        num_workers=self.num_workers
+        num_workers=self.num_workers,
     )
 ```
 
@@ -137,6 +132,7 @@ def predict_dataloader(self):
 import lightning as L
 from torch.utils.data import DataLoader, Dataset, random_split
 import torch
+
 
 class MyDataset(Dataset):
     def __init__(self, data_path, transform=None):
@@ -156,6 +152,7 @@ class MyDataset(Dataset):
         if self.transform:
             sample = self.transform(sample)
         return sample
+
 
 class MyDataModule(L.LightningDataModule):
     def __init__(self, data_dir="./data", batch_size=32, num_workers=4):
@@ -183,28 +180,19 @@ class MyDataModule(L.LightningDataModule):
 
     def setup(self, stage=None):
         # Create datasets (runs on every process)
-        if stage == 'fit' or stage is None:
-            full_dataset = MyDataset(
-                self.data_dir,
-                transform=self.train_transform
-            )
+        if stage == "fit" or stage is None:
+            full_dataset = MyDataset(self.data_dir, transform=self.train_transform)
             train_size = int(0.8 * len(full_dataset))
             val_size = len(full_dataset) - train_size
             self.train_dataset, self.val_dataset = random_split(
                 full_dataset, [train_size, val_size]
             )
 
-        if stage == 'test' or stage is None:
-            self.test_dataset = MyDataset(
-                self.data_dir,
-                transform=self.test_transform
-            )
+        if stage == "test" or stage is None:
+            self.test_dataset = MyDataset(self.data_dir, transform=self.test_transform)
 
-        if stage == 'predict':
-            self.predict_dataset = MyDataset(
-                self.data_dir,
-                transform=self.test_transform
-            )
+        if stage == "predict":
+            self.predict_dataset = MyDataset(self.data_dir, transform=self.test_transform)
 
     def train_dataloader(self):
         return DataLoader(
@@ -213,7 +201,7 @@ class MyDataModule(L.LightningDataModule):
             shuffle=True,
             num_workers=self.num_workers,
             pin_memory=True,
-            persistent_workers=True if self.num_workers > 0 else False
+            persistent_workers=True if self.num_workers > 0 else False,
         )
 
     def val_dataloader(self):
@@ -223,7 +211,7 @@ class MyDataModule(L.LightningDataModule):
             shuffle=False,
             num_workers=self.num_workers,
             pin_memory=True,
-            persistent_workers=True if self.num_workers > 0 else False
+            persistent_workers=True if self.num_workers > 0 else False,
         )
 
     def test_dataloader(self):
@@ -231,7 +219,7 @@ class MyDataModule(L.LightningDataModule):
             self.test_dataset,
             batch_size=self.batch_size,
             shuffle=False,
-            num_workers=self.num_workers
+            num_workers=self.num_workers,
         )
 
     def predict_dataloader(self):
@@ -239,7 +227,7 @@ class MyDataModule(L.LightningDataModule):
             self.predict_dataset,
             batch_size=self.batch_size,
             shuffle=False,
-            num_workers=self.num_workers
+            num_workers=self.num_workers,
         )
 ```
 
@@ -261,7 +249,7 @@ predictions = trainer.predict(model, datamodule=dm)
 
 # Or use standalone in PyTorch
 dm.prepare_data()
-dm.setup(stage='fit')
+dm.setup(stage="fit")
 train_loader = dm.train_dataloader()
 
 for batch in train_loader:
@@ -290,7 +278,7 @@ Augment or modify batch before transferring to device (runs on CPU).
 ```python
 def on_before_batch_transfer(self, batch, dataloader_idx):
     # Apply CPU-based augmentations
-    batch['image'] = apply_augmentation(batch['image'])
+    batch["image"] = apply_augmentation(batch["image"])
     return batch
 ```
 
@@ -301,7 +289,7 @@ Augment or modify batch after transferring to device (runs on GPU).
 ```python
 def on_after_batch_transfer(self, batch, dataloader_idx):
     # Apply GPU-based augmentations
-    batch['image'] = gpu_augmentation(batch['image'])
+    batch["image"] = gpu_augmentation(batch["image"])
     return batch
 ```
 
@@ -312,6 +300,7 @@ Save and restore DataModule state for checkpointing.
 ```python
 def state_dict(self):
     return {"current_fold": self.current_fold}
+
 
 def load_state_dict(self, state_dict):
     self.current_fold = state_dict["current_fold"]
@@ -324,7 +313,7 @@ Cleanup operations after training/testing/prediction.
 ```python
 def teardown(self, stage):
     # Clean up resources
-    if stage == 'fit':
+    if stage == "fit":
         self.train_dataset = None
         self.val_dataset = None
 ```
@@ -339,15 +328,17 @@ Return a list or dictionary of DataLoaders:
 def val_dataloader(self):
     return [
         DataLoader(self.val_dataset_1, batch_size=32),
-        DataLoader(self.val_dataset_2, batch_size=32)
+        DataLoader(self.val_dataset_2, batch_size=32),
     ]
+
 
 # Or with names (for logging)
 def val_dataloader(self):
     return {
         "val_easy": DataLoader(self.val_easy, batch_size=32),
-        "val_hard": DataLoader(self.val_hard, batch_size=32)
+        "val_hard": DataLoader(self.val_hard, batch_size=32),
     }
+
 
 # In LightningModule
 def validation_step(self, batch, batch_idx, dataloader_idx=0):
@@ -394,6 +385,7 @@ class CrossValidationDataModule(L.LightningDataModule):
     def load_state_dict(self, state_dict):
         self.current_fold = state_dict["current_fold"]
 
+
 # Usage
 dm = CrossValidationDataModule("./data", batch_size=32, num_folds=5)
 
@@ -428,11 +420,11 @@ Check the stage in `setup()` to avoid unnecessary work:
 
 ```python
 def setup(self, stage):
-    if stage == 'fit':
+    if stage == "fit":
         # Only load train/val data when fitting
         self.train_dataset = ...
         self.val_dataset = ...
-    elif stage == 'test':
+    elif stage == "test":
         # Only load test data when testing
         self.test_dataset = ...
 ```
@@ -450,11 +442,7 @@ Prevent worker restarts between epochs:
 
 ```python
 def train_dataloader(self):
-    return DataLoader(
-        ...,
-        num_workers=4,
-        persistent_workers=True
-    )
+    return DataLoader(..., num_workers=4, persistent_workers=True)
 ```
 
 ### 5. Avoid Shuffle in Validation/Test
@@ -508,6 +496,7 @@ def prepare_data(self):
 def prepare_data(self):
     download_data()  # Only download, no state
 
+
 def setup(self, stage):
     self.dataset = load_data()  # Set state here
 ```
@@ -524,10 +513,10 @@ def setup(self, stage):
 **Efficient:**
 ```python
 def setup(self, stage):
-    if stage == 'fit':
+    if stage == "fit":
         self.train_dataset = load_train()
         self.val_dataset = load_val()
-    elif stage == 'test':
+    elif stage == "test":
         self.test_dataset = load_test()
 ```
 

@@ -38,25 +38,19 @@ from pathml.preprocessing import Pipeline, SegmentMIF
 import numpy as np
 
 # 1. Perform cell segmentation
-pipeline = Pipeline([
-    SegmentMIF(
-        nuclear_channel='DAPI',
-        cytoplasm_channel='CD45',
-        model='mesmer'
-    )
-])
+pipeline = Pipeline([SegmentMIF(nuclear_channel="DAPI", cytoplasm_channel="CD45", model="mesmer")])
 pipeline.run(slide)
 
 # 2. Extract instance segmentation mask
-inst_map = slide.masks['cell_segmentation']
+inst_map = slide.masks["cell_segmentation"]
 
 # 3. Build cell graph
 cell_graph = CellGraph.from_instance_map(
     inst_map,
     image=slide.image,  # Optional: for extracting visual features
-    connectivity='delaunay',  # 'knn', 'radius', or 'delaunay'
+    connectivity="delaunay",  # 'knn', 'radius', or 'delaunay'
     k=5,  # For knn: number of neighbors
-    radius=50  # For radius: distance threshold in pixels
+    radius=50,  # For radius: distance threshold in pixels
 )
 
 # 4. Access graph components
@@ -72,8 +66,8 @@ adjacency = cell_graph.adjacency_matrix  # Adjacency matrix
 # Connect each cell to its k nearest neighbors
 graph = CellGraph.from_instance_map(
     inst_map,
-    connectivity='knn',
-    k=5  # Number of neighbors
+    connectivity="knn",
+    k=5,  # Number of neighbors
 )
 ```
 - Fixed degree per node
@@ -85,9 +79,9 @@ graph = CellGraph.from_instance_map(
 # Connect cells within a distance threshold
 graph = CellGraph.from_instance_map(
     inst_map,
-    connectivity='radius',
+    connectivity="radius",
     radius=100,  # Maximum distance in pixels
-    distance_metric='euclidean'  # or 'manhattan', 'chebyshev'
+    distance_metric="euclidean",  # or 'manhattan', 'chebyshev'
 )
 ```
 - Variable degree based on density
@@ -97,10 +91,7 @@ graph = CellGraph.from_instance_map(
 **Delaunay Triangulation:**
 ```python
 # Connect cells using Delaunay triangulation
-graph = CellGraph.from_instance_map(
-    inst_map,
-    connectivity='delaunay'
-)
+graph = CellGraph.from_instance_map(inst_map, connectivity="delaunay")
 ```
 - Creates connected graph from spatial positions
 - No isolated nodes (in convex hull)
@@ -111,8 +102,8 @@ graph = CellGraph.from_instance_map(
 # Connect cells with touching boundaries
 graph = CellGraph.from_instance_map(
     inst_map,
-    connectivity='contact',
-    dilation=2  # Dilate boundaries to capture near-contacts
+    connectivity="contact",
+    dilation=2,  # Dilate boundaries to capture near-contacts
 )
 ```
 - Physical cell-cell contacts
@@ -132,18 +123,18 @@ from pathml.graph import extract_morphology_features
 morphology_features = extract_morphology_features(
     inst_map,
     features=[
-        'area',  # Cell area in pixels
-        'perimeter',  # Cell perimeter
-        'eccentricity',  # Shape elongation
-        'solidity',  # Convexity measure
-        'major_axis_length',
-        'minor_axis_length',
-        'orientation'  # Cell orientation angle
-    ]
+        "area",  # Cell area in pixels
+        "perimeter",  # Cell perimeter
+        "eccentricity",  # Shape elongation
+        "solidity",  # Convexity measure
+        "major_axis_length",
+        "minor_axis_length",
+        "orientation",  # Cell orientation angle
+    ],
 )
 
 # Add to graph
-cell_graph.add_node_features(morphology_features, feature_names=['area', 'perimeter', ...])
+cell_graph.add_node_features(morphology_features, feature_names=["area", "perimeter", ...])
 ```
 
 **Available morphological features:**
@@ -167,15 +158,12 @@ from pathml.graph import extract_intensity_features
 intensity_features = extract_intensity_features(
     inst_map,
     image=multichannel_image,  # Shape: (H, W, C)
-    channel_names=['DAPI', 'CD3', 'CD4', 'CD8', 'CD20'],
-    statistics=['mean', 'std', 'median', 'max']
+    channel_names=["DAPI", "CD3", "CD4", "CD8", "CD20"],
+    statistics=["mean", "std", "median", "max"],
 )
 
 # Add to graph
-cell_graph.add_node_features(
-    intensity_features,
-    feature_names=['DAPI_mean', 'CD3_mean', ...]
-)
+cell_graph.add_node_features(intensity_features, feature_names=["DAPI_mean", "CD3_mean", ...])
 ```
 
 **Available statistics:**
@@ -197,9 +185,9 @@ from pathml.graph import extract_texture_features
 texture_features = extract_texture_features(
     inst_map,
     image=grayscale_image,
-    features='haralick',  # or 'lbp', 'gabor'
+    features="haralick",  # or 'lbp', 'gabor'
     distance=1,
-    angles=[0, np.pi/4, np.pi/2, 3*np.pi/4]
+    angles=[0, np.pi / 4, np.pi / 2, 3 * np.pi / 4],
 )
 
 cell_graph.add_node_features(texture_features)
@@ -213,16 +201,12 @@ Add cell type labels from classification:
 # From ML model predictions
 cell_types = hovernet_type_predictions  # Array of cell type IDs
 
-cell_graph.add_node_features(
-    cell_types,
-    feature_names=['cell_type']
-)
+cell_graph.add_node_features(cell_types, feature_names=["cell_type"])
 
 # One-hot encode cell types
 cell_type_onehot = one_hot_encode(cell_types, num_classes=5)
 cell_graph.add_node_features(
-    cell_type_onehot,
-    feature_names=['type_epithelial', 'type_inflammatory', ...]
+    cell_type_onehot, feature_names=["type_epithelial", "type_inflammatory", ...]
 )
 ```
 
@@ -238,10 +222,10 @@ from pathml.graph import compute_edge_distances
 # Add pairwise distances as edge features
 distances = compute_edge_distances(
     cell_graph,
-    metric='euclidean'  # or 'manhattan', 'chebyshev'
+    metric="euclidean",  # or 'manhattan', 'chebyshev'
 )
 
-cell_graph.add_edge_features(distances, feature_names=['distance'])
+cell_graph.add_edge_features(distances, feature_names=["distance"])
 ```
 
 ### Interaction Features
@@ -255,7 +239,7 @@ from pathml.graph import compute_interaction_features
 interaction_features = compute_interaction_features(
     cell_graph,
     cell_types=cell_type_labels,
-    interaction_type='categorical'  # or 'numerical'
+    interaction_type="categorical",  # or 'numerical'
 )
 
 cell_graph.add_edge_features(interaction_features)
@@ -272,19 +256,19 @@ from pathml.graph import compute_graph_features
 graph_features = compute_graph_features(
     cell_graph,
     features=[
-        'num_nodes',
-        'num_edges',
-        'average_degree',
-        'clustering_coefficient',
-        'average_path_length',
-        'diameter'
-    ]
+        "num_nodes",
+        "num_edges",
+        "average_degree",
+        "clustering_coefficient",
+        "average_path_length",
+        "diameter",
+    ],
 )
 
 # Cell composition features
 composition = cell_graph.compute_cell_type_composition(
     cell_type_labels,
-    normalize=True  # Proportions
+    normalize=True,  # Proportions
 )
 ```
 
@@ -302,14 +286,14 @@ neighborhoods = analyze_neighborhoods(
     cell_graph,
     cell_types=cell_type_labels,
     radius=100,  # Neighborhood radius
-    metrics=['diversity', 'density', 'composition']
+    metrics=["diversity", "density", "composition"],
 )
 
 # Neighborhood diversity (Shannon entropy)
-diversity = neighborhoods['diversity']
+diversity = neighborhoods["diversity"]
 
 # Cell type composition in each neighborhood
-composition = neighborhoods['composition']  # (n_cells, n_cell_types)
+composition = neighborhoods["composition"]  # (n_cells, n_cell_types)
 ```
 
 ### Spatial Clustering
@@ -324,19 +308,14 @@ import matplotlib.pyplot as plt
 clusters = spatial_clustering(
     cell_graph,
     cell_positions,
-    method='dbscan',  # or 'kmeans', 'hierarchical'
+    method="dbscan",  # or 'kmeans', 'hierarchical'
     eps=50,  # DBSCAN: neighborhood radius
-    min_samples=10  # DBSCAN: minimum cluster size
+    min_samples=10,  # DBSCAN: minimum cluster size
 )
 
 # Visualize clusters
-plt.scatter(
-    cell_positions[:, 0],
-    cell_positions[:, 1],
-    c=clusters,
-    cmap='tab20'
-)
-plt.title('Spatial Clusters')
+plt.scatter(cell_positions[:, 0], cell_positions[:, 1], c=clusters, cmap="tab20")
+plt.title("Spatial Clusters")
 plt.show()
 ```
 
@@ -351,24 +330,25 @@ from pathml.graph import cell_interaction_analysis
 interaction_results = cell_interaction_analysis(
     cell_graph,
     cell_types=cell_type_labels,
-    method='permutation',  # or 'expected'
+    method="permutation",  # or 'expected'
     n_permutations=1000,
-    significance_level=0.05
+    significance_level=0.05,
 )
 
 # Interaction scores (positive = attraction, negative = avoidance)
-interaction_matrix = interaction_results['scores']
+interaction_matrix = interaction_results["scores"]
 
 # Visualize with heatmap
 import seaborn as sns
+
 sns.heatmap(
     interaction_matrix,
-    cmap='RdBu_r',
+    cmap="RdBu_r",
     center=0,
     xticklabels=cell_type_names,
-    yticklabels=cell_type_names
+    yticklabels=cell_type_names,
 )
-plt.title('Cell-Cell Interaction Scores')
+plt.title("Cell-Cell Interaction Scores")
 plt.show()
 ```
 
@@ -383,16 +363,12 @@ from pathml.graph import spatial_statistics
 ripleys_k = spatial_statistics(
     cell_positions,
     cell_types=cell_type_labels,
-    statistic='ripleys_k',
-    radii=np.linspace(0, 200, 50)
+    statistic="ripleys_k",
+    radii=np.linspace(0, 200, 50),
 )
 
 # Nearest neighbor distances
-nn_distances = spatial_statistics(
-    cell_positions,
-    statistic='nearest_neighbor',
-    by_cell_type=True
-)
+nn_distances = spatial_statistics(cell_positions, statistic="nearest_neighbor", by_cell_type=True)
 ```
 
 ## Integration with Graph Neural Networks
@@ -417,6 +393,7 @@ pos = pyg_data.pos  # Node positions (n_nodes, 2)
 # Use with PyTorch Geometric
 from torch_geometric.nn import GCNConv
 
+
 class GNN(torch.nn.Module):
     def __init__(self, in_channels, hidden_channels, out_channels):
         super().__init__()
@@ -428,6 +405,7 @@ class GNN(torch.nn.Module):
         x = self.conv1(x, edge_index).relu()
         x = self.conv2(x, edge_index)
         return x
+
 
 model = GNN(in_channels=pyg_data.num_features, hidden_channels=64, out_channels=5)
 output = model(pyg_data)
@@ -478,12 +456,12 @@ nx.draw_networkx(
     pos=pos,
     node_color=cell_type_labels,
     node_size=50,
-    cmap='tab10',
+    cmap="tab10",
     with_labels=False,
-    alpha=0.8
+    alpha=0.8,
 )
-plt.axis('equal')
-plt.title('Cell Graph')
+plt.axis("equal")
+plt.title("Cell Graph")
 plt.show()
 ```
 
@@ -501,17 +479,17 @@ for edge in cell_graph.edges:
     node1, node2 = edge
     pos1 = cell_graph.positions[node1]
     pos2 = cell_graph.positions[node2]
-    ax.plot([pos1[0], pos2[0]], [pos1[1], pos2[1]], 'b-', alpha=0.3, linewidth=0.5)
+    ax.plot([pos1[0], pos2[0]], [pos1[1], pos2[1]], "b-", alpha=0.3, linewidth=0.5)
 
 # Draw nodes colored by type
 for cell_type in np.unique(cell_type_labels):
     mask = cell_type_labels == cell_type
     positions = cell_graph.positions[mask]
-    ax.scatter(positions[:, 0], positions[:, 1], label=f'Type {cell_type}', s=20)
+    ax.scatter(positions[:, 0], positions[:, 1], label=f"Type {cell_type}", s=20)
 
 ax.legend()
-ax.axis('off')
-plt.title('Cell Graph on Tissue')
+ax.axis("off")
+plt.title("Cell Graph on Tissue")
 plt.show()
 ```
 
@@ -524,32 +502,24 @@ from pathml.graph import CellGraph, extract_morphology_features, extract_intensi
 import matplotlib.pyplot as plt
 
 # 1. Load and preprocess slide
-slide = CODEXSlide('path/to/codex', stain='IF')
+slide = CODEXSlide("path/to/codex", stain="IF")
 
-pipeline = Pipeline([
-    CollapseRunsCODEX(z_slice=2),
-    SegmentMIF(
-        nuclear_channel='DAPI',
-        cytoplasm_channel='CD45',
-        model='mesmer'
-    )
-])
+pipeline = Pipeline(
+    [
+        CollapseRunsCODEX(z_slice=2),
+        SegmentMIF(nuclear_channel="DAPI", cytoplasm_channel="CD45", model="mesmer"),
+    ]
+)
 pipeline.run(slide)
 
 # 2. Build cell graph
-inst_map = slide.masks['cell_segmentation']
-cell_graph = CellGraph.from_instance_map(
-    inst_map,
-    image=slide.image,
-    connectivity='knn',
-    k=6
-)
+inst_map = slide.masks["cell_segmentation"]
+cell_graph = CellGraph.from_instance_map(inst_map, image=slide.image, connectivity="knn", k=6)
 
 # 3. Extract features
 # Morphological features
 morph_features = extract_morphology_features(
-    inst_map,
-    features=['area', 'perimeter', 'eccentricity', 'solidity']
+    inst_map, features=["area", "perimeter", "eccentricity", "solidity"]
 )
 cell_graph.add_node_features(morph_features)
 
@@ -557,8 +527,8 @@ cell_graph.add_node_features(morph_features)
 intensity_features = extract_intensity_features(
     inst_map,
     image=slide.image,
-    channel_names=['DAPI', 'CD3', 'CD4', 'CD8', 'CD20'],
-    statistics=['mean', 'std']
+    channel_names=["DAPI", "CD3", "CD4", "CD8", "CD20"],
+    statistics=["mean", "std"],
 )
 cell_graph.add_node_features(intensity_features)
 
@@ -566,10 +536,7 @@ cell_graph.add_node_features(intensity_features)
 from pathml.graph import analyze_neighborhoods
 
 neighborhoods = analyze_neighborhoods(
-    cell_graph,
-    cell_types=cell_type_predictions,
-    radius=100,
-    metrics=['diversity', 'composition']
+    cell_graph, cell_types=cell_type_predictions, radius=100, metrics=["diversity", "composition"]
 )
 
 # 5. Export for GNN
@@ -586,12 +553,12 @@ nx.draw_networkx(
     nx_graph,
     pos=pos,
     node_color=cell_type_predictions,
-    cmap='tab10',
+    cmap="tab10",
     node_size=30,
-    with_labels=False
+    with_labels=False,
 )
-plt.axis('off')
-plt.title('Cell Graph with Spatial Neighborhood')
+plt.axis("off")
+plt.title("Cell Graph with Spatial Neighborhood")
 plt.show()
 ```
 

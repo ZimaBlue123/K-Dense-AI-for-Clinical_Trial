@@ -11,6 +11,7 @@ import geopandas as gpd
 import rasterio
 import numpy as np
 
+
 def coastal_vulnerability_index(dem_path, shoreline_path, output_path):
     """Calculate coastal vulnerability index."""
 
@@ -29,17 +30,19 @@ def coastal_vulnerability_index(dem_path, shoreline_path, output_path):
 
     # 4. Weighted overlay
     weights = {
-        'elevation': 0.3,
-        'slope': 0.2,
-        'distance_to_shore': 0.2,
-        'wave_height': 0.2,
-        'sea_level_trend': 0.1
+        "elevation": 0.3,
+        "slope": 0.2,
+        "distance_to_shore": 0.2,
+        "wave_height": 0.2,
+        "sea_level_trend": 0.1,
     }
 
-    cvi = sum(vuln * w for vuln, w in zip(
-        [elevation_vuln, slope_vuln, distance_vuln, wave_vuln, slr_vuln],
-        weights.values()
-    ))
+    cvi = sum(
+        vuln * w
+        for vuln, w in zip(
+            [elevation_vuln, slope_vuln, distance_vuln, wave_vuln, slr_vuln], weights.values()
+        )
+    )
 
     return cvi
 ```
@@ -58,11 +61,11 @@ def classify_benthic_habitat(bathymetry, backscatter, derived_layers):
 
     # 1. Extract features
     features = {
-        'depth': bathymetry,
-        'backscatter': backscatter,
-        'slope': calculate_slope(bathymetry),
-        'rugosity': calculate_rugosity(bathymetry),
-        'curvature': calculate_curvature(bathymetry)
+        "depth": bathymetry,
+        "backscatter": backscatter,
+        "slope": calculate_slope(bathymetry),
+        "rugosity": calculate_rugosity(bathymetry),
+        "curvature": calculate_curvature(bathymetry),
     }
 
     # 2. Classification rules
@@ -70,26 +73,21 @@ def classify_benthic_habitat(bathymetry, backscatter, derived_layers):
 
     # Coral reef: shallow, high rugosity, moderate backscatter
     coral_mask = (
-        (features['depth'] > -30) &
-        (features['depth'] < -5) &
-        (features['rugosity'] > 2) &
-        (features['backscatter'] > -15)
+        (features["depth"] > -30)
+        & (features["depth"] < -5)
+        & (features["rugosity"] > 2)
+        & (features["backscatter"] > -15)
     )
     habitat_classes[coral_mask] = 1  # Coral
 
     # Seagrass: very shallow, low backscatter
     seagrass_mask = (
-        (features['depth'] > -15) &
-        (features['depth'] < -2) &
-        (features['backscatter'] < -20)
+        (features["depth"] > -15) & (features["depth"] < -2) & (features["backscatter"] < -20)
     )
     habitat_classes[seagrass_mask] = 2  # Seagrass
 
     # Sandy bottom: low rugosity
-    sand_mask = (
-        (features['rugosity'] < 1.5) &
-        (features['slope'] < 5)
-    )
+    sand_mask = (features["rugosity"] < 1.5) & (features["slope"] < 5)
     habitat_classes[sand_mask] = 3  # Sand
 
     return habitat_classes
@@ -104,7 +102,7 @@ import xarray as xr
 import rioxarray
 
 # Open NetCDF weather data
-ds = xr.open_dataset('era5_data.nc')
+ds = xr.open_dataset("era5_data.nc")
 
 # Select variable and time
 temperature = ds.t2m  # 2m temperature
@@ -114,17 +112,19 @@ precipitation = ds.tp  # Total precipitation
 roi = ds.sel(latitude=slice(20, 30), longitude=slice(65, 75))
 
 # Temporal aggregation
-monthly = roi.resample(time='1M').mean()
-daily = roi.resample(time='1D').sum()
+monthly = roi.resample(time="1M").mean()
+daily = roi.resample(time="1D").sum()
 
 # Export to GeoTIFF
-temperature.rio.to_raster('temperature.tif')
+temperature.rio.to_raster("temperature.tif")
+
 
 # Calculate climate indices
 def calculate_spi(precip, scale=3):
     """Standardized Precipitation Index."""
     # Fit gamma distribution
     from scipy import stats
+
     # ... SPI calculation ...
     return spi
 ```
@@ -144,20 +144,19 @@ def interpolate_pm25(sensor_gdf, grid_resolution=1000):
     # Extract coordinates and values
     lon = sensor_gdf.geometry.x.values
     lat = sensor_gdf.geometry.y.values
-    values = sensor_gdf['PM25'].values
+    values = sensor_gdf["PM25"].values
 
     # Create grid
     grid_lon = np.arange(lon.min(), lon.max(), grid_resolution)
     grid_lat = np.arange(lat.min(), lat.max(), grid_resolution)
 
     # Ordinary Kriging
-    OK = OrdinaryKriging(lon, lat, values,
-                        variogram_model='exponential',
-                        verbose=False,
-                        enable_plotting=False)
+    OK = OrdinaryKriging(
+        lon, lat, values, variogram_model="exponential", verbose=False, enable_plotting=False
+    )
 
     # Interpolate
-    z, ss = OK.execute('grid', grid_lon, grid_lat)
+    z, ss = OK.execute("grid", grid_lon, grid_lat)
 
     return z, grid_lon, grid_lat
 ```
@@ -170,6 +169,7 @@ def interpolate_pm25(sensor_gdf, grid_resolution=1000):
 import rasterio
 import numpy as np
 from scipy import ndimage
+
 
 def delineate_watershed(dem_path, outlet_point):
     """
@@ -200,6 +200,7 @@ def delineate_watershed(dem_path, outlet_point):
 
     return watershed, flow_acc, flow_dir
 
+
 def calculate_flow_direction_d8(dem):
     """D8 flow direction algorithm."""
     # Encode direction as powers of 2
@@ -211,8 +212,14 @@ def calculate_flow_direction_d8(dem):
     flow_dir = np.zeros_like(dem, dtype=np.uint8)
 
     directions = [
-        (-1, 0, 64), (-1, 1, 128), (0, 1, 1), (1, 1, 2),
-        (1, 0, 4), (1, -1, 8), (0, -1, 16), (-1, -1, 32)
+        (-1, 0, 64),
+        (-1, 1, 128),
+        (0, 1, 1),
+        (1, 1, 2),
+        (1, 0, 4),
+        (1, -1, 8),
+        (0, -1, 16),
+        (-1, -1, 32),
     ]
 
     for i in range(1, rows - 1):
@@ -295,11 +302,7 @@ def crop_condition_indices(ndvi_time_series):
     # 4. Estimate yield (simplified)
     yield_potential = condition * 0.5  # tonnes/ha
 
-    return {
-        'condition': condition,
-        'status': status,
-        'yield_potential': yield_potential
-    }
+    return {"condition": condition, "status": status, "yield_potential": yield_potential}
 ```
 
 ### Precision Agriculture
@@ -314,12 +317,14 @@ def prescription_map(soil_data, yield_data, nutrient_data):
     # Divide field into management zones
     from sklearn.cluster import KMeans
 
-    features = np.column_stack([
-        soil_data['organic_matter'],
-        soil_data['ph'],
-        yield_data['yield_t'],
-        nutrient_data['nitrogen']
-    ])
+    features = np.column_stack(
+        [
+            soil_data["organic_matter"],
+            soil_data["ph"],
+            yield_data["yield_t"],
+            nutrient_data["nitrogen"],
+        ]
+    )
 
     # Cluster into 3-4 zones
     kmeans = KMeans(n_clusters=3, random_state=42)
@@ -329,14 +334,14 @@ def prescription_map(soil_data, yield_data, nutrient_data):
     prescriptions = {}
     for zone_id in range(3):
         zone_mask = zones == zone_id
-        avg_yield = np.mean(yield_data['yield_t'][zone_mask])
+        avg_yield = np.mean(yield_data["yield_t"][zone_mask])
 
         # Higher yield areas = higher nutrient requirement
         nitrogen_rate = avg_yield * 0.02  # kg N per kg yield
         prescriptions[zone_id] = {
-            'nitrogen': nitrogen_rate,
-            'phosphorus': nitrogen_rate * 0.3,
-            'potassium': nitrogen_rate * 0.4
+            "nitrogen": nitrogen_rate,
+            "phosphorus": nitrogen_rate * 0.3,
+            "potassium": nitrogen_rate * 0.4,
         }
 
     return zones, prescriptions
@@ -363,22 +368,18 @@ def estimate_biomass_from_lidar(chm_path, plot_data):
         # ... (mask and extract)
 
         plot_metrics = {
-            'height_max': np.max(plot_chm),
-            'height_mean': np.mean(plot_chm),
-            'height_std': np.std(plot_chm),
-            'height_p95': np.percentile(plot_chm, 95),
-            'canopy_cover': np.sum(plot_chm > 2) / plot_chm.size
+            "height_max": np.max(plot_chm),
+            "height_mean": np.mean(plot_chm),
+            "height_std": np.std(plot_chm),
+            "height_p95": np.percentile(plot_chm, 95),
+            "canopy_cover": np.sum(plot_chm > 2) / plot_chm.size,
         }
 
         # 3. Allometric equation for biomass
         # Biomass = a * (height^b) * (cover^c)
-        biomass = 0.2 * (plot_metrics['height_mean'] ** 1.5) * \
-                  (plot_metrics['canopy_cover'] ** 0.8)
+        biomass = 0.2 * (plot_metrics["height_mean"] ** 1.5) * (plot_metrics["canopy_cover"] ** 0.8)
 
-        metrics[plot_id] = {
-            **plot_metrics,
-            'biomass_tonnes': biomass
-        }
+        metrics[plot_id] = {**plot_metrics, "biomass_tonnes": biomass}
 
     return metrics
 ```

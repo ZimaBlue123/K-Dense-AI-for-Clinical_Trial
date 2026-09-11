@@ -97,10 +97,12 @@ from pathml.preprocessing import Pipeline, StainNormalizationHE, TissueDetection
 wsi = SlideData.from_slide("path/to/slide.svs")
 
 # Create preprocessing pipeline
-pipeline = Pipeline([
-    TissueDetectionHE(),
-    StainNormalizationHE(target='normalize', stain_estimation_method='macenko')
-])
+pipeline = Pipeline(
+    [
+        TissueDetectionHE(),
+        StainNormalizationHE(target="normalize", stain_estimation_method="macenko"),
+    ]
+)
 
 # Run pipeline
 pipeline.run(wsi)
@@ -108,7 +110,7 @@ pipeline.run(wsi)
 # Access processed tiles
 for tile in wsi.tiles:
     processed_image = tile.image
-    tissue_mask = tile.masks['tissue']
+    tissue_mask = tile.masks["tissue"]
 ```
 
 ### Common Workflows

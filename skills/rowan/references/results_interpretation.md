@@ -64,16 +64,16 @@ workflow.fetch_latest(in_place=True)
 data = workflow.data
 
 # Macroscopic pKa
-strongest_acid = data['strongest_acid']  # Most acidic pKa
-strongest_base = data['strongest_base']  # Most basic pKa (if applicable)
+strongest_acid = data["strongest_acid"]  # Most acidic pKa
+strongest_base = data["strongest_base"]  # Most basic pKa (if applicable)
 
 # Microscopic pKa (site-specific)
-micro_pkas = data['microscopic_pkas']
+micro_pkas = data["microscopic_pkas"]
 for site in micro_pkas:
     print(f"Site {site['atom_index']}: pKa = {site['pka']:.2f}")
 
 # Tautomer analysis
-tautomers = data.get('tautomer_populations', {})
+tautomers = data.get("tautomer_populations", {})
 for smiles, pop in tautomers.items():
     print(f"{smiles}: {pop:.1%}")
 ```
@@ -91,8 +91,8 @@ for smiles, pop in tautomers.items():
 ```python
 data = workflow.data
 
-oxidation_potential = data['oxidation_potential']  # V vs SHE
-reduction_potential = data['reduction_potential']  # V vs SHE
+oxidation_potential = data["oxidation_potential"]  # V vs SHE
+reduction_potential = data["reduction_potential"]  # V vs SHE
 
 print(f"Oxidation: {oxidation_potential:.2f} V vs SHE")
 print(f"Reduction: {reduction_potential:.2f} V vs SHE")
@@ -110,8 +110,8 @@ print(f"Reduction: {reduction_potential:.2f} V vs SHE")
 ```python
 data = workflow.data
 
-log_s = data['aqueous_solubility']  # Log10(mol/L)
-classification = data['solubility_class']
+log_s = data["aqueous_solubility"]  # Log10(mol/L)
+classification = data["solubility_class"]
 
 print(f"Log S: {log_s:.2f}")
 print(f"Classification: {classification}")  # "High", "Medium", "Low"
@@ -130,9 +130,9 @@ print(f"Classification: {classification}")  # "High", "Medium", "Low"
 data = workflow.data
 
 # Per-atom reactivity indices
-fukui_plus = data['fukui_plus']   # Nucleophilic attack sites
-fukui_minus = data['fukui_minus']  # Electrophilic attack sites
-fukui_dual = data['fukui_dual']    # Dual descriptor
+fukui_plus = data["fukui_plus"]  # Nucleophilic attack sites
+fukui_minus = data["fukui_minus"]  # Electrophilic attack sites
+fukui_dual = data["fukui_dual"]  # Dual descriptor
 
 # Find most reactive sites
 for i, (fp, fm, fd) in enumerate(zip(fukui_plus, fukui_minus, fukui_dual)):
@@ -153,9 +153,9 @@ for i, (fp, fm, fd) in enumerate(zip(fukui_plus, fukui_minus, fukui_dual)):
 ```python
 data = workflow.data
 
-final_mol = data['final_molecule']  # stjames.Molecule
-final_energy = data['energy']  # Hartree
-converged = data['convergence']
+final_mol = data["final_molecule"]  # stjames.Molecule
+final_energy = data["energy"]  # Hartree
+converged = data["convergence"]
 
 print(f"Final energy: {final_energy:.6f} Hartree")
 print(f"Converged: {converged}")
@@ -168,16 +168,16 @@ print(f"Converged: {converged}")
 ```python
 data = workflow.data
 
-conformers = data['conformers']
-lowest_energy = data['lowest_energy_conformer']
+conformers = data["conformers"]
+lowest_energy = data["lowest_energy_conformer"]
 
 # Analyze conformer distribution
 for i, conf in enumerate(conformers):
-    rel_energy = (conf['energy'] - conformers[0]['energy']) * 627.509  # kcal/mol
+    rel_energy = (conf["energy"] - conformers[0]["energy"]) * 627.509  # kcal/mol
     print(f"Conformer {i}: ΔE = {rel_energy:.2f} kcal/mol")
 
 # Boltzmann weights
-weights = data.get('boltzmann_weights', [])
+weights = data.get("boltzmann_weights", [])
 for i, w in enumerate(weights):
     print(f"Conformer {i}: population = {w:.1%}")
 ```
@@ -194,10 +194,10 @@ for i, w in enumerate(weights):
 ```python
 data = workflow.data
 
-frequencies = data['frequencies']  # cm⁻¹
-ir_intensities = data['ir_intensities']  # km/mol
-zpe = data['zpe']  # Hartree
-gibbs = data['gibbs_free_energy']  # Hartree
+frequencies = data["frequencies"]  # cm⁻¹
+ir_intensities = data["ir_intensities"]  # km/mol
+zpe = data["zpe"]  # Hartree
+gibbs = data["gibbs_free_energy"]  # Hartree
 
 # Check for imaginary frequencies
 imaginary = [f for f in frequencies if f < 0]
@@ -224,8 +224,8 @@ print(f"Gibbs free energy: {gibbs:.6f} Hartree")
 ```python
 data = workflow.data
 
-angles = data['angles']  # degrees
-energies = data['energies']  # Hartree
+angles = data["angles"]  # degrees
+energies = data["energies"]  # Hartree
 
 # Find barrier
 min_e = min(energies)
@@ -236,6 +236,7 @@ print(f"Rotation barrier: {barrier:.2f} kcal/mol")
 
 # Find minima
 import numpy as np
+
 rel_energies = [(e - min_e) * 627.509 for e in energies]
 for angle, e in zip(angles, rel_energies):
     if e < 0.5:  # Near minimum
@@ -252,16 +253,16 @@ for angle, e in zip(angles, rel_energies):
 data = workflow.data
 
 # Docking score (more negative = better)
-score = data['docking_score']  # kcal/mol
+score = data["docking_score"]  # kcal/mol
 print(f"Docking score: {score:.2f} kcal/mol")
 
 # All poses
-poses = data['poses']
+poses = data["poses"]
 for i, pose in enumerate(poses):
     print(f"Pose {i}: score = {pose['score']:.2f} kcal/mol")
 
 # Ligand strain
-strain = data.get('ligand_strain', 0)
+strain = data.get("ligand_strain", 0)
 print(f"Ligand strain: {strain:.2f} kcal/mol")
 
 # Download poses
@@ -280,15 +281,15 @@ workflow.download_sdf_file("docked_poses.sdf")
 ```python
 data = workflow.data
 
-results = data['results']
+results = data["results"]
 for r in results:
-    smiles = r['smiles']
-    score = r['best_score']
-    strain = r.get('ligand_strain', 0)
+    smiles = r["smiles"]
+    score = r["best_score"]
+    strain = r.get("ligand_strain", 0)
     print(f"{smiles[:30]}: score = {score:.2f}, strain = {strain:.2f}")
 
 # Sort by score
-sorted_results = sorted(results, key=lambda x: x['best_score'])
+sorted_results = sorted(results, key=lambda x: x["best_score"])
 print("\nTop 10 hits:")
 for r in sorted_results[:10]:
     print(f"{r['smiles']}: {r['best_score']:.2f}")
@@ -308,16 +309,16 @@ for r in sorted_results[:10]:
 data = workflow.data
 
 # Confidence scores
-ptm = data['ptm_score']  # Predicted TM score (0-1)
-interface_ptm = data['interface_ptm']  # Interface confidence
-aggregate = data['aggregate_score']  # Combined score
+ptm = data["ptm_score"]  # Predicted TM score (0-1)
+interface_ptm = data["interface_ptm"]  # Interface confidence
+aggregate = data["aggregate_score"]  # Combined score
 
 print(f"Predicted TM score: {ptm:.3f}")
 print(f"Interface pTM: {interface_ptm:.3f}")
 print(f"Aggregate score: {aggregate:.3f}")
 
 # Download structure
-pdb_content = data['structure_pdb']
+pdb_content = data["structure_pdb"]
 with open("complex.pdb", "w") as f:
     f.write(pdb_content)
 ```
@@ -361,16 +362,16 @@ mol = stjames.Molecule.from_smiles("c1ccccc1O")
 # Run with different methods
 results = {}
 
-for method in ['gfn2_xtb', 'aimnet2']:
+for method in ["gfn2_xtb", "aimnet2"]:
     wf = rowan.submit_basic_calculation_workflow(
         initial_molecule=mol,
         workflow_type="optimization",
         workflow_data={"method": method},
-        name=f"opt_{method}"
+        name=f"opt_{method}",
     )
     wf.wait_for_result()
     wf.fetch_latest(in_place=True)
-    results[method] = wf.data['energy']
+    results[method] = wf.data["energy"]
 
 # Compare energies
 for method, energy in results.items():
@@ -382,7 +383,7 @@ for method, energy in results.items():
 ```python
 # For pKa
 def validate_pka(data):
-    pka = data['strongest_acid']
+    pka = data["strongest_acid"]
 
     # Check reasonable range
     if pka < -5 or pka > 20:
@@ -391,10 +392,11 @@ def validate_pka(data):
     # Compare with known references
     # (implementation depends on reference data)
 
+
 # For docking
 def validate_docking(data):
-    score = data['docking_score']
-    strain = data.get('ligand_strain', 0)
+    score = data["docking_score"]
+    strain = data.get("ligand_strain", 0)
 
     if score > 0:
         print("Warning: Positive docking score suggests poor binding")
@@ -441,7 +443,7 @@ if workflow.status == "failed":
 
 ```python
 # Use .get() with defaults
-energy = data.get('energy', None)
+energy = data.get("energy", None)
 if energy is None:
     print("Energy not available")
 ```
@@ -460,11 +462,9 @@ results = []
 for wf in workflows:
     wf.fetch_latest(in_place=True)
     if wf.status == "completed":
-        results.append({
-            'name': wf.name,
-            'pka': wf.data.get('strongest_acid'),
-            'credits': wf.credits_charged
-        })
+        results.append(
+            {"name": wf.name, "pka": wf.data.get("strongest_acid"), "credits": wf.credits_charged}
+        )
 
 df = pd.DataFrame(results)
 df.to_csv("results.csv", index=False)

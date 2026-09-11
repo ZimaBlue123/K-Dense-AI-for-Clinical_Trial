@@ -64,15 +64,12 @@ model = models.GIN(
     hidden_dims=[256, 256, 256],
     edge_input_dim=dataset.edge_feature_dim,
     batch_norm=True,
-    readout="mean"
+    readout="mean",
 )
 
 # Create property prediction task
 task = tasks.PropertyPrediction(
-    model,
-    task=dataset.tasks,
-    criterion="bce",
-    metric=["auroc", "auprc"]
+    model, task=dataset.tasks, criterion="bce", metric=["auroc", "auprc"]
 )
 
 # Train with PyTorch
@@ -333,9 +330,7 @@ protein = data.Protein.from_pdb("AF-P12345-F1-model_v4.pdb")
 
 # Build graph with spatial edges
 graph = protein.residue_graph(
-    node_position="ca",
-    edge_types=["sequential", "radius"],
-    radius_cutoff=10.0
+    node_position="ca", edge_types=["sequential", "radius"], radius_cutoff=10.0
 )
 ```
 
@@ -344,6 +339,7 @@ graph = protein.residue_graph(
 Wrap tasks for Lightning training:
 ```python
 import pytorch_lightning as pl
+
 
 class LightningTask(pl.LightningModule):
     def __init__(self, torchdrug_task):

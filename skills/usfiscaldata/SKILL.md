@@ -21,22 +21,24 @@ import pandas as pd
 BASE_URL = "https://api.fiscaldata.treasury.gov/services/api/fiscal_service"
 
 # Get the current national debt (Debt to the Penny)
-resp = requests.get(f"{BASE_URL}/v2/accounting/od/debt_to_penny", params={
-    "sort": "-record_date",
-    "page[size]": 1
-})
+resp = requests.get(
+    f"{BASE_URL}/v2/accounting/od/debt_to_penny", params={"sort": "-record_date", "page[size]": 1}
+)
 data = resp.json()["data"][0]
 print(f"Total public debt as of {data['record_date']}: ${float(data['tot_pub_debt_out_amt']):,.0f}")
 ```
 
 ```python
 # Get Treasury exchange rates for recent quarters
-resp = requests.get(f"{BASE_URL}/v1/accounting/od/rates_of_exchange", params={
-    "fields": "country_currency_desc,exchange_rate,record_date",
-    "filter": "record_date:gte:2024-01-01",
-    "sort": "-record_date",
-    "page[size]": 100
-})
+resp = requests.get(
+    f"{BASE_URL}/v1/accounting/od/rates_of_exchange",
+    params={
+        "fields": "country_currency_desc,exchange_rate,record_date",
+        "filter": "record_date:gte:2024-01-01",
+        "sort": "-record_date",
+        "page[size]": 100,
+    },
+)
 df = pd.DataFrame(resp.json()["data"])
 ```
 
@@ -142,9 +144,10 @@ Omitting grouping fields triggers automatic aggregation:
 
 ```python
 # Sum all deposits/withdrawals by record_date and transaction type
-resp = requests.get(f"{BASE_URL}/v1/accounting/dts/deposits_withdrawals_operating_cash", params={
-    "fields": "record_date,transaction_type,transaction_today_amt"
-})
+resp = requests.get(
+    f"{BASE_URL}/v1/accounting/dts/deposits_withdrawals_operating_cash",
+    params={"fields": "record_date,transaction_type,transaction_today_amt"},
+)
 ```
 
 ## Reference Files

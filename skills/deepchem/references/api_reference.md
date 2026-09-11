@@ -212,9 +212,9 @@ Quick access to 30+ benchmark datasets via `dc.molnet.load_*()` functions.
 ### Usage Pattern
 ```python
 tasks, datasets, transformers = dc.molnet.load_bbbp(
-    featurizer='GraphConv',  # or 'ECFP', 'GraphConv', 'Weave', etc.
-    splitter='scaffold',      # or 'random', 'stratified', etc.
-    reload=False              # set True to skip caching
+    featurizer="GraphConv",  # or 'ECFP', 'GraphConv', 'Weave', etc.
+    splitter="scaffold",  # or 'random', 'stratified', etc.
+    reload=False,  # set True to skip caching
 )
 train, valid, test = datasets
 ```
@@ -249,9 +249,10 @@ Standard DeepChem workflow:
 
 ```python
 # 1. Load data
-loader = dc.data.CSVLoader(tasks=['task1'], feature_field='smiles',
-                           featurizer=dc.feat.CircularFingerprint())
-dataset = loader.create_dataset('data.csv')
+loader = dc.data.CSVLoader(
+    tasks=["task1"], feature_field="smiles", featurizer=dc.feat.CircularFingerprint()
+)
+dataset = loader.create_dataset("data.csv")
 
 # 2. Split data
 splitter = dc.splits.ScaffoldSplitter()
@@ -278,7 +279,7 @@ test_score = model.evaluate(test, [metric])
 
 ### Pattern 1: Quick Baseline with MoleculeNet
 ```python
-tasks, datasets, transformers = dc.molnet.load_tox21(featurizer='ECFP')
+tasks, datasets, transformers = dc.molnet.load_tox21(featurizer="ECFP")
 train, valid, test = datasets
 model = dc.models.MultitaskClassifier(n_tasks=len(tasks), n_features=1024)
 model.fit(train)
@@ -287,17 +288,16 @@ model.fit(train)
 ### Pattern 2: Custom Data with Graph Networks
 ```python
 featurizer = dc.feat.MolGraphConvFeaturizer()
-loader = dc.data.CSVLoader(tasks=['activity'], feature_field='smiles',
-                           featurizer=featurizer)
-dataset = loader.create_dataset('my_data.csv')
+loader = dc.data.CSVLoader(tasks=["activity"], feature_field="smiles", featurizer=featurizer)
+dataset = loader.create_dataset("my_data.csv")
 train, test = dc.splits.RandomSplitter().train_test_split(dataset)
-model = dc.models.GCNModel(mode='classification', n_tasks=1)
+model = dc.models.GCNModel(mode="classification", n_tasks=1)
 model.fit(train)
 ```
 
 ### Pattern 3: Transfer Learning with Pretrained Models
 ```python
-model = dc.models.GroverModel(task='classification', n_tasks=1)
+model = dc.models.GroverModel(task="classification", n_tasks=1)
 model.fit(train_dataset)
 predictions = model.predict(test_dataset)
 ```

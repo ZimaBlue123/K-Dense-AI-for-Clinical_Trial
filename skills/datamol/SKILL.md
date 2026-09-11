@@ -78,12 +78,7 @@ selfies = dm.to_selfies(mol)
 mol = dm.sanitize_mol(mol)
 
 # Full standardization (recommended for datasets)
-mol = dm.standardize_mol(
-    mol,
-    disconnect_metals=True,
-    normalize=True,
-    reionize=True
-)
+mol = dm.standardize_mol(mol, disconnect_metals=True, normalize=True, reionize=True)
 
 # For SMILES strings directly
 clean_smiles = dm.standardize_smiles(smiles)
@@ -96,10 +91,10 @@ Refer to `references/io_module.md` for comprehensive I/O documentation.
 **Reading files**:
 ```python
 # SDF files (most common in chemistry)
-df = dm.read_sdf("compounds.sdf", mol_column='mol')
+df = dm.read_sdf("compounds.sdf", mol_column="mol")
 
 # SMILES files
-df = dm.read_smi("molecules.smi", smiles_column='smiles', mol_column='mol')
+df = dm.read_smi("molecules.smi", smiles_column="smiles", mol_column="mol")
 
 # CSV with SMILES column
 df = dm.read_csv("data.csv", smiles_column="SMILES", mol_column="mol")
@@ -152,8 +147,8 @@ descriptors = dm.descriptors.compute_many_descriptors(mol)
 # Compute for all molecules in parallel
 desc_df = dm.descriptors.batch_compute_many_descriptors(
     mols,
-    n_jobs=-1,      # Use all CPU cores
-    progress=True   # Show progress bar
+    n_jobs=-1,  # Use all CPU cores
+    progress=True,  # Show progress bar
 )
 ```
 
@@ -176,12 +171,8 @@ n_rigid = dm.descriptors.n_rigid_bonds(mol)
 # Filter compounds
 def is_druglike(mol):
     desc = dm.descriptors.compute_many_descriptors(mol)
-    return (
-        desc['mw'] <= 500 and
-        desc['logp'] <= 5 and
-        desc['hbd'] <= 5 and
-        desc['hba'] <= 10
-    )
+    return desc["mw"] <= 500 and desc["logp"] <= 5 and desc["hbd"] <= 5 and desc["hba"] <= 10
+
 
 druglike_mols = [mol for mol in mols if is_druglike(mol)]
 ```
@@ -191,12 +182,12 @@ druglike_mols = [mol for mol in mols if is_druglike(mol)]
 **Generating fingerprints**:
 ```python
 # ECFP (Extended Connectivity Fingerprint, default)
-fp = dm.to_fp(mol, fp_type='ecfp', radius=2, n_bits=2048)
+fp = dm.to_fp(mol, fp_type="ecfp", radius=2, n_bits=2048)
 
 # Other fingerprint types
-fp_maccs = dm.to_fp(mol, fp_type='maccs')
-fp_topological = dm.to_fp(mol, fp_type='topological')
-fp_atompair = dm.to_fp(mol, fp_type='atompair')
+fp_maccs = dm.to_fp(mol, fp_type="maccs")
+fp_topological = dm.to_fp(mol, fp_type="topological")
+fp_atompair = dm.to_fp(mol, fp_type="atompair")
 ```
 
 **Similarity calculations**:
@@ -209,6 +200,7 @@ distances = dm.cdist(query_mols, library_mols, n_jobs=-1)
 
 # Find most similar molecules
 from scipy.spatial.distance import squareform
+
 dist_matrix = squareform(dm.pdist(mols))
 # Lower distance = higher similarity (Tanimoto distance = 1 - Tanimoto similarity)
 ```
@@ -222,8 +214,8 @@ Refer to `references/core_api.md` for clustering details.
 # Cluster molecules by structural similarity
 clusters = dm.cluster_mols(
     mols,
-    cutoff=0.2,    # Tanimoto distance threshold (0=identical, 1=completely different)
-    n_jobs=-1      # Parallel processing
+    cutoff=0.2,  # Tanimoto distance threshold (0=identical, 1=completely different)
+    n_jobs=-1,  # Parallel processing
 )
 
 # Each cluster is a list of molecule indices
@@ -239,13 +231,13 @@ for i, cluster in enumerate(clusters):
 # Pick diverse subset
 diverse_mols = dm.pick_diverse(
     mols,
-    npick=100  # Select 100 diverse molecules
+    npick=100,  # Select 100 diverse molecules
 )
 
 # Pick cluster centroids
 centroids = dm.pick_centroids(
     mols,
-    npick=50   # Select 50 representative molecules
+    npick=50,  # Select 50 representative molecules
 )
 ```
 
@@ -291,6 +283,7 @@ for mol, scaf in zip(mols, scaffold_smiles):
 
 # Split scaffolds into train/test
 import random
+
 scaffolds = list(scaffold_to_mols.keys())
 random.shuffle(scaffolds)
 split_idx = int(0.8 * len(scaffolds))
@@ -331,6 +324,7 @@ for mol in mols:
 fragment_counts = Counter(all_fragments)
 common_frags = fragment_counts.most_common(20)
 
+
 # Fragment-based scoring
 def fragment_score(mol, reference_fragments):
     mol_frags = dm.fragment.brics(mol)
@@ -347,10 +341,10 @@ Refer to `references/conformers_module.md` for detailed conformer documentation.
 # Generate 3D conformers
 mol_3d = dm.conformers.generate(
     mol,
-    n_confs=50,           # Number to generate (auto if None)
-    rms_cutoff=0.5,       # Filter similar conformers (Ångströms)
+    n_confs=50,  # Number to generate (auto if None)
+    rms_cutoff=0.5,  # Filter similar conformers (Ångströms)
     minimize_energy=True,  # Minimize with UFF force field
-    method='ETKDGv3'      # Embedding method (recommended)
+    method="ETKDGv3",  # Embedding method (recommended)
 )
 
 # Access conformers
@@ -362,11 +356,7 @@ positions = conf.GetPositions()  # Nx3 array of atom coordinates
 **Conformer clustering**:
 ```python
 # Cluster conformers by RMSD
-clusters = dm.conformers.cluster(
-    mol_3d,
-    rms_cutoff=1.0,
-    centroids=False
-)
+clusters = dm.conformers.cluster(mol_3d, rms_cutoff=1.0, centroids=False)
 
 # Get representative conformers
 centroids = dm.conformers.return_centroids(mol_3d, clusters)
@@ -379,7 +369,7 @@ sasa_values = dm.conformers.sasa(mol_3d, n_jobs=-1)
 
 # Access SASA from conformer properties
 conf = mol_3d.GetConformer(0)
-sasa = conf.GetDoubleProp('rdkit_free_sasa')
+sasa = conf.GetDoubleProp("rdkit_free_sasa")
 ```
 
 ### 9. Visualization
@@ -390,10 +380,7 @@ Refer to `references/descriptors_viz.md` for visualization documentation.
 ```python
 # Visualize molecules
 dm.viz.to_image(
-    mols[:20],
-    legends=[dm.to_smiles(m) for m in mols[:20]],
-    n_cols=5,
-    mol_size=(300, 300)
+    mols[:20], legends=[dm.to_smiles(m) for m in mols[:20]], n_cols=5, mol_size=(300, 300)
 )
 
 # Save to file
@@ -410,7 +397,7 @@ dm.viz.to_image(
     similar_mols,
     align=True,  # Enable MCS alignment
     legends=activity_labels,
-    n_cols=4
+    n_cols=4,
 )
 ```
 
@@ -420,19 +407,14 @@ dm.viz.to_image(
 dm.viz.to_image(
     mol,
     highlight_atom=[0, 1, 2, 3],  # Atom indices
-    highlight_bond=[0, 1, 2]      # Bond indices
+    highlight_bond=[0, 1, 2],  # Bond indices
 )
 ```
 
 **Conformer visualization**:
 ```python
 # Display multiple conformers
-dm.viz.conformers(
-    mol_3d,
-    n_confs=10,
-    align_conf=True,
-    n_cols=3
-)
+dm.viz.conformers(mol_3d, n_confs=10, align_conf=True, n_cols=3)
 ```
 
 ### 10. Chemical Reactions
@@ -444,16 +426,12 @@ Refer to `references/reactions_data.md` for reactions documentation.
 from rdkit.Chem import rdChemReactions
 
 # Define reaction from SMARTS
-rxn_smarts = '[C:1](=[O:2])[OH:3]>>[C:1](=[O:2])[Cl:3]'
+rxn_smarts = "[C:1](=[O:2])[OH:3]>>[C:1](=[O:2])[Cl:3]"
 rxn = rdChemReactions.ReactionFromSmarts(rxn_smarts)
 
 # Apply to molecule
 reactant = dm.to_mol("CC(=O)O")  # Acetic acid
-product = dm.reactions.apply_reaction(
-    rxn,
-    (reactant,),
-    sanitize=True
-)
+product = dm.reactions.apply_reaction(rxn, (reactant,), sanitize=True)
 
 # Convert to SMILES
 product_smiles = dm.to_smiles(product)
@@ -500,37 +478,29 @@ import pandas as pd
 df = dm.read_sdf("compounds.sdf")
 
 # 2. Standardize
-df['mol'] = df['mol'].apply(lambda m: dm.standardize_mol(m) if m else None)
-df = df[df['mol'].notna()]  # Remove failed molecules
+df["mol"] = df["mol"].apply(lambda m: dm.standardize_mol(m) if m else None)
+df = df[df["mol"].notna()]  # Remove failed molecules
 
 # 3. Compute descriptors
 desc_df = dm.descriptors.batch_compute_many_descriptors(
-    df['mol'].tolist(),
-    n_jobs=-1,
-    progress=True
+    df["mol"].tolist(), n_jobs=-1, progress=True
 )
 
 # 4. Filter by drug-likeness
 druglike = (
-    (desc_df['mw'] <= 500) &
-    (desc_df['logp'] <= 5) &
-    (desc_df['hbd'] <= 5) &
-    (desc_df['hba'] <= 10)
+    (desc_df["mw"] <= 500) & (desc_df["logp"] <= 5) & (desc_df["hbd"] <= 5) & (desc_df["hba"] <= 10)
 )
 filtered_df = df[druglike]
 
 # 5. Cluster and select diverse subset
-diverse_mols = dm.pick_diverse(
-    filtered_df['mol'].tolist(),
-    npick=100
-)
+diverse_mols = dm.pick_diverse(filtered_df["mol"].tolist(), npick=100)
 
 # 6. Visualize results
 dm.viz.to_image(
     diverse_mols,
     legends=[dm.to_smiles(m) for m in diverse_mols],
     outfile="diverse_compounds.png",
-    n_cols=10
+    n_cols=10,
 )
 ```
 
@@ -542,14 +512,16 @@ scaffolds = [dm.to_scaffold_murcko(mol) for mol in mols]
 scaffold_smiles = [dm.to_smiles(s) for s in scaffolds]
 
 # Create DataFrame with activities
-sar_df = pd.DataFrame({
-    'mol': mols,
-    'scaffold': scaffold_smiles,
-    'activity': activities  # User-provided activity data
-})
+sar_df = pd.DataFrame(
+    {
+        "mol": mols,
+        "scaffold": scaffold_smiles,
+        "activity": activities,  # User-provided activity data
+    }
+)
 
 # Analyze each scaffold series
-for scaffold, group in sar_df.groupby('scaffold'):
+for scaffold, group in sar_df.groupby("scaffold"):
     if len(group) >= 3:  # Need multiple examples
         print(f"\nScaffold: {scaffold}")
         print(f"Count: {len(group)}")
@@ -557,9 +529,9 @@ for scaffold, group in sar_df.groupby('scaffold'):
 
         # Visualize with activities as legends
         dm.viz.to_image(
-            group['mol'].tolist(),
-            legends=[f"Activity: {act:.2f}" for act in group['activity']],
-            align=True  # Align by common substructure
+            group["mol"].tolist(),
+            legends=[f"Activity: {act:.2f}" for act in group["activity"]],
+            align=True,  # Align by common substructure
         )
 ```
 
@@ -589,7 +561,7 @@ top_scores = [similarities[i] for i in top_indices]
 dm.viz.to_image(
     top_hits[:20],
     legends=[f"Sim: {score:.3f}" for score in top_scores[:20]],
-    outfile="screening_hits.png"
+    outfile="screening_hits.png",
 )
 ```
 
@@ -655,6 +627,7 @@ def safe_to_mol(smiles):
         print(f"Failed to process {smiles}: {e}")
         return None
 
+
 # Safe batch processing
 valid_mols = []
 for smiles in smiles_list:
@@ -675,6 +648,7 @@ X = desc_df.values
 
 # Train model
 from sklearn.ensemble import RandomForestRegressor
+
 model = RandomForestRegressor()
 model.fit(X, y_target)
 

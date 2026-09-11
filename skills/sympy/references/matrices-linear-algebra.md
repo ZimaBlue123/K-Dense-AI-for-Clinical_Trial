@@ -11,10 +11,7 @@ from sympy import Matrix, eye, zeros, ones, diag
 
 # From list of rows
 M = Matrix([[1, 2], [3, 4]])
-M = Matrix([
-    [1, 2, 3],
-    [4, 5, 6]
-])
+M = Matrix([[1, 2, 3], [4, 5, 6]])
 
 # Column vector
 v = Matrix([1, 2, 3])
@@ -36,7 +33,7 @@ I = eye(3)  # 3x3 identity
 Z = zeros(2, 3)  # 2 rows, 3 columns of zeros
 
 # Ones matrix
-O = ones(3, 2)   # 3 rows, 2 columns of ones
+O = ones(3, 2)  # 3 rows, 2 columns of ones
 
 # Diagonal matrix
 D = diag(1, 2, 3)
@@ -46,6 +43,7 @@ D = diag(1, 2, 3)
 
 # Block diagonal
 from sympy import BlockDiagMatrix
+
 A = Matrix([[1, 2], [3, 4]])
 B = Matrix([[5, 6], [7, 8]])
 BD = BlockDiagMatrix(A, B)
@@ -59,8 +57,8 @@ BD = BlockDiagMatrix(A, B)
 M = Matrix([[1, 2, 3], [4, 5, 6]])
 
 M.shape  # (2, 3) - returns tuple (rows, cols)
-M.rows   # 2
-M.cols   # 3
+M.rows  # 2
+M.cols  # 3
 ```
 
 ### Accessing Elements
@@ -73,11 +71,11 @@ M[0, 0]  # 1 (zero-indexed)
 M[1, 2]  # 6
 
 # Row access
-M[0, :]   # Matrix([[1, 2, 3]])
+M[0, :]  # Matrix([[1, 2, 3]])
 M.row(0)  # Same as above
 
 # Column access
-M[:, 1]   # Matrix([[2], [5]])
+M[:, 1]  # Matrix([[2], [5]])
 M.col(1)  # Same as above
 
 # Slicing
@@ -178,7 +176,8 @@ M.det()  # -2
 
 # For symbolic matrices
 from sympy import symbols
-a, b, c, d = symbols('a b c d')
+
+a, b, c, d = symbols("a b c d")
 M = Matrix([[a, b], [c, d]])
 M.det()  # a*d - b*c
 ```
@@ -290,7 +289,8 @@ P * D * P**-1 == M  # True
 
 ```python
 from sympy import symbols
-lam = symbols('lambda')
+
+lam = symbols("lambda")
 
 M = Matrix([[1, 2], [2, 1]])
 charpoly = M.charpoly(lam)
@@ -374,10 +374,10 @@ x = A.solve_least_squares(b)
 ```python
 from sympy import linsolve, symbols
 
-x, y = symbols('x y')
+x, y = symbols("x y")
 
 # Method 1: List of equations
-eqs = [x + y - 5, 2*x - y - 1]
+eqs = [x + y - 5, 2 * x - y - 1]
 sol = linsolve(eqs, [x, y])
 # {(2, 3)}
 
@@ -412,7 +412,7 @@ sol = A.solve_least_squares(b)
 ```python
 from sympy import symbols, Matrix
 
-a, b, c, d = symbols('a b c d')
+a, b, c, d = symbols("a b c d")
 M = Matrix([[a, b], [c, d]])
 
 # All operations work symbolically

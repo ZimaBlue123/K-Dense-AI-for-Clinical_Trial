@@ -138,12 +138,14 @@ data = av_get("ALL_COMMODITIES", interval="monthly")
 ```python
 import pandas as pd
 
+
 def commodity_to_df(function, **kwargs):
     data = av_get(function, **kwargs)
     df = pd.DataFrame(data["data"])
     df["date"] = pd.to_datetime(df["date"])
     df["value"] = pd.to_numeric(df["value"], errors="coerce")
     return df.set_index("date").sort_index()
+
 
 # Compare oil prices
 wti_df = commodity_to_df("WTI", interval="monthly")

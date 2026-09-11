@@ -29,10 +29,7 @@ from datacommons_client import DataCommonsClient
 client = DataCommonsClient()
 
 # Resolve by name
-response = client.resolve.fetch(
-    nodes=["California", "Texas"],
-    property="name"
-)
+response = client.resolve.fetch(nodes=["California", "Texas"], property="name")
 ```
 
 ### 2. fetch_dcids_by_name()
@@ -48,15 +45,10 @@ Name-based lookup with optional type filtering—most commonly used method.
 **Example Usage:**
 ```python
 # Basic name resolution
-response = client.resolve.fetch_dcids_by_name(
-    names=["San Francisco, CA", "Los Angeles"]
-)
+response = client.resolve.fetch_dcids_by_name(names=["San Francisco, CA", "Los Angeles"])
 
 # With type filtering
-response = client.resolve.fetch_dcids_by_name(
-    names=["San Francisco"],
-    entity_type="City"
-)
+response = client.resolve.fetch_dcids_by_name(names=["San Francisco"], entity_type="City")
 
 # Access results
 for name, result in response.to_dict().items():
@@ -91,10 +83,7 @@ Geographic coordinate lookup to find the place at specific lat/long coordinates.
 **Example Usage:**
 ```python
 # Find place at coordinates
-dcid = client.resolve.fetch_dcid_by_coordinates(
-    latitude=37.7749,
-    longitude=-122.4194
-)
+dcid = client.resolve.fetch_dcid_by_coordinates(latitude=37.7749, longitude=-122.4194)
 # Returns DCID for San Francisco
 ```
 
@@ -132,9 +121,7 @@ response = client.resolve.fetch_dcids_by_name(names=["Springfield"])
 Most workflows start by resolving names to DCIDs:
 ```python
 # Step 1: Resolve names
-resolve_response = client.resolve.fetch_dcids_by_name(
-    names=["California", "Texas"]
-)
+resolve_response = client.resolve.fetch_dcids_by_name(names=["California", "Texas"])
 
 # Step 2: Extract DCIDs
 dcids = []
@@ -144,9 +131,7 @@ for name, result in resolve_response.to_dict().items():
 
 # Step 3: Query data using DCIDs
 data_response = client.observation.fetch(
-    variable_dcids=["Count_Person"],
-    entity_dcids=dcids,
-    date="latest"
+    variable_dcids=["Count_Person"], entity_dcids=dcids, date="latest"
 )
 ```
 
@@ -162,22 +147,14 @@ candidates = response.to_dict()["Springfield"]["candidates"]
 city_candidates = [c for c in candidates if c.get("dominantType") == "City"]
 
 # Or be more specific in the query
-response = client.resolve.fetch_dcids_by_name(
-    names=["Springfield, Illinois"],
-    entity_type="City"
-)
+response = client.resolve.fetch_dcids_by_name(names=["Springfield, Illinois"], entity_type="City")
 ```
 
 ### Use Case 3: Batch Resolution
 
 Resolve multiple entities efficiently:
 ```python
-places = [
-    "San Francisco, CA",
-    "Los Angeles, CA",
-    "San Diego, CA",
-    "Sacramento, CA"
-]
+places = ["San Francisco, CA", "Los Angeles, CA", "San Diego, CA", "Sacramento, CA"]
 
 response = client.resolve.fetch_dcids_by_name(names=places)
 
@@ -194,16 +171,11 @@ Find the administrative place for a location:
 ```python
 # User provides coordinates, find the place
 latitude, longitude = 37.7749, -122.4194
-dcid = client.resolve.fetch_dcid_by_coordinates(
-    latitude=latitude,
-    longitude=longitude
-)
+dcid = client.resolve.fetch_dcid_by_coordinates(latitude=latitude, longitude=longitude)
 
 # Now query data for that place
 response = client.observation.fetch(
-    variable_dcids=["Count_Person", "MedianIncome_Household"],
-    entity_dcids=[dcid],
-    date="latest"
+    variable_dcids=["Count_Person", "MedianIncome_Household"], entity_dcids=[dcid], date="latest"
 )
 ```
 
@@ -215,9 +187,7 @@ When working with external datasets that use Wikidata IDs:
 wikidata_ids = ["Q30", "Q99", "Q1384"]  # USA, California, New York
 
 # Convert to Data Commons DCIDs
-response = client.resolve.fetch_dcids_by_wikidata_id(
-    wikidata_ids=wikidata_ids
-)
+response = client.resolve.fetch_dcids_by_wikidata_id(wikidata_ids=wikidata_ids)
 
 # Extract DCIDs for further queries
 dcids = []

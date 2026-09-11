@@ -11,6 +11,7 @@ import modal
 
 app = modal.App()
 
+
 @app.function(schedule=modal.Period(days=1))
 def daily_task():
     print("Running daily task")
@@ -33,18 +34,17 @@ Run at fixed intervals from deployment time:
 ```python
 # Every 5 hours
 @app.function(schedule=modal.Period(hours=5))
-def every_5_hours():
-    ...
+def every_5_hours(): ...
+
 
 # Every 30 minutes
 @app.function(schedule=modal.Period(minutes=30))
-def every_30_minutes():
-    ...
+def every_30_minutes(): ...
+
 
 # Every day
 @app.function(schedule=modal.Period(days=1))
-def daily():
-    ...
+def daily(): ...
 ```
 
 **Note**: Redeploying resets the period timer.
@@ -56,23 +56,22 @@ Run at specific times using cron syntax:
 ```python
 # Every Monday at 8 AM UTC
 @app.function(schedule=modal.Cron("0 8 * * 1"))
-def weekly_report():
-    ...
+def weekly_report(): ...
+
 
 # Daily at 6 AM New York time
 @app.function(schedule=modal.Cron("0 6 * * *", timezone="America/New_York"))
-def morning_report():
-    ...
+def morning_report(): ...
+
 
 # Every hour on the hour
 @app.function(schedule=modal.Cron("0 * * * *"))
-def hourly():
-    ...
+def hourly(): ...
+
 
 # Every 15 minutes
 @app.function(schedule=modal.Cron("*/15 * * * *"))
-def quarter_hourly():
-    ...
+def quarter_hourly(): ...
 ```
 
 **Cron syntax**: `minute hour day month day_of_week`
@@ -88,12 +87,11 @@ Specify timezone for cron schedules:
 
 ```python
 @app.function(schedule=modal.Cron("0 9 * * *", timezone="Europe/London"))
-def uk_morning_task():
-    ...
+def uk_morning_task(): ...
+
 
 @app.function(schedule=modal.Cron("0 17 * * 5", timezone="Asia/Tokyo"))
-def friday_evening_jp():
-    ...
+def friday_evening_jp(): ...
 ```
 
 ## Deployment
@@ -141,8 +139,7 @@ Change schedule parameters and redeploy:
 ```python
 # Update from daily to weekly
 @app.function(schedule=modal.Period(days=7))
-def task():
-    ...
+def task(): ...
 ```
 
 ```bash
@@ -156,7 +153,7 @@ modal deploy script.py
 ```python
 @app.function(
     schedule=modal.Cron("0 2 * * *"),  # 2 AM daily
-    timeout=3600,                       # 1 hour timeout
+    timeout=3600,  # 1 hour timeout
 )
 def etl_pipeline():
     # Extract data from sources
@@ -174,11 +171,12 @@ def etl_pipeline():
 ```python
 volume = modal.Volume.from_name("models")
 
+
 @app.function(
     schedule=modal.Cron("0 0 * * 0"),  # Weekly on Sunday midnight
     gpu="A100",
-    timeout=7200,                       # 2 hours
-    volumes={"/models": volume}
+    timeout=7200,  # 2 hours
+    volumes={"/models": volume},
 )
 def retrain_model():
     # Load latest data
@@ -197,18 +195,14 @@ def retrain_model():
 ```python
 @app.function(
     schedule=modal.Cron("0 9 * * 1"),  # Monday 9 AM
-    secrets=[modal.Secret.from_name("email-creds")]
+    secrets=[modal.Secret.from_name("email-creds")],
 )
 def weekly_report():
     # Generate report
     report = generate_analytics_report()
 
     # Send email
-    send_email(
-        to="team@company.com",
-        subject="Weekly Analytics Report",
-        body=report
-    )
+    send_email(to="team@company.com", subject="Weekly Analytics Report", body=report)
 ```
 
 ### Data Cleanup
@@ -228,6 +222,7 @@ Scheduled functions support all function parameters:
 ```python
 vol = modal.Volume.from_name("data")
 secret = modal.Secret.from_name("api-keys")
+
 
 @app.function(
     schedule=modal.Cron("0 */6 * * *"),  # Every 6 hours
@@ -257,12 +252,13 @@ Update schedules programmatically:
 
 ```python
 @app.function()
-def main_task():
-    ...
+def main_task(): ...
+
 
 @app.function(schedule=modal.Cron("0 6 * * *", timezone="America/New_York"))
 def enable_high_traffic_mode():
     main_task.update_autoscaler(min_containers=5)
+
 
 @app.function(schedule=modal.Cron("0 22 * * *", timezone="America/New_York"))
 def disable_high_traffic_mode():
@@ -280,7 +276,7 @@ Scheduled functions that fail will:
 @app.function(
     schedule=modal.Cron("0 * * * *"),
     retries=3,  # Retry failed runs
-    timeout=1800
+    timeout=1800,
 )
 def robust_task():
     try:

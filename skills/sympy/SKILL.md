@@ -33,20 +33,22 @@ Use this skill when:
 **Creating symbols and expressions:**
 ```python
 from sympy import symbols, Symbol
-x, y, z = symbols('x y z')
-expr = x**2 + 2*x + 1
+
+x, y, z = symbols("x y z")
+expr = x**2 + 2 * x + 1
 
 # With assumptions
-x = symbols('x', real=True, positive=True)
-n = symbols('n', integer=True)
+x = symbols("x", real=True, positive=True)
+n = symbols("n", integer=True)
 ```
 
 **Simplification and manipulation:**
 ```python
 from sympy import simplify, expand, factor, cancel
-simplify(sin(x)**2 + cos(x)**2)  # Returns 1
-expand((x + 1)**3)  # x**3 + 3*x**2 + 3*x + 1
-factor(x**2 - 1)    # (x - 1)*(x + 1)
+
+simplify(sin(x) ** 2 + cos(x) ** 2)  # Returns 1
+expand((x + 1) ** 3)  # x**3 + 3*x**2 + 3*x + 1
+factor(x**2 - 1)  # (x - 1)*(x + 1)
 ```
 
 **For detailed basics:** See `references/core-capabilities.md`
@@ -56,23 +58,26 @@ factor(x**2 - 1)    # (x - 1)*(x + 1)
 **Derivatives:**
 ```python
 from sympy import diff
-diff(x**2, x)        # 2*x
-diff(x**4, x, 3)     # 24*x (third derivative)
-diff(x**2*y**3, x, y)  # 6*x*y**2 (partial derivatives)
+
+diff(x**2, x)  # 2*x
+diff(x**4, x, 3)  # 24*x (third derivative)
+diff(x**2 * y**3, x, y)  # 6*x*y**2 (partial derivatives)
 ```
 
 **Integrals:**
 ```python
 from sympy import integrate, oo
-integrate(x**2, x)              # x**3/3 (indefinite)
-integrate(x**2, (x, 0, 1))      # 1/3 (definite)
+
+integrate(x**2, x)  # x**3/3 (indefinite)
+integrate(x**2, (x, 0, 1))  # 1/3 (definite)
 integrate(exp(-x), (x, 0, oo))  # 1 (improper)
 ```
 
 **Limits and Series:**
 ```python
 from sympy import limit, series
-limit(sin(x)/x, x, 0)  # 1
+
+limit(sin(x) / x, x, 0)  # 1
 series(exp(x), x, 0, 6)  # 1 + x + x**2/2 + x**3/6 + x**4/24 + x**5/120 + O(x**6)
 ```
 
@@ -83,6 +88,7 @@ series(exp(x), x, 0, 6)  # 1 + x + x**2/2 + x**3/6 + x**4/24 + x**5/120 + O(x**6
 **Algebraic equations:**
 ```python
 from sympy import solveset, solve, Eq
+
 solveset(x**2 - 4, x)  # {-2, 2}
 solve(Eq(x**2, 4), x)  # [-2, 2]
 ```
@@ -90,6 +96,7 @@ solve(Eq(x**2, 4), x)  # [-2, 2]
 **Systems of equations:**
 ```python
 from sympy import linsolve, nonlinsolve
+
 linsolve([x + y - 2, x - y], x, y)  # {(1, 1)} (linear)
 nonlinsolve([x**2 + y - 2, x + y**2 - 3], x, y)  # (nonlinear)
 ```
@@ -97,7 +104,8 @@ nonlinsolve([x**2 + y - 2, x + y**2 - 3], x, y)  # (nonlinear)
 **Differential equations:**
 ```python
 from sympy import Function, dsolve, Derivative
-f = symbols('f', cls=Function)
+
+f = symbols("f", cls=Function)
 dsolve(Derivative(f(x), x) - f(x), f(x))  # Eq(f(x), C1*exp(x))
 ```
 
@@ -108,10 +116,11 @@ dsolve(Derivative(f(x), x) - f(x), f(x))  # Eq(f(x), C1*exp(x))
 **Matrix creation and operations:**
 ```python
 from sympy import Matrix, eye, zeros
+
 M = Matrix([[1, 2], [3, 4]])
 M_inv = M**-1  # Inverse
-M.det()        # Determinant
-M.T            # Transpose
+M.det()  # Determinant
+M.T  # Transpose
 ```
 
 **Eigenvalues and eigenvectors:**
@@ -138,11 +147,11 @@ from sympy.physics.mechanics import dynamicsymbols, LagrangesMethod
 from sympy import symbols
 
 # Define system
-q = dynamicsymbols('q')
-m, g, l = symbols('m g l')
+q = dynamicsymbols("q")
+m, g, l = symbols("m g l")
 
 # Lagrangian (T - V)
-L = m*(l*q.diff())**2/2 - m*g*l*(1 - cos(q))
+L = m * (l * q.diff()) ** 2 / 2 - m * g * l * (1 - cos(q))
 
 # Apply Lagrange's method
 LM = LagrangesMethod(L, [q])
@@ -151,9 +160,10 @@ LM = LagrangesMethod(L, [q])
 **Vector analysis:**
 ```python
 from sympy.physics.vector import ReferenceFrame, dot, cross
-N = ReferenceFrame('N')
-v1 = 3*N.x + 4*N.y
-v2 = 1*N.x + 2*N.z
+
+N = ReferenceFrame("N")
+v1 = 3 * N.x + 4 * N.y
+v2 = 1 * N.x + 2 * N.z
 dot(v1, v2)  # Dot product
 cross(v1, v2)  # Cross product
 ```
@@ -161,8 +171,9 @@ cross(v1, v2)  # Cross product
 **Quantum mechanics:**
 ```python
 from sympy.physics.quantum import Ket, Bra, Commutator
-psi = Ket('psi')
-A = Operator('A')
+
+psi = Ket("psi")
+A = Operator("A")
 comm = Commutator(A, B).doit()
 ```
 
@@ -189,8 +200,8 @@ The skill includes comprehensive support for:
 from sympy import lambdify
 import numpy as np
 
-expr = x**2 + 2*x + 1
-f = lambdify(x, expr, 'numpy')  # Create NumPy function
+expr = x**2 + 2 * x + 1
+f = lambdify(x, expr, "numpy")  # Create NumPy function
 x_vals = np.linspace(0, 10, 100)
 y_vals = f(x_vals)  # Fast numerical evaluation
 ```
@@ -198,14 +209,14 @@ y_vals = f(x_vals)  # Fast numerical evaluation
 **Generate C/Fortran code:**
 ```python
 from sympy.utilities.codegen import codegen
-[(c_name, c_code), (h_name, h_header)] = codegen(
-    ('my_func', expr), 'C'
-)
+
+[(c_name, c_code), (h_name, h_header)] = codegen(("my_func", expr), "C")
 ```
 
 **LaTeX output:**
 ```python
 from sympy import latex
+
 latex_str = latex(expr)  # Convert to LaTeX for documents
 ```
 
@@ -217,14 +228,15 @@ latex_str = latex(expr)  # Convert to LaTeX for documents
 
 ```python
 from sympy import symbols
-x, y, z = symbols('x y z')
+
+x, y, z = symbols("x y z")
 # Now x, y, z can be used in expressions
 ```
 
 ### 2. Use Assumptions for Better Simplification
 
 ```python
-x = symbols('x', positive=True, real=True)
+x = symbols("x", positive=True, real=True)
 sqrt(x**2)  # Returns x (not Abs(x)) due to positive assumption
 ```
 
@@ -234,9 +246,10 @@ Common assumptions: `real`, `positive`, `negative`, `integer`, `rational`, `comp
 
 ```python
 from sympy import Rational, S
+
 # Correct (exact):
 expr = Rational(1, 2) * x
-expr = S(1)/2 * x
+expr = S(1) / 2 * x
 
 # Incorrect (floating-point):
 expr = 0.5 * x  # Creates approximate value
@@ -246,8 +259,9 @@ expr = 0.5 * x  # Creates approximate value
 
 ```python
 from sympy import pi, sqrt
+
 result = sqrt(8) + pi
-result.evalf()    # 5.96371554103586
+result.evalf()  # 5.96371554103586
 result.evalf(50)  # 50 digits of precision
 ```
 
@@ -259,7 +273,7 @@ for x_val in range(1000):
     result = expr.subs(x, x_val).evalf()
 
 # Fast:
-f = lambdify(x, expr, 'numpy')
+f = lambdify(x, expr, "numpy")
 results = f(np.arange(1000))
 ```
 
@@ -296,10 +310,11 @@ This skill uses modular reference files for different capabilities:
 
 ```python
 from sympy import symbols, solve, simplify
-x = symbols('x')
+
+x = symbols("x")
 
 # Solve equation
-equation = x**2 - 5*x + 6
+equation = x**2 - 5 * x + 6
 solutions = solve(equation, x)  # [2, 3]
 
 # Verify solutions
@@ -312,7 +327,7 @@ for sol in solutions:
 
 ```python
 # 1. Define symbolic problem
-x, y = symbols('x y')
+x, y = symbols("x y")
 expr = sin(x) + cos(y)
 
 # 2. Manipulate symbolically
@@ -320,7 +335,7 @@ simplified = simplify(expr)
 derivative = diff(simplified, x)
 
 # 3. Convert to numerical function
-f = lambdify((x, y), derivative, 'numpy')
+f = lambdify((x, y), derivative, "numpy")
 
 # 4. Evaluate numerically
 results = f(x_data, y_data)
@@ -347,10 +362,10 @@ print(f"Numerical: {result.evalf()}")
 import numpy as np
 from sympy import symbols, lambdify
 
-x = symbols('x')
-expr = x**2 + 2*x + 1
+x = symbols("x")
+expr = x**2 + 2 * x + 1
 
-f = lambdify(x, expr, 'numpy')
+f = lambdify(x, expr, "numpy")
 x_array = np.linspace(-5, 5, 100)
 y_array = f(x_array)
 ```
@@ -362,10 +377,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sympy import symbols, lambdify, sin
 
-x = symbols('x')
+x = symbols("x")
 expr = sin(x) / x
 
-f = lambdify(x, expr, 'numpy')
+f = lambdify(x, expr, "numpy")
 x_vals = np.linspace(-10, 10, 1000)
 y_vals = f(x_vals)
 
@@ -380,11 +395,11 @@ from scipy.optimize import fsolve
 from sympy import symbols, lambdify
 
 # Define equation symbolically
-x = symbols('x')
-equation = x**3 - 2*x - 5
+x = symbols("x")
+equation = x**3 - 2 * x - 5
 
 # Convert to numerical function
-f = lambdify(x, equation, 'numpy')
+f = lambdify(x, equation, "numpy")
 
 # Solve numerically with initial guess
 solution = fsolve(f, 2)
@@ -395,7 +410,8 @@ solution = fsolve(f, 2)
 ```python
 # Symbols
 from sympy import symbols, Symbol
-x, y = symbols('x y')
+
+x, y = symbols("x y")
 
 # Basic operations
 from sympy import simplify, expand, factor, collect, cancel
@@ -425,15 +441,17 @@ from sympy import evalf, N, nsimplify
 ### Example 1: Solve Quadratic Equation
 ```python
 from sympy import symbols, solve, sqrt
-x = symbols('x')
-solution = solve(x**2 - 5*x + 6, x)
+
+x = symbols("x")
+solution = solve(x**2 - 5 * x + 6, x)
 # [2, 3]
 ```
 
 ### Example 2: Calculate Derivative
 ```python
 from sympy import symbols, diff, sin
-x = symbols('x')
+
+x = symbols("x")
 f = sin(x**2)
 df_dx = diff(f, x)
 # 2*x*cos(x**2)
@@ -442,14 +460,16 @@ df_dx = diff(f, x)
 ### Example 3: Evaluate Integral
 ```python
 from sympy import symbols, integrate, exp
-x = symbols('x')
-integral = integrate(x * exp(-x**2), (x, 0, oo))
+
+x = symbols("x")
+integral = integrate(x * exp(-(x**2)), (x, 0, oo))
 # 1/2
 ```
 
 ### Example 4: Matrix Eigenvalues
 ```python
 from sympy import Matrix
+
 M = Matrix([[1, 2], [2, 1]])
 eigenvals = M.eigenvals()
 # {3: 1, -1: 1}
@@ -459,9 +479,10 @@ eigenvals = M.eigenvals()
 ```python
 from sympy import symbols, lambdify
 import numpy as np
-x = symbols('x')
-expr = x**2 + 2*x + 1
-f = lambdify(x, expr, 'numpy')
+
+x = symbols("x")
+expr = x**2 + 2 * x + 1
+f = lambdify(x, expr, "numpy")
 f(np.array([1, 2, 3]))
 # array([ 4,  9, 16])
 ```

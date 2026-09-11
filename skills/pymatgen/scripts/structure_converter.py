@@ -44,9 +44,7 @@ def convert_structure(
     try:
         # Read structure with automatic format detection
         struct = Structure.from_file(str(input_path))
-        print(
-            f"✓ Read structure: {struct.composition.reduced_formula} from {input_path}"
-        )
+        print(f"✓ Read structure: {struct.composition.reduced_formula} from {input_path}")
 
         # Determine output path
         if output_path is None and output_format:
@@ -66,9 +64,7 @@ def convert_structure(
         return False
 
 
-def batch_convert(
-    input_files: list[Path], output_dir: Path, output_format: str
-) -> None:
+def batch_convert(input_files: list[Path], output_dir: Path, output_format: str) -> None:
     """
     Convert multiple structure files to a common format.
 
@@ -85,10 +81,8 @@ def batch_convert(
         if convert_structure(input_file, output_file):
             success_count += 1
 
-    print(f"\n{'='*60}")
-    print(
-        f"Conversion complete: {success_count}/{len(input_files)} files converted successfully"
-    )
+    print(f"\n{'=' * 60}")
+    print(f"Conversion complete: {success_count}/{len(input_files)} files converted successfully")
 
 
 def main():
@@ -119,9 +113,7 @@ Examples:
         help="Output structure file (ignored if --output-dir is used)",
     )
 
-    parser.add_argument(
-        "--format", "-f", help="Output format (e.g., cif, poscar, json, yaml, xyz)"
-    )
+    parser.add_argument("--format", "-f", help="Output format (e.g., cif, poscar, json, yaml, xyz)")
 
     parser.add_argument(
         "--output-dir", "-o", type=Path, help="Output directory for batch conversion"

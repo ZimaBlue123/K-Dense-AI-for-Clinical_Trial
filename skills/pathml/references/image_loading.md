@@ -86,7 +86,7 @@ from pathml.core import CODEXSlide
 codex_slide = CODEXSlide(
     path="path/to/codex_dir",
     stain="IF",  # Immunofluorescence
-    backend="bioformats"
+    backend="bioformats",
 )
 ```
 
@@ -95,10 +95,7 @@ codex_slide = CODEXSlide(
 from pathml.core import types
 
 # Load Vectra multiplex IF data
-vectra_slide = SlideData.from_slide(
-    "path/to/vectra.qptiff",
-    backend=SlideType.VectraQPTIFF
-)
+vectra_slide = SlideData.from_slide("path/to/vectra.qptiff", backend=SlideType.VectraQPTIFF)
 ```
 
 **MultiparametricSlide:**
@@ -126,7 +123,7 @@ wsi.generate_tiles(
     level=0,  # Pyramid level (0 = highest resolution)
     tile_size=256,  # Tile dimensions in pixels
     stride=256,  # Spacing between tiles (256 = no overlap)
-    pad=False  # Whether to pad edge tiles
+    pad=False,  # Whether to pad edge tiles
 )
 
 # Iterate over tiles
@@ -142,7 +139,7 @@ for tile in wsi.tiles:
 wsi.generate_tiles(
     level=0,
     tile_size=256,
-    stride=128  # 50% overlap
+    stride=128,  # 50% overlap
 )
 ```
 
@@ -155,7 +152,7 @@ Extract specific regions of interest directly:
 region = wsi.read_region(
     location=(10000, 15000),  # (x, y) in level 0 coordinates
     level=1,  # Pyramid level
-    size=(512, 512)  # Width, height in pixels
+    size=(512, 512),  # Width, height in pixels
 )
 
 # Returns numpy array
@@ -190,8 +187,9 @@ thumbnail = wsi.get_thumbnail(size=(1024, 1024))
 
 # Display with matplotlib
 import matplotlib.pyplot as plt
+
 plt.imshow(thumbnail)
-plt.axis('off')
+plt.axis("off")
 plt.show()
 ```
 
@@ -205,12 +203,7 @@ import glob
 
 # Create dataset from multiple slides
 slide_paths = glob.glob("data/*.svs")
-dataset = SlideDataset(
-    slide_paths,
-    tile_size=256,
-    stride=256,
-    level=0
-)
+dataset = SlideDataset(slide_paths, tile_size=256, stride=256, level=0)
 
 # Iterate over all tiles from all slides
 for tile in dataset:
@@ -224,9 +217,7 @@ for tile in dataset:
 from pathml.preprocessing import Pipeline, StainNormalizationHE
 
 # Create pipeline
-pipeline = Pipeline([
-    StainNormalizationHE(target='normalize')
-])
+pipeline = Pipeline([StainNormalizationHE(target="normalize")])
 
 # Apply to entire dataset
 dataset = SlideDataset(slide_paths)
@@ -242,10 +233,10 @@ Extract slide metadata including acquisition parameters, magnification, and vend
 metadata = wsi.metadata
 
 # Common metadata fields
-print(metadata.get('openslide.objective-power'))  # Magnification
-print(metadata.get('openslide.mpp-x'))  # Microns per pixel X
-print(metadata.get('openslide.mpp-y'))  # Microns per pixel Y
-print(metadata.get('openslide.vendor'))  # Scanner vendor
+print(metadata.get("openslide.objective-power"))  # Magnification
+print(metadata.get("openslide.mpp-x"))  # Microns per pixel X
+print(metadata.get("openslide.mpp-y"))  # Microns per pixel Y
+print(metadata.get("openslide.vendor"))  # Scanner vendor
 
 # Slide dimensions
 print(wsi.level_dimensions[0])  # (width, height) at level 0
@@ -259,14 +250,11 @@ PathML supports DICOM WSI through specialized handling:
 from pathml.core import SlideData, SlideType
 
 # Load DICOM WSI
-dicom_slide = SlideData.from_slide(
-    "path/to/slide.dcm",
-    backend=SlideType.DICOM
-)
+dicom_slide = SlideData.from_slide("path/to/slide.dcm", backend=SlideType.DICOM)
 
 # DICOM-specific metadata
-print(dicom_slide.metadata.get('PatientID'))
-print(dicom_slide.metadata.get('StudyDate'))
+print(dicom_slide.metadata.get("PatientID"))
+print(dicom_slide.metadata.get("StudyDate"))
 ```
 
 ## Working with OME-TIFF
@@ -277,10 +265,7 @@ OME-TIFF provides an open standard for multi-dimensional imaging:
 from pathml.core import SlideData
 
 # Load OME-TIFF
-ome_slide = SlideData.from_slide(
-    "path/to/slide.ome.tiff",
-    backend="bioformats"
-)
+ome_slide = SlideData.from_slide("path/to/slide.ome.tiff", backend="bioformats")
 
 # Access channel information for multi-channel images
 n_channels = ome_slide.shape[2]  # Number of channels
@@ -385,7 +370,7 @@ print(f"Magnification: {wsi.metadata.get('openslide.objective-power')}")
 thumbnail = wsi.get_thumbnail(size=(1024, 1024))
 plt.imshow(thumbnail)
 plt.title(f"Slide: {wsi.name}")
-plt.axis('off')
+plt.axis("off")
 plt.show()
 ```
 
@@ -403,12 +388,7 @@ slide_paths = glob.glob("data/slides/*.svs")
 pipeline = Pipeline([TissueDetectionHE()])
 
 # Process all slides
-dataset = SlideDataset(
-    slide_paths,
-    tile_size=512,
-    stride=512,
-    level=1
-)
+dataset = SlideDataset(slide_paths, tile_size=512, stride=512, level=1)
 
 # Run pipeline with distributed processing
 dataset.run(pipeline, distributed=True, n_workers=8)
@@ -427,14 +407,12 @@ from pathml.preprocessing import Pipeline, CollapseRunsCODEX, SegmentMIF
 codex = CODEXSlide("path/to/codex_dir", stain="IF")
 
 # Create CODEX-specific pipeline
-pipeline = Pipeline([
-    CollapseRunsCODEX(z_slice=2),  # Select z-slice
-    SegmentMIF(
-        nuclear_channel='DAPI',
-        cytoplasm_channel='CD45',
-        model='mesmer'
-    )
-])
+pipeline = Pipeline(
+    [
+        CollapseRunsCODEX(z_slice=2),  # Select z-slice
+        SegmentMIF(nuclear_channel="DAPI", cytoplasm_channel="CD45", model="mesmer"),
+    ]
+)
 
 # Process
 pipeline.run(codex)

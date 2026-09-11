@@ -18,9 +18,7 @@ try:
     from rdkit import Chem, DataStructs
     from rdkit.Chem import AllChem, MACCSkeys, rdFingerprintGenerator
 except ImportError:
-    print(
-        "Error: RDKit not installed. Install with: conda install -c conda-forge rdkit"
-    )
+    print("Error: RDKit not installed. Install with: conda install -c conda-forge rdkit")
     sys.exit(1)
 
 
@@ -78,11 +76,11 @@ def load_molecules(file_path):
 
     for idx, mol in enumerate(suppl):
         if mol is None:
-            print(f"Warning: Failed to parse molecule {idx+1}")
+            print(f"Warning: Failed to parse molecule {idx + 1}")
             continue
 
         # Try to get molecule name
-        name = mol.GetProp("_Name") if mol.HasProp("_Name") else f"Mol_{idx+1}"
+        name = mol.GetProp("_Name") if mol.HasProp("_Name") else f"Mol_{idx + 1}"
         smiles = Chem.MolToSmiles(mol)
 
         molecules.append({"index": idx + 1, "name": name, "smiles": smiles, "mol": mol})
@@ -193,12 +191,8 @@ def print_results(hits, max_display=20):
 
     for rank, hit in enumerate(hits[:max_display], 1):
         name = hit["name"][:18] + ".." if len(hit["name"]) > 20 else hit["name"]
-        smiles = (
-            hit["smiles"][:40] + "..." if len(hit["smiles"]) > 43 else hit["smiles"]
-        )
-        print(
-            f"{rank:<6} {hit['index']:<8} {hit['similarity']:<12.4f} {name:<20} {smiles}"
-        )
+        smiles = hit["smiles"][:40] + "..." if len(hit["smiles"]) > 43 else hit["smiles"]
+        print(f"{rank:<6} {hit['index']:<8} {hit['similarity']:<12.4f} {name:<20} {smiles}")
 
     if len(hits) > max_display:
         print(f"\n... and {len(hits) - max_display} more")
@@ -212,7 +206,7 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=f"""
 Available fingerprint methods:
-{chr(10).join(f'  {k:12s} - {v}' for k, v in FINGERPRINT_METHODS.items())}
+{chr(10).join(f"  {k:12s} - {v}" for k, v in FINGERPRINT_METHODS.items())}
 
 Similarity metrics:
   tanimoto    - Tanimoto coefficient (default)

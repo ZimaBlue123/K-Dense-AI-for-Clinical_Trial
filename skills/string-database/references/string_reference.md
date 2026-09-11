@@ -384,6 +384,7 @@ For differential expression/proteomics data:
 **requests** (recommended):
 ```python
 import requests
+
 url = "https://string-db.org/api/tsv/network"
 params = {"identifiers": "TP53", "species": 9606}
 response = requests.get(url, params=params)
@@ -392,6 +393,7 @@ response = requests.get(url, params=params)
 **urllib** (standard library):
 ```python
 import urllib.request
+
 url = "https://string-db.org/api/tsv/network?identifiers=TP53&species=9606"
 response = urllib.request.urlopen(url)
 ```

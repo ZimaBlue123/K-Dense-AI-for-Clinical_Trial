@@ -44,12 +44,12 @@ G = nx.Graph()
 # Add nodes (can be any hashable type)
 G.add_node(1)
 G.add_nodes_from([2, 3, 4])
-G.add_node("protein_A", type='enzyme', weight=1.5)
+G.add_node("protein_A", type="enzyme", weight=1.5)
 
 # Add edges
 G.add_edge(1, 2)
 G.add_edges_from([(1, 3), (2, 4)])
-G.add_edge(1, 4, weight=0.8, relation='interacts')
+G.add_edge(1, 4, weight=0.8, relation="interacts")
 ```
 
 **Reference**: See `references/graph-basics.md` for comprehensive guidance on creating, modifying, examining, and managing graph structures, including working with attributes and subgraphs.
@@ -62,7 +62,7 @@ NetworkX provides extensive algorithms for network analysis:
 ```python
 # Find shortest path
 path = nx.shortest_path(G, source=1, target=5)
-length = nx.shortest_path_length(G, source=1, target=5, weight='weight')
+length = nx.shortest_path_length(G, source=1, target=5, weight="weight")
 ```
 
 **Centrality Measures**:
@@ -143,16 +143,16 @@ NetworkX supports numerous file formats and data sources:
 **File Formats**:
 ```python
 # Edge list
-G = nx.read_edgelist('graph.edgelist')
-nx.write_edgelist(G, 'graph.edgelist')
+G = nx.read_edgelist("graph.edgelist")
+nx.write_edgelist(G, "graph.edgelist")
 
 # GraphML (preserves attributes)
-G = nx.read_graphml('graph.graphml')
-nx.write_graphml(G, 'graph.graphml')
+G = nx.read_graphml("graph.graphml")
+nx.write_graphml(G, "graph.graphml")
 
 # GML
-G = nx.read_gml('graph.gml')
-nx.write_gml(G, 'graph.gml')
+G = nx.read_gml("graph.gml")
+nx.write_gml(G, "graph.gml")
 
 # JSON
 data = nx.node_link_data(G)
@@ -164,8 +164,8 @@ G = nx.node_link_graph(data)
 import pandas as pd
 
 # From DataFrame
-df = pd.DataFrame({'source': [1, 2, 3], 'target': [2, 3, 4], 'weight': [0.5, 1.0, 0.75]})
-G = nx.from_pandas_edgelist(df, 'source', 'target', edge_attr='weight')
+df = pd.DataFrame({"source": [1, 2, 3], "target": [2, 3, 4], "weight": [0.5, 1.0, 0.75]})
+G = nx.from_pandas_edgelist(df, "source", "target", edge_attr="weight")
 
 # To DataFrame
 df = nx.to_pandas_edgelist(G)
@@ -200,7 +200,7 @@ plt.show()
 
 # With layout
 pos = nx.spring_layout(G, seed=42)
-nx.draw(G, pos=pos, with_labels=True, node_color='lightblue', node_size=500)
+nx.draw(G, pos=pos, with_labels=True, node_color="lightblue", node_size=500)
 plt.show()
 ```
 
@@ -216,7 +216,7 @@ node_sizes = [3000 * centrality[n] for n in G.nodes()]
 nx.draw(G, node_size=node_sizes)
 
 # Edge weights
-edge_widths = [3 * G[u][v].get('weight', 1) for u, v in G.edges()]
+edge_widths = [3 * G[u][v].get("weight", 1) for u, v in G.edges()]
 nx.draw(G, width=edge_widths)
 ```
 
@@ -239,13 +239,20 @@ pos = nx.spectral_layout(G)
 ```python
 plt.figure(figsize=(12, 8))
 pos = nx.spring_layout(G, seed=42)
-nx.draw(G, pos=pos, node_color='lightblue', node_size=500,
-        edge_color='gray', with_labels=True, font_size=10)
-plt.title('Network Visualization', fontsize=16)
-plt.axis('off')
+nx.draw(
+    G,
+    pos=pos,
+    node_color="lightblue",
+    node_size=500,
+    edge_color="gray",
+    with_labels=True,
+    font_size=10,
+)
+plt.title("Network Visualization", fontsize=16)
+plt.axis("off")
 plt.tight_layout()
-plt.savefig('network.png', dpi=300, bbox_inches='tight')
-plt.savefig('network.pdf', bbox_inches='tight')  # Vector format
+plt.savefig("network.png", dpi=300, bbox_inches="tight")
+plt.savefig("network.pdf", bbox_inches="tight")  # Vector format
 ```
 
 **Reference**: See `references/visualization.md` for extensive documentation on visualization techniques including layout algorithms, customization options, interactive visualizations with Plotly and PyVis, 3D networks, and publication-quality figure creation.
@@ -258,6 +265,7 @@ Ensure NetworkX is installed:
 ```python
 # Check if installed
 import networkx as nx
+
 print(nx.__version__)
 
 # Install if needed (via bash)
@@ -276,7 +284,7 @@ Most NetworkX tasks follow this pattern:
    G.add_edges_from([(1, 2), (2, 3), (3, 4)])
 
    # Or load from file/data
-   G = nx.read_edgelist('data.txt')
+   G = nx.read_edgelist("data.txt")
    ```
 
 2. **Examine Structure**:
@@ -310,14 +318,11 @@ Most NetworkX tasks follow this pattern:
 5. **Export Results**:
    ```python
    # Save graph
-   nx.write_graphml(G, 'analyzed_network.graphml')
+   nx.write_graphml(G, "analyzed_network.graphml")
 
    # Save metrics
-   df = pd.DataFrame({
-       'node': list(degree_cent.keys()),
-       'centrality': list(degree_cent.values())
-   })
-   df.to_csv('centrality_results.csv', index=False)
+   df = pd.DataFrame({"node": list(degree_cent.keys()), "centrality": list(degree_cent.values())})
+   df.to_csv("centrality_results.csv", index=False)
    ```
 
 ### Important Considerations
@@ -393,17 +398,17 @@ community.greedy_modularity_communities(G)
 ### File I/O Quick Reference
 ```python
 # Read
-nx.read_edgelist('file.txt')
-nx.read_graphml('file.graphml')
-nx.read_gml('file.gml')
+nx.read_edgelist("file.txt")
+nx.read_graphml("file.graphml")
+nx.read_gml("file.gml")
 
 # Write
-nx.write_edgelist(G, 'file.txt')
-nx.write_graphml(G, 'file.graphml')
-nx.write_gml(G, 'file.gml')
+nx.write_edgelist(G, "file.txt")
+nx.write_graphml(G, "file.graphml")
+nx.write_gml(G, "file.gml")
 
 # Pandas
-nx.from_pandas_edgelist(df, 'source', 'target')
+nx.from_pandas_edgelist(df, "source", "target")
 nx.to_pandas_edgelist(G)
 ```
 

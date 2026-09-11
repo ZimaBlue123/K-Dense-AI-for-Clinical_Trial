@@ -50,13 +50,13 @@ print(f"Found {len(results)} series from {results['PatientID'].nunique()} patien
 
 # 2. Download data organized by patient
 client.download_from_selection(
-    seriesInstanceUID=list(results['SeriesInstanceUID'].values),
+    seriesInstanceUID=list(results["SeriesInstanceUID"].values),
     downloadDir="./training_data",
-    dirTemplate="%collection_id/%PatientID/%SeriesInstanceUID"
+    dirTemplate="%collection_id/%PatientID/%SeriesInstanceUID",
 )
 
 # 3. Save manifest for reproducibility
-results.to_csv('training_manifest.csv', index=False)
+results.to_csv("training_manifest.csv", index=False)
 ```
 
 ## Use Case 2: Query Brain MRI by Manufacturer for Quality Study
@@ -90,8 +90,8 @@ print(manufacturers)
 
 # Download sample from each manufacturer for comparison
 for _, row in manufacturers.head(3).iterrows():
-    mfr = row['Manufacturer']
-    model = row['ManufacturerModelName']
+    mfr = row["Manufacturer"]
+    model = row["ManufacturerModelName"]
 
     query = f"""
     SELECT SeriesInstanceUID
@@ -105,8 +105,8 @@ for _, row in manufacturers.head(3).iterrows():
 
     series = client.sql_query(query)
     client.download_from_selection(
-        seriesInstanceUID=list(series['SeriesInstanceUID'].values),
-        downloadDir=f"./quality_study/{mfr.replace(' ', '_')}"
+        seriesInstanceUID=list(series["SeriesInstanceUID"].values),
+        downloadDir=f"./quality_study/{mfr.replace(' ', '_')}",
     )
 ```
 
@@ -129,7 +129,7 @@ series_list = client.sql_query("""
 
 # Preview each in browser
 for _, row in series_list.iterrows():
-    viewer_url = client.get_viewer_URL(seriesInstanceUID=row['SeriesInstanceUID'])
+    viewer_url = client.get_viewer_URL(seriesInstanceUID=row["SeriesInstanceUID"])
     print(f"Patient {row['PatientID']}: {row['SeriesDescription']}")
     print(f"  View at: {viewer_url}")
     # webbrowser.open(viewer_url)  # Uncomment to open automatically
@@ -169,13 +169,13 @@ print(f"Collections: {cc_by_data['collection_id'].unique()}")
 
 # Download with license verification
 client.download_from_selection(
-    seriesInstanceUID=list(cc_by_data['SeriesInstanceUID'].values),
+    seriesInstanceUID=list(cc_by_data["SeriesInstanceUID"].values),
     downloadDir="./commercial_dataset",
-    dirTemplate="%collection_id/%Modality/%PatientID/%SeriesInstanceUID"
+    dirTemplate="%collection_id/%Modality/%PatientID/%SeriesInstanceUID",
 )
 
 # Save license information
-cc_by_data.to_csv('commercial_dataset_manifest_CC-BY_ONLY.csv', index=False)
+cc_by_data.to_csv("commercial_dataset_manifest_CC-BY_ONLY.csv", index=False)
 ```
 
 ## Resources

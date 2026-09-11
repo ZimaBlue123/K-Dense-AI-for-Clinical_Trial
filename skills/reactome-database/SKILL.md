@@ -130,7 +130,7 @@ data = "\n".join(identifiers)
 response = requests.post(
     "https://reactome.org/AnalysisService/identifiers/",
     headers={"Content-Type": "text/plain"},
-    data=data
+    data=data,
 )
 
 result = response.json()
@@ -171,7 +171,7 @@ with open("expression_data.tsv", "r") as f:
 response = requests.post(
     "https://reactome.org/AnalysisService/identifiers/",
     headers={"Content-Type": "text/plain"},
-    data=data
+    data=data,
 )
 
 result = response.json()
@@ -185,7 +185,7 @@ Map identifiers to human pathways exclusively using the `/projection/` endpoint:
 response = requests.post(
     "https://reactome.org/AnalysisService/identifiers/projection/",
     headers={"Content-Type": "text/plain"},
-    data=data
+    data=data,
 )
 ```
 

@@ -28,9 +28,9 @@ from pyzotero import Zotero
 load_dotenv()
 
 zot = Zotero(
-    library_id=os.environ['ZOTERO_LIBRARY_ID'],
-    library_type=os.environ['ZOTERO_LIBRARY_TYPE'],
-    api_key=os.environ['ZOTERO_API_KEY']
+    library_id=os.environ["ZOTERO_LIBRARY_ID"],
+    library_type=os.environ["ZOTERO_LIBRARY_TYPE"],
+    api_key=os.environ["ZOTERO_API_KEY"],
 )
 ```
 
@@ -38,10 +38,10 @@ zot = Zotero(
 
 ```python
 # Personal library
-zot = Zotero('436', 'user', 'ABC1234XYZ')
+zot = Zotero("436", "user", "ABC1234XYZ")
 
 # Group library
-zot = Zotero('169947', 'group', 'ABC1234XYZ')
+zot = Zotero("169947", "group", "ABC1234XYZ")
 ```
 
 **Important**: A `Zotero` instance is bound to a single library. To access multiple libraries, create multiple instances.
@@ -51,7 +51,7 @@ zot = Zotero('169947', 'group', 'ABC1234XYZ')
 Connect to your local Zotero installation without an API key. Only supports read requests.
 
 ```python
-zot = Zotero(library_id='436', library_type='user', local=True)
+zot = Zotero(library_id="436", library_type="user", local=True)
 items = zot.items(limit=10)  # reads from local Zotero
 ```
 
@@ -59,11 +59,11 @@ items = zot.items(limit=10)  # reads from local Zotero
 
 ```python
 zot = Zotero(
-    library_id='436',
-    library_type='user',
-    api_key='ABC1234XYZ',
-    preserve_json_order=True,   # use OrderedDict for JSON responses
-    locale='en-US',             # localise field names (e.g. 'fr-FR' for French)
+    library_id="436",
+    library_type="user",
+    api_key="ABC1234XYZ",
+    preserve_json_order=True,  # use OrderedDict for JSON responses
+    locale="en-US",  # localise field names (e.g. 'fr-FR' for French)
 )
 ```
 

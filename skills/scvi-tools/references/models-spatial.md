@@ -35,16 +35,13 @@ sc_model = scvi.model.SCVI(sc_adata)
 sc_model.train()
 
 # Step 2: Setup spatial data
-scvi.model.DESTVI.setup_anndata(
-    spatial_adata,
-    layer="counts"
-)
+scvi.model.DESTVI.setup_anndata(spatial_adata, layer="counts")
 
 # Step 3: Train DestVI using reference
 model = scvi.model.DESTVI.from_rna_model(
     spatial_adata,
     sc_model,
-    cell_type_key="cell_type"  # Cell type labels in reference
+    cell_type_key="cell_type",  # Cell type labels in reference
 )
 model.train(max_epochs=2500)
 
@@ -75,16 +72,14 @@ import matplotlib.pyplot as plt
 sc.pl.spatial(
     spatial_adata,
     color="T cells",  # If proportions added to .obs
-    spot_size=150
+    spot_size=150,
 )
 
 # Or use obsm directly
 for ct in cell_types:
     plt.figure()
     sc.pl.spatial(
-        spatial_adata,
-        color=spatial_adata.obsm["proportions"][ct],
-        title=f"{ct} proportions"
+        spatial_adata, color=spatial_adata.obsm["proportions"][ct], title=f"{ct} proportions"
     )
 ```
 
@@ -105,11 +100,7 @@ for ct in cell_types:
 
 **Basic Usage**:
 ```python
-scvi.model.STEREOSCOPE.setup_anndata(
-    sc_adata,
-    labels_key="cell_type",
-    layer="counts"
-)
+scvi.model.STEREOSCOPE.setup_anndata(sc_adata, labels_key="cell_type", layer="counts")
 
 # Train on reference
 ref_model = scvi.model.STEREOSCOPE(sc_adata)
@@ -119,10 +110,7 @@ ref_model.train()
 scvi.model.STEREOSCOPE.setup_anndata(spatial_adata, layer="counts")
 
 # Transfer to spatial
-spatial_model = scvi.model.STEREOSCOPE.from_reference_model(
-    spatial_adata,
-    ref_model
-)
+spatial_model = scvi.model.STEREOSCOPE.from_reference_model(spatial_adata, ref_model)
 spatial_model.train()
 
 # Get proportions
@@ -159,18 +147,14 @@ ad_map = tg.map_cells_to_space(
     adata_sc=sc_adata,
     adata_sp=spatial_adata,
     mode="cells",  # or "clusters" for cell type mapping
-    density_prior="rna_count_based"
+    density_prior="rna_count_based",
 )
 
 # Get mapping matrix (cells × spots)
 mapping = ad_map.X
 
 # Project cell annotations to space
-tg.project_cell_annotations(
-    ad_map,
-    spatial_adata,
-    annotation="cell_type"
-)
+tg.project_cell_annotations(ad_map, spatial_adata, annotation="cell_type")
 
 # Impute genes in spatial data
 genes_to_impute = ["CD3D", "CD8A", "CD4"]
@@ -180,11 +164,7 @@ tg.project_genes(ad_map, spatial_adata, genes=genes_to_impute)
 **Visualization**:
 ```python
 # Visualize cell type mapping
-sc.pl.spatial(
-    spatial_adata,
-    color="cell_type_projected",
-    spot_size=100
-)
+sc.pl.spatial(spatial_adata, color="cell_type_projected", spot_size=100)
 ```
 
 ## gimVI (Gaussian Identity Multivi for Imputation)
@@ -207,10 +187,7 @@ sc.pl.spatial(
 # Combine datasets
 combined_adata = sc.concat([sc_adata, spatial_adata])
 
-scvi.model.GIMVI.setup_anndata(
-    combined_adata,
-    layer="counts"
-)
+scvi.model.GIMVI.setup_anndata(combined_adata, layer="counts")
 
 model = scvi.model.GIMVI(combined_adata)
 model.train()
@@ -244,7 +221,7 @@ imputed = model.get_imputed_values(spatial_indices)
 scvi.model.SCVIVA.setup_anndata(
     spatial_adata,
     layer="counts",
-    spatial_key="spatial"  # Coordinates in .obsm
+    spatial_key="spatial",  # Coordinates in .obsm
 )
 
 model = scvi.model.SCVIVA(spatial_adata)
@@ -275,11 +252,7 @@ env_genes = model.get_environment_specific_genes()
 
 **Basic Usage**:
 ```python
-scvi.model.RESOLVI.setup_anndata(
-    spatial_adata,
-    layer="counts",
-    spatial_key="spatial"
-)
+scvi.model.RESOLVI.setup_anndata(spatial_adata, layer="counts", spatial_key="spatial")
 
 model = scvi.model.RESOLVI(spatial_adata)
 model.train()
@@ -356,11 +329,7 @@ sc.pp.filter_genes(sc_adata, min_cells=10)
 sc.pp.highly_variable_genes(sc_adata, n_top_genes=4000)
 
 # Train scVI on reference
-scvi.model.SCVI.setup_anndata(
-    sc_adata,
-    layer="counts",
-    batch_key="batch"
-)
+scvi.model.SCVI.setup_anndata(sc_adata, layer="counts", batch_key="batch")
 
 sc_model = scvi.model.SCVI(sc_adata)
 sc_model.train(max_epochs=400)
@@ -373,16 +342,9 @@ spatial_adata.var_names_make_unique()
 sc.pp.filter_genes(spatial_adata, min_cells=10)
 
 # ===== Part 3: Run DestVI =====
-scvi.model.DESTVI.setup_anndata(
-    spatial_adata,
-    layer="counts"
-)
+scvi.model.DESTVI.setup_anndata(spatial_adata, layer="counts")
 
-destvi_model = scvi.model.DESTVI.from_rna_model(
-    spatial_adata,
-    sc_model,
-    cell_type_key="cell_type"
-)
+destvi_model = scvi.model.DESTVI.from_rna_model(spatial_adata, sc_model, cell_type_key="cell_type")
 
 destvi_model.train(max_epochs=2500)
 
@@ -401,11 +363,7 @@ cell_types = ["T cells", "B cells", "Macrophages"]
 
 for ct in cell_types:
     sc.pl.spatial(
-        spatial_adata,
-        color=f"prop_{ct}",
-        title=f"{ct} proportions",
-        spot_size=150,
-        cmap="viridis"
+        spatial_adata, color=f"prop_{ct}", title=f"{ct} proportions", spot_size=150, cmap="viridis"
     )
 
 # ===== Part 6: Spatial analysis =====
@@ -414,12 +372,7 @@ sq.gr.spatial_neighbors(spatial_adata)
 
 # Spatial autocorrelation of cell types
 for ct in cell_types:
-    sq.gr.spatial_autocorr(
-        spatial_adata,
-        attr="obs",
-        mode="moran",
-        genes=[f"prop_{ct}"]
-    )
+    sq.gr.spatial_autocorr(spatial_adata, attr="obs", mode="moran", genes=[f"prop_{ct}"])
 
 # ===== Part 7: Save results =====
 destvi_model.save("destvi_model")

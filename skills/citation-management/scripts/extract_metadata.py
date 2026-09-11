@@ -78,10 +78,7 @@ class MetadataExtractor:
             return ("doi", doi)
 
         # PubMed URLs
-        if (
-            "pubmed.ncbi.nlm.nih.gov" in parsed.netloc
-            or "ncbi.nlm.nih.gov/pubmed" in url
-        ):
+        if "pubmed.ncbi.nlm.nih.gov" in parsed.netloc or "ncbi.nlm.nih.gov/pubmed" in url:
             pmid = re.search(r"/(\d+)", parsed.path)
             if pmid:
                 return ("pmid", pmid.group(1))
@@ -130,12 +127,8 @@ class MetadataExtractor:
                         if message.get("container-title")
                         else ""
                     ),
-                    "volume": (
-                        str(message.get("volume", "")) if message.get("volume") else ""
-                    ),
-                    "issue": (
-                        str(message.get("issue", "")) if message.get("issue") else ""
-                    ),
+                    "volume": (str(message.get("volume", "")) if message.get("volume") else ""),
+                    "issue": (str(message.get("issue", "")) if message.get("issue") else ""),
                     "pages": message.get("page", ""),
                     "publisher": message.get("publisher", ""),
                     "url": f"https://doi.org/{doi}",
@@ -202,9 +195,7 @@ class MetadataExtractor:
                     "entry_type": "article",
                     "pmid": pmid,
                     "title": article_elem.findtext(".//ArticleTitle", ""),
-                    "authors": self._format_authors_pubmed(
-                        article_elem.findall(".//Author")
-                    ),
+                    "authors": self._format_authors_pubmed(article_elem.findall(".//Author")),
                     "year": self._extract_year_pubmed(article_elem),
                     "journal": journal.findtext(".//Title", ""),
                     "volume": journal.findtext(".//JournalIssue/Volume", ""),
@@ -263,9 +254,7 @@ class MetadataExtractor:
 
                 # Extract journal reference if published
                 journal_ref_elem = entry.find("arxiv:journal_ref", ns)
-                journal_ref = (
-                    journal_ref_elem.text if journal_ref_elem is not None else None
-                )
+                journal_ref = journal_ref_elem.text if journal_ref_elem is not None else None
 
                 # Get publication date
                 published = entry.findtext("atom:published", "", ns)
@@ -282,16 +271,12 @@ class MetadataExtractor:
                     "type": "arxiv",
                     "entry_type": "misc" if not doi else "article",
                     "arxiv_id": arxiv_id,
-                    "title": entry.findtext("atom:title", "", ns)
-                    .strip()
-                    .replace("\n", " "),
+                    "title": entry.findtext("atom:title", "", ns).strip().replace("\n", " "),
                     "authors": " and ".join(authors),
                     "year": year,
                     "doi": doi,
                     "journal_ref": journal_ref,
-                    "abstract": entry.findtext("atom:summary", "", ns)
-                    .strip()
-                    .replace("\n", " "),
+                    "abstract": entry.findtext("atom:summary", "", ns).strip().replace("\n", " "),
                     "url": f"https://arxiv.org/abs/{arxiv_id}",
                 }
 
@@ -304,14 +289,10 @@ class MetadataExtractor:
                 return None
 
         except Exception as e:
-            print(
-                f"Error extracting metadata from arXiv {arxiv_id}: {e}", file=sys.stderr
-            )
+            print(f"Error extracting metadata from arXiv {arxiv_id}: {e}", file=sys.stderr)
             return None
 
-    def metadata_to_bibtex(
-        self, metadata: dict, citation_key: str | None = None
-    ) -> str:
+    def metadata_to_bibtex(self, metadata: dict, citation_key: str | None = None) -> str:
         """
         Convert metadata dictionary to BibTeX format.
 
@@ -332,7 +313,7 @@ class MetadataExtractor:
 
         # Add fields
         if metadata.get("authors"):
-            lines.append(f'  author  = {{{metadata["authors"]}}},')
+            lines.append(f"  author  = {{{metadata['authors']}}},")
 
         if metadata.get("title"):
             # Protect capitalization
@@ -340,30 +321,30 @@ class MetadataExtractor:
             lines.append(f"  title   = {{{title}}},")
 
         if entry_type == "article" and metadata.get("journal"):
-            lines.append(f'  journal = {{{metadata["journal"]}}},')
+            lines.append(f"  journal = {{{metadata['journal']}}},")
         elif entry_type == "misc" and metadata.get("type") == "arxiv":
             lines.append("  howpublished = {arXiv},")
 
         if metadata.get("year"):
-            lines.append(f'  year    = {{{metadata["year"]}}},')
+            lines.append(f"  year    = {{{metadata['year']}}},")
 
         if metadata.get("volume"):
-            lines.append(f'  volume  = {{{metadata["volume"]}}},')
+            lines.append(f"  volume  = {{{metadata['volume']}}},")
 
         if metadata.get("issue"):
-            lines.append(f'  number  = {{{metadata["issue"]}}},')
+            lines.append(f"  number  = {{{metadata['issue']}}},")
 
         if metadata.get("pages"):
             pages = metadata["pages"].replace("-", "--")  # En-dash
             lines.append(f"  pages   = {{{pages}}},")
 
         if metadata.get("doi"):
-            lines.append(f'  doi     = {{{metadata["doi"]}}},')
+            lines.append(f"  doi     = {{{metadata['doi']}}},")
         elif metadata.get("url"):
-            lines.append(f'  url     = {{{metadata["url"]}}},')
+            lines.append(f"  url     = {{{metadata['url']}}},")
 
         if metadata.get("pmid"):
-            lines.append(f'  note    = {{PMID: {metadata["pmid"]}}},')
+            lines.append(f"  note    = {{PMID: {metadata['pmid']}}},")
 
         if metadata.get("type") == "arxiv" and not metadata.get("doi"):
             lines.append("  note    = {Preprint},")
@@ -435,9 +416,7 @@ class MetadataExtractor:
         """Extract year from PubMed XML."""
         year = article.findtext(".//Journal/JournalIssue/PubDate/Year", "")
         if not year:
-            medline_date = article.findtext(
-                ".//Journal/JournalIssue/PubDate/MedlineDate", ""
-            )
+            medline_date = article.findtext(".//Journal/JournalIssue/PubDate/MedlineDate", "")
             if medline_date:
                 year_match = re.search(r"\d{4}", medline_date)
                 if year_match:
@@ -541,12 +520,8 @@ def main():
     parser.add_argument("--pmid", help="PubMed ID")
     parser.add_argument("--arxiv", help="arXiv ID")
     parser.add_argument("--url", help="URL to article")
-    parser.add_argument(
-        "-i", "--input", help="Input file with identifiers (one per line)"
-    )
-    parser.add_argument(
-        "-o", "--output", help="Output file for BibTeX (default: stdout)"
-    )
+    parser.add_argument("-i", "--input", help="Input file with identifiers (one per line)")
+    parser.add_argument("-o", "--output", help="Output file for BibTeX (default: stdout)")
     parser.add_argument(
         "--format", choices=["bibtex", "json"], default="bibtex", help="Output format"
     )
@@ -583,7 +558,7 @@ def main():
     bibtex_entries = []
 
     for i, identifier in enumerate(identifiers):
-        print(f"\nProcessing {i+1}/{len(identifiers)}...", file=sys.stderr)
+        print(f"\nProcessing {i + 1}/{len(identifiers)}...", file=sys.stderr)
         bibtex = extractor.extract(identifier)
         if bibtex:
             bibtex_entries.append(bibtex)
@@ -600,9 +575,7 @@ def main():
     if args.format == "bibtex":
         output = "\n\n".join(bibtex_entries) + "\n"
     else:  # json
-        output = json.dumps(
-            {"count": len(bibtex_entries), "entries": bibtex_entries}, indent=2
-        )
+        output = json.dumps({"count": len(bibtex_entries), "entries": bibtex_entries}, indent=2)
 
     # Write output
     if args.output:
@@ -615,9 +588,7 @@ def main():
     else:
         print(output)
 
-    print(
-        f"\nExtracted {len(bibtex_entries)}/{len(identifiers)} entries", file=sys.stderr
-    )
+    print(f"\nExtracted {len(bibtex_entries)}/{len(identifiers)} entries", file=sys.stderr)
 
 
 if __name__ == "__main__":

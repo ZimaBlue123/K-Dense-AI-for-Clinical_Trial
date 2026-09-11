@@ -44,10 +44,7 @@ def list_chat_sessions(notebook_id):
     sessions = response.json()
     print(f"Found {len(sessions)} chat session(s):")
     for s in sessions:
-        print(
-            f"  - {s['id']}: {s.get('title', 'Untitled')} "
-            f"({s.get('message_count', 0)} messages)"
-        )
+        print(f"  - {s['id']}: {s.get('title', 'Untitled')} ({s.get('message_count', 0)} messages)")
     return sessions
 
 

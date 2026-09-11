@@ -23,15 +23,14 @@ A GeoDataFrame is a tabular data structure that contains a GeoSeries (similar to
 
 ```python
 # Create from dictionary
-gdf = gpd.GeoDataFrame({
-    'name': ['Point A', 'Point B'],
-    'value': [100, 200],
-    'geometry': [Point(1, 1), Point(2, 2)]
-})
+gdf = gpd.GeoDataFrame(
+    {"name": ["Point A", "Point B"], "value": [100, 200], "geometry": [Point(1, 1), Point(2, 2)]}
+)
 
 # Create from pandas DataFrame with coordinates
 import pandas as pd
-df = pd.DataFrame({'x': [1, 2, 3], 'y': [1, 2, 3], 'name': ['A', 'B', 'C']})
+
+df = pd.DataFrame({"x": [1, 2, 3], "y": [1, 2, 3], "name": ["A", "B", "C"]})
 gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df.x, df.y))
 ```
 
@@ -48,7 +47,7 @@ When a GeoDataFrame has multiple geometry columns:
 
 ```python
 # Set active geometry column
-gdf = gdf.set_geometry('other_geom_column')
+gdf = gdf.set_geometry("other_geom_column")
 
 # Check active geometry column
 gdf.geometry.name
@@ -66,5 +65,5 @@ gdf.loc[0]
 large_areas = gdf[gdf.area > 100]
 
 # Select columns
-gdf[['name', 'geometry']]
+gdf[["name", "geometry"]]
 ```

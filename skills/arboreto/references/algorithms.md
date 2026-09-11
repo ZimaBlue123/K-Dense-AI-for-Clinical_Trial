@@ -32,19 +32,19 @@ from arboreto.algo import grnboost2
 network = grnboost2(
     expression_data=expression_matrix,
     tf_names=tf_names,
-    seed=42  # For reproducibility
+    seed=42,  # For reproducibility
 )
 ```
 
 ### Parameters
 ```python
 grnboost2(
-    expression_data,           # Required: pandas DataFrame or numpy array
-    gene_names=None,           # Required for numpy arrays
-    tf_names='all',            # List of TF names or 'all'
-    verbose=False,             # Print progress messages
-    client_or_address='local', # Dask client or scheduler address
-    seed=None                  # Random seed for reproducibility
+    expression_data,  # Required: pandas DataFrame or numpy array
+    gene_names=None,  # Required for numpy arrays
+    tf_names="all",  # List of TF names or 'all'
+    verbose=False,  # Print progress messages
+    client_or_address="local",  # Dask client or scheduler address
+    seed=None,  # Random seed for reproducibility
 )
 ```
 
@@ -66,22 +66,18 @@ grnboost2(
 ```python
 from arboreto.algo import genie3
 
-network = genie3(
-    expression_data=expression_matrix,
-    tf_names=tf_names,
-    seed=42
-)
+network = genie3(expression_data=expression_matrix, tf_names=tf_names, seed=42)
 ```
 
 ### Parameters
 ```python
 genie3(
-    expression_data,           # Required: pandas DataFrame or numpy array
-    gene_names=None,           # Required for numpy arrays
-    tf_names='all',            # List of TF names or 'all'
-    verbose=False,             # Print progress messages
-    client_or_address='local', # Dask client or scheduler address
-    seed=None                  # Random seed for reproducibility
+    expression_data,  # Required: pandas DataFrame or numpy array
+    gene_names=None,  # Required for numpy arrays
+    tf_names="all",  # List of TF names or 'all'
+    verbose=False,  # Print progress messages
+    client_or_address="local",  # Dask client or scheduler address
+    seed=None,  # Random seed for reproducibility
 )
 ```
 
@@ -106,22 +102,15 @@ from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
 # Custom GRNBoost2 parameters
 custom_grnboost2 = grnboost2(
     expression_data=expression_matrix,
-    regressor_type='GBM',
-    regressor_kwargs={
-        'n_estimators': 100,
-        'max_depth': 5,
-        'learning_rate': 0.1
-    }
+    regressor_type="GBM",
+    regressor_kwargs={"n_estimators": 100, "max_depth": 5, "learning_rate": 0.1},
 )
 
 # Custom GENIE3 parameters
 custom_genie3 = genie3(
     expression_data=expression_matrix,
-    regressor_type='RF',
-    regressor_kwargs={
-        'n_estimators': 1000,
-        'max_features': 'sqrt'
-    }
+    regressor_type="RF",
+    regressor_kwargs={"n_estimators": 1000, "max_features": "sqrt"},
 )
 ```
 

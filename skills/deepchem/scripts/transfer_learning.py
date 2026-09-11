@@ -108,9 +108,7 @@ def train_chemberta(
     return model, results
 
 
-def train_grover(
-    train_dataset, test_dataset, task_type="classification", n_tasks=1, n_epochs=20
-):
+def train_grover(train_dataset, test_dataset, task_type="classification", n_tasks=1, n_epochs=20):
     """
     Fine-tune GROVER on a dataset.
 
@@ -132,9 +130,7 @@ def train_grover(
     print("representations through masked atom/bond prediction tasks.")
 
     print("\nCreating GROVER model...")
-    model = dc.models.GroverModel(
-        task=task_type, n_tasks=n_tasks, model_dir="./grover_pretrained"
-    )
+    model = dc.models.GroverModel(task=task_type, n_tasks=n_tasks, model_dir="./grover_pretrained")
 
     print(f"\nFine-tuning for {n_epochs} epochs...")
     model.fit(train_dataset, nb_epoch=n_epochs)
@@ -203,9 +199,7 @@ def load_molnet_dataset(dataset_name, model_type):
 
     print(f"\nLoading {dataset_name} dataset...")
     load_func = molnet_datasets[dataset_name]
-    tasks, datasets, transformers = load_func(
-        featurizer=featurizer, splitter="scaffold"
-    )
+    tasks, datasets, transformers = load_func(featurizer=featurizer, splitter="scaffold")
 
     return tasks, datasets, transformers
 
@@ -233,9 +227,7 @@ def load_custom_dataset(data_path, target_cols, smiles_col, model_type):
     else:
         featurizer = dc.feat.CircularFingerprint()
 
-    loader = dc.data.CSVLoader(
-        tasks=target_cols, feature_field=smiles_col, featurizer=featurizer
-    )
+    loader = dc.data.CSVLoader(tasks=target_cols, feature_field=smiles_col, featurizer=featurizer)
     dataset = loader.create_dataset(data_path)
 
     print(f"Loaded {len(dataset)} molecules")
@@ -272,9 +264,7 @@ def main():
         default=None,
         help="MoleculeNet dataset to use",
     )
-    parser.add_argument(
-        "--data", type=str, default=None, help="Path to custom CSV file"
-    )
+    parser.add_argument("--data", type=str, default=None, help="Path to custom CSV file")
     parser.add_argument(
         "--target",
         nargs="+",
@@ -294,9 +284,7 @@ def main():
         default="classification",
         help="Type of prediction task",
     )
-    parser.add_argument(
-        "--epochs", type=int, default=10, help="Number of fine-tuning epochs"
-    )
+    parser.add_argument("--epochs", type=int, default=10, help="Number of fine-tuning epochs")
 
     args = parser.parse_args()
 
@@ -319,9 +307,7 @@ def main():
     try:
         # Load dataset
         if args.dataset:
-            tasks, datasets, transformers = load_molnet_dataset(
-                args.dataset, args.model
-            )
+            tasks, datasets, transformers = load_molnet_dataset(args.dataset, args.model)
             train, valid, test = datasets
             task_type = (
                 "classification"

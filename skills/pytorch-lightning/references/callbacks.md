@@ -18,12 +18,14 @@ Basic structure:
 ```python
 from lightning.pytorch.callbacks import Callback
 
+
 class MyCustomCallback(Callback):
     def on_train_start(self, trainer, pl_module):
         print("Training is starting!")
 
     def on_train_end(self, trainer, pl_module):
         print("Training is done!")
+
 
 # Use with Trainer
 trainer = L.Trainer(callbacks=[MyCustomCallback()])
@@ -56,7 +58,7 @@ checkpoint_callback = ModelCheckpoint(
     monitor="val_loss",
     mode="min",
     save_top_k=3,
-    save_last=True
+    save_last=True,
 )
 
 # Save every 10 epochs
@@ -64,16 +66,12 @@ checkpoint_callback = ModelCheckpoint(
     dirpath="checkpoints/",
     filename="model-{epoch:02d}",
     every_n_epochs=10,
-    save_top_k=-1  # Save all
+    save_top_k=-1,  # Save all
 )
 
 # Save best model based on accuracy
 checkpoint_callback = ModelCheckpoint(
-    dirpath="checkpoints/",
-    filename="best-model",
-    monitor="val_acc",
-    mode="max",
-    save_top_k=1
+    dirpath="checkpoints/", filename="best-model", monitor="val_acc", mode="max", save_top_k=1
 )
 
 trainer = L.Trainer(callbacks=[checkpoint_callback])
@@ -108,19 +106,14 @@ Stop training when a monitored metric stops improving.
 from lightning.pytorch.callbacks import EarlyStopping
 
 # Stop when validation loss stops improving
-early_stop = EarlyStopping(
-    monitor="val_loss",
-    patience=10,
-    mode="min",
-    verbose=True
-)
+early_stop = EarlyStopping(monitor="val_loss", patience=10, mode="min", verbose=True)
 
 # Stop when accuracy plateaus
 early_stop = EarlyStopping(
     monitor="val_acc",
     patience=5,
     mode="max",
-    min_delta=0.001  # Must improve by at least 0.001
+    min_delta=0.001,  # Must improve by at least 0.001
 )
 
 trainer = L.Trainer(callbacks=[early_stop])
@@ -326,19 +319,20 @@ class LRFinder(Callback):
         lr = self.min_lr * (self.max_lr / self.min_lr) ** (batch_idx / self.num_steps)
         optimizer = trainer.optimizers[0]
         for param_group in optimizer.param_groups:
-            param_group['lr'] = lr
+            param_group["lr"] = lr
 
         self.lrs.append(lr)
-        self.losses.append(outputs['loss'].item())
+        self.losses.append(outputs["loss"].item())
 
     def on_train_end(self, trainer, pl_module):
         # Plot LR vs Loss
         import matplotlib.pyplot as plt
+
         plt.plot(self.lrs, self.losses)
-        plt.xscale('log')
-        plt.xlabel('Learning Rate')
-        plt.ylabel('Loss')
-        plt.savefig('lr_finder.png')
+        plt.xscale("log")
+        plt.xlabel("Learning Rate")
+        plt.ylabel("Loss")
+        plt.savefig("lr_finder.png")
 ```
 
 ### Prediction Saver Callback
@@ -432,14 +426,16 @@ class MyCallback(Callback):
         self.data = []
 
     def on_train_batch_end(self, trainer, pl_module, outputs, batch, batch_idx):
-        self.data.append(outputs['loss'].item())
+        self.data.append(outputs["loss"].item())
+
 
 # Bad: Depends on external state
 global_data = []
 
+
 class BadCallback(Callback):
     def on_train_batch_end(self, trainer, pl_module, outputs, batch, batch_idx):
-        global_data.append(outputs['loss'].item())  # External dependency
+        global_data.append(outputs["loss"].item())  # External dependency
 ```
 
 ### 2. Avoid Inter-Callback Dependencies
@@ -451,19 +447,22 @@ class CallbackA(Callback):
     def __init__(self):
         self.value = 0
 
+
 class CallbackB(Callback):
     def __init__(self, callback_a):
         self.callback_a = callback_a  # Tight coupling
+
 
 # Good: Independent callbacks
 class CallbackA(Callback):
     def __init__(self):
         self.value = 0
 
+
 class CallbackB(Callback):
     def on_train_batch_end(self, trainer, pl_module, outputs, batch, batch_idx):
         # Access trainer state instead
-        value = trainer.callback_metrics.get('metric')
+        value = trainer.callback_metrics.get("metric")
 ```
 
 ### 3. Never Manually Invoke Callback Methods
@@ -500,6 +499,7 @@ class MyModel(L.LightningModule):
     def training_step(self, batch, batch_idx):
         return loss
 
+
 # Non-essential monitoring in callback
 class MonitorCallback(Callback):
     def on_validation_end(self, trainer, pl_module):
@@ -516,14 +516,14 @@ from lightning.pytorch.callbacks import (
     ModelCheckpoint,
     EarlyStopping,
     LearningRateMonitor,
-    DeviceStatsMonitor
+    DeviceStatsMonitor,
 )
 
 callbacks = [
     ModelCheckpoint(monitor="val_loss", mode="min", save_top_k=3),
     EarlyStopping(monitor="val_loss", patience=10, mode="min"),
     LearningRateMonitor(logging_interval="step"),
-    DeviceStatsMonitor()
+    DeviceStatsMonitor(),
 ]
 
 trainer = L.Trainer(callbacks=callbacks)
@@ -560,5 +560,5 @@ class MultiStageTraining(Callback):
             # Adjust learning rate for new stage
             for optimizer in trainer.optimizers:
                 for param_group in optimizer.param_groups:
-                    param_group['lr'] *= 0.1
+                    param_group["lr"] *= 0.1
 ```

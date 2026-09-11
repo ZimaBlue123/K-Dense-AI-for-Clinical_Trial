@@ -44,8 +44,7 @@ model = sm.GLM(y, X, family=sm.families.Binomial())
 results = model.fit()
 
 # Formula API
-results = smf.glm('success ~ x1 + x2', data=df,
-                  family=sm.families.Binomial()).fit()
+results = smf.glm("success ~ x1 + x2", data=df, family=sm.families.Binomial()).fit()
 
 # Access predictions (probabilities)
 probs = results.predict(X_new)
@@ -86,12 +85,12 @@ results = model.fit()
 
 # With exposure/offset for rates
 # If modeling rate = counts/exposure
-model = sm.GLM(y, X, family=sm.families.Poisson(),
-               offset=np.log(exposure))
+model = sm.GLM(y, X, family=sm.families.Poisson(), offset=np.log(exposure))
 results = model.fit()
 
 # Interpretation: exp(beta) = multiplicative effect on expected count
 import numpy as np
+
 rate_ratios = np.exp(results.params)
 print("Rate ratios:", rate_ratios)
 ```
@@ -123,6 +122,7 @@ results = model.fit()
 
 # Alternative: use discrete choice model with alpha estimation
 from statsmodels.discrete.discrete_model import NegativeBinomial
+
 nb_model = NegativeBinomial(y, X)
 nb_results = nb_model.fit()
 
@@ -178,6 +178,7 @@ results = model.fit()
 
 # With log link, exp(beta) = multiplicative effect
 import numpy as np
+
 effects = np.exp(results.params)
 ```
 
@@ -217,8 +218,7 @@ Flexible family covering multiple distributions.
 
 ```python
 # Tweedie with power=1.5
-model = sm.GLM(y, X, family=sm.families.Tweedie(link=sm.families.links.Log(),
-                                                 var_power=1.5))
+model = sm.GLM(y, X, family=sm.families.Tweedie(link=sm.families.links.Log(), var_power=1.5))
 results = model.fit()
 ```
 
@@ -308,31 +308,31 @@ print(results.summary())
 
 ```python
 # Parameters and inference
-results.params              # Coefficients
-results.bse                 # Standard errors
-results.tvalues            # Z-statistics
-results.pvalues            # P-values
-results.conf_int()         # Confidence intervals
+results.params  # Coefficients
+results.bse  # Standard errors
+results.tvalues  # Z-statistics
+results.pvalues  # P-values
+results.conf_int()  # Confidence intervals
 
 # Predictions
-results.fittedvalues       # Fitted values (μ)
-results.predict(X_new)     # Predictions for new data
+results.fittedvalues  # Fitted values (μ)
+results.predict(X_new)  # Predictions for new data
 
 # Model fit statistics
-results.aic                # Akaike Information Criterion
-results.bic                # Bayesian Information Criterion
-results.deviance           # Deviance
-results.null_deviance      # Null model deviance
-results.pearson_chi2       # Pearson chi-squared statistic
-results.df_resid           # Residual degrees of freedom
-results.llf                # Log-likelihood
+results.aic  # Akaike Information Criterion
+results.bic  # Bayesian Information Criterion
+results.deviance  # Deviance
+results.null_deviance  # Null model deviance
+results.pearson_chi2  # Pearson chi-squared statistic
+results.df_resid  # Residual degrees of freedom
+results.llf  # Log-likelihood
 
 # Residuals
-results.resid_response     # Response residuals (y - μ)
-results.resid_pearson      # Pearson residuals
-results.resid_deviance     # Deviance residuals
-results.resid_anscombe     # Anscombe residuals
-results.resid_working      # Working residuals
+results.resid_response  # Response residuals (y - μ)
+results.resid_pearson  # Pearson residuals
+results.resid_deviance  # Deviance residuals
+results.resid_anscombe  # Anscombe residuals
+results.resid_working  # Working residuals
 ```
 
 ### Pseudo R-squared
@@ -345,7 +345,7 @@ print(f"Pseudo R²: {pseudo_r2:.4f}")
 # Adjusted pseudo R-squared
 n = len(y)
 k = len(results.params)
-adj_pseudo_r2 = 1 - ((n-1)/(n-k)) * (results.deviance / results.null_deviance)
+adj_pseudo_r2 = 1 - ((n - 1) / (n - k)) * (results.deviance / results.null_deviance)
 print(f"Adjusted Pseudo R²: {adj_pseudo_r2:.4f}")
 ```
 
@@ -378,21 +378,23 @@ import matplotlib.pyplot as plt
 # Deviance residuals vs fitted
 plt.figure(figsize=(10, 6))
 plt.scatter(results.fittedvalues, results.resid_deviance, alpha=0.5)
-plt.xlabel('Fitted values')
-plt.ylabel('Deviance residuals')
-plt.axhline(y=0, color='r', linestyle='--')
-plt.title('Deviance Residuals vs Fitted')
+plt.xlabel("Fitted values")
+plt.ylabel("Deviance residuals")
+plt.axhline(y=0, color="r", linestyle="--")
+plt.title("Deviance Residuals vs Fitted")
 plt.show()
 
 # Q-Q plot of deviance residuals
 from statsmodels.graphics.gofplots import qqplot
-qqplot(results.resid_deviance, line='s')
-plt.title('Q-Q Plot of Deviance Residuals')
+
+qqplot(results.resid_deviance, line="s")
+plt.title("Q-Q Plot of Deviance Residuals")
 plt.show()
 
 # For binary outcomes: binned residual plot
 if isinstance(results.model.family, sm.families.Binomial):
     from statsmodels.graphics.gofplots import qqplot
+
     # Group predictions and compute average residuals
     # (custom implementation needed)
     pass
@@ -415,7 +417,7 @@ cooks_d = influence.cooks_distance[0]
 dffits = influence.dffits[0]
 
 # Find influential observations
-influential = np.where(cooks_d > 4/len(y))[0]
+influential = np.where(cooks_d > 4 / len(y))[0]
 print(f"Influential observations: {influential}")
 ```
 
@@ -434,6 +436,7 @@ lr_stat = 2 * (model_full.llf - model_reduced.llf)
 df = model_full.df_model - model_reduced.df_model
 
 from scipy import stats
+
 lr_pval = 1 - stats.chi2.cdf(lr_stat, df)
 print(f"LR test p-value: {lr_pval}")
 
@@ -448,11 +451,10 @@ print(wald_test)
 
 ```python
 # Heteroscedasticity-robust (sandwich estimator)
-results_robust = results.get_robustcov_results(cov_type='HC0')
+results_robust = results.get_robustcov_results(cov_type="HC0")
 
 # Cluster-robust
-results_cluster = results.get_robustcov_results(cov_type='cluster',
-                                                groups=cluster_ids)
+results_cluster = results.get_robustcov_results(cov_type="cluster", groups=cluster_ids)
 
 # Compare standard errors
 print("Regular SE:", results.bse)
@@ -553,10 +555,10 @@ import matplotlib.pyplot as plt
 
 fpr, tpr, thresholds = roc_curve(y, probs)
 plt.plot(fpr, tpr)
-plt.plot([0, 1], [0, 1], 'k--')
-plt.xlabel('False Positive Rate')
-plt.ylabel('True Positive Rate')
-plt.title('ROC Curve')
+plt.plot([0, 1], [0, 1], "k--")
+plt.xlabel("False Positive Rate")
+plt.ylabel("True Positive Rate")
+plt.title("ROC Curve")
 plt.show()
 ```
 
@@ -583,8 +585,7 @@ if dispersion > 1.5:
 ```python
 # Fit Gamma model with log link
 X = sm.add_constant(X_data)
-model = sm.GLM(y_cost, X,
-               family=sm.families.Gamma(link=sm.families.links.Log()))
+model = sm.GLM(y_cost, X, family=sm.families.Gamma(link=sm.families.links.Log()))
 results = model.fit()
 
 # Multiplicative effects

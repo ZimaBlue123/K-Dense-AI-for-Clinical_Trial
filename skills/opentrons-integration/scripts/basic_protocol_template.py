@@ -32,9 +32,7 @@ def run(protocol: protocol_api.ProtocolContext):
     tips_200 = protocol.load_labware("opentrons_flex_96_tiprack_200ul", "D1")
 
     # Load labware
-    source_plate = protocol.load_labware(
-        "nest_96_wellplate_200ul_flat", "D2", label="Source Plate"
-    )
+    source_plate = protocol.load_labware("nest_96_wellplate_200ul_flat", "D2", label="Source Plate")
 
     dest_plate = protocol.load_labware(
         "nest_96_wellplate_200ul_flat", "D3", label="Destination Plate"
@@ -47,8 +45,6 @@ def run(protocol: protocol_api.ProtocolContext):
     protocol.comment("Starting protocol...")
 
     # Example: Transfer from A1 to B1
-    pipette.transfer(
-        volume=50, source=source_plate["A1"], dest=dest_plate["B1"], new_tip="always"
-    )
+    pipette.transfer(volume=50, source=source_plate["A1"], dest=dest_plate["B1"], new_tip="always")
 
     protocol.comment("Protocol complete!")

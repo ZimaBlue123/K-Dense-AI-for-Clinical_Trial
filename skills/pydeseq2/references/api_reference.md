@@ -47,6 +47,7 @@ Convert the DeseqDataSet to an AnnData object that can be saved with pickle.
 **Usage:**
 ```python
 import pickle
+
 with open("result_adata.pkl", "wb") as f:
     pickle.dump(dds.to_picklable_anndata(), f)
 ```
@@ -188,22 +189,13 @@ from pydeseq2.dds import DeseqDataSet
 from pydeseq2.ds import DeseqStats
 
 # 1. Initialize dataset
-dds = DeseqDataSet(
-    counts=counts_df,
-    metadata=metadata,
-    design="~condition",
-    refit_cooks=True
-)
+dds = DeseqDataSet(counts=counts_df, metadata=metadata, design="~condition", refit_cooks=True)
 
 # 2. Fit dispersions and LFCs
 dds.deseq2()
 
 # 3. Perform statistical testing
-ds = DeseqStats(
-    dds,
-    contrast=["condition", "treated", "control"],
-    alpha=0.05
-)
+ds = DeseqStats(dds, contrast=["condition", "treated", "control"], alpha=0.05)
 ds.summary()
 
 # 4. Optional: Shrink LFCs for visualization

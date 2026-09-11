@@ -24,10 +24,12 @@ model = AutoModelForCausalLM.from_pretrained("gpt2")
 
 # Masked language modeling (BERT-style)
 from transformers import AutoModelForMaskedLM
+
 model = AutoModelForMaskedLM.from_pretrained("bert-base-uncased")
 
 # Sequence-to-sequence (T5-style)
 from transformers import AutoModelForSeq2SeqLM
+
 model = AutoModelForSeq2SeqLM.from_pretrained("t5-small")
 ```
 
@@ -65,10 +67,7 @@ model = AutoModel.from_pretrained("./local/model/path")  # From disk
 
 **num_labels**: Number of output labels for classification
 ```python
-model = AutoModelForSequenceClassification.from_pretrained(
-    "bert-base-uncased",
-    num_labels=3
-)
+model = AutoModelForSequenceClassification.from_pretrained("bert-base-uncased", num_labels=3)
 ```
 
 **cache_dir**: Custom cache location
@@ -81,21 +80,15 @@ model = AutoModel.from_pretrained("model-id", cache_dir="./my_cache")
 **device_map**: Automatic device allocation for large models
 ```python
 # Automatically distribute across GPUs and CPU
-model = AutoModelForCausalLM.from_pretrained(
-    "meta-llama/Llama-2-7b-hf",
-    device_map="auto"
-)
+model = AutoModelForCausalLM.from_pretrained("meta-llama/Llama-2-7b-hf", device_map="auto")
 
 # Sequential placement
-model = AutoModelForCausalLM.from_pretrained(
-    "model-id",
-    device_map="sequential"
-)
+model = AutoModelForCausalLM.from_pretrained("model-id", device_map="sequential")
 
 # Custom device map
 device_map = {
-    "transformer.layers.0": 0,      # GPU 0
-    "transformer.layers.1": 1,      # GPU 1
+    "transformer.layers.0": 0,  # GPU 0
+    "transformer.layers.1": 1,  # GPU 1
     "transformer.layers.2": "cpu",  # CPU
 }
 model = AutoModel.from_pretrained("model-id", device_map=device_map)
@@ -104,6 +97,7 @@ model = AutoModel.from_pretrained("model-id", device_map=device_map)
 Manual device placement:
 ```python
 import torch
+
 model = AutoModel.from_pretrained("model-id")
 model.to("cuda:0")  # Move to GPU 0
 model.to(torch.device("cuda" if torch.cuda.is_available() else "cpu"))
@@ -144,34 +138,23 @@ model = AutoModel.from_pretrained("model-id", attn_implementation="eager")
 **low_cpu_mem_usage**: Reduce CPU memory during loading
 ```python
 model = AutoModelForCausalLM.from_pretrained(
-    "large-model-id",
-    low_cpu_mem_usage=True,
-    device_map="auto"
+    "large-model-id", low_cpu_mem_usage=True, device_map="auto"
 )
 ```
 
 **load_in_8bit**: 8-bit quantization (requires bitsandbytes)
 ```python
-model = AutoModelForCausalLM.from_pretrained(
-    "model-id",
-    load_in_8bit=True,
-    device_map="auto"
-)
+model = AutoModelForCausalLM.from_pretrained("model-id", load_in_8bit=True, device_map="auto")
 ```
 
 **load_in_4bit**: 4-bit quantization
 ```python
 from transformers import BitsAndBytesConfig
 
-quantization_config = BitsAndBytesConfig(
-    load_in_4bit=True,
-    bnb_4bit_compute_dtype=torch.float16
-)
+quantization_config = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_compute_dtype=torch.float16)
 
 model = AutoModelForCausalLM.from_pretrained(
-    "model-id",
-    quantization_config=quantization_config,
-    device_map="auto"
+    "model-id", quantization_config=quantization_config, device_map="auto"
 )
 ```
 
@@ -313,12 +296,7 @@ Export for optimized inference:
 from transformers.onnx import export
 
 # Export to ONNX
-export(
-    tokenizer=tokenizer,
-    model=model,
-    config=config,
-    output=Path("model.onnx")
-)
+export(tokenizer=tokenizer, model=model, config=config, output=Path("model.onnx"))
 ```
 
 ## Best Practices
@@ -357,5 +335,6 @@ model = AutoModel.from_pretrained("model-id", low_cpu_mem_usage=True)
 # Verify model ID on hub.co
 # Check authentication for private models
 from huggingface_hub import login
+
 login()
 ```

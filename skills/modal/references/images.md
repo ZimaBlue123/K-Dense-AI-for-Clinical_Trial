@@ -31,10 +31,7 @@ Available base images:
 Use `.uv_pip_install()` for fast package installation:
 
 ```python
-image = (
-    modal.Image.debian_slim()
-    .uv_pip_install("pandas==2.2.0", "numpy")
-)
+image = modal.Image.debian_slim().uv_pip_install("pandas==2.2.0", "numpy")
 ```
 
 ### With pip
@@ -42,10 +39,7 @@ image = (
 Fallback to standard pip if needed:
 
 ```python
-image = (
-    modal.Image.debian_slim(python_version="3.13")
-    .pip_install("pandas==2.2.0", "numpy")
-)
+image = modal.Image.debian_slim(python_version="3.13").pip_install("pandas==2.2.0", "numpy")
 ```
 
 Pin dependencies tightly (e.g., `"torch==2.8.0"`) for reproducibility.
@@ -85,8 +79,10 @@ Download model weights or perform setup:
 ```python
 def download_models():
     import diffusers
+
     model_name = "segmind/small-sd"
     pipe = diffusers.StableDiffusionPipeline.from_pretrained(model_name)
+
 
 hf_cache = modal.Volume.from_name("hf-cache")
 
@@ -106,10 +102,7 @@ image = (
 ### Add Files or Directories
 
 ```python
-image = modal.Image.debian_slim().add_local_dir(
-    "/user/erikbern/.aws",
-    remote_path="/root/.aws"
-)
+image = modal.Image.debian_slim().add_local_dir("/user/erikbern/.aws", remote_path="/root/.aws")
 ```
 
 By default, files are added at container startup. Use `copy=True` to include in built image.
@@ -121,9 +114,11 @@ Add importable Python modules:
 ```python
 image = modal.Image.debian_slim().add_local_python_source("local_module")
 
+
 @app.function(image=image)
 def f():
     import local_module
+
     local_module.do_stuff()
 ```
 
@@ -134,9 +129,11 @@ def f():
 ```python
 sklearn_image = modal.Image.from_registry("huanjason/scikit-learn")
 
+
 @app.function(image=sklearn_image)
 def fit_knn():
     from sklearn.neighbors import KNeighborsClassifier
+
     ...
 ```
 
@@ -149,10 +146,7 @@ Use Modal Secrets for authentication:
 **Docker Hub**:
 ```python
 secret = modal.Secret.from_name("my-docker-secret")
-image = modal.Image.from_registry(
-    "private-repo/image:tag",
-    secret=secret
-)
+image = modal.Image.from_registry("private-repo/image:tag", secret=secret)
 ```
 
 **AWS ECR**:
@@ -169,9 +163,11 @@ image = modal.Image.from_aws_ecr(
 ```python
 image = modal.Image.from_dockerfile("Dockerfile")
 
+
 @app.function(image=image)
 def fit():
     import sklearn
+
     ...
 ```
 
@@ -182,9 +178,8 @@ Can still extend with other image methods after importing.
 For coordinated installation of Python and system packages:
 
 ```python
-numpyro_pymc_image = (
-    modal.Image.micromamba()
-    .micromamba_install("pymc==5.10.4", "numpyro==0.13.2", channels=["conda-forge"])
+numpyro_pymc_image = modal.Image.micromamba().micromamba_install(
+    "pymc==5.10.4", "numpyro==0.13.2", channels=["conda-forge"]
 )
 ```
 
@@ -193,10 +188,7 @@ numpyro_pymc_image = (
 Run build steps on GPU instances:
 
 ```python
-image = (
-    modal.Image.debian_slim()
-    .pip_install("bitsandbytes", gpu="H100")
-)
+image = modal.Image.debian_slim().pip_install("bitsandbytes", gpu="H100")
 ```
 
 ## Image Caching
@@ -208,11 +200,7 @@ Define frequently-changing layers last to maximize cache reuse.
 ### Force Rebuild
 
 ```python
-image = (
-    modal.Image.debian_slim()
-    .apt_install("git")
-    .pip_install("slack-sdk", force_build=True)
-)
+image = modal.Image.debian_slim().apt_install("git").pip_install("slack-sdk", force_build=True)
 ```
 
 Or set environment variable:
@@ -228,6 +216,7 @@ Import packages only available remotely inside function bodies:
 @app.function(image=image)
 def my_function():
     import pandas as pd  # Only imported remotely
+
     df = pd.DataFrame()
     ...
 ```
@@ -239,6 +228,7 @@ pandas_image = modal.Image.debian_slim().pip_install("pandas")
 
 with pandas_image.imports():
     import pandas as pd
+
 
 @app.function(image=pandas_image)
 def my_function():

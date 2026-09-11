@@ -31,7 +31,10 @@ installed = idc_index.__version__
 if installed < REQUIRED_VERSION:
     print(f"Upgrading idc-index from {installed} to {REQUIRED_VERSION}...")
     import subprocess
-    subprocess.run(["pip3", "install", "--upgrade", "--break-system-packages", "idc-index"], check=True)
+
+    subprocess.run(
+        ["pip3", "install", "--upgrade", "--break-system-packages", "idc-index"], check=True
+    )
     print("Upgrade complete. Restart Python to use new version.")
 else:
     print(f"idc-index {installed} meets requirement ({REQUIRED_VERSION})")
@@ -41,6 +44,7 @@ else:
 
 ```python
 from idc_index import IDCClient
+
 client = IDCClient()
 
 # Verify IDC data version (should be "v23")
@@ -365,10 +369,7 @@ from idc_index import IDCClient
 client = IDCClient()
 
 # Download small collection (RIDER Pilot ~1GB)
-client.download_from_selection(
-    collection_id="rider_pilot",
-    downloadDir="./data/rider"
-)
+client.download_from_selection(collection_id="rider_pilot", downloadDir="./data/rider")
 ```
 
 **Download specific series:**
@@ -385,8 +386,7 @@ series_df = client.sql_query("""
 
 # Download only those series
 client.download_from_selection(
-    seriesInstanceUID=list(series_df['SeriesInstanceUID'].values),
-    downloadDir="./data/lung_ct"
+    seriesInstanceUID=list(series_df["SeriesInstanceUID"].values), downloadDir="./data/lung_ct"
 )
 ```
 
@@ -399,15 +399,15 @@ Default `dirTemplate`: `%collection_id/%PatientID/%StudyInstanceUID/%Modality_%S
 client.download_from_selection(
     collection_id="tcga_luad",
     downloadDir="./data",
-    dirTemplate="%collection_id/%PatientID/%Modality"
+    dirTemplate="%collection_id/%PatientID/%Modality",
 )
 # Results in: ./data/tcga_luad/TCGA-05-4244/CT/
 
 # Flat structure (all files in one directory)
 client.download_from_selection(
-    seriesInstanceUID=list(series_df['SeriesInstanceUID'].values),
+    seriesInstanceUID=list(series_df["SeriesInstanceUID"].values),
     downloadDir="./data/flat",
-    dirTemplate=""
+    dirTemplate="",
 )
 # Results in: ./data/flat/*.dcm
 ```
@@ -477,9 +477,9 @@ results = client.sql_query("""
 """)
 
 # Save as manifest file
-with open('ct_manifest.txt', 'w') as f:
-    for url in results['series_aws_url']:
-        f.write(url + '\n')
+with open("ct_manifest.txt", "w") as f:
+    for url in results["series_aws_url"]:
+        f.write(url + "\n")
 ```
 
 Then download:
@@ -506,11 +506,11 @@ results = client.sql_query("""
 """)
 
 # View single series
-viewer_url = client.get_viewer_URL(seriesInstanceUID=results.iloc[0]['SeriesInstanceUID'])
+viewer_url = client.get_viewer_URL(seriesInstanceUID=results.iloc[0]["SeriesInstanceUID"])
 webbrowser.open(viewer_url)
 
 # View all series in a study (useful for multi-series exams like MRI protocols)
-viewer_url = client.get_viewer_URL(studyInstanceUID=results.iloc[0]['StudyInstanceUID'])
+viewer_url = client.get_viewer_URL(studyInstanceUID=results.iloc[0]["StudyInstanceUID"])
 webbrowser.open(viewer_url)
 ```
 
@@ -567,13 +567,12 @@ results = client.sql_query("""
     WHERE collection_id = 'tcga_luad' LIMIT 5
 """)
 citations = client.citations_from_selection(
-    seriesInstanceUID=list(results['SeriesInstanceUID'].values)
+    seriesInstanceUID=list(results["SeriesInstanceUID"].values)
 )
 
 # Alternative format: BibTeX (for LaTeX documents)
 bibtex_citations = client.citations_from_selection(
-    collection_id="tcga_luad",
-    citation_format=IDCClient.CITATION_FORMAT_BIBTEX
+    collection_id="tcga_luad", citation_format=IDCClient.CITATION_FORMAT_BIBTEX
 )
 ```
 
@@ -618,15 +617,15 @@ LIMIT 100
 results = client.sql_query(query)
 
 # Save manifest for later
-results.to_csv('lung_ct_manifest.csv', index=False)
+results.to_csv("lung_ct_manifest.csv", index=False)
 
 # Download in batches to avoid timeout
 batch_size = 10
 for i in range(0, len(results), batch_size):
-    batch = results.iloc[i:i+batch_size]
+    batch = results.iloc[i : i + batch_size]
     client.download_from_selection(
-        seriesInstanceUID=list(batch['SeriesInstanceUID'].values),
-        downloadDir=f"./data/batch_{i//batch_size}"
+        seriesInstanceUID=list(batch["SeriesInstanceUID"].values),
+        downloadDir=f"./data/batch_{i // batch_size}",
     )
 ```
 
@@ -672,8 +671,7 @@ import os
 # Read DICOM files from downloaded series
 series_dir = "./data/rider/rider_pilot/RIDER-1007893286/CT_1.3.6.1..."
 
-dicom_files = [os.path.join(series_dir, f) for f in os.listdir(series_dir)
-               if f.endswith('.dcm')]
+dicom_files = [os.path.join(series_dir, f) for f in os.listdir(series_dir) if f.endswith(".dcm")]
 
 # Load first image
 ds = pydicom.dcmread(dicom_files[0])
@@ -688,9 +686,10 @@ import pydicom
 import numpy as np
 from pathlib import Path
 
+
 def load_ct_series(series_path):
     """Load CT series as 3D numpy array"""
-    files = sorted(Path(series_path).glob('*.dcm'))
+    files = sorted(Path(series_path).glob("*.dcm"))
     slices = [pydicom.dcmread(str(f)) for f in files]
 
     # Sort by slice location
@@ -700,6 +699,7 @@ def load_ct_series(series_path):
     volume = np.stack([s.pixel_array for s in slices])
 
     return volume, slices[0]  # Return volume and first slice for metadata
+
 
 volume, metadata = load_ct_series("./data/lung_ct/series_dir")
 print(f"Volume shape: {volume.shape}")  # (z, y, x)
@@ -818,7 +818,7 @@ See `references/digital_pathology_guide.md` for DICOM-compatible tools (highdico
 ```python
 # Get all column names and types for any table
 schema = client.indices_overview["index"]["schema"]
-columns = [(c['name'], c['type'], c.get('description', '')) for c in schema['columns']]
+columns = [(c["name"], c["type"], c.get("description", "")) for c in schema["columns"]]
 ```
 
 ### Reference Documentation

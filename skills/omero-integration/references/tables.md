@@ -38,9 +38,9 @@ import omero.grid
 table_name = f"MyAnalysisTable_{random()}"
 
 # Define columns (empty data for initialization)
-col1 = omero.grid.LongColumn('ImageID', 'Image identifier', [])
-col2 = omero.grid.DoubleColumn('MeanIntensity', 'Mean pixel intensity', [])
-col3 = omero.grid.StringColumn('Category', 'Classification', 64, [])
+col1 = omero.grid.LongColumn("ImageID", "Image identifier", [])
+col2 = omero.grid.DoubleColumn("MeanIntensity", "Mean pixel intensity", [])
+col3 = omero.grid.StringColumn("Category", "Classification", 64, [])
 
 columns = [col1, col2, col3]
 
@@ -62,9 +62,9 @@ intensities = [123.4, 145.2, 98.7, 156.3, 132.8]
 categories = ["Good", "Good", "Poor", "Excellent", "Good"]
 
 # Create data columns
-data_col1 = omero.grid.LongColumn('ImageID', 'Image identifier', image_ids)
-data_col2 = omero.grid.DoubleColumn('MeanIntensity', 'Mean pixel intensity', intensities)
-data_col3 = omero.grid.StringColumn('Category', 'Classification', 64, categories)
+data_col1 = omero.grid.LongColumn("ImageID", "Image identifier", image_ids)
+data_col2 = omero.grid.DoubleColumn("MeanIntensity", "Mean pixel intensity", intensities)
+data_col3 = omero.grid.StringColumn("Category", "Classification", 64, categories)
 
 data = [data_col1, data_col2, data_col3]
 
@@ -101,7 +101,7 @@ print(f"Linked table to dataset {dataset_id}")
 ```python
 # Column for integer values
 image_ids = [101, 102, 103, 104, 105]
-col = omero.grid.LongColumn('ImageID', 'Image identifier', image_ids)
+col = omero.grid.LongColumn("ImageID", "Image identifier", image_ids)
 ```
 
 ### Double Column (Floats)
@@ -109,7 +109,7 @@ col = omero.grid.LongColumn('ImageID', 'Image identifier', image_ids)
 ```python
 # Column for floating-point values
 measurements = [12.34, 56.78, 90.12, 34.56, 78.90]
-col = omero.grid.DoubleColumn('Measurement', 'Value in microns', measurements)
+col = omero.grid.DoubleColumn("Measurement", "Value in microns", measurements)
 ```
 
 ### String Column (Text)
@@ -117,7 +117,7 @@ col = omero.grid.DoubleColumn('Measurement', 'Value in microns', measurements)
 ```python
 # Column for text (max length required)
 labels = ["Control", "Treatment A", "Treatment B", "Control", "Treatment A"]
-col = omero.grid.StringColumn('Condition', 'Experimental condition', 64, labels)
+col = omero.grid.StringColumn("Condition", "Experimental condition", 64, labels)
 ```
 
 ### Boolean Column
@@ -125,7 +125,7 @@ col = omero.grid.StringColumn('Condition', 'Experimental condition', 64, labels)
 ```python
 # Column for boolean values
 flags = [True, False, True, True, False]
-col = omero.grid.BoolColumn('QualityPass', 'Passes quality control', flags)
+col = omero.grid.BoolColumn("QualityPass", "Passes quality control", flags)
 ```
 
 ### Image Column (References to Images)
@@ -133,7 +133,7 @@ col = omero.grid.BoolColumn('QualityPass', 'Passes quality control', flags)
 ```python
 # Column linking to OMERO images
 image_ids = [101, 102, 103, 104, 105]
-col = omero.grid.ImageColumn('Image', 'Source image', image_ids)
+col = omero.grid.ImageColumn("Image", "Source image", image_ids)
 ```
 
 ### ROI Column (References to ROIs)
@@ -141,23 +141,19 @@ col = omero.grid.ImageColumn('Image', 'Source image', image_ids)
 ```python
 # Column linking to OMERO ROIs
 roi_ids = [201, 202, 203, 204, 205]
-col = omero.grid.RoiColumn('ROI', 'Associated ROI', roi_ids)
+col = omero.grid.RoiColumn("ROI", "Associated ROI", roi_ids)
 ```
 
 ### Array Columns
 
 ```python
 # Column for arrays of doubles
-histogram_data = [
-    [10, 20, 30, 40],
-    [15, 25, 35, 45],
-    [12, 22, 32, 42]
-]
-col = omero.grid.DoubleArrayColumn('Histogram', 'Intensity histogram', histogram_data)
+histogram_data = [[10, 20, 30, 40], [15, 25, 35, 45], [12, 22, 32, 42]]
+col = omero.grid.DoubleArrayColumn("Histogram", "Intensity histogram", histogram_data)
 
 # Column for arrays of longs
 bin_counts = [[5, 10, 15], [8, 12, 16], [6, 11, 14]]
-col = omero.grid.LongArrayColumn('Bins', 'Histogram bins', bin_counts)
+col = omero.grid.LongArrayColumn("Bins", "Histogram bins", bin_counts)
 ```
 
 ## Reading Table Data
@@ -166,8 +162,7 @@ col = omero.grid.LongArrayColumn('Bins', 'Histogram bins', bin_counts)
 
 ```python
 # Get table file by name
-orig_table_file = conn.getObject("OriginalFile",
-                                 attributes={'name': table_name})
+orig_table_file = conn.getObject("OriginalFile", attributes={"name": table_name})
 
 # Open table
 resources = conn.c.sf.sharedResources()
@@ -236,11 +231,7 @@ for col in data.columns:
 row_count = table.getNumberOfRows()
 
 query_rows = table.getWhereList(
-    "(MeanIntensity > 100)",
-    variables={},
-    start=0,
-    stop=row_count,
-    step=0
+    "(MeanIntensity > 100)", variables={}, start=0, stop=row_count, step=0
 )
 
 print(f"Found {len(query_rows)} matching rows")
@@ -259,11 +250,7 @@ for col in data.columns:
 ```python
 # Multiple conditions with AND
 query_rows = table.getWhereList(
-    "(MeanIntensity > 100) & (MeanIntensity < 150)",
-    variables={},
-    start=0,
-    stop=row_count,
-    step=0
+    "(MeanIntensity > 100) & (MeanIntensity < 150)", variables={}, start=0, stop=row_count, step=0
 )
 
 # Multiple conditions with OR
@@ -272,16 +259,12 @@ query_rows = table.getWhereList(
     variables={},
     start=0,
     stop=row_count,
-    step=0
+    step=0,
 )
 
 # String matching
 query_rows = table.getWhereList(
-    "(Category == 'Good')",
-    variables={},
-    start=0,
-    stop=row_count,
-    step=0
+    "(Category == 'Good')", variables={}, start=0, stop=row_count, step=0
 )
 ```
 
@@ -293,10 +276,10 @@ import omero.grid
 import omero.model
 import numpy as np
 
-HOST = 'omero.example.com'
+HOST = "omero.example.com"
 PORT = 4064
-USERNAME = 'user'
-PASSWORD = 'pass'
+USERNAME = "user"
+PASSWORD = "pass"
 
 with BlitzGateway(USERNAME, PASSWORD, host=HOST, port=PORT) as conn:
     # Get dataset
@@ -327,10 +310,10 @@ with BlitzGateway(USERNAME, PASSWORD, host=HOST, port=PORT) as conn:
     table_name = f"Analysis_Results_{dataset.getId()}"
 
     # Define columns
-    col1 = omero.grid.ImageColumn('Image', 'Source image', [])
-    col2 = omero.grid.DoubleColumn('MeanIntensity', 'Mean pixel value', [])
-    col3 = omero.grid.DoubleColumn('MaxIntensity', 'Maximum pixel value', [])
-    col4 = omero.grid.LongColumn('CellCount', 'Number of cells detected', [])
+    col1 = omero.grid.ImageColumn("Image", "Source image", [])
+    col2 = omero.grid.DoubleColumn("MeanIntensity", "Mean pixel value", [])
+    col3 = omero.grid.DoubleColumn("MaxIntensity", "Maximum pixel value", [])
+    col4 = omero.grid.LongColumn("CellCount", "Number of cells detected", [])
 
     # Initialize table
     resources = conn.c.sf.sharedResources()
@@ -339,13 +322,10 @@ with BlitzGateway(USERNAME, PASSWORD, host=HOST, port=PORT) as conn:
     table.initialize([col1, col2, col3, col4])
 
     # Add data
-    data_col1 = omero.grid.ImageColumn('Image', 'Source image', image_ids)
-    data_col2 = omero.grid.DoubleColumn('MeanIntensity', 'Mean pixel value',
-                                        mean_intensities)
-    data_col3 = omero.grid.DoubleColumn('MaxIntensity', 'Maximum pixel value',
-                                        max_intensities)
-    data_col4 = omero.grid.LongColumn('CellCount', 'Number of cells detected',
-                                      cell_counts)
+    data_col1 = omero.grid.ImageColumn("Image", "Source image", image_ids)
+    data_col2 = omero.grid.DoubleColumn("MeanIntensity", "Mean pixel value", mean_intensities)
+    data_col3 = omero.grid.DoubleColumn("MaxIntensity", "Maximum pixel value", max_intensities)
+    data_col4 = omero.grid.LongColumn("CellCount", "Number of cells detected", cell_counts)
 
     table.addData([data_col1, data_col2, data_col3, data_col4])
 
@@ -370,11 +350,7 @@ with BlitzGateway(USERNAME, PASSWORD, host=HOST, port=PORT) as conn:
     table = resources.openTable(orig_file)
 
     high_cell_count_rows = table.getWhereList(
-        "(CellCount > 100)",
-        variables={},
-        start=0,
-        stop=table.getNumberOfRows(),
-        step=0
+        "(CellCount > 100)", variables={}, start=0, stop=table.getNumberOfRows(), step=0
     )
 
     print(f"Images with >100 cells: {len(high_cell_count_rows)}")
@@ -434,9 +410,9 @@ new_intensities = [88.9, 92.3]
 new_categories = ["Good", "Excellent"]
 
 # Create data columns
-data_col1 = omero.grid.LongColumn('ImageID', '', new_image_ids)
-data_col2 = omero.grid.DoubleColumn('MeanIntensity', '', new_intensities)
-data_col3 = omero.grid.StringColumn('Category', '', 64, new_categories)
+data_col1 = omero.grid.LongColumn("ImageID", "", new_image_ids)
+data_col2 = omero.grid.DoubleColumn("MeanIntensity", "", new_intensities)
+data_col3 = omero.grid.StringColumn("Category", "", 64, new_categories)
 
 # Append data
 table.addData([data_col1, data_col2, data_col3])
@@ -468,9 +444,7 @@ for ann in dataset.listAnnotations():
     if isinstance(ann, omero.gateway.FileAnnotationWrapper):
         if "Table" in ann.getFile().getName():
             # Delete link (keeps table, removes association)
-            conn.deleteObjects("DatasetAnnotationLink",
-                             [ann.link.getId()],
-                             wait=True)
+            conn.deleteObjects("DatasetAnnotationLink", [ann.link.getId()], wait=True)
             print(f"Unlinked table from dataset")
 ```
 
@@ -494,13 +468,13 @@ for ann in dataset.listAnnotations():
 ```python
 # Table structure for ROI measurements
 columns = [
-    omero.grid.ImageColumn('Image', 'Source image', []),
-    omero.grid.RoiColumn('ROI', 'Measured ROI', []),
-    omero.grid.LongColumn('ChannelIndex', 'Channel number', []),
-    omero.grid.DoubleColumn('Area', 'ROI area in pixels', []),
-    omero.grid.DoubleColumn('MeanIntensity', 'Mean intensity', []),
-    omero.grid.DoubleColumn('IntegratedDensity', 'Sum of intensities', []),
-    omero.grid.StringColumn('CellType', 'Cell classification', 32, [])
+    omero.grid.ImageColumn("Image", "Source image", []),
+    omero.grid.RoiColumn("ROI", "Measured ROI", []),
+    omero.grid.LongColumn("ChannelIndex", "Channel number", []),
+    omero.grid.DoubleColumn("Area", "ROI area in pixels", []),
+    omero.grid.DoubleColumn("MeanIntensity", "Mean intensity", []),
+    omero.grid.DoubleColumn("IntegratedDensity", "Sum of intensities", []),
+    omero.grid.StringColumn("CellType", "Cell classification", 32, []),
 ]
 ```
 
@@ -509,11 +483,11 @@ columns = [
 ```python
 # Table structure for time series measurements
 columns = [
-    omero.grid.ImageColumn('Image', 'Time series image', []),
-    omero.grid.LongColumn('Timepoint', 'Time index', []),
-    omero.grid.DoubleColumn('Timestamp', 'Time in seconds', []),
-    omero.grid.DoubleColumn('Value', 'Measured value', []),
-    omero.grid.StringColumn('Measurement', 'Type of measurement', 64, [])
+    omero.grid.ImageColumn("Image", "Time series image", []),
+    omero.grid.LongColumn("Timepoint", "Time index", []),
+    omero.grid.DoubleColumn("Timestamp", "Time in seconds", []),
+    omero.grid.DoubleColumn("Value", "Measured value", []),
+    omero.grid.StringColumn("Measurement", "Type of measurement", 64, []),
 ]
 ```
 
@@ -522,11 +496,11 @@ columns = [
 ```python
 # Table structure for screening plate analysis
 columns = [
-    omero.grid.WellColumn('Well', 'Plate well', []),
-    omero.grid.LongColumn('FieldIndex', 'Field number', []),
-    omero.grid.DoubleColumn('CellCount', 'Number of cells', []),
-    omero.grid.DoubleColumn('Viability', 'Percent viable', []),
-    omero.grid.StringColumn('Phenotype', 'Observed phenotype', 128, []),
-    omero.grid.BoolColumn('Hit', 'Hit in screen', [])
+    omero.grid.WellColumn("Well", "Plate well", []),
+    omero.grid.LongColumn("FieldIndex", "Field number", []),
+    omero.grid.DoubleColumn("CellCount", "Number of cells", []),
+    omero.grid.DoubleColumn("Viability", "Percent viable", []),
+    omero.grid.StringColumn("Phenotype", "Observed phenotype", 128, []),
+    omero.grid.BoolColumn("Hit", "Hit in screen", []),
 ]
 ```

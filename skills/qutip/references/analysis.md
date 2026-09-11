@@ -32,7 +32,7 @@ n_avg = expect(num(N), rho)
 var_n = variance(num(N), psi)
 
 # Manual calculation
-var_n = expect(num(N)**2, psi) - expect(num(N), psi)**2
+var_n = expect(num(N) ** 2, psi) - expect(num(N), psi) ** 2
 ```
 
 ### Time-Dependent Expectation Values
@@ -68,7 +68,7 @@ S_L = entropy_linear(rho)
 
 ```python
 # For bipartite systems
-psi = bell_state('00')
+psi = bell_state("00")
 rho = psi.proj()
 
 # Trace out subsystem B to get reduced density matrix
@@ -169,7 +169,7 @@ angle = bures_angle(rho1, rho2)
 from qutip import concurrence
 
 # For two-qubit states
-psi = bell_state('00')
+psi = bell_state("00")
 rho = psi.proj()
 
 C = concurrence(rho)  # C = 1 for maximally entangled states
@@ -185,6 +185,7 @@ N_ent = negativity(rho, 0)  # Partial transpose w.r.t. subsystem 0
 
 # Logarithmic negativity
 from qutip import logarithmic_negativity
+
 E_N = logarithmic_negativity(rho, 0)
 ```
 
@@ -362,10 +363,10 @@ from qutip import steadystate
 rho_ss = steadystate(H, c_ops)
 
 # Different methods
-rho_ss = steadystate(H, c_ops, method='direct')  # Default
-rho_ss = steadystate(H, c_ops, method='eigen')   # Eigenvalue
-rho_ss = steadystate(H, c_ops, method='svd')     # SVD
-rho_ss = steadystate(H, c_ops, method='power')   # Power method
+rho_ss = steadystate(H, c_ops, method="direct")  # Default
+rho_ss = steadystate(H, c_ops, method="eigen")  # Eigenvalue
+rho_ss = steadystate(H, c_ops, method="svd")  # SVD
+rho_ss = steadystate(H, c_ops, method="power")  # Power method
 ```
 
 ### Steady State Properties
@@ -416,7 +417,7 @@ log_rho = rho.logm()
 sqrt_rho = rho.sqrtm()
 
 # Matrix power
-rho_squared = rho ** 2
+rho_squared = rho**2
 ```
 
 ### Singular Value Decomposition
@@ -472,7 +473,7 @@ from qutip_qip.tomography import state_tomography
 # measurements = ... (experimental data)
 
 # Reconstruct density matrix
-rho_reconstructed = state_tomography(measurements, basis='Pauli')
+rho_reconstructed = state_tomography(measurements, basis="Pauli")
 ```
 
 ### Process Tomography
@@ -481,7 +482,7 @@ rho_reconstructed = state_tomography(measurements, basis='Pauli')
 from qutip_qip.tomography import qpt
 
 # Characterize quantum process
-chi = qpt(U_gate, method='lstsq')  # Chi matrix representation
+chi = qpt(U_gate, method="lstsq")  # Chi matrix representation
 ```
 
 ## Random Quantum Objects

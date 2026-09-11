@@ -20,11 +20,13 @@ for a in articles[:3]:
     print(a["title"])
     print(a["url"])
     print(a["time_published"])
-    print(a["overall_sentiment_label"])   # "Bullish", "Bearish", "Neutral", etc.
-    print(a["overall_sentiment_score"])   # -1.0 to 1.0
+    print(a["overall_sentiment_label"])  # "Bullish", "Bearish", "Neutral", etc.
+    print(a["overall_sentiment_score"])  # -1.0 to 1.0
     for ts in a["ticker_sentiment"]:
         if ts["ticker"] == "AAPL":
-            print(f"  AAPL sentiment: {ts['ticker_sentiment_label']} ({ts['ticker_sentiment_score']})")
+            print(
+                f"  AAPL sentiment: {ts['ticker_sentiment_label']} ({ts['ticker_sentiment_score']})"
+            )
             print(f"  Relevance: {ts['relevance_score']}")
 
 # Article fields: "title", "url", "time_published", "authors", "summary",
@@ -81,12 +83,12 @@ transactions = data["data"]
 for t in transactions[:5]:
     print(
         t["transaction_date"],
-        t["executive"],         # insider name
-        t["executive_title"],   # e.g., "CEO"
-        t["action"],            # "Buy" or "Sell"
+        t["executive"],  # insider name
+        t["executive_title"],  # e.g., "CEO"
+        t["action"],  # "Buy" or "Sell"
         t["shares"],
         t["share_price"],
-        t["total_value"]
+        t["total_value"],
     )
 ```
 
@@ -108,10 +110,10 @@ data = av_get(
     RANGE="1year",
     INTERVAL="DAILY",
     OHLC="close",
-    CALCULATIONS="MEAN,STDDEV,CORRELATION,MAX_DRAWDOWN"
+    CALCULATIONS="MEAN,STDDEV,CORRELATION,MAX_DRAWDOWN",
 )
 payload = data["payload"]
-print(payload["MEAN"])        # {"AAPL": 0.0012, "MSFT": 0.0009, ...}
+print(payload["MEAN"])  # {"AAPL": 0.0012, "MSFT": 0.0009, ...}
 print(payload["STDDEV"])
 print(payload["CORRELATION"])  # correlation matrix
 print(payload["MAX_DRAWDOWN"])
@@ -132,7 +134,7 @@ data = av_get(
     INTERVAL="DAILY",
     OHLC="close",
     CALCULATIONS="MEAN,STDDEV",
-    WINDOW_SIZE=20
+    WINDOW_SIZE=20,
 )
 # Returns time series of rolling calculations
 ```

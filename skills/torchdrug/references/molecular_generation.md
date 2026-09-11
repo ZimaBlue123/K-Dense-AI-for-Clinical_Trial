@@ -171,6 +171,7 @@ Balance multiple competing objectives (e.g., potency, selectivity, synthesizabil
 ```python
 from torchdrug import tasks
 
+
 # Define multi-objective reward
 def reward_function(mol):
     affinity_score = predict_binding(mol)
@@ -181,11 +182,12 @@ def reward_function(mol):
     reward = 0.5 * affinity_score + 0.3 * druglikeness + 0.2 * (1 - synthesizability)
     return reward
 
+
 # GCPN task with custom reward
 task = tasks.GCPNGeneration(
     model,
     reward_function=reward_function,
-    criterion="ppo"  # Proximal policy optimization
+    criterion="ppo",  # Proximal policy optimization
 )
 ```
 

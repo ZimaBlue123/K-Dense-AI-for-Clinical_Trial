@@ -48,7 +48,9 @@ from esm.sdk.forge import ESM3ForgeInferenceClient
 from esm.sdk.api import ESMProtein, GenerationConfig
 
 # Connect to Forge
-model = ESM3ForgeInferenceClient(model="esm3-medium-2024-08", url="https://forge.evolutionaryscale.ai", token="<token>")
+model = ESM3ForgeInferenceClient(
+    model="esm3-medium-2024-08", url="https://forge.evolutionaryscale.ai", token="<token>"
+)
 
 # Generate
 protein = model.generate(protein, GenerationConfig(track="sequence", num_steps=8))
@@ -68,8 +70,7 @@ from esm.sdk.api import ESM3InferenceClient, ESMProtein, GenerationConfig
 # Predict structure from sequence
 protein = ESMProtein(sequence="MPRTKEINDAGLIVHSP...")
 protein_with_structure = model.generate(
-    protein,
-    GenerationConfig(track="structure", num_steps=protein.sequence.count("_"))
+    protein, GenerationConfig(track="structure", num_steps=protein.sequence.count("_"))
 )
 
 # Access predicted structure
@@ -86,8 +87,7 @@ protein_with_structure.sequence = None  # Remove sequence
 
 # Generate sequence that folds to this structure
 designed_protein = model.generate(
-    protein_with_structure,
-    GenerationConfig(track="sequence", num_steps=50, temperature=0.7)
+    protein_with_structure, GenerationConfig(track="sequence", num_steps=50, temperature=0.7)
 )
 ```
 
@@ -125,7 +125,7 @@ embeddings = model.forward(protein_tensor)
 proteins = [
     ESMProtein(sequence="MPRTKEIND..."),
     ESMProtein(sequence="AGLIVHSPQ..."),
-    ESMProtein(sequence="KTEFLNDGR...")
+    ESMProtein(sequence="KTEFLNDGR..."),
 ]
 
 embeddings_list = [model.logits(model.forward(model.encode(p))) for p in proteins]
@@ -145,16 +145,11 @@ from esm.sdk.api import ESMProtein, FunctionAnnotation, GenerationConfig
 # Create protein with desired function
 protein = ESMProtein(
     sequence="_" * 200,  # Generate 200 residue protein
-    function_annotations=[
-        FunctionAnnotation(label="fluorescent_protein", start=50, end=150)
-    ]
+    function_annotations=[FunctionAnnotation(label="fluorescent_protein", start=50, end=150)],
 )
 
 # Generate sequence with specified function
-functional_protein = model.generate(
-    protein,
-    GenerationConfig(track="sequence", num_steps=200)
-)
+functional_protein = model.generate(protein, GenerationConfig(track="sequence", num_steps=200))
 ```
 
 ### 5. Chain-of-Thought Generation
@@ -190,6 +185,7 @@ import asyncio
 
 client = ESM3ForgeInferenceClient(model="esm3-medium-2024-08", token="<token>")
 
+
 # Async batch processing
 async def batch_generate(proteins_list):
     tasks = [
@@ -197,6 +193,7 @@ async def batch_generate(proteins_list):
         for protein in proteins_list
     ]
     return await asyncio.gather(*tasks)
+
 
 # Execute
 proteins = [ESMProtein(sequence=f"MPRT{'_' * 50}KEND") for _ in range(10)]

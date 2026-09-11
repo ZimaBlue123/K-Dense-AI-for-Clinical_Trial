@@ -17,6 +17,7 @@ Returns all series identifiers available through the API.
 
 ```python
 import requests
+
 BASE = "https://data.financialresearch.gov/hf/v1"
 
 # All mnemonics (flat list)
@@ -64,26 +65,27 @@ The metadata object includes these top-level fields (with subfields):
 
 ```python
 # Full metadata
-resp = requests.get(f"{BASE}/metadata/query", params={
-    "mnemonic": "fpf-allqhf_cdsup250bps_p5"
-})
+resp = requests.get(f"{BASE}/metadata/query", params={"mnemonic": "fpf-allqhf_cdsup250bps_p5"})
 meta = resp.json()
 print(meta["description"]["name"])
 print(meta["schedule"]["start_date"])
 print(meta["schedule"]["observation_frequency"])
 
 # Specific subfield only
-resp = requests.get(f"{BASE}/metadata/query", params={
-    "mnemonic": "fpf-allqhf_cdsup250bps_p5",
-    "fields": "release/long_name"
-})
+resp = requests.get(
+    f"{BASE}/metadata/query",
+    params={"mnemonic": "fpf-allqhf_cdsup250bps_p5", "fields": "release/long_name"},
+)
 # Returns: {"release": {"long_name": "Hedge Fund Aggregated Statistics from SEC Form PF Filings"}}
 
 # Multiple fields
-resp = requests.get(f"{BASE}/metadata/query", params={
-    "mnemonic": "fpf-allqhf_cdsup250bps_p5",
-    "fields": "description/name,schedule/start_date,schedule/observation_frequency"
-})
+resp = requests.get(
+    f"{BASE}/metadata/query",
+    params={
+        "mnemonic": "fpf-allqhf_cdsup250bps_p5",
+        "fields": "description/name,schedule/start_date,schedule/observation_frequency",
+    },
+)
 ```
 
 ---

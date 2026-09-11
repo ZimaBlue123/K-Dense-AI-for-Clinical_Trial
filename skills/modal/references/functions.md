@@ -9,6 +9,7 @@ import modal
 
 app = modal.App(name="my-app")
 
+
 @app.function()
 def my_function():
     print("Hello from Modal!")
@@ -44,6 +45,7 @@ Functions accept standard Python arguments:
 @app.function()
 def process(x: int, y: str):
     return f"{y}: {x * 2}"
+
 
 @app.local_entrypoint()
 def main():
@@ -122,6 +124,7 @@ For custom parsing, accept variable-length arguments:
 ```python
 import argparse
 
+
 @app.function()
 def train(*arglist):
     parser = argparse.ArgumentParser()
@@ -135,17 +138,16 @@ Common parameters:
 
 ```python
 @app.function(
-    image=my_image,           # Custom environment
-    gpu="A100",               # GPU type
-    cpu=2.0,                  # CPU cores
-    memory=4096,              # Memory in MB
-    timeout=3600,             # Timeout in seconds
-    retries=3,                # Number of retries
-    secrets=[my_secret],      # Environment secrets
-    volumes={"/data": vol},   # Persistent storage
+    image=my_image,  # Custom environment
+    gpu="A100",  # GPU type
+    cpu=2.0,  # CPU cores
+    memory=4096,  # Memory in MB
+    timeout=3600,  # Timeout in seconds
+    retries=3,  # Number of retries
+    secrets=[my_secret],  # Environment secrets
+    volumes={"/data": vol},  # Persistent storage
 )
-def my_function():
-    ...
+def my_function(): ...
 ```
 
 ## Parallel Execution
@@ -157,7 +159,8 @@ Run function on multiple inputs in parallel:
 ```python
 @app.function()
 def evaluate_model(x):
-    return x ** 2
+    return x**2
+
 
 @app.local_entrypoint()
 def main():
@@ -175,6 +178,7 @@ For functions with multiple arguments:
 def add(a, b):
     return a + b
 
+
 @app.local_entrypoint()
 def main():
     results = list(add.starmap([(1, 2), (3, 4)]))
@@ -184,11 +188,7 @@ def main():
 ### Exception Handling
 
 ```python
-results = my_func.map(
-    range(3),
-    return_exceptions=True,
-    wrap_returned_exceptions=False
-)
+results = my_func.map(range(3), return_exceptions=True, wrap_returned_exceptions=False)
 # [0, 1, Exception('error')]
 ```
 
@@ -201,6 +201,7 @@ Define async functions:
 async def async_function(x: int):
     await asyncio.sleep(1)
     return x * 2
+
 
 @app.local_entrypoint()
 async def main():
@@ -217,6 +218,7 @@ def generate_data():
     for i in range(10):
         yield i
 
+
 @app.local_entrypoint()
 def main():
     for value in generate_data.remote_gen():
@@ -232,6 +234,7 @@ Submit functions for background execution:
 def process_job(data):
     # Long-running job
     return result
+
 
 @app.local_entrypoint()
 def main():
@@ -261,6 +264,7 @@ With multiple functions, specify which to run:
 @app.function()
 def f():
     print("Function f")
+
 
 @app.function()
 def g():

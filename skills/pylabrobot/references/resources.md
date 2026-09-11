@@ -30,8 +30,8 @@ from pylabrobot.resources import Resource
 resource = Resource(
     name="my_resource",
     size_x=127.76,  # mm
-    size_y=85.48,   # mm
-    size_z=14.5     # mm
+    size_y=85.48,  # mm
+    size_z=14.5,  # mm
 )
 ```
 
@@ -43,21 +43,21 @@ Microplates with wells for holding liquids:
 
 ```python
 from pylabrobot.resources import (
-    Cos_96_DW_1mL,      # 96-well plate, 1mL deep well
-    Cos_96_DW_500ul,    # 96-well plate, 500µL
-    Plate_384_Sq,       # 384-well square plate
-    Cos_96_PCR          # 96-well PCR plate
+    Cos_96_DW_1mL,  # 96-well plate, 1mL deep well
+    Cos_96_DW_500ul,  # 96-well plate, 500µL
+    Plate_384_Sq,  # 384-well square plate
+    Cos_96_PCR,  # 96-well PCR plate
 )
 
 # Create plate
 plate = Cos_96_DW_1mL(name="sample_plate")
 
 # Access wells
-well_a1 = plate["A1"]                  # Single well
-row_a = plate["A1:H1"]                 # Entire row (A1-H1)
-col_1 = plate["A1:A12"]                # Entire column (A1-A12)
-range_wells = plate["A1:C3"]           # Range of wells
-all_wells = plate.children             # All wells as list
+well_a1 = plate["A1"]  # Single well
+row_a = plate["A1:H1"]  # Entire row (A1-H1)
+col_1 = plate["A1:A12"]  # Entire column (A1-A12)
+range_wells = plate["A1:C3"]  # Range of wells
+all_wells = plate.children  # All wells as list
 ```
 
 ### Tip Racks
@@ -66,21 +66,22 @@ Containers holding pipette tips:
 
 ```python
 from pylabrobot.resources import (
-    TIP_CAR_480_A00,    # 96 standard tips
-    HTF_L,              # Hamilton tips, filtered
-    TipRack             # Generic tip rack
+    TIP_CAR_480_A00,  # 96 standard tips
+    HTF_L,  # Hamilton tips, filtered
+    TipRack,  # Generic tip rack
 )
 
 # Create tip rack
 tip_rack = TIP_CAR_480_A00(name="tips")
 
 # Access tips
-tip_a1 = tip_rack["A1"]                # Single tip position
-tips_row = tip_rack["A1:H1"]           # Row of tips
-tips_col = tip_rack["A1:A12"]          # Column of tips
+tip_a1 = tip_rack["A1"]  # Single tip position
+tips_row = tip_rack["A1:H1"]  # Row of tips
+tips_col = tip_rack["A1:A12"]  # Column of tips
 
 # Check tip presence (requires tip tracking enabled)
 from pylabrobot.resources import set_tip_tracking
+
 set_tip_tracking(True)
 
 has_tip = tip_rack["A1"].tracker.has_tip
@@ -120,11 +121,7 @@ tube_a1 = tube_rack["A1"]
 Platforms that hold plates, tips, or other labware:
 
 ```python
-from pylabrobot.resources import (
-    PlateCarrier,
-    TipCarrier,
-    MFXCarrier
-)
+from pylabrobot.resources import PlateCarrier, TipCarrier, MFXCarrier
 
 # Carriers provide positions for labware
 carrier = PlateCarrier(name="plate_carrier")
@@ -170,10 +167,7 @@ lh.deck.assign_child_resource(source_plate, rails=10)
 lh.deck.assign_child_resource(dest_plate, rails=15)
 
 # Assign using coordinates (x, y, z in mm)
-lh.deck.assign_child_resource(
-    resource=tip_rack,
-    location=(100, 200, 0)
-)
+lh.deck.assign_child_resource(resource=tip_rack, location=(100, 200, 0))
 ```
 
 ### Unassigning Resources
@@ -224,15 +218,14 @@ from pylabrobot.resources import set_volume_tracking
 set_volume_tracking(True)
 
 # Set liquid in well
-plate["A1"].tracker.set_liquids([
-    (None, 200)  # (liquid_type, volume_in_uL)
-])
+plate["A1"].tracker.set_liquids(
+    [
+        (None, 200)  # (liquid_type, volume_in_uL)
+    ]
+)
 
 # Multiple liquids
-plate["A2"].tracker.set_liquids([
-    ("water", 100),
-    ("ethanol", 50)
-])
+plate["A2"].tracker.set_liquids([("water", 100), ("ethanol", 50)])
 
 # Get current volume
 volume = plate["A1"].tracker.get_volume()  # Returns total volume
@@ -256,7 +249,7 @@ has_tip = tip_rack["A1"].tracker.has_tip
 
 # Tips are automatically tracked when using pick_up_tips/drop_tips
 await lh.pick_up_tips(tip_rack["A1"])  # Marks tip as absent
-await lh.return_tips()                  # Marks tip as present
+await lh.return_tips()  # Marks tip as present
 ```
 
 ## Serialization
@@ -271,6 +264,7 @@ plate.save("plate_definition.json")
 
 # Load resource from JSON
 from pylabrobot.resources import Plate
+
 plate = Plate.load_from_json_file("plate_definition.json")
 
 # Save deck layout
@@ -278,6 +272,7 @@ lh.deck.save("deck_layout.json")
 
 # Load deck layout
 from pylabrobot.resources import Deck
+
 deck = Deck.load_from_json_file("deck_layout.json")
 ```
 
@@ -312,6 +307,7 @@ Create custom labware when built-in resources don't match your equipment:
 ```python
 from pylabrobot.resources import Plate, Well
 
+
 # Define custom plate
 class CustomPlate(Plate):
     def __init__(self, name: str):
@@ -321,13 +317,14 @@ class CustomPlate(Plate):
             size_y=85.48,
             size_z=14.5,
             num_items_x=12,  # 12 columns
-            num_items_y=8,   # 8 rows
-            dx=9.0,          # Well spacing X
-            dy=9.0,          # Well spacing Y
-            dz=0.0,          # Well spacing Z (usually 0)
-            item_dx=9.0,     # Distance between well centers X
-            item_dy=9.0      # Distance between well centers Y
+            num_items_y=8,  # 8 rows
+            dx=9.0,  # Well spacing X
+            dy=9.0,  # Well spacing Y
+            dz=0.0,  # Well spacing Z (usually 0)
+            item_dx=9.0,  # Distance between well centers X
+            item_dy=9.0,  # Distance between well centers Y
         )
+
 
 # Use custom plate
 custom_plate = CustomPlate(name="my_custom_plate")
@@ -346,8 +343,8 @@ well = Well(
     size_x=8.0,
     size_y=8.0,
     size_z=10.5,
-    max_volume=200,      # µL
-    bottom_shape="flat"  # or "v", "u"
+    max_volume=200,  # µL
+    bottom_shape="flat",  # or "v", "u"
 )
 ```
 
@@ -386,6 +383,7 @@ print(f"Children: {len(plate.children)}")
 
 # Type checking
 from pylabrobot.resources import Plate, TipRack
+
 if isinstance(resource, Plate):
     print("This is a plate")
 elif isinstance(resource, TipRack):
@@ -418,7 +416,7 @@ from pylabrobot.resources import (
     Cos_96_DW_1mL,
     Trough_100ml,
     set_tip_tracking,
-    set_volume_tracking
+    set_volume_tracking,
 )
 
 # Enable tracking
@@ -454,6 +452,7 @@ lh.deck.save("my_protocol_deck.json")
 
 # Save initial state
 import json
+
 with open("initial_state.json", "w") as f:
     json.dump(lh.deck.serialize_all_state(), f)
 ```
@@ -468,6 +467,7 @@ deck = Deck.load_from_json_file("my_protocol_deck.json")
 
 # Load state
 import json
+
 with open("initial_state.json", "r") as f:
     state = json.load(f)
 deck.load_all_state(state)

@@ -96,10 +96,7 @@ with MPRester() as mpr:
     materials = mpr.materials.summary.search(elements=["Fe", "O"])
 
     # Materials containing ONLY Fe and O (excluding others)
-    materials = mpr.materials.summary.search(
-        elements=["Fe", "O"],
-        exclude_elements=True
-    )
+    materials = mpr.materials.summary.search(elements=["Fe", "O"], exclude_elements=True)
 ```
 
 ## Getting Structures
@@ -137,20 +134,14 @@ with MPRester() as mpr:
     materials = mpr.materials.summary.search(
         chemsys="Li-Fe-O",
         energy_above_hull=(0, 0.05),  # Stable or near-stable
-        band_gap=(1.0, 3.0),           # Semiconducting
+        band_gap=(1.0, 3.0),  # Semiconducting
     )
 
     # Magnetic materials
-    materials = mpr.materials.summary.search(
-        elements=["Fe"],
-        is_magnetic=True
-    )
+    materials = mpr.materials.summary.search(elements=["Fe"], is_magnetic=True)
 
     # Metals only
-    materials = mpr.materials.summary.search(
-        chemsys="Fe-Ni",
-        is_metal=True
-    )
+    materials = mpr.materials.summary.search(chemsys="Fe-Ni", is_metal=True)
 ```
 
 ### Sorting and Limiting
@@ -162,7 +153,7 @@ with MPRester() as mpr:
         chemsys="Li-Fe-O",
         sort_fields=["energy_above_hull"],
         num_chunks=1,
-        chunk_size=10  # Limit to 10 results
+        chunk_size=10,  # Limit to 10 results
     )
 ```
 
@@ -183,6 +174,7 @@ with MPRester() as mpr:
 
         # Plot
         from pymatgen.electronic_structure.plotter import BSPlotter
+
         plotter = BSPlotter(bs)
         plotter.show()
 ```
@@ -201,6 +193,7 @@ with MPRester() as mpr:
 
         # Plot DOS
         from pymatgen.electronic_structure.plotter import DosPlotter
+
         plotter = DosPlotter()
         plotter.add_dos("Total DOS", dos)
         plotter.show()
@@ -268,7 +261,7 @@ with MPRester() as mpr:
     # Search for materials with elastic data
     materials = mpr.materials.elasticity.search(
         chemsys="Fe-O",
-        bulk_modulus_vrh=(100, 300)  # GPa
+        bulk_modulus_vrh=(100, 300),  # GPa
     )
 
     for mat in materials:
@@ -280,9 +273,7 @@ with MPRester() as mpr:
 ```python
 with MPRester() as mpr:
     # Get dielectric data
-    materials = mpr.materials.dielectric.search(
-        material_ids=["mp-149"]
-    )
+    materials = mpr.materials.dielectric.search(material_ids=["mp-149"])
 
     for mat in materials:
         print(f"Dielectric constant: {mat.e_electronic}")
@@ -294,9 +285,7 @@ with MPRester() as mpr:
 ```python
 with MPRester() as mpr:
     # Get piezoelectric materials
-    materials = mpr.materials.piezoelectric.search(
-        piezoelectric_modulus=(1, 100)
-    )
+    materials = mpr.materials.piezoelectric.search(piezoelectric_modulus=(1, 100))
 ```
 
 ## Surface Properties
@@ -304,9 +293,7 @@ with MPRester() as mpr:
 ```python
 with MPRester() as mpr:
     # Get surface data
-    surfaces = mpr.materials.surface_properties.search(
-        material_ids=["mp-149"]
-    )
+    surfaces = mpr.materials.surface_properties.search(material_ids=["mp-149"])
 ```
 
 ## Molecule Data (For Molecular Materials)
@@ -314,9 +301,7 @@ with MPRester() as mpr:
 ```python
 with MPRester() as mpr:
     # Search molecules
-    molecules = mpr.molecules.summary.search(
-        formula="H2O"
-    )
+    molecules = mpr.molecules.summary.search(formula="H2O")
 
     for mol in molecules:
         print(f"Molecule ID: {mol.molecule_id}")
@@ -341,8 +326,8 @@ with MPRester() as mpr:
             "density",
             "symmetry",
             "elasticity",
-            "magnetic_ordering"
-        ]
+            "magnetic_ordering",
+        ],
     )
 ```
 
@@ -352,8 +337,7 @@ with MPRester() as mpr:
 with MPRester() as mpr:
     # Get calculation details
     materials = mpr.materials.summary.search(
-        material_ids=["mp-149"],
-        fields=["material_id", "origins"]
+        material_ids=["mp-149"], fields=["material_id", "origins"]
     )
 
     for mat in materials:
@@ -371,6 +355,7 @@ with MPRester() as mpr:
 
     # Entries can be used directly in phase diagram analysis
     from pymatgen.analysis.phase_diagram import PhaseDiagram
+
     pd = PhaseDiagram(entries)
 
     # Check stability
@@ -442,7 +427,7 @@ with MPRester() as mpr:
     # Get all stable compounds in a chemical system
     materials = mpr.materials.summary.search(
         chemsys="Li-Fe-O",
-        energy_above_hull=(0, 0.001)  # Essentially on convex hull
+        energy_above_hull=(0, 0.001),  # Essentially on convex hull
     )
 
     print(f"Found {len(materials)} stable compounds")
@@ -471,7 +456,7 @@ with MPRester() as mpr:
     # Find materials with specific space group
     materials = mpr.materials.summary.search(
         chemsys="Fe-O",
-        spacegroup_number=167  # R-3c (corundum structure)
+        spacegroup_number=167,  # R-3c (corundum structure)
     )
 ```
 
@@ -486,16 +471,19 @@ with MPRester() as mpr:
 
     # Use with pymatgen analysis
     from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
+
     sga = SpacegroupAnalyzer(struct)
 
     # Generate surfaces
     from pymatgen.core.surface import SlabGenerator
-    slabgen = SlabGenerator(struct, (1,0,0), 10, 10)
+
+    slabgen = SlabGenerator(struct, (1, 0, 0), 10, 10)
     slabs = slabgen.get_slabs()
 
     # Phase diagram analysis
     entries = mpr.get_entries_in_chemsys(struct.composition.chemical_system)
     from pymatgen.analysis.phase_diagram import PhaseDiagram
+
     pd = PhaseDiagram(entries)
 ```
 

@@ -35,8 +35,8 @@ from astropy.cosmology import FlatLambdaCDM
 # Define cosmology
 cosmo = FlatLambdaCDM(
     H0=70 * u.km / u.s / u.Mpc,  # Hubble constant at z=0
-    Om0=0.3,                      # Matter density parameter at z=0
-    Tcmb0=2.725 * u.K             # CMB temperature (optional)
+    Om0=0.3,  # Matter density parameter at z=0
+    Tcmb0=2.725 * u.K,  # CMB temperature (optional)
 )
 ```
 
@@ -50,7 +50,7 @@ from astropy.cosmology import LambdaCDM
 cosmo = LambdaCDM(
     H0=70 * u.km / u.s / u.Mpc,
     Om0=0.3,
-    Ode0=0.7  # Dark energy density parameter
+    Ode0=0.7,  # Dark energy density parameter
 )
 ```
 
@@ -62,11 +62,10 @@ Dark energy with equation of state parameter:
 from astropy.cosmology import FlatwCDM, w0wzCDM
 
 # Constant w
-cosmo_w = FlatwCDM(H0=70 * u.km/u.s/u.Mpc, Om0=0.3, w0=-0.9)
+cosmo_w = FlatwCDM(H0=70 * u.km / u.s / u.Mpc, Om0=0.3, w0=-0.9)
 
 # Evolving w(z) = w0 + wz * z
-cosmo_wz = w0wzCDM(H0=70 * u.km/u.s/u.Mpc, Om0=0.3, Ode0=0.7,
-                   w0=-1.0, wz=0.1)
+cosmo_wz = w0wzCDM(H0=70 * u.km / u.s / u.Mpc, Om0=0.3, Ode0=0.7, w0=-1.0, wz=0.1)
 ```
 
 ## Distance Calculations
@@ -87,7 +86,7 @@ Distance for calculating luminosity from observed flux:
 d_L = cosmo.luminosity_distance(z)
 
 # Calculate absolute magnitude from apparent magnitude
-M = m - 5*np.log10(d_L.to(u.pc).value) + 5
+M = m - 5 * np.log10(d_L.to(u.pc).value) + 5
 ```
 
 ### Angular Diameter Distance
@@ -172,11 +171,11 @@ E_z = cosmo.efunc(z)  # E(z) = H(z)/H0
 Evolution of density parameters with redshift:
 
 ```python
-Om_z = cosmo.Om(z)        # Matter density at z
-Ode_z = cosmo.Ode(z)      # Dark energy density at z
-Ok_z = cosmo.Ok(z)        # Curvature density at z
+Om_z = cosmo.Om(z)  # Matter density at z
+Ode_z = cosmo.Ode(z)  # Dark energy density at z
+Ok_z = cosmo.Ok(z)  # Curvature density at z
 Ogamma_z = cosmo.Ogamma(z)  # Photon density at z
-Onu_z = cosmo.Onu(z)      # Neutrino density at z
+Onu_z = cosmo.Onu(z)  # Neutrino density at z
 ```
 
 ## Critical and Characteristic Densities
@@ -194,13 +193,13 @@ Find redshift corresponding to a specific value:
 from astropy.cosmology import z_at_value
 
 # Find z at specific lookback time
-z = z_at_value(cosmo.lookback_time, 10*u.Gyr)
+z = z_at_value(cosmo.lookback_time, 10 * u.Gyr)
 
 # Find z at specific luminosity distance
-z = z_at_value(cosmo.luminosity_distance, 1000*u.Mpc)
+z = z_at_value(cosmo.luminosity_distance, 1000 * u.Mpc)
 
 # Find z at specific age
-z = z_at_value(cosmo.age, 1*u.Gyr)
+z = z_at_value(cosmo.age, 1 * u.Gyr)
 ```
 
 ## Array Operations
@@ -225,11 +224,11 @@ from astropy.cosmology import FlatLambdaCDM
 
 # With massive neutrinos
 cosmo = FlatLambdaCDM(
-    H0=70 * u.km/u.s/u.Mpc,
+    H0=70 * u.km / u.s / u.Mpc,
     Om0=0.3,
     Tcmb0=2.725 * u.K,
     Neff=3.04,  # Effective number of neutrino species
-    m_nu=[0., 0., 0.06] * u.eV  # Neutrino masses
+    m_nu=[0.0, 0.0, 0.06] * u.eV,  # Neutrino masses
 )
 ```
 
@@ -241,7 +240,7 @@ Cosmology objects are immutable. Create modified copies:
 
 ```python
 # Clone with different H0
-cosmo_new = cosmo.clone(H0=72 * u.km/u.s/u.Mpc)
+cosmo_new = cosmo.clone(H0=72 * u.km / u.s / u.Mpc)
 
 # Clone with modified name
 cosmo_named = cosmo.clone(name="My Custom Cosmology")

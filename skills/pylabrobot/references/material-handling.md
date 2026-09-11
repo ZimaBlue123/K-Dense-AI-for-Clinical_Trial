@@ -21,8 +21,8 @@ hs = HeaterShaker(
     name="heater_shaker_1",
     backend=HamiltonHeaterShakerBackend(),
     size_x=156.0,
-    size_y=  156.0,
-    size_z=18.0
+    size_y=156.0,
+    size_z=18.0,
 )
 
 await hs.setup()
@@ -103,6 +103,7 @@ try:
 
     # Incubate
     import asyncio
+
     await asyncio.sleep(600)  # 10 minutes
 
     # Stop shaking and heating
@@ -147,11 +148,7 @@ from pylabrobot.heating_shaking import HeaterShaker
 from pylabrobot.heating_shaking.inheco import InhecoThermoShakeBackend
 
 hs = HeaterShaker(
-    name="thermoshake",
-    backend=InhecoThermoShakeBackend(),
-    size_x=156.0,
-    size_y=156.0,
-    size_z=18.0
+    name="thermoshake", backend=InhecoThermoShakeBackend(), size_x=156.0, size_y=156.0, size_z=18.0
 )
 
 await hs.setup()
@@ -194,11 +191,7 @@ from pylabrobot.temperature_control.inheco import InhecoBackend
 
 # Create incubator
 incubator = TemperatureController(
-    name="incubator",
-    backend=InhecoBackend(),
-    size_x=156.0,
-    size_y=156.0,
-    size_z=50.0
+    name="incubator", backend=InhecoBackend(), size_x=156.0, size_y=156.0, size_z=50.0
 )
 
 await incubator.setup()
@@ -228,10 +221,7 @@ Cytomat incubators provide automated plate storage with temperature and CO2 cont
 from pylabrobot.incubation import Incubator
 from pylabrobot.incubation.cytomat_backend import CytomatBackend
 
-incubator = Incubator(
-    name="cytomat",
-    backend=CytomatBackend()
-)
+incubator = Incubator(name="cytomat", backend=CytomatBackend())
 
 await incubator.setup()
 ```
@@ -262,10 +252,7 @@ The Agilent VSpin is a vacuum-assisted centrifuge for plate processing.
 from pylabrobot.centrifuge import Centrifuge
 from pylabrobot.centrifuge.vspin import VSpinBackend
 
-centrifuge = Centrifuge(
-    name="vspin",
-    backend=VSpinBackend()
-)
+centrifuge = Centrifuge(name="vspin", backend=VSpinBackend())
 
 await centrifuge.setup()
 ```
@@ -303,8 +290,8 @@ await centrifuge.move_bucket_to_home()
 ```python
 # Run centrifuge
 await centrifuge.spin(
-    speed=2000,      # RPM
-    duration=300     # seconds
+    speed=2000,  # RPM
+    duration=300,  # seconds
 )
 
 # Stop spinning
@@ -368,10 +355,7 @@ PyLabRobot supports Cole Parmer Masterflex peristaltic pumps for fluid transfer.
 from pylabrobot.pumps import Pump
 from pylabrobot.pumps.cole_parmer import ColeParmerMasterflexBackend
 
-pump = Pump(
-    name="masterflex",
-    backend=ColeParmerMasterflexBackend()
-)
+pump = Pump(name="masterflex", backend=ColeParmerMasterflexBackend())
 
 await pump.setup()
 ```
@@ -383,8 +367,8 @@ await pump.setup()
 ```python
 # Run for duration
 await pump.run_for_duration(
-    duration=10,      # seconds
-    speed=50          # % of maximum
+    duration=10,  # seconds
+    speed=50,  # % of maximum
 )
 
 # Run continuously
@@ -399,8 +383,8 @@ await pump.stop()
 ```python
 # Pump specific volume (requires calibration)
 await pump.pump_volume(
-    volume=10,        # mL
-    speed=50          # % of maximum
+    volume=10,  # mL
+    speed=50,  # % of maximum
 )
 ```
 
@@ -425,11 +409,7 @@ Support for Agrowtek pump arrays for multiple simultaneous fluid transfers.
 from pylabrobot.pumps import PumpArray
 from pylabrobot.pumps.agrowtek import AgrowtekBackend
 
-pump_array = PumpArray(
-    name="agrowtek",
-    backend=AgrowtekBackend(),
-    num_pumps=8
-)
+pump_array = PumpArray(name="agrowtek", backend=AgrowtekBackend(), num_pumps=8)
 
 await pump_array.setup()
 ```
@@ -438,18 +418,10 @@ await pump_array.setup()
 
 ```python
 # Run specific pump
-await pump_array.run_pump(
-    pump_number=1,
-    duration=10,
-    speed=50
-)
+await pump_array.run_pump(pump_number=1, duration=10, speed=50)
 
 # Run multiple pumps simultaneously
-await pump_array.run_pumps(
-    pump_numbers=[1, 2, 3],
-    duration=10,
-    speed=50
-)
+await pump_array.run_pumps(pump_numbers=[1, 2, 3], duration=10, speed=50)
 ```
 
 ## Multi-Device Protocols
@@ -499,11 +471,7 @@ async def complex_workflow():
 
         # 5. Transfer supernatant
         await lh.pick_up_tips(tip_rack["A2:H2"])
-        await lh.transfer(
-            plate["A1:H12"],
-            output_plate["A1:H12"],
-            vols=80
-        )
+        await lh.transfer(plate["A1:H12"], output_plate["A1:H12"], vols=80)
         await lh.drop_tips()
 
     finally:
@@ -531,12 +499,7 @@ async def complex_workflow():
 ### Temperature-Controlled Incubation
 
 ```python
-async def incubate_with_shaking(
-    plate,
-    temperature: float,
-    shake_rate: int,
-    duration: int
-):
+async def incubate_with_shaking(plate, temperature: float, shake_rate: int, duration: int):
     """Incubate plate with temperature and shaking"""
 
     hs = HeaterShaker(name="hs", backend=HamiltonHeaterShakerBackend())
@@ -562,12 +525,13 @@ async def incubate_with_shaking(
     finally:
         await hs.stop()
 
+
 # Use in protocol
 await incubate_with_shaking(
     plate=assay_plate,
     temperature=37,
     shake_rate=300,
-    duration=600  # 10 minutes
+    duration=600,  # 10 minutes
 )
 ```
 
@@ -585,15 +549,11 @@ async def process_plates(plate_list: list):
 
     try:
         for i, plate in enumerate(plate_list):
-            print(f"Processing plate {i+1}/{len(plate_list)}")
+            print(f"Processing plate {i + 1}/{len(plate_list)}")
 
             # Transfer samples
-            await lh.pick_up_tips(tip_rack[f"A{i+1}:H{i+1}"])
-            await lh.transfer(
-                source[f"A{i+1}:H{i+1}"],
-                plate["A1:H1"],
-                vols=100
-            )
+            await lh.pick_up_tips(tip_rack[f"A{i + 1}:H{i + 1}"])
+            await lh.transfer(source[f"A{i + 1}:H{i + 1}"], plate["A1:H1"], vols=100)
             await lh.drop_tips()
 
             # Incubate

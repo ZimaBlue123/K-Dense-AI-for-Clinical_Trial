@@ -34,7 +34,7 @@ scvi.model.TOTALVI.setup_anndata(
     adata,
     layer="counts",  # RNA counts
     protein_expression_obsm_key="protein_expression",  # Protein counts
-    batch_key="batch"
+    batch_key="batch",
 )
 
 # Train model
@@ -47,16 +47,12 @@ latent = model.get_latent_representation()
 # Get normalized values for both modalities
 rna_normalized = model.get_normalized_expression()
 protein_normalized = model.get_normalized_expression(
-    transform_batch="batch1",
-    protein_expression=True
+    transform_batch="batch1", protein_expression=True
 )
 
 # Differential expression (works for both RNA and protein)
 rna_de = model.differential_expression(groupby="cell_type")
-protein_de = model.differential_expression(
-    groupby="cell_type",
-    protein_expression=True
-)
+protein_de = model.differential_expression(groupby="cell_type", protein_expression=True)
 ```
 
 **Key Parameters**:
@@ -73,20 +69,14 @@ protein_de = model.differential_expression(
 # Impute missing proteins for RNA-only cells
 # (useful for mapping RNA-seq to CITE-seq reference)
 protein_foreground = model.get_protein_foreground_probability()
-imputed_proteins = model.get_normalized_expression(
-    protein_expression=True,
-    n_samples=25
-)
+imputed_proteins = model.get_normalized_expression(protein_expression=True, n_samples=25)
 ```
 
 **Denoising**:
 ```python
 # Get denoised counts for both modalities
 denoised_rna = model.get_normalized_expression(n_samples=25)
-denoised_protein = model.get_normalized_expression(
-    protein_expression=True,
-    n_samples=25
-)
+denoised_protein = model.get_normalized_expression(protein_expression=True, n_samples=25)
 ```
 
 **Best Practices**:
@@ -131,7 +121,7 @@ denoised_protein = model.get_normalized_expression(
 scvi.model.MULTIVI.setup_anndata(
     adata,
     batch_key="batch",
-    modality_key="modality"  # Column indicating cell modality
+    modality_key="modality",  # Column indicating cell modality
 )
 
 model = scvi.model.MULTIVI(adata)
@@ -142,9 +132,7 @@ latent = model.get_latent_representation()
 
 # Impute missing modalities
 # E.g., predict ATAC for RNA-only cells
-imputed_accessibility = model.get_accessibility_estimates(
-    indices=rna_only_indices
-)
+imputed_accessibility = model.get_accessibility_estimates(indices=rna_only_indices)
 
 # Get normalized expression/accessibility
 rna_normalized = model.get_normalized_expression()
@@ -182,14 +170,10 @@ adata.obs["modality"] = ["RNA"] * n_rna + ["ATAC"] * n_atac
 **Cross-Modality Prediction**:
 ```python
 # Predict peaks from gene expression
-accessibility_from_rna = model.get_accessibility_estimates(
-    indices=rna_only_cells
-)
+accessibility_from_rna = model.get_accessibility_estimates(indices=rna_only_cells)
 
 # Predict genes from accessibility
-expression_from_atac = model.get_normalized_expression(
-    indices=atac_only_cells
-)
+expression_from_atac = model.get_normalized_expression(indices=atac_only_cells)
 ```
 
 **Modality-Specific Analysis**:
@@ -224,7 +208,7 @@ scvi.model.MRVI.setup_anndata(
     adata,
     layer="counts",
     batch_key="batch",
-    sample_key="sample"  # Critical: defines biological samples
+    sample_key="sample",  # Critical: defines biological samples
 )
 
 model = scvi.model.MRVI(adata, n_latent=10, n_latent_sample=5)
@@ -257,11 +241,7 @@ sample_repr = model.get_sample_specific_representation()
 distances = model.get_sample_distances()
 
 # 4. Find sample-enriched genes
-de_results = model.differential_expression(
-    groupby="sample",
-    group1="Disease",
-    group2="Healthy"
-)
+de_results = model.differential_expression(groupby="sample", group1="Disease", group2="Healthy")
 ```
 
 **Use Cases**:
@@ -329,10 +309,7 @@ protein_counts = adata.obsm["protein_expression"]
 
 # 3. Setup totalVI
 scvi.model.TOTALVI.setup_anndata(
-    adata,
-    layer="counts",
-    protein_expression_obsm_key="protein_expression",
-    batch_key="batch"
+    adata, layer="counts", protein_expression_obsm_key="protein_expression", batch_key="batch"
 )
 
 # 4. Train
@@ -349,17 +326,10 @@ sc.tl.umap(adata)
 sc.tl.leiden(adata, resolution=0.5)
 
 # 7. Differential expression for both modalities
-rna_de = model.differential_expression(
-    groupby="leiden",
-    group1="0",
-    group2="1"
-)
+rna_de = model.differential_expression(groupby="leiden", group1="0", group2="1")
 
 protein_de = model.differential_expression(
-    groupby="leiden",
-    group1="0",
-    group2="1",
-    protein_expression=True
+    groupby="leiden", group1="0", group2="1", protein_expression=True
 )
 
 # 8. Save model

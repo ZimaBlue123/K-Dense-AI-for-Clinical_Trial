@@ -63,9 +63,7 @@ def preprocess_recording(
         print("Detecting bad channels...")
         bad_channel_ids, bad_labels = si.detect_bad_channels(rec)
         if len(bad_channel_ids) > 0:
-            print(
-                f"  Removing {len(bad_channel_ids)} bad channels: {bad_channel_ids[:10]}..."
-            )
+            print(f"  Removing {len(bad_channel_ids)} bad channels: {bad_channel_ids[:10]}...")
             rec = rec.remove_channels(bad_channel_ids)
 
     # Common median reference
@@ -97,36 +95,20 @@ def preprocess_recording(
 def main():
     parser = argparse.ArgumentParser(description="Preprocess Neuropixels recording")
     parser.add_argument("input", help="Path to input recording")
-    parser.add_argument(
-        "--output", "-o", default="preprocessed/", help="Output directory"
-    )
+    parser.add_argument("--output", "-o", default="preprocessed/", help="Output directory")
     parser.add_argument(
         "--format",
         "-f",
         default="auto",
         choices=["auto", "spikeglx", "openephys", "nwb"],
     )
-    parser.add_argument(
-        "--stream-id", default=None, help="Stream ID for multi-probe recordings"
-    )
-    parser.add_argument(
-        "--freq-min", type=float, default=300, help="Highpass cutoff (Hz)"
-    )
-    parser.add_argument(
-        "--freq-max", type=float, default=6000, help="Lowpass cutoff (Hz)"
-    )
-    parser.add_argument(
-        "--no-phase-shift", action="store_true", help="Skip phase shift correction"
-    )
-    parser.add_argument(
-        "--no-cmr", action="store_true", help="Skip common median reference"
-    )
-    parser.add_argument(
-        "--no-bad-channel", action="store_true", help="Skip bad channel detection"
-    )
-    parser.add_argument(
-        "--n-jobs", type=int, default=-1, help="Number of parallel jobs"
-    )
+    parser.add_argument("--stream-id", default=None, help="Stream ID for multi-probe recordings")
+    parser.add_argument("--freq-min", type=float, default=300, help="Highpass cutoff (Hz)")
+    parser.add_argument("--freq-max", type=float, default=6000, help="Lowpass cutoff (Hz)")
+    parser.add_argument("--no-phase-shift", action="store_true", help="Skip phase shift correction")
+    parser.add_argument("--no-cmr", action="store_true", help="Skip common median reference")
+    parser.add_argument("--no-bad-channel", action="store_true", help="Skip bad channel detection")
+    parser.add_argument("--n-jobs", type=int, default=-1, help="Number of parallel jobs")
 
     args = parser.parse_args()
 

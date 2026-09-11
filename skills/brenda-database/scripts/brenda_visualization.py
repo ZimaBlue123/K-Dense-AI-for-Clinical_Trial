@@ -74,9 +74,7 @@ def validate_dependencies():
         raise ImportError(f"Missing required dependencies: {', '.join(missing)}")
 
 
-def plot_kinetic_parameters(
-    ec_number: str, save_path: str = None, show_plot: bool = True
-) -> str:
+def plot_kinetic_parameters(ec_number: str, save_path: str = None, show_plot: bool = True) -> str:
     """Plot kinetic parameter distributions for an enzyme."""
     validate_dependencies()
 
@@ -101,9 +99,7 @@ def plot_kinetic_parameters(
 
         # Create figure with subplots
         fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(15, 12))
-        fig.suptitle(
-            f"Kinetic Parameters for EC {ec_number}", fontsize=16, fontweight="bold"
-        )
+        fig.suptitle(f"Kinetic Parameters for EC {ec_number}", fontsize=16, fontweight="bold")
 
         # Extract data
         km_values = [entry["km_value_numeric"] for entry in parsed_entries]
@@ -133,10 +129,7 @@ def plot_kinetic_parameters(
         if PANDAS_AVAILABLE:
             df = pd.DataFrame({"Km": km_values, "Organism": organisms})
             organism_means = (
-                df.groupby("Organism")["Km"]
-                .mean()
-                .sort_values(ascending=False)
-                .head(10)
+                df.groupby("Organism")["Km"].mean().sort_values(ascending=False).head(10)
             )
 
             organism_means.plot(kind="bar", ax=ax2)
@@ -148,10 +141,7 @@ def plot_kinetic_parameters(
         if PANDAS_AVAILABLE:
             df = pd.DataFrame({"Km": km_values, "Substrate": substrates})
             substrate_means = (
-                df.groupby("Substrate")["Km"]
-                .mean()
-                .sort_values(ascending=False)
-                .head(10)
+                df.groupby("Substrate")["Km"].mean().sort_values(ascending=False).head(10)
             )
 
             substrate_means.plot(kind="bar", ax=ax3)
@@ -162,11 +152,7 @@ def plot_kinetic_parameters(
         # Plot 4: Box plot by organism (top 5)
         if PANDAS_AVAILABLE:
             top_organisms = (
-                df.groupby("Organism")["Km"]
-                .count()
-                .sort_values(ascending=False)
-                .head(5)
-                .index
+                df.groupby("Organism")["Km"].count().sort_values(ascending=False).head(5).index
             )
             top_data = df[df["Organism"].isin(top_organisms)]
 
@@ -217,20 +203,14 @@ def plot_organism_comparison(
 
         # Create figure
         fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(15, 12))
-        fig.suptitle(
-            f"Organism Comparison for EC {ec_number}", fontsize=16, fontweight="bold"
-        )
+        fig.suptitle(f"Organism Comparison for EC {ec_number}", fontsize=16, fontweight="bold")
 
         # Extract data
         names = [c["organism"] for c in valid_data]
         avg_kms = [c.get("average_km", 0) for c in valid_data if c.get("average_km")]
-        optimal_phs = [
-            c.get("optimal_ph", 0) for c in valid_data if c.get("optimal_ph")
-        ]
+        optimal_phs = [c.get("optimal_ph", 0) for c in valid_data if c.get("optimal_ph")]
         optimal_temps = [
-            c.get("optimal_temperature", 0)
-            for c in valid_data
-            if c.get("optimal_temperature")
+            c.get("optimal_temperature", 0) for c in valid_data if c.get("optimal_temperature")
         ]
         data_points = [c.get("data_points", 0) for c in valid_data]
 
@@ -280,9 +260,7 @@ def plot_organism_comparison(
         return save_path
 
 
-def plot_pH_profiles(
-    ec_number: str, save_path: str = None, show_plot: bool = True
-) -> str:
+def plot_pH_profiles(ec_number: str, save_path: str = None, show_plot: bool = True) -> str:
     """Plot pH activity profiles for an enzyme."""
     validate_dependencies()
 
@@ -310,9 +288,7 @@ def plot_pH_profiles(
 
         # Create figure
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
-        fig.suptitle(
-            f"pH Activity Profiles for EC {ec_number}", fontsize=16, fontweight="bold"
-        )
+        fig.suptitle(f"pH Activity Profiles for EC {ec_number}", fontsize=16, fontweight="bold")
 
         # Extract data
         ph_values = [item[0] for item in ph_kms]
@@ -376,9 +352,7 @@ def plot_pH_profiles(
         return save_path
 
 
-def plot_temperature_profiles(
-    ec_number: str, save_path: str = None, show_plot: bool = True
-) -> str:
+def plot_temperature_profiles(ec_number: str, save_path: str = None, show_plot: bool = True) -> str:
     """Plot temperature activity profiles for an enzyme."""
     validate_dependencies()
 
@@ -425,9 +399,7 @@ def plot_temperature_profiles(
 
         # Add trend line
         if len(temp_values) > 2:
-            z = np.polyfit(
-                temp_values, km_values, 2
-            )  # Quadratic fit for temperature optima
+            z = np.polyfit(temp_values, km_values, 2)  # Quadratic fit for temperature optima
             p = np.poly1d(z)
             x_smooth = np.linspace(min(temp_values), max(temp_values), 100)
             ax1.plot(x_smooth, p(x_smooth), "r--", alpha=0.8, label="Polynomial fit")
@@ -497,9 +469,7 @@ def plot_substrate_specificity(
 
         # Create figure
         fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(15, 12))
-        fig.suptitle(
-            f"Substrate Specificity for EC {ec_number}", fontsize=16, fontweight="bold"
-        )
+        fig.suptitle(f"Substrate Specificity for EC {ec_number}", fontsize=16, fontweight="bold")
 
         # Extract data
         substrates = [s["name"] for s in specificity]
@@ -508,9 +478,7 @@ def plot_substrate_specificity(
 
         # Get top substrates for plotting
         if PANDAS_AVAILABLE and kms:
-            df = pd.DataFrame(
-                {"Substrate": substrates, "Km": kms, "DataPoints": data_points}
-            )
+            df = pd.DataFrame({"Substrate": substrates, "Km": kms, "DataPoints": data_points})
             top_substrates = df.nlargest(15, "DataPoints")  # Top 15 by data points
 
             # Plot 1: Km values for top substrates (sorted by affinity)
@@ -628,9 +596,7 @@ def plot_michaelis_menten(
 
         # Plot 1: Michaelis-Menten curve
         ax1.plot(substrate_range, rates, "b-", linewidth=2, label="Michaelis-Menten")
-        ax1.axhline(
-            y=rates[-1] * 0.5, color="r", linestyle="--", alpha=0.7, label="0.5 × Vmax"
-        )
+        ax1.axhline(y=rates[-1] * 0.5, color="r", linestyle="--", alpha=0.7, label="0.5 × Vmax")
         ax1.axvline(x=km, color="g", linestyle="--", alpha=0.7, label=f"Km = {km:.2f}")
         ax1.set_xlabel("Substrate Concentration (mM)")
         ax1.set_ylabel("Reaction Rate")
@@ -642,9 +608,7 @@ def plot_michaelis_menten(
         km_rate = (
             substrate_range[km == min(substrate_range, key=lambda x: abs(x - km))]
             * (vmax if vmax else kcat * enzyme_conc if kcat else 1.0)
-        ) / (
-            km + substrate_range[km == min(substrate_range, key=lambda x: abs(x - km))]
-        )
+        ) / (km + substrate_range[km == min(substrate_range, key=lambda x: abs(x - km))])
         ax1.plot(km, km_rate, "ro", markersize=8)
 
         # Plot 2: Lineweaver-Burk plot (double reciprocal)
@@ -700,8 +664,7 @@ def plot_michaelis_menten(
             plt.close()
 
         return (
-            save_path
-            or f"michaelis_menten_{ec_number.replace('.', '_')}_{substrate or 'all'}.png"
+            save_path or f"michaelis_menten_{ec_number.replace('.', '_')}_{substrate or 'all'}.png"
         )
 
     except Exception as e:
@@ -742,9 +705,7 @@ def create_heatmap_data(ec_number: str, parameters: list[str] = None) -> dict[st
                 heatmap_data["organisms"].append(comp["organism"])
                 heatmap_data["average_km"].append(comp.get("average_km", 0))
                 heatmap_data["optimal_ph"].append(comp.get("optimal_ph", 0))
-                heatmap_data["optimal_temperature"].append(
-                    comp.get("optimal_temperature", 0)
-                )
+                heatmap_data["optimal_temperature"].append(comp.get("optimal_temperature", 0))
                 heatmap_data["data_points"].append(comp.get("data_points", 0))
 
         return heatmap_data
@@ -784,9 +745,7 @@ def plot_heatmap(ec_number: str, save_path: str = None, show_plot: bool = True) 
         df_normalized = df.copy()
         for col in ["Avg Km (mM)", "Optimal pH", "Optimal Temp (°C)", "Data Points"]:
             if col in df.columns:
-                df_normalized[col] = (df[col] - df[col].min()) / (
-                    df[col].max() - df[col].min()
-                )
+                df_normalized[col] = (df[col] - df[col].min()) / (df[col].max() - df[col].min())
 
         # Create figure
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 8))
@@ -881,7 +840,9 @@ def generate_summary_plots(ec_number: str, save_dir: str = None) -> list[str]:
         if specificity:
             most_common = max(specificity, key=lambda x: x.get("data_points", 0))
             substrate_name = most_common["name"].split()[0]  # Take first word
-            save_path = f"{save_dir}/michaelis_menten_{ec_number.replace('.', '_')}_{substrate_name}.png"
+            save_path = (
+                f"{save_dir}/michaelis_menten_{ec_number.replace('.', '_')}_{substrate_name}.png"
+            )
             result_path = plot_michaelis_menten(
                 ec_number, substrate_name, save_path=save_path, show_plot=False
             )

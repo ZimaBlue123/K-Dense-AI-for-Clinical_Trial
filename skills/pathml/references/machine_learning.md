@@ -33,12 +33,12 @@ import torch
 # Load pre-trained model
 model = HoVerNet(
     num_types=5,  # Number of nucleus types
-    mode='fast',  # 'fast' or 'original'
-    pretrained=True  # Load pre-trained weights
+    mode="fast",  # 'fast' or 'original'
+    pretrained=True,  # Load pre-trained weights
 )
 
 # Move to GPU if available
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = model.to(device)
 
 # Inference on tile
@@ -60,9 +60,7 @@ from pathml.ml import hovernet_postprocess
 
 # Convert model outputs to instance segmentation
 instance_map, type_map = hovernet_postprocess(
-    np_pred=output['np'],
-    hv_pred=output['hv'],
-    nc_pred=output['nc']
+    np_pred=output["np"], hv_pred=output["hv"], nc_pred=output["nc"]
 )
 
 # instance_map: Each nucleus has unique ID
@@ -82,17 +80,13 @@ instance_map, type_map = hovernet_postprocess(
 from pathml.ml import HACTNet
 
 # Load model
-model = HACTNet(
-    num_classes_coarse=3,
-    num_classes_fine=8,
-    pretrained=True
-)
+model = HACTNet(num_classes_coarse=3, num_classes_fine=8, pretrained=True)
 
 # Inference
 output = model(tile_image)
-coarse_pred = output['coarse']  # Broad categories
-fine_pred = output['fine']  # Specific cell types
-uncertainty = output['uncertainty']  # Prediction confidence
+coarse_pred = output["coarse"]  # Broad categories
+fine_pred = output["fine"]  # Specific cell types
+uncertainty = output["uncertainty"]  # Prediction confidence
 ```
 
 ## Training Workflows
@@ -110,7 +104,7 @@ from pathml.core import SlideDataset
 tile_dataset = TileDataset(
     slide_dataset,
     tile_size=256,
-    transform=None  # Optional augmentation transforms
+    transform=None,  # Optional augmentation transforms
 )
 
 # Access tiles
@@ -127,7 +121,7 @@ data_module = PathMLDataModule(
     val_dataset=val_tile_dataset,
     test_dataset=test_tile_dataset,
     batch_size=32,
-    num_workers=4
+    num_workers=4,
 )
 
 # Use with PyTorch Lightning
@@ -148,18 +142,19 @@ from pathml.ml.datasets import PanNukeDataModule
 
 # 1. Prepare data
 data_module = PanNukeDataModule(
-    data_dir='path/to/pannuke',
+    data_dir="path/to/pannuke",
     batch_size=8,
     num_workers=4,
-    tissue_types=['Breast', 'Colon']  # Specific tissue types
+    tissue_types=["Breast", "Colon"],  # Specific tissue types
 )
 
 # 2. Initialize model
 model = HoVerNet(
     num_types=5,
-    mode='fast',
-    pretrained=False  # Train from scratch or use pretrained=True for fine-tuning
+    mode="fast",
+    pretrained=False,  # Train from scratch or use pretrained=True for fine-tuning
 )
+
 
 # 3. Define loss function
 class HoVerNetLoss(nn.Module):
@@ -171,36 +166,30 @@ class HoVerNetLoss(nn.Module):
 
     def forward(self, output, target):
         # Nuclear pixel branch loss
-        np_loss = self.bce_loss(output['np'], target['np'])
+        np_loss = self.bce_loss(output["np"], target["np"])
 
         # Horizontal-vertical branch loss
-        hv_loss = self.mse_loss(output['hv'], target['hv'])
+        hv_loss = self.mse_loss(output["hv"], target["hv"])
 
         # Classification branch loss
-        nc_loss = self.ce_loss(output['nc'], target['nc'])
+        nc_loss = self.ce_loss(output["nc"], target["nc"])
 
         # Combined loss
         total_loss = np_loss + hv_loss + 2.0 * nc_loss
-        return total_loss, {'np': np_loss, 'hv': hv_loss, 'nc': nc_loss}
+        return total_loss, {"np": np_loss, "hv": hv_loss, "nc": nc_loss}
+
 
 criterion = HoVerNetLoss()
 
 # 4. Configure optimizer
-optimizer = torch.optim.Adam(
-    model.parameters(),
-    lr=1e-4,
-    weight_decay=1e-5
-)
+optimizer = torch.optim.Adam(model.parameters(), lr=1e-4, weight_decay=1e-5)
 
 scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
-    optimizer,
-    mode='min',
-    factor=0.5,
-    patience=10
+    optimizer, mode="min", factor=0.5, patience=10
 )
 
 # 5. Training loop
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = model.to(device)
 
 num_epochs = 100
@@ -209,11 +198,11 @@ for epoch in range(num_epochs):
     train_loss = 0.0
 
     for batch in data_module.train_dataloader():
-        images = batch['image'].to(device)
+        images = batch["image"].to(device)
         targets = {
-            'np': batch['np_map'].to(device),
-            'hv': batch['hv_map'].to(device),
-            'nc': batch['type_map'].to(device)
+            "np": batch["np_map"].to(device),
+            "hv": batch["hv_map"].to(device),
+            "nc": batch["type_map"].to(device),
         }
 
         optimizer.zero_grad()
@@ -230,11 +219,11 @@ for epoch in range(num_epochs):
     val_loss = 0.0
     with torch.no_grad():
         for batch in data_module.val_dataloader():
-            images = batch['image'].to(device)
+            images = batch["image"].to(device)
             targets = {
-                'np': batch['np_map'].to(device),
-                'hv': batch['hv_map'].to(device),
-                'nc': batch['type_map'].to(device)
+                "np": batch["np_map"].to(device),
+                "hv": batch["hv_map"].to(device),
+                "nc": batch["type_map"].to(device),
             }
             outputs = model(images)
             loss, _ = criterion(outputs, targets)
@@ -242,18 +231,21 @@ for epoch in range(num_epochs):
 
     scheduler.step(val_loss)
 
-    print(f"Epoch {epoch+1}/{num_epochs}")
-    print(f"  Train Loss: {train_loss/len(data_module.train_dataloader()):.4f}")
-    print(f"  Val Loss: {val_loss/len(data_module.val_dataloader()):.4f}")
+    print(f"Epoch {epoch + 1}/{num_epochs}")
+    print(f"  Train Loss: {train_loss / len(data_module.train_dataloader()):.4f}")
+    print(f"  Val Loss: {val_loss / len(data_module.val_dataloader()):.4f}")
 
     # Save checkpoint
     if (epoch + 1) % 10 == 0:
-        torch.save({
-            'epoch': epoch,
-            'model_state_dict': model.state_dict(),
-            'optimizer_state_dict': optimizer.state_dict(),
-            'loss': val_loss,
-        }, f'hovernet_checkpoint_epoch_{epoch+1}.pth')
+        torch.save(
+            {
+                "epoch": epoch,
+                "model_state_dict": model.state_dict(),
+                "optimizer_state_dict": optimizer.state_dict(),
+                "loss": val_loss,
+            },
+            f"hovernet_checkpoint_epoch_{epoch + 1}.pth",
+        )
 ```
 
 ### PyTorch Lightning Integration
@@ -264,6 +256,7 @@ PathML models integrate with PyTorch Lightning for streamlined training:
 import pytorch_lightning as pl
 from pathml.ml import HoVerNet
 from pathml.ml.datasets import PanNukeDataModule
+
 
 class HoVerNetModule(pl.LightningModule):
     def __init__(self, num_types=5, lr=1e-4):
@@ -276,63 +269,53 @@ class HoVerNetModule(pl.LightningModule):
         return self.model(x)
 
     def training_step(self, batch, batch_idx):
-        images = batch['image']
-        targets = {
-            'np': batch['np_map'],
-            'hv': batch['hv_map'],
-            'nc': batch['type_map']
-        }
+        images = batch["image"]
+        targets = {"np": batch["np_map"], "hv": batch["hv_map"], "nc": batch["type_map"]}
         outputs = self(images)
         loss, loss_dict = self.criterion(outputs, targets)
 
         # Log metrics
-        self.log('train_loss', loss, prog_bar=True)
+        self.log("train_loss", loss, prog_bar=True)
         for key, val in loss_dict.items():
-            self.log(f'train_{key}_loss', val)
+            self.log(f"train_{key}_loss", val)
 
         return loss
 
     def validation_step(self, batch, batch_idx):
-        images = batch['image']
-        targets = {
-            'np': batch['np_map'],
-            'hv': batch['hv_map'],
-            'nc': batch['type_map']
-        }
+        images = batch["image"]
+        targets = {"np": batch["np_map"], "hv": batch["hv_map"], "nc": batch["type_map"]}
         outputs = self(images)
         loss, loss_dict = self.criterion(outputs, targets)
 
-        self.log('val_loss', loss, prog_bar=True)
+        self.log("val_loss", loss, prog_bar=True)
         for key, val in loss_dict.items():
-            self.log(f'val_{key}_loss', val)
+            self.log(f"val_{key}_loss", val)
 
         return loss
 
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(self.parameters(), lr=self.lr)
         scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
-            optimizer, mode='min', factor=0.5, patience=10
+            optimizer, mode="min", factor=0.5, patience=10
         )
         return {
-            'optimizer': optimizer,
-            'lr_scheduler': {
-                'scheduler': scheduler,
-                'monitor': 'val_loss'
-            }
+            "optimizer": optimizer,
+            "lr_scheduler": {"scheduler": scheduler, "monitor": "val_loss"},
         }
 
+
 # Train with PyTorch Lightning
-data_module = PanNukeDataModule(data_dir='path/to/pannuke', batch_size=8)
+data_module = PanNukeDataModule(data_dir="path/to/pannuke", batch_size=8)
 model = HoVerNetModule(num_types=5, lr=1e-4)
 
 trainer = pl.Trainer(
     max_epochs=100,
-    accelerator='gpu',
+    accelerator="gpu",
     devices=1,
     callbacks=[
-        pl.callbacks.ModelCheckpoint(monitor='val_loss', mode='min'),
-        pl.callbacks.EarlyStopping(monitor='val_loss', patience=20)
-    ]
+        pl.callbacks.ModelCheckpoint(monitor="val_loss", mode="min"),
+        pl.callbacks.EarlyStopping(monitor="val_loss", patience=20),
+    ],
 )
 
 trainer.fit(model, data_module)
@@ -351,11 +334,11 @@ from pathml.ml.datasets import PanNukeDataModule
 
 # Load PanNuke dataset
 pannuke = PanNukeDataModule(
-    data_dir='path/to/pannuke',
+    data_dir="path/to/pannuke",
     batch_size=16,
     num_workers=4,
     tissue_types=None,  # Use all tissue types, or specify list
-    fold='all'  # 'fold1', 'fold2', 'fold3', or 'all'
+    fold="all",  # 'fold1', 'fold2', 'fold3', or 'all'
 )
 
 # Access dataloaders
@@ -365,12 +348,12 @@ test_loader = pannuke.test_dataloader()
 
 # Batch structure
 for batch in train_loader:
-    images = batch['image']  # Shape: (B, 3, 256, 256)
-    inst_map = batch['inst_map']  # Instance segmentation map
-    type_map = batch['type_map']  # Cell type map
-    np_map = batch['np_map']  # Nuclear pixel map
-    hv_map = batch['hv_map']  # Horizontal-vertical distance maps
-    tissue_type = batch['tissue_type']  # Tissue category
+    images = batch["image"]  # Shape: (B, 3, 256, 256)
+    inst_map = batch["inst_map"]  # Instance segmentation map
+    type_map = batch["type_map"]  # Cell type map
+    np_map = batch["np_map"]  # Nuclear pixel map
+    hv_map = batch["hv_map"]  # Horizontal-vertical distance maps
+    tissue_type = batch["tissue_type"]  # Tissue category
 ```
 
 **Tissue types available:**
@@ -385,10 +368,10 @@ from pathml.ml.datasets import TCGADataModule
 
 # Load TCGA dataset
 tcga = TCGADataModule(
-    data_dir='path/to/tcga',
-    cancer_type='BRCA',  # Breast cancer
+    data_dir="path/to/tcga",
+    cancer_type="BRCA",  # Breast cancer
     batch_size=32,
-    tile_size=224
+    tile_size=224,
 )
 ```
 
@@ -401,10 +384,11 @@ from torch.utils.data import Dataset
 import numpy as np
 from pathlib import Path
 
+
 class CustomPathologyDataset(Dataset):
     def __init__(self, data_dir, transform=None):
         self.data_dir = Path(data_dir)
-        self.image_paths = list(self.data_dir.glob('images/*.png'))
+        self.image_paths = list(self.data_dir.glob("images/*.png"))
         self.transform = transform
 
     def __len__(self):
@@ -416,7 +400,7 @@ class CustomPathologyDataset(Dataset):
         image = np.array(Image.open(image_path))
 
         # Load corresponding annotation
-        annot_path = self.data_dir / 'annotations' / f'{image_path.stem}.npy'
+        annot_path = self.data_dir / "annotations" / f"{image_path.stem}.npy"
         annotation = np.load(annot_path)
 
         # Apply transforms
@@ -424,13 +408,14 @@ class CustomPathologyDataset(Dataset):
             image = self.transform(image)
 
         return {
-            'image': torch.from_numpy(image).permute(2, 0, 1).float(),
-            'annotation': torch.from_numpy(annotation).long(),
-            'path': str(image_path)
+            "image": torch.from_numpy(image).permute(2, 0, 1).float(),
+            "annotation": torch.from_numpy(annotation).long(),
+            "path": str(image_path),
         }
 
+
 # Use in PathML workflow
-dataset = CustomPathologyDataset('path/to/data')
+dataset = CustomPathologyDataset("path/to/data")
 dataloader = DataLoader(dataset, batch_size=16, shuffle=True, num_workers=4)
 ```
 
@@ -443,20 +428,21 @@ import albumentations as A
 from albumentations.pytorch import ToTensorV2
 
 # Define augmentation pipeline
-train_transform = A.Compose([
-    A.RandomRotate90(p=0.5),
-    A.Flip(p=0.5),
-    A.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1, p=0.5),
-    A.GaussianBlur(blur_limit=(3, 7), p=0.3),
-    A.ElasticTransform(alpha=1, sigma=50, alpha_affine=50, p=0.3),
-    A.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-    ToTensorV2()
-])
+train_transform = A.Compose(
+    [
+        A.RandomRotate90(p=0.5),
+        A.Flip(p=0.5),
+        A.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1, p=0.5),
+        A.GaussianBlur(blur_limit=(3, 7), p=0.3),
+        A.ElasticTransform(alpha=1, sigma=50, alpha_affine=50, p=0.3),
+        A.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+        ToTensorV2(),
+    ]
+)
 
-val_transform = A.Compose([
-    A.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-    ToTensorV2()
-])
+val_transform = A.Compose(
+    [A.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]), ToTensorV2()]
+)
 
 # Apply to dataset
 train_dataset = TileDataset(slide_dataset, transform=train_transform)
@@ -470,11 +456,7 @@ val_dataset = TileDataset(val_slide_dataset, transform=val_transform)
 Evaluate model performance with pathology-specific metrics:
 
 ```python
-from pathml.ml.metrics import (
-    dice_coefficient,
-    aggregated_jaccard_index,
-    panoptic_quality
-)
+from pathml.ml.metrics import dice_coefficient, aggregated_jaccard_index, panoptic_quality
 
 # Dice coefficient for segmentation
 dice = dice_coefficient(pred_mask, true_mask)
@@ -502,21 +484,16 @@ all_targets = []
 
 with torch.no_grad():
     for batch in test_loader:
-        images = batch['image'].to(device)
+        images = batch["image"].to(device)
         outputs = model(images)
 
         # Post-process predictions
         for i in range(len(images)):
             inst_pred, type_pred = hovernet_postprocess(
-                outputs['np'][i],
-                outputs['hv'][i],
-                outputs['nc'][i]
+                outputs["np"][i], outputs["hv"][i], outputs["nc"][i]
             )
-            all_preds.append({'inst': inst_pred, 'type': type_pred})
-            all_targets.append({
-                'inst': batch['inst_map'][i],
-                'type': batch['type_map'][i]
-            })
+            all_preds.append({"inst": inst_pred, "type": type_pred})
+            all_targets.append({"inst": batch["inst_map"][i], "type": batch["type_map"][i]})
 
 # Compute metrics
 results = evaluate_hovernet(all_preds, all_targets)
@@ -547,17 +524,17 @@ dummy_input = torch.randn(1, 3, 256, 256)
 torch.onnx.export(
     model,
     dummy_input,
-    'hovernet_model.onnx',
+    "hovernet_model.onnx",
     export_params=True,
     opset_version=11,
-    input_names=['input'],
-    output_names=['np_output', 'hv_output', 'nc_output'],
+    input_names=["input"],
+    output_names=["np_output", "hv_output", "nc_output"],
     dynamic_axes={
-        'input': {0: 'batch_size'},
-        'np_output': {0: 'batch_size'},
-        'hv_output': {0: 'batch_size'},
-        'nc_output': {0: 'batch_size'}
-    }
+        "input": {0: "batch_size"},
+        "np_output": {0: "batch_size"},
+        "hv_output": {0: "batch_size"},
+        "nc_output": {0: "batch_size"},
+    },
 )
 ```
 
@@ -568,7 +545,7 @@ import onnxruntime as ort
 import numpy as np
 
 # Load ONNX model
-session = ort.InferenceSession('hovernet_model.onnx')
+session = ort.InferenceSession("hovernet_model.onnx")
 
 # Prepare input
 input_name = session.get_inputs()[0].name
@@ -588,6 +565,7 @@ inst_map, type_map = hovernet_postprocess(np_output, hv_output, nc_output)
 from pathml.core import SlideData
 from pathml.preprocessing import Pipeline
 import onnxruntime as ort
+
 
 def run_onnx_inference_pipeline(slide_path, onnx_model_path):
     # Load slide
@@ -610,16 +588,13 @@ def run_onnx_inference_pipeline(slide_path, onnx_model_path):
         # Post-process
         inst_map, type_map = hovernet_postprocess(*outputs)
 
-        results.append({
-            'coords': tile.coords,
-            'instance_map': inst_map,
-            'type_map': type_map
-        })
+        results.append({"coords": tile.coords, "instance_map": inst_map, "type_map": type_map})
 
     return results
 
+
 # Run on slide
-results = run_onnx_inference_pipeline('slide.svs', 'hovernet_model.onnx')
+results = run_onnx_inference_pipeline("slide.svs", "hovernet_model.onnx")
 ```
 
 ## Transfer Learning
@@ -634,14 +609,11 @@ model = HoVerNet(num_types=5, pretrained=True)
 
 # Freeze encoder layers for initial training
 for name, param in model.named_parameters():
-    if 'encoder' in name:
+    if "encoder" in name:
         param.requires_grad = False
 
 # Fine-tune only decoder and classification heads
-optimizer = torch.optim.Adam(
-    filter(lambda p: p.requires_grad, model.parameters()),
-    lr=1e-4
-)
+optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=1e-4)
 
 # Train for a few epochs
 train_for_n_epochs(model, train_loader, optimizer, num_epochs=10)

@@ -7,6 +7,7 @@ NetworkX supports four main graph classes:
 ### Graph (Undirected)
 ```python
 import networkx as nx
+
 G = nx.Graph()
 ```
 - Undirected graphs with single edges between nodes
@@ -52,11 +53,8 @@ G.add_nodes_from(range(100, 110))
 
 ### Nodes with Attributes
 ```python
-G.add_node(1, time='5pm', color='red')
-G.add_nodes_from([
-    (4, {"color": "red"}),
-    (5, {"color": "blue", "weight": 1.5})
-])
+G.add_node(1, time="5pm", color="red")
+G.add_nodes_from([(4, {"color": "red"}), (5, {"color": "blue", "weight": 1.5})])
 ```
 
 ### Important Node Properties
@@ -69,7 +67,7 @@ G.add_nodes_from([
 ### Single Edge Addition
 ```python
 G.add_edge(1, 2)
-G.add_edge('gene_A', 'gene_B')
+G.add_edge("gene_A", "gene_B")
 ```
 
 ### Bulk Edge Addition
@@ -80,19 +78,17 @@ G.add_edges_from(edge_list)
 
 ### Edges with Attributes
 ```python
-G.add_edge(1, 2, weight=4.7, relation='interacts')
-G.add_edges_from([
-    (1, 2, {'weight': 4.7}),
-    (2, 3, {'weight': 8.2, 'color': 'blue'})
-])
+G.add_edge(1, 2, weight=4.7, relation="interacts")
+G.add_edges_from([(1, 2, {"weight": 4.7}), (2, 3, {"weight": 8.2, "color": "blue"})])
 ```
 
 ### Adding from Edge List with Attributes
 ```python
 # From pandas DataFrame
 import pandas as pd
-df = pd.DataFrame({'source': [1, 2], 'target': [2, 3], 'weight': [4.7, 8.2]})
-G = nx.from_pandas_edgelist(df, 'source', 'target', edge_attr='weight')
+
+df = pd.DataFrame({"source": [1, 2], "target": [2, 3], "weight": [4.7, 8.2]})
+G = nx.from_pandas_edgelist(df, "source", "target", edge_attr="weight")
 ```
 
 ## Examining Graph Structure
@@ -100,25 +96,25 @@ G = nx.from_pandas_edgelist(df, 'source', 'target', edge_attr='weight')
 ### Basic Properties
 ```python
 # Get collections
-G.nodes              # NodeView of all nodes
-G.edges              # EdgeView of all edges
-G.adj                # AdjacencyView for neighbor relationships
+G.nodes  # NodeView of all nodes
+G.edges  # EdgeView of all edges
+G.adj  # AdjacencyView for neighbor relationships
 
 # Count elements
 G.number_of_nodes()  # Total node count
 G.number_of_edges()  # Total edge count
-len(G)              # Number of nodes (shorthand)
+len(G)  # Number of nodes (shorthand)
 
 # Degree information
-G.degree()          # DegreeView of all node degrees
-G.degree(1)         # Degree of specific node
-list(G.degree())    # List of (node, degree) pairs
+G.degree()  # DegreeView of all node degrees
+G.degree(1)  # Degree of specific node
+list(G.degree())  # List of (node, degree) pairs
 ```
 
 ### Checking Existence
 ```python
 # Check if node exists
-1 in G              # Returns True/False
+1 in G  # Returns True/False
 G.has_node(1)
 
 # Check if edge exists
@@ -129,11 +125,11 @@ G.has_edge(1, 2)
 ```python
 # Get neighbors of node 1
 list(G.neighbors(1))
-list(G[1])          # Dictionary-like access
+list(G[1])  # Dictionary-like access
 
 # For directed graphs
 list(G.predecessors(1))  # Incoming edges
-list(G.successors(1))    # Outgoing edges
+list(G.successors(1))  # Outgoing edges
 ```
 
 ### Iterating Over Elements
@@ -171,48 +167,48 @@ G.remove_edges_from([(1, 2), (2, 3)])
 
 ### Clearing Graph
 ```python
-G.clear()           # Remove all nodes and edges
-G.clear_edges()     # Remove only edges, keep nodes
+G.clear()  # Remove all nodes and edges
+G.clear_edges()  # Remove only edges, keep nodes
 ```
 
 ## Attributes and Metadata
 
 ### Graph-Level Attributes
 ```python
-G.graph['name'] = 'Social Network'
-G.graph['date'] = '2025-01-15'
+G.graph["name"] = "Social Network"
+G.graph["date"] = "2025-01-15"
 print(G.graph)
 ```
 
 ### Node Attributes
 ```python
 # Set at creation
-G.add_node(1, time='5pm', weight=0.5)
+G.add_node(1, time="5pm", weight=0.5)
 
 # Set after creation
-G.nodes[1]['time'] = '6pm'
-nx.set_node_attributes(G, {1: 'red', 2: 'blue'}, 'color')
+G.nodes[1]["time"] = "6pm"
+nx.set_node_attributes(G, {1: "red", 2: "blue"}, "color")
 
 # Get attributes
 G.nodes[1]
-G.nodes[1]['time']
-nx.get_node_attributes(G, 'color')
+G.nodes[1]["time"]
+nx.get_node_attributes(G, "color")
 ```
 
 ### Edge Attributes
 ```python
 # Set at creation
-G.add_edge(1, 2, weight=4.7, color='red')
+G.add_edge(1, 2, weight=4.7, color="red")
 
 # Set after creation
-G[1][2]['weight'] = 5.0
-nx.set_edge_attributes(G, {(1, 2): 10.5}, 'weight')
+G[1][2]["weight"] = 5.0
+nx.set_edge_attributes(G, {(1, 2): 10.5}, "weight")
 
 # Get attributes
 G[1][2]
-G[1][2]['weight']
+G[1][2]["weight"]
 G.edges[1, 2]
-nx.get_edge_attributes(G, 'weight')
+nx.get_edge_attributes(G, "weight")
 ```
 
 ## Subgraphs and Views
@@ -245,7 +241,7 @@ G_directed = G.to_directed()
 
 ### Basic Information
 ```python
-print(nx.info(G))   # Summary of graph structure
+print(nx.info(G))  # Summary of graph structure
 
 # Density (ratio of actual edges to possible edges)
 nx.density(G)

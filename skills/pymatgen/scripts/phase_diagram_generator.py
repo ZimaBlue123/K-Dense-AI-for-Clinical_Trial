@@ -55,9 +55,9 @@ def generate_phase_diagram(chemsys: str, args):
     """
     api_key = get_api_key()
 
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"PHASE DIAGRAM: {chemsys}")
-    print(f"{'='*60}\n")
+    print(f"{'=' * 60}\n")
 
     # Get entries from Materials Project
     print("Fetching data from Materials Project...")
@@ -163,7 +163,7 @@ def generate_phase_diagram(chemsys: str, args):
         print("Opening interactive plot...")
         plotter.show()
 
-    print(f"\n{'='*60}\n")
+    print(f"\n{'=' * 60}\n")
 
 
 def main():
@@ -185,13 +185,9 @@ Examples:
 
     parser.add_argument("chemsys", help="Chemical system (e.g., Li-Fe-O, Fe-O)")
 
-    parser.add_argument(
-        "--output", "-o", help="Output file for phase diagram plot (PNG, PDF, SVG)"
-    )
+    parser.add_argument("--output", "-o", help="Output file for phase diagram plot (PNG, PDF, SVG)")
 
-    parser.add_argument(
-        "--show", "-s", action="store_true", help="Show interactive plot"
-    )
+    parser.add_argument("--show", "-s", action="store_true", help="Show interactive plot")
 
     parser.add_argument(
         "--analyze",

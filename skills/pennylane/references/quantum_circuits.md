@@ -25,8 +25,8 @@ qml.PauliZ(wires=0)  # Z gate (phase flip)
 qml.Hadamard(wires=0)
 
 # Phase gates
-qml.S(wires=0)       # S gate (π/2 phase)
-qml.T(wires=0)       # T gate (π/4 phase)
+qml.S(wires=0)  # S gate (π/2 phase)
+qml.T(wires=0)  # T gate (π/4 phase)
 qml.PhaseShift(phi, wires=0)  # Arbitrary phase
 
 # Rotation gates (parameterized)
@@ -133,6 +133,7 @@ def measure_expectation():
     # Single observable
     return qml.expval(qml.PauliZ(0))
 
+
 @qml.qnode(dev)
 def measure_tensor():
     qml.Hadamard(wires=0)
@@ -163,6 +164,7 @@ def measure_samples(shots=1000):
 
     # Raw samples
     return qml.sample(qml.PauliZ(0))
+
 
 @qml.qnode(dev)
 def measure_counts(shots=1000):
@@ -212,7 +214,8 @@ def layer(weights, wires):
         qml.RY(weights[i], wires=wire)
 
     for wire in wires[:-1]:
-        qml.CNOT(wires=[wire, wire+1])
+        qml.CNOT(wires=[wire, wire + 1])
+
 
 @qml.qnode(dev)
 def layered_circuit(weights):
@@ -233,9 +236,11 @@ def angle_encoding(x, wires):
     for i, wire in enumerate(wires):
         qml.RX(x[i], wires=wire)
 
+
 def amplitude_encoding(x, wires):
     """Encode data as quantum state amplitudes."""
     qml.MottonenStatePreparation(x, wires=wires)
+
 
 def basis_encoding(x, wires):
     """Encode binary data in computational basis."""
@@ -258,7 +263,8 @@ def hardware_efficient_ansatz(weights, wires):
 
         # Entanglement layer
         for wire in wires[:-1]:
-            qml.CNOT(wires=[wire, wire+1])
+            qml.CNOT(wires=[wire, wire + 1])
+
 
 # Alternating layered ansatz
 def alternating_ansatz(weights, wires):
@@ -266,7 +272,7 @@ def alternating_ansatz(weights, wires):
         for wire in wires:
             qml.RX(w[wire], wires=wire)
         for wire in wires[:-1]:
-            qml.CNOT(wires=[wire, wire+1])
+            qml.CNOT(wires=[wire, wire + 1])
 ```
 
 ## Dynamic Circuits
@@ -331,7 +337,7 @@ def adaptive_circuit():
 print(qml.draw(circuit)(params))
 
 # ASCII art
-print(qml.draw(circuit, wire_order=[0,1,2])(params))
+print(qml.draw(circuit, wire_order=[0, 1, 2])(params))
 
 # Matplotlib visualization
 fig, ax = qml.draw_mpl(circuit)(params)
@@ -407,8 +413,8 @@ def bell_state():
 @qml.qnode(dev)
 def ghz_state(n_qubits):
     qml.Hadamard(wires=0)
-    for i in range(n_qubits-1):
-        qml.CNOT(wires=[0, i+1])
+    for i in range(n_qubits - 1):
+        qml.CNOT(wires=[0, i + 1])
     return qml.state()
 ```
 
@@ -420,8 +426,8 @@ def qft(wires):
     n_wires = len(wires)
     for i in range(n_wires):
         qml.Hadamard(wires=wires[i])
-        for j in range(i+1, n_wires):
-            qml.CRZ(np.pi / (2**(j-i)), wires=[wires[j], wires[i]])
+        for j in range(i + 1, n_wires):
+            qml.CRZ(np.pi / (2 ** (j - i)), wires=[wires[j], wires[i]])
 ```
 
 ### Inverse QFT
@@ -430,8 +436,8 @@ def qft(wires):
 def inverse_qft(wires):
     """Inverse Quantum Fourier Transform."""
     n_wires = len(wires)
-    for i in range(n_wires-1, -1, -1):
-        for j in range(n_wires-1, i, -1):
-            qml.CRZ(-np.pi / (2**(j-i)), wires=[wires[j], wires[i]])
+    for i in range(n_wires - 1, -1, -1):
+        for j in range(n_wires - 1, i, -1):
+            qml.CRZ(-np.pi / (2 ** (j - i)), wires=[wires[j], wires[i]])
         qml.Hadamard(wires=wires[i])
 ```

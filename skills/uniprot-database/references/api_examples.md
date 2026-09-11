@@ -10,17 +10,15 @@ import requests
 
 # Search for human insulin proteins
 url = "https://rest.uniprot.org/uniprotkb/search"
-params = {
-    "query": "insulin AND organism_id:9606 AND reviewed:true",
-    "format": "json",
-    "size": 10
-}
+params = {"query": "insulin AND organism_id:9606 AND reviewed:true", "format": "json", "size": 10}
 
 response = requests.get(url, params=params)
 data = response.json()
 
-for result in data['results']:
-    print(f"{result['primaryAccession']}: {result['proteinDescription']['recommendedName']['fullName']['value']}")
+for result in data["results"]:
+    print(
+        f"{result['primaryAccession']}: {result['proteinDescription']['recommendedName']['fullName']['value']}"
+    )
 ```
 
 ### Example 2: Retrieve Protein Sequence
@@ -44,7 +42,7 @@ url = "https://rest.uniprot.org/uniprotkb/search"
 params = {
     "query": "gene:BRCA1 AND reviewed:true",
     "format": "tsv",
-    "fields": "accession,gene_names,organism_name,length,cc_function"
+    "fields": "accession,gene_names,organism_name,length,cc_function",
 }
 
 response = requests.get(url, params=params)
@@ -56,14 +54,11 @@ print(response.text)
 import requests
 import time
 
+
 def map_uniprot_ids(ids, from_db, to_db):
     # Submit job
     submit_url = "https://rest.uniprot.org/idmapping/run"
-    data = {
-        "from": from_db,
-        "to": to_db,
-        "ids": ",".join(ids)
-    }
+    data = {"from": from_db, "to": to_db, "ids": ",".join(ids)}
 
     response = requests.post(submit_url, data=data)
     job_id = response.json()["jobId"]
@@ -82,6 +77,7 @@ def map_uniprot_ids(ids, from_db, to_db):
     response = requests.get(results_url)
     return response.json()
 
+
 # Map UniProt IDs to PDB
 ids = ["P01308", "P04637"]
 mapping = map_uniprot_ids(ids, "UniProtKB_AC-ID", "PDB")
@@ -94,10 +90,7 @@ import requests
 
 # Stream all reviewed human proteins
 url = "https://rest.uniprot.org/uniprotkb/stream"
-params = {
-    "query": "organism_id:9606 AND reviewed:true",
-    "format": "fasta"
-}
+params = {"query": "organism_id:9606 AND reviewed:true", "format": "fasta"}
 
 response = requests.get(url, params=params, stream=True)
 
@@ -112,6 +105,7 @@ with open("human_proteins.fasta", "w") as f:
 ```python
 import requests
 
+
 def get_all_results(query, fields=None):
     """Get all results with pagination"""
     url = "https://rest.uniprot.org/uniprotkb/search"
@@ -120,7 +114,7 @@ def get_all_results(query, fields=None):
     params = {
         "query": query,
         "format": "json",
-        "size": 500  # Max size per page
+        "size": 500,  # Max size per page
     }
 
     if fields:
@@ -129,20 +123,21 @@ def get_all_results(query, fields=None):
     while True:
         response = requests.get(url, params=params)
         data = response.json()
-        all_results.extend(data['results'])
+        all_results.extend(data["results"])
 
         # Check for next page
-        if 'next' in data:
-            url = data['next']
+        if "next" in data:
+            url = data["next"]
         else:
             break
 
     return all_results
 
+
 # Get all human kinases
 results = get_all_results(
     "protein_name:kinase AND organism_id:9606 AND reviewed:true",
-    fields=["accession", "gene_names", "protein_name"]
+    fields=["accession", "gene_names", "protein_name"],
 )
 print(f"Found {len(results)} proteins")
 ```
@@ -329,6 +324,7 @@ import requests
 import time
 from typing import List, Dict
 
+
 class UniProtClient:
     def __init__(self, rate_limit=1.0):
         self.base_url = "https://rest.uniprot.org"
@@ -342,33 +338,29 @@ class UniProtClient:
             time.sleep(self.rate_limit - elapsed)
         self.last_request = time.time()
 
-    def batch_get_proteins(self, accessions: List[str],
-                          batch_size: int = 100) -> List[Dict]:
+    def batch_get_proteins(self, accessions: List[str], batch_size: int = 100) -> List[Dict]:
         """Get proteins in batches"""
         results = []
 
         for i in range(0, len(accessions), batch_size):
-            batch = accessions[i:i + batch_size]
+            batch = accessions[i : i + batch_size]
             query = " OR ".join([f"accession:{acc}" for acc in batch])
 
             self._rate_limit()
 
             response = requests.get(
                 f"{self.base_url}/uniprotkb/search",
-                params={
-                    "query": query,
-                    "format": "json",
-                    "size": batch_size
-                }
+                params={"query": query, "format": "json", "size": batch_size},
             )
 
             if response.ok:
                 data = response.json()
-                results.extend(data.get('results', []))
+                results.extend(data.get("results", []))
             else:
-                print(f"Error in batch {i//batch_size}: {response.status_code}")
+                print(f"Error in batch {i // batch_size}: {response.status_code}")
 
         return results
+
 
 # Usage
 client = UniProtClient(rate_limit=0.5)
@@ -381,28 +373,23 @@ proteins = client.batch_get_proteins(accessions)
 import requests
 from tqdm import tqdm
 
+
 def download_with_progress(query, output_file, format="fasta"):
     """Download results with progress bar"""
     url = "https://rest.uniprot.org/uniprotkb/stream"
-    params = {
-        "query": query,
-        "format": format
-    }
+    params = {"query": query, "format": format}
 
     response = requests.get(url, params=params, stream=True)
-    total_size = int(response.headers.get('content-length', 0))
+    total_size = int(response.headers.get("content-length", 0))
 
-    with open(output_file, 'wb') as f, \
-         tqdm(total=total_size, unit='B', unit_scale=True) as pbar:
+    with open(output_file, "wb") as f, tqdm(total=total_size, unit="B", unit_scale=True) as pbar:
         for chunk in response.iter_content(chunk_size=8192):
             f.write(chunk)
             pbar.update(len(chunk))
 
+
 # Usage
-download_with_progress(
-    "organism_id:9606 AND reviewed:true",
-    "human_proteome.fasta"
-)
+download_with_progress("organism_id:9606 AND reviewed:true", "human_proteome.fasta")
 ```
 
 ## Resources

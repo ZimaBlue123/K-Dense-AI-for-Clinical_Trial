@@ -37,9 +37,7 @@ def export_phy(
 
     if compute_pc_features and analyzer.get_extension("principal_components") is None:
         print("Computing principal components...")
-        analyzer.compute(
-            "principal_components", n_components=5, mode="by_channel_local"
-        )
+        analyzer.compute("principal_components", n_components=5, mode="by_channel_local")
 
     print(f"Exporting to Phy: {output_path}")
     export_to_phy(
@@ -59,21 +57,11 @@ def export_phy(
 def main():
     parser = argparse.ArgumentParser(description="Export to Phy")
     parser.add_argument("analyzer", help="Path to sorting analyzer")
-    parser.add_argument(
-        "--output", "-o", default="phy_export/", help="Output directory"
-    )
-    parser.add_argument(
-        "--no-binary", action="store_true", help="Skip copying binary file"
-    )
-    parser.add_argument(
-        "--no-amplitudes", action="store_true", help="Skip amplitude computation"
-    )
-    parser.add_argument(
-        "--no-pc", action="store_true", help="Skip PC feature computation"
-    )
-    parser.add_argument(
-        "--n-jobs", type=int, default=-1, help="Number of parallel jobs"
-    )
+    parser.add_argument("--output", "-o", default="phy_export/", help="Output directory")
+    parser.add_argument("--no-binary", action="store_true", help="Skip copying binary file")
+    parser.add_argument("--no-amplitudes", action="store_true", help="Skip amplitude computation")
+    parser.add_argument("--no-pc", action="store_true", help="Skip PC feature computation")
+    parser.add_argument("--n-jobs", type=int, default=-1, help="Number of parallel jobs")
 
     args = parser.parse_args()
 

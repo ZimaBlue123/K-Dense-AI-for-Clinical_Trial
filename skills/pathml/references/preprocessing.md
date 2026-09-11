@@ -14,11 +14,13 @@ The `Pipeline` class composes a sequence of transforms applied consecutively:
 from pathml.preprocessing import Pipeline, Transform1, Transform2
 
 # Create pipeline
-pipeline = Pipeline([
-    Transform1(param1=value1),
-    Transform2(param2=value2),
-    # ... more transforms
-])
+pipeline = Pipeline(
+    [
+        Transform1(param1=value1),
+        Transform2(param2=value2),
+        # ... more transforms
+    ]
+)
 
 # Run on a single slide
 pipeline.run(slide_data)
@@ -94,10 +96,7 @@ transform = BoxBlur(kernel_size=5)
 from pathml.preprocessing import RescaleIntensity
 
 # Rescale intensity to [0, 255]
-transform = RescaleIntensity(
-    in_range=(0, 1.0),
-    out_range=(0, 255)
-)
+transform = RescaleIntensity(in_range=(0, 1.0), out_range=(0, 255))
 ```
 
 **HistogramEqualization:**
@@ -115,10 +114,7 @@ transform = HistogramEqualization()
 from pathml.preprocessing import AdaptiveHistogramEqualization
 
 # Contrast Limited Adaptive Histogram Equalization
-transform = AdaptiveHistogramEqualization(
-    clip_limit=0.03,
-    tile_grid_size=(8, 8)
-)
+transform = AdaptiveHistogramEqualization(clip_limit=0.03, tile_grid_size=(8, 8))
 ```
 - Enhances local contrast
 - Prevents over-amplification with clip_limit
@@ -131,10 +127,7 @@ transform = AdaptiveHistogramEqualization(
 from pathml.preprocessing import SuperpixelInterpolation
 
 # Divide into superpixels using SLIC
-transform = SuperpixelInterpolation(
-    n_segments=100,
-    compactness=10.0
-)
+transform = SuperpixelInterpolation(n_segments=100, compactness=10.0)
 ```
 - Segments image into perceptually meaningful regions
 - Useful for feature extraction and segmentation
@@ -151,7 +144,7 @@ from pathml.preprocessing import TissueDetectionHE
 transform = TissueDetectionHE(
     use_saturation=True,  # Use HSV saturation channel
     threshold=10,  # Intensity threshold
-    min_region_size=500  # Minimum tissue region size in pixels
+    min_region_size=500,  # Minimum tissue region size in pixels
 )
 ```
 - Creates binary tissue mask
@@ -164,9 +157,9 @@ from pathml.preprocessing import NucleusDetectionHE
 
 # Detect nuclei in H&E images
 transform = NucleusDetectionHE(
-    stain='hematoxylin',  # Use hematoxylin channel
+    stain="hematoxylin",  # Use hematoxylin channel
     threshold=0.3,
-    min_nucleus_size=10
+    min_nucleus_size=10,
 )
 ```
 - Separates hematoxylin stain
@@ -181,8 +174,8 @@ from pathml.preprocessing import BinaryThreshold
 
 # Threshold using Otsu's method
 transform = BinaryThreshold(
-    method='otsu',  # 'otsu' or manual threshold value
-    invert=False
+    method="otsu",  # 'otsu' or manual threshold value
+    invert=False,
 )
 
 # Or specify manual threshold
@@ -199,7 +192,7 @@ from pathml.preprocessing import ForegroundDetection
 transform = ForegroundDetection(
     threshold=0.5,
     min_region_size=1000,  # Minimum size in pixels
-    use_saturation=True
+    use_saturation=True,
 )
 ```
 
@@ -214,7 +207,7 @@ from pathml.preprocessing import MorphOpen
 # Remove small objects and noise
 transform = MorphOpen(
     kernel_size=5,
-    mask_name='tissue'  # Which mask to modify
+    mask_name="tissue",  # Which mask to modify
 )
 ```
 - Erosion followed by dilation
@@ -225,10 +218,7 @@ transform = MorphOpen(
 from pathml.preprocessing import MorphClose
 
 # Fill small holes
-transform = MorphClose(
-    kernel_size=5,
-    mask_name='tissue'
-)
+transform = MorphClose(kernel_size=5, mask_name="tissue")
 ```
 - Dilation followed by erosion
 - Fills small holes in mask
@@ -244,9 +234,9 @@ from pathml.preprocessing import StainNormalizationHE
 
 # Normalize to reference slide
 transform = StainNormalizationHE(
-    target='normalize',  # 'normalize', 'hematoxylin', or 'eosin'
-    stain_estimation_method='macenko',  # 'macenko' or 'vahadane'
-    tissue_mask_name=None  # Optional tissue mask for better estimation
+    target="normalize",  # 'normalize', 'hematoxylin', or 'eosin'
+    stain_estimation_method="macenko",  # 'macenko' or 'vahadane'
+    tissue_mask_name=None,  # Optional tissue mask for better estimation
 )
 ```
 
@@ -262,12 +252,12 @@ transform = StainNormalizationHE(
 **Advanced parameters:**
 ```python
 transform = StainNormalizationHE(
-    target='normalize',
-    stain_estimation_method='macenko',
+    target="normalize",
+    stain_estimation_method="macenko",
     target_od=None,  # Optical density matrix for reference (optional)
     target_concentrations=None,  # Target stain concentrations (optional)
     regularizer=0.1,  # Regularization for vahadane method
-    background_intensity=240  # Background intensity level
+    background_intensity=240,  # Background intensity level
 )
 ```
 
@@ -282,14 +272,16 @@ transform = StainNormalizationHE(
 ```python
 from pathml.preprocessing import Pipeline, TissueDetectionHE, StainNormalizationHE
 
-pipeline = Pipeline([
-    TissueDetectionHE(),  # Create tissue mask first
-    StainNormalizationHE(
-        target='normalize',
-        stain_estimation_method='macenko',
-        tissue_mask_name='tissue'  # Use tissue mask for better estimation
-    )
-])
+pipeline = Pipeline(
+    [
+        TissueDetectionHE(),  # Create tissue mask first
+        StainNormalizationHE(
+            target="normalize",
+            stain_estimation_method="macenko",
+            tissue_mask_name="tissue",  # Use tissue mask for better estimation
+        ),
+    ]
+)
 ```
 
 ## Quality Control Transforms
@@ -303,7 +295,7 @@ from pathml.preprocessing import LabelArtifactTileHE
 # Label tiles containing artifacts
 transform = LabelArtifactTileHE(
     pen_threshold=0.5,  # Threshold for pen marking detection
-    bubble_threshold=0.5  # Threshold for bubble detection
+    bubble_threshold=0.5,  # Threshold for bubble detection
 )
 ```
 - Detects pen markings, bubbles, and other artifacts
@@ -316,7 +308,7 @@ from pathml.preprocessing import LabelWhiteSpaceHE
 # Label tiles with excessive white space
 transform = LabelWhiteSpaceHE(
     threshold=0.9,  # Fraction of white pixels
-    mask_name='white_space'
+    mask_name="white_space",
 )
 ```
 - Identifies tiles with mostly background
@@ -332,11 +324,11 @@ from pathml.preprocessing import SegmentMIF
 
 # Segment cells using Mesmer deep learning model
 transform = SegmentMIF(
-    nuclear_channel='DAPI',  # Nuclear marker channel name
-    cytoplasm_channel='CD45',  # Cytoplasm marker channel name
-    model='mesmer',  # Deep learning segmentation model
+    nuclear_channel="DAPI",  # Nuclear marker channel name
+    cytoplasm_channel="CD45",  # Cytoplasm marker channel name
+    model="mesmer",  # Deep learning segmentation model
     image_resolution=0.5,  # Microns per pixel
-    compartment='whole-cell'  # 'nuclear', 'cytoplasm', or 'whole-cell'
+    compartment="whole-cell",  # 'nuclear', 'cytoplasm', or 'whole-cell'
 )
 ```
 - Uses DeepCell Mesmer model for cell segmentation
@@ -349,10 +341,10 @@ from pathml.preprocessing import SegmentMIFRemote
 
 # Remote inference using DeepCell API
 transform = SegmentMIFRemote(
-    nuclear_channel='DAPI',
-    cytoplasm_channel='CD45',
-    model='mesmer',
-    api_url='https://deepcell.org/api'
+    nuclear_channel="DAPI",
+    cytoplasm_channel="CD45",
+    model="mesmer",
+    api_url="https://deepcell.org/api",
 )
 ```
 - Same functionality as SegmentMIF but uses remote API
@@ -367,9 +359,9 @@ from pathml.preprocessing import QuantifyMIF
 
 # Quantify marker expression per cell
 transform = QuantifyMIF(
-    segmentation_mask_name='cell_segmentation',
-    markers=['CD3', 'CD4', 'CD8', 'CD20', 'CD45'],
-    output_format='anndata'  # or 'dataframe'
+    segmentation_mask_name="cell_segmentation",
+    markers=["CD3", "CD4", "CD8", "CD20", "CD45"],
+    output_format="anndata",  # or 'dataframe'
 )
 ```
 - Extracts mean marker intensity per segmented cell
@@ -385,7 +377,7 @@ from pathml.preprocessing import CollapseRunsCODEX
 # Consolidate multi-run CODEX data
 transform = CollapseRunsCODEX(
     z_slice=2,  # Select specific z-slice
-    run_order=[0, 1, 2]  # Order of acquisition runs
+    run_order=[0, 1, 2],  # Order of acquisition runs
 )
 ```
 - Merges channels from multiple CODEX acquisition runs
@@ -412,60 +404,48 @@ from pathml.preprocessing import (
     StainNormalizationHE,
     NucleusDetectionHE,
     MedianBlur,
-    LabelWhiteSpaceHE
+    LabelWhiteSpaceHE,
 )
 
-pipeline = Pipeline([
-    # 1. Quality control
-    LabelWhiteSpaceHE(threshold=0.9),
-
-    # 2. Noise reduction
-    MedianBlur(kernel_size=3),
-
-    # 3. Tissue detection
-    TissueDetectionHE(min_region_size=500),
-
-    # 4. Stain normalization
-    StainNormalizationHE(
-        target='normalize',
-        stain_estimation_method='macenko',
-        tissue_mask_name='tissue'
-    ),
-
-    # 5. Nucleus detection
-    NucleusDetectionHE(threshold=0.3)
-])
+pipeline = Pipeline(
+    [
+        # 1. Quality control
+        LabelWhiteSpaceHE(threshold=0.9),
+        # 2. Noise reduction
+        MedianBlur(kernel_size=3),
+        # 3. Tissue detection
+        TissueDetectionHE(min_region_size=500),
+        # 4. Stain normalization
+        StainNormalizationHE(
+            target="normalize", stain_estimation_method="macenko", tissue_mask_name="tissue"
+        ),
+        # 5. Nucleus detection
+        NucleusDetectionHE(threshold=0.3),
+    ]
+)
 ```
 
 ### CODEX Multiparametric Pipeline
 
 ```python
-from pathml.preprocessing import (
-    Pipeline,
-    CollapseRunsCODEX,
-    SegmentMIF,
-    QuantifyMIF
+from pathml.preprocessing import Pipeline, CollapseRunsCODEX, SegmentMIF, QuantifyMIF
+
+codex_pipeline = Pipeline(
+    [
+        # 1. Consolidate multi-run data
+        CollapseRunsCODEX(z_slice=2),
+        # 2. Cell segmentation
+        SegmentMIF(
+            nuclear_channel="DAPI", cytoplasm_channel="CD45", model="mesmer", image_resolution=0.377
+        ),
+        # 3. Quantify markers
+        QuantifyMIF(
+            segmentation_mask_name="cell_segmentation",
+            markers=["CD3", "CD4", "CD8", "CD20", "PD1", "PDL1"],
+            output_format="anndata",
+        ),
+    ]
 )
-
-codex_pipeline = Pipeline([
-    # 1. Consolidate multi-run data
-    CollapseRunsCODEX(z_slice=2),
-
-    # 2. Cell segmentation
-    SegmentMIF(
-        nuclear_channel='DAPI',
-        cytoplasm_channel='CD45',
-        model='mesmer',
-        image_resolution=0.377
-    ),
-
-    # 3. Quantify markers
-    QuantifyMIF(
-        segmentation_mask_name='cell_segmentation',
-        markers=['CD3', 'CD4', 'CD8', 'CD20', 'PD1', 'PDL1'],
-        output_format='anndata'
-    )
-])
 ```
 
 ### Advanced Pipeline with Quality Control
@@ -479,29 +459,26 @@ from pathml.preprocessing import (
     MorphOpen,
     MorphClose,
     StainNormalizationHE,
-    AdaptiveHistogramEqualization
+    AdaptiveHistogramEqualization,
 )
 
-advanced_pipeline = Pipeline([
-    # Stage 1: Quality control
-    LabelWhiteSpaceHE(threshold=0.85),
-    LabelArtifactTileHE(pen_threshold=0.5, bubble_threshold=0.5),
-
-    # Stage 2: Tissue detection
-    TissueDetectionHE(threshold=10, min_region_size=1000),
-    MorphOpen(kernel_size=5, mask_name='tissue'),
-    MorphClose(kernel_size=7, mask_name='tissue'),
-
-    # Stage 3: Stain normalization
-    StainNormalizationHE(
-        target='normalize',
-        stain_estimation_method='vahadane',
-        tissue_mask_name='tissue'
-    ),
-
-    # Stage 4: Contrast enhancement
-    AdaptiveHistogramEqualization(clip_limit=0.03, tile_grid_size=(8, 8))
-])
+advanced_pipeline = Pipeline(
+    [
+        # Stage 1: Quality control
+        LabelWhiteSpaceHE(threshold=0.85),
+        LabelArtifactTileHE(pen_threshold=0.5, bubble_threshold=0.5),
+        # Stage 2: Tissue detection
+        TissueDetectionHE(threshold=10, min_region_size=1000),
+        MorphOpen(kernel_size=5, mask_name="tissue"),
+        MorphClose(kernel_size=7, mask_name="tissue"),
+        # Stage 3: Stain normalization
+        StainNormalizationHE(
+            target="normalize", stain_estimation_method="vahadane", tissue_mask_name="tissue"
+        ),
+        # Stage 4: Contrast enhancement
+        AdaptiveHistogramEqualization(clip_limit=0.03, tile_grid_size=(8, 8)),
+    ]
+)
 ```
 
 ## Running Pipelines
@@ -523,8 +500,8 @@ pipeline.run(wsi)
 # Access processed data
 for tile in wsi.tiles:
     normalized_image = tile.image
-    tissue_mask = tile.masks.get('tissue')
-    nucleus_mask = tile.masks.get('nucleus')
+    tissue_mask = tile.masks.get("tissue")
+    nucleus_mask = tile.masks.get("nucleus")
 ```
 
 ### Batch Processing with Distributed Execution
@@ -535,23 +512,14 @@ from dask.distributed import Client
 import glob
 
 # Start Dask client
-client = Client(n_workers=8, threads_per_worker=2, memory_limit='4GB')
+client = Client(n_workers=8, threads_per_worker=2, memory_limit="4GB")
 
 # Create dataset
 slide_paths = glob.glob("data/*.svs")
-dataset = SlideDataset(
-    slide_paths,
-    tile_size=512,
-    stride=512,
-    level=1
-)
+dataset = SlideDataset(slide_paths, tile_size=512, stride=512, level=1)
 
 # Run pipeline in parallel
-dataset.run(
-    pipeline,
-    distributed=True,
-    client=client
-)
+dataset.run(pipeline, distributed=True, client=client)
 
 # Save results
 dataset.to_hdf5("processed_dataset.h5")
@@ -569,7 +537,7 @@ wsi.generate_tiles(level=1, tile_size=256)
 
 # Run pipeline only on tissue tiles
 for tile in wsi.tiles:
-    if tile.masks.get('tissue') is not None:
+    if tile.masks.get("tissue") is not None:
         pipeline.run(tile)
 ```
 
@@ -581,7 +549,7 @@ for tile in wsi.tiles:
 # Process large datasets in batches
 batch_size = 100
 for i in range(0, len(slide_paths), batch_size):
-    batch_paths = slide_paths[i:i+batch_size]
+    batch_paths = slide_paths[i : i + batch_size]
     batch_dataset = SlideDataset(batch_paths)
     batch_dataset.run(pipeline, distributed=True)
     batch_dataset.to_hdf5(f"batch_{i}.h5")
@@ -611,14 +579,14 @@ from dask.distributed import Client
 client = Client(
     n_workers=8,
     threads_per_worker=1,  # Use processes, not threads
-    memory_limit='8GB'
+    memory_limit="8GB",
 )
 
 # GPU tasks (deep learning inference)
 client = Client(
     n_workers=2,  # Fewer workers for GPU
     threads_per_worker=4,
-    processes=True
+    processes=True,
 )
 ```
 
@@ -629,6 +597,7 @@ Create custom preprocessing operations by subclassing `Transform`:
 ```python
 from pathml.preprocessing.transforms import Transform
 import numpy as np
+
 
 class CustomTransform(Transform):
     def __init__(self, param1, param2):
@@ -651,11 +620,14 @@ class CustomTransform(Transform):
         # Implement custom logic
         return processed_image
 
+
 # Use in pipeline
-pipeline = Pipeline([
-    CustomTransform(param1=10, param2=0.5),
-    # ... other transforms
-])
+pipeline = Pipeline(
+    [
+        CustomTransform(param1=10, param2=0.5),
+        # ... other transforms
+    ]
+)
 ```
 
 ## Best Practices

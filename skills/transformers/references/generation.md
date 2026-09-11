@@ -33,7 +33,7 @@ Select highest probability token at each step (deterministic):
 outputs = model.generate(
     **inputs,
     max_new_tokens=50,
-    do_sample=False  # Greedy decoding (default)
+    do_sample=False,  # Greedy decoding (default)
 )
 ```
 
@@ -45,12 +45,7 @@ Randomly sample from probability distribution:
 
 ```python
 outputs = model.generate(
-    **inputs,
-    max_new_tokens=50,
-    do_sample=True,
-    temperature=0.7,
-    top_k=50,
-    top_p=0.95
+    **inputs, max_new_tokens=50, do_sample=True, temperature=0.7, top_k=50, top_p=0.95
 )
 ```
 
@@ -61,12 +56,7 @@ outputs = model.generate(
 Explore multiple hypotheses in parallel:
 
 ```python
-outputs = model.generate(
-    **inputs,
-    max_new_tokens=50,
-    num_beams=5,
-    early_stopping=True
-)
+outputs = model.generate(**inputs, max_new_tokens=50, num_beams=5, early_stopping=True)
 ```
 
 **Use for**: Translations, summarization, where quality is critical.
@@ -76,12 +66,7 @@ outputs = model.generate(
 Balance quality and diversity:
 
 ```python
-outputs = model.generate(
-    **inputs,
-    max_new_tokens=50,
-    penalty_alpha=0.6,
-    top_k=4
-)
+outputs = model.generate(**inputs, max_new_tokens=50, penalty_alpha=0.6, top_k=4)
 ```
 
 **Use for**: Long-form generation, reducing repetition.
@@ -92,22 +77,22 @@ outputs = model.generate(
 
 **max_new_tokens**: Maximum tokens to generate
 ```python
-max_new_tokens=100  # Generate up to 100 new tokens
+max_new_tokens = 100  # Generate up to 100 new tokens
 ```
 
 **max_length**: Maximum total length (input + output)
 ```python
-max_length=512  # Total sequence length
+max_length = 512  # Total sequence length
 ```
 
 **min_new_tokens**: Minimum tokens to generate
 ```python
-min_new_tokens=50  # Force at least 50 tokens
+min_new_tokens = 50  # Force at least 50 tokens
 ```
 
 **min_length**: Minimum total length
 ```python
-min_length=100
+min_length = 100
 ```
 
 ### Temperature
@@ -115,9 +100,9 @@ min_length=100
 Controls randomness (only with sampling):
 
 ```python
-temperature=1.0   # Default, balanced
-temperature=0.7   # More focused, less random
-temperature=1.5   # More creative, more random
+temperature = 1.0  # Default, balanced
+temperature = 0.7  # More focused, less random
+temperature = 1.5  # More creative, more random
 ```
 
 Lower temperature → more deterministic
@@ -128,8 +113,8 @@ Higher temperature → more random
 Consider only top K most likely tokens:
 
 ```python
-do_sample=True
-top_k=50  # Sample from top 50 tokens
+do_sample = True
+top_k = 50  # Sample from top 50 tokens
 ```
 
 **Common values**: 40-100 for balanced output, 10-20 for focused output.
@@ -139,8 +124,8 @@ top_k=50  # Sample from top 50 tokens
 Consider tokens with cumulative probability ≥ P:
 
 ```python
-do_sample=True
-top_p=0.95  # Sample from smallest set with 95% cumulative probability
+do_sample = True
+top_p = 0.95  # Sample from smallest set with 95% cumulative probability
 ```
 
 **Common values**: 0.9-0.95 for balanced, 0.7-0.85 for focused.
@@ -150,7 +135,7 @@ top_p=0.95  # Sample from smallest set with 95% cumulative probability
 Discourage repetition:
 
 ```python
-repetition_penalty=1.2  # Penalize repeated tokens
+repetition_penalty = 1.2  # Penalize repeated tokens
 ```
 
 **Values**: 1.0 = no penalty, 1.2-1.5 = moderate, 2.0+ = strong penalty.
@@ -159,17 +144,17 @@ repetition_penalty=1.2  # Penalize repeated tokens
 
 **num_beams**: Number of beams
 ```python
-num_beams=5  # Keep 5 hypotheses
+num_beams = 5  # Keep 5 hypotheses
 ```
 
 **early_stopping**: Stop when num_beams sentences are finished
 ```python
-early_stopping=True
+early_stopping = True
 ```
 
 **no_repeat_ngram_size**: Prevent n-gram repetition
 ```python
-no_repeat_ngram_size=3  # Don't repeat any 3-gram
+no_repeat_ngram_size = 3  # Don't repeat any 3-gram
 ```
 
 ### Output Control
@@ -180,18 +165,18 @@ outputs = model.generate(
     **inputs,
     max_new_tokens=50,
     num_beams=5,
-    num_return_sequences=3  # Return 3 different sequences
+    num_return_sequences=3,  # Return 3 different sequences
 )
 ```
 
 **pad_token_id**: Specify padding token
 ```python
-pad_token_id=tokenizer.eos_token_id
+pad_token_id = tokenizer.eos_token_id
 ```
 
 **eos_token_id**: Stop generation at specific token
 ```python
-eos_token_id=tokenizer.eos_token_id
+eos_token_id = tokenizer.eos_token_id
 ```
 
 ## Advanced Features
@@ -221,11 +206,7 @@ from threading import Thread
 
 streamer = TextIteratorStreamer(tokenizer, skip_special_tokens=True)
 
-generation_kwargs = dict(
-    inputs,
-    streamer=streamer,
-    max_new_tokens=100
-)
+generation_kwargs = dict(inputs, streamer=streamer, max_new_tokens=100)
 
 thread = Thread(target=model.generate, kwargs=generation_kwargs)
 thread.start()
@@ -245,11 +226,7 @@ Force specific token sequences:
 force_words = ["Paris", "France"]
 force_words_ids = [tokenizer.encode(word, add_special_tokens=False) for word in force_words]
 
-outputs = model.generate(
-    **inputs,
-    force_words_ids=force_words_ids,
-    num_beams=5
-)
+outputs = model.generate(**inputs, force_words_ids=force_words_ids, num_beams=5)
 ```
 
 ### Guidance and Control
@@ -259,10 +236,7 @@ outputs = model.generate(
 bad_words = ["offensive", "inappropriate"]
 bad_words_ids = [tokenizer.encode(word, add_special_tokens=False) for word in bad_words]
 
-outputs = model.generate(
-    **inputs,
-    bad_words_ids=bad_words_ids
-)
+outputs = model.generate(**inputs, bad_words_ids=bad_words_ids)
 ```
 
 ### Generation Config
@@ -274,11 +248,7 @@ from transformers import GenerationConfig
 
 # Create config
 generation_config = GenerationConfig(
-    max_new_tokens=100,
-    temperature=0.7,
-    top_k=50,
-    top_p=0.95,
-    do_sample=True
+    max_new_tokens=100, temperature=0.7, top_k=50, top_p=0.95, do_sample=True
 )
 
 # Save
@@ -298,7 +268,7 @@ Use chat templates:
 ```python
 messages = [
     {"role": "system", "content": "You are a helpful assistant."},
-    {"role": "user", "content": "What is the capital of France?"}
+    {"role": "user", "content": "What is the capital of France?"},
 ]
 
 input_text = tokenizer.apply_chat_template(messages, tokenize=False)
@@ -336,7 +306,7 @@ Enable KV cache for faster generation:
 outputs = model.generate(
     **inputs,
     max_new_tokens=100,
-    use_cache=True  # Default, faster generation
+    use_cache=True,  # Default, faster generation
 )
 ```
 
@@ -349,11 +319,7 @@ from transformers import StaticCache
 
 cache = StaticCache(model.config, max_batch_size=1, max_cache_len=1024, device="cuda")
 
-outputs = model.generate(
-    **inputs,
-    max_new_tokens=100,
-    past_key_values=cache
-)
+outputs = model.generate(**inputs, max_new_tokens=100, past_key_values=cache)
 ```
 
 ### Attention Implementation
@@ -361,10 +327,7 @@ outputs = model.generate(
 Use Flash Attention for speed:
 
 ```python
-model = AutoModelForCausalLM.from_pretrained(
-    "model-id",
-    attn_implementation="flash_attention_2"
-)
+model = AutoModelForCausalLM.from_pretrained("model-id", attn_implementation="flash_attention_2")
 ```
 
 ## Generation Recipes
@@ -379,7 +342,7 @@ outputs = model.generate(
     temperature=0.8,
     top_k=50,
     top_p=0.95,
-    repetition_penalty=1.2
+    repetition_penalty=1.2,
 )
 ```
 
@@ -390,7 +353,7 @@ outputs = model.generate(
     **inputs,
     max_new_tokens=100,
     do_sample=False,  # Greedy
-    repetition_penalty=1.1
+    repetition_penalty=1.1,
 )
 ```
 
@@ -403,7 +366,7 @@ outputs = model.generate(
     num_beams=5,
     num_return_sequences=5,
     temperature=1.5,
-    do_sample=True
+    do_sample=True,
 )
 ```
 
@@ -415,7 +378,7 @@ outputs = model.generate(
     max_new_tokens=1000,
     penalty_alpha=0.6,  # Contrastive search
     top_k=4,
-    repetition_penalty=1.2
+    repetition_penalty=1.2,
 )
 ```
 
@@ -423,11 +386,7 @@ outputs = model.generate(
 
 ```python
 outputs = model.generate(
-    **inputs,
-    max_new_tokens=100,
-    num_beams=5,
-    early_stopping=True,
-    no_repeat_ngram_size=3
+    **inputs, max_new_tokens=100, num_beams=5, early_stopping=True, no_repeat_ngram_size=3
 )
 ```
 

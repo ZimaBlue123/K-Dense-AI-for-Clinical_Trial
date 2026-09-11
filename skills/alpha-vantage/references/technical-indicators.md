@@ -93,8 +93,15 @@ ts = data["Technical Analysis: VWAP"]  # → {"VWAP": "..."}
 **Optional:** `fastperiod` (default 12), `slowperiod` (default 26), `signalperiod` (default 9), `series_type`
 
 ```python
-data = av_get("MACD", symbol="AAPL", interval="daily", series_type="close",
-              fastperiod=12, slowperiod=26, signalperiod=9)
+data = av_get(
+    "MACD",
+    symbol="AAPL",
+    interval="daily",
+    series_type="close",
+    fastperiod=12,
+    slowperiod=26,
+    signalperiod=9,
+)
 ts = data["Technical Analysis: MACD"]
 latest_date = sorted(ts.keys())[-1]
 print(ts[latest_date])  # {"MACD": "...", "MACD_Signal": "...", "MACD_Hist": "..."}
@@ -216,8 +223,15 @@ ts = data["Technical Analysis: AROON"]  # → {"Aroon Down": "...", "Aroon Up": 
 **Optional:** `nbdevup` (default 2), `nbdevdn` (default 2), `matype` (default 0=SMA)
 
 ```python
-data = av_get("BBANDS", symbol="AAPL", interval="daily", time_period=20,
-              series_type="close", nbdevup=2, nbdevdn=2)
+data = av_get(
+    "BBANDS",
+    symbol="AAPL",
+    interval="daily",
+    time_period=20,
+    series_type="close",
+    nbdevup=2,
+    nbdevdn=2,
+)
 ts = data["Technical Analysis: BBANDS"]
 latest = ts[sorted(ts.keys())[-1]]
 print(latest["Real Upper Band"], latest["Real Middle Band"], latest["Real Lower Band"])
@@ -350,6 +364,7 @@ ts = data["Technical Analysis: TRANGE"]
 ```python
 import pandas as pd
 
+
 def get_indicator_series(function, symbol, interval="daily", **kwargs):
     data = av_get(function, symbol=symbol, interval=interval, **kwargs)
     key = f"Technical Analysis: {function}"
@@ -363,6 +378,7 @@ def get_indicator_series(function, symbol, interval="daily", **kwargs):
     df["date"] = pd.to_datetime(df["date"])
     df = df.set_index("date").sort_index()
     return df.astype(float)
+
 
 # Get RSI and BBANDS for signal generation
 rsi = get_indicator_series("RSI", "AAPL", time_period=14, series_type="close")

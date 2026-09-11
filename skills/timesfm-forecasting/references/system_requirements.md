@@ -14,14 +14,16 @@ choose the right setup and tune performance for your machine.
 - **Expected speed**: ~2–5 seconds per 100-point series
 
 ```python
-model.compile(timesfm.ForecastConfig(
-    max_context=512,
-    max_horizon=128,
-    per_core_batch_size=4,
-    normalize_inputs=True,
-    use_continuous_quantile_head=True,
-    fix_quantile_crossing=True,
-))
+model.compile(
+    timesfm.ForecastConfig(
+        max_context=512,
+        max_horizon=128,
+        per_core_batch_size=4,
+        normalize_inputs=True,
+        use_continuous_quantile_head=True,
+        fix_quantile_crossing=True,
+    )
+)
 ```
 
 ### Tier 2: Standard (CPU 16 GB or GPU 4–8 GB VRAM)
@@ -33,14 +35,16 @@ model.compile(timesfm.ForecastConfig(
 - **Expected speed**: ~0.5–1 second per 100-point series (GPU)
 
 ```python
-model.compile(timesfm.ForecastConfig(
-    max_context=1024,
-    max_horizon=256,
-    per_core_batch_size=64,
-    normalize_inputs=True,
-    use_continuous_quantile_head=True,
-    fix_quantile_crossing=True,
-))
+model.compile(
+    timesfm.ForecastConfig(
+        max_context=1024,
+        max_horizon=256,
+        per_core_batch_size=64,
+        normalize_inputs=True,
+        use_continuous_quantile_head=True,
+        fix_quantile_crossing=True,
+    )
+)
 ```
 
 ### Tier 3: Production (GPU 16+ GB VRAM or Apple Silicon 32+ GB)
@@ -52,14 +56,16 @@ model.compile(timesfm.ForecastConfig(
 - **Expected speed**: ~0.1–0.3 seconds per 100-point series
 
 ```python
-model.compile(timesfm.ForecastConfig(
-    max_context=4096,
-    max_horizon=256,
-    per_core_batch_size=128,
-    normalize_inputs=True,
-    use_continuous_quantile_head=True,
-    fix_quantile_crossing=True,
-))
+model.compile(
+    timesfm.ForecastConfig(
+        max_context=4096,
+        max_horizon=256,
+        per_core_batch_size=128,
+        normalize_inputs=True,
+        use_continuous_quantile_head=True,
+        fix_quantile_crossing=True,
+    )
+)
 ```
 
 ### Tier 4: Legacy Models (v1.0/v2.0 — 500M parameters)

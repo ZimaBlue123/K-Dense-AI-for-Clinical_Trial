@@ -82,9 +82,7 @@ def supplement_fas_m4_p(doc: Document, table_index0: int) -> str | None:
     return None
 
 
-def build_c3c2_map(
-    doc: Document, table_index0: int
-) -> dict[tuple[str, int], dict[str, str]]:
+def build_c3c2_map(doc: Document, table_index0: int) -> dict[tuple[str, int], dict[str, str]]:
     out: dict[tuple[str, int], dict[str, str]] = {}
     for vals in table_rows(doc, table_index0)[2:]:
         grp = vals[0].strip() if vals else ""
@@ -118,9 +116,7 @@ def normalize_gmc_headers(table) -> None:
         for c in range(len(table.columns)):
             txt = table.cell(r, c).text
             if "校正" in txt and "GMC" in txt:
-                table.cell(r, c).text = txt.replace("校正\nGMC", "GMC").replace(
-                    "校正GMC", "GMC"
-                )
+                table.cell(r, c).text = txt.replace("校正\nGMC", "GMC").replace("校正GMC", "GMC")
 
 
 def update_main_slide_table(table, data: dict[tuple[int, str], dict[str, str]]) -> int:
@@ -238,9 +234,7 @@ def sync(
     pps = build_month_arm_map(table_rows(doc, pps_table - 1))
     fas = build_month_arm_map(table_rows(doc, fas_table - 1))
 
-    pps_m4_updates, pps_m4_p = supplement_pps_month4_b_groups(
-        doc, pps_m4_supp_table - 1
-    )
+    pps_m4_updates, pps_m4_p = supplement_pps_month4_b_groups(doc, pps_m4_supp_table - 1)
     pps.update(pps_m4_updates)
     fas_m4_p = supplement_fas_m4_p(doc, fas_m4_p_supp_table - 1)
     cmap = build_c3c2_map(doc, c3c2_table - 1)

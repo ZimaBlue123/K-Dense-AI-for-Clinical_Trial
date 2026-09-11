@@ -32,15 +32,15 @@ print(results.summary())
 
 **Key results attributes:**
 ```python
-results.params           # Coefficients
-results.bse              # Standard errors
-results.tvalues          # T-statistics
-results.pvalues          # P-values
-results.rsquared         # R-squared
-results.rsquared_adj     # Adjusted R-squared
-results.fittedvalues     # Fitted values (predictions on training data)
-results.resid            # Residuals
-results.conf_int()       # Confidence intervals for parameters
+results.params  # Coefficients
+results.bse  # Standard errors
+results.tvalues  # T-statistics
+results.pvalues  # P-values
+results.rsquared  # R-squared
+results.rsquared_adj  # Adjusted R-squared
+results.fittedvalues  # Fitted values (predictions on training data)
+results.resid  # Residuals
+results.conf_int()  # Confidence intervals for parameters
 ```
 
 **Prediction with confidence/prediction intervals:**
@@ -67,7 +67,7 @@ obs_ci_upper = pred_summary["obs_ci_upper"]
 import statsmodels.formula.api as smf
 
 # Automatic handling of categorical variables and interactions
-formula = 'y ~ x1 + x2 + C(category) + x1:x2'
+formula = "y ~ x1 + x2 + C(category) + x1:x2"
 results = smf.ols(formula, data=df).fit()
 ```
 
@@ -187,8 +187,9 @@ rolling_rsquared = rolling_results.rsquared
 
 # Plot parameter evolution
 import matplotlib.pyplot as plt
+
 rolling_params.plot()
-plt.title('Time-Varying Coefficients')
+plt.title("Time-Varying Coefficients")
 plt.show()
 ```
 
@@ -218,11 +219,12 @@ for q in quantiles:
 
 # Plot quantile-varying effects
 import matplotlib.pyplot as plt
+
 coef_dict = {q: res.params for q, res in results_dict.items()}
 coef_df = pd.DataFrame(coef_dict).T
 coef_df.plot()
-plt.xlabel('Quantile')
-plt.ylabel('Coefficient')
+plt.xlabel("Quantile")
+plt.ylabel("Coefficient")
 plt.show()
 ```
 
@@ -260,22 +262,23 @@ import matplotlib.pyplot as plt
 
 # Residuals vs fitted
 plt.scatter(results.fittedvalues, results.resid)
-plt.xlabel('Fitted values')
-plt.ylabel('Residuals')
-plt.axhline(y=0, color='r', linestyle='--')
-plt.title('Residuals vs Fitted')
+plt.xlabel("Fitted values")
+plt.ylabel("Residuals")
+plt.axhline(y=0, color="r", linestyle="--")
+plt.title("Residuals vs Fitted")
 plt.show()
 
 # Q-Q plot for normality
 from statsmodels.graphics.gofplots import qqplot
-qqplot(results.resid, line='s')
+
+qqplot(results.resid, line="s")
 plt.show()
 
 # Histogram of residuals
-plt.hist(results.resid, bins=30, edgecolor='black')
-plt.xlabel('Residuals')
-plt.ylabel('Frequency')
-plt.title('Distribution of Residuals')
+plt.hist(results.resid, bins=30, edgecolor="black")
+plt.xlabel("Residuals")
+plt.ylabel("Frequency")
+plt.title("Distribution of Residuals")
 plt.show()
 ```
 
@@ -346,6 +349,7 @@ dffits = influence.dffits[0]
 
 # Create influence plot
 from statsmodels.graphics.regressionplots import influence_plot
+
 fig, ax = plt.subplots(figsize=(12, 8))
 influence_plot(results, ax=ax)
 plt.show()
@@ -404,17 +408,16 @@ Handle heteroscedasticity or clustering without reweighting.
 
 ```python
 # Heteroscedasticity-robust (HC) standard errors
-results_hc = results.get_robustcov_results(cov_type='HC0')  # White's
-results_hc1 = results.get_robustcov_results(cov_type='HC1')
-results_hc2 = results.get_robustcov_results(cov_type='HC2')
-results_hc3 = results.get_robustcov_results(cov_type='HC3')  # Most conservative
+results_hc = results.get_robustcov_results(cov_type="HC0")  # White's
+results_hc1 = results.get_robustcov_results(cov_type="HC1")
+results_hc2 = results.get_robustcov_results(cov_type="HC2")
+results_hc3 = results.get_robustcov_results(cov_type="HC3")  # Most conservative
 
 # Newey-West HAC (Heteroscedasticity and Autocorrelation Consistent)
-results_hac = results.get_robustcov_results(cov_type='HAC', maxlags=4)
+results_hac = results.get_robustcov_results(cov_type="HAC", maxlags=4)
 
 # Cluster-robust standard errors
-results_cluster = results.get_robustcov_results(cov_type='cluster',
-                                                groups=cluster_ids)
+results_cluster = results.get_robustcov_results(cov_type="cluster", groups=cluster_ids)
 
 # View robust results
 print(results_hc3.summary())

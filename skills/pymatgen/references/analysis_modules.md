@@ -116,8 +116,8 @@ sga = SpacegroupAnalyzer(struct)
 
 # Get space group information
 spacegroup_symbol = sga.get_space_group_symbol()  # e.g., "Fm-3m"
-spacegroup_number = sga.get_space_group_number()   # e.g., 225
-crystal_system = sga.get_crystal_system()           # e.g., "cubic"
+spacegroup_number = sga.get_space_group_number()  # e.g., 225
+crystal_system = sga.get_crystal_system()  # e.g., "cubic"
 
 # Get symmetrized structure
 sym_struct = sga.get_symmetrized_structure()
@@ -137,10 +137,10 @@ symmetry_ops = sga.get_symmetry_operations()
 
 ```python
 from pymatgen.analysis.local_env import (
-    VoronoiNN,           # Voronoi tessellation
-    CrystalNN,           # Crystal-based
-    MinimumDistanceNN,   # Distance cutoff
-    BrunnerNN_real,      # Brunner method
+    VoronoiNN,  # Voronoi tessellation
+    CrystalNN,  # Crystal-based
+    MinimumDistanceNN,  # Distance cutoff
+    BrunnerNN_real,  # Brunner method
 )
 
 # Voronoi nearest neighbors
@@ -163,8 +163,12 @@ for i, site in enumerate(struct):
 Detailed coordination environment identification.
 
 ```python
-from pymatgen.analysis.chemenv.coordination_environments.coordination_geometry_finder import LocalGeometryFinder
-from pymatgen.analysis.chemenv.coordination_environments.chemenv_strategies import SimplestChemenvStrategy
+from pymatgen.analysis.chemenv.coordination_environments.coordination_geometry_finder import (
+    LocalGeometryFinder,
+)
+from pymatgen.analysis.chemenv.coordination_environments.chemenv_strategies import (
+    SimplestChemenvStrategy,
+)
 
 lgf = LocalGeometryFinder()
 lgf.setup_structure(struct)
@@ -202,20 +206,15 @@ from pymatgen.core.surface import SlabGenerator, generate_all_slabs
 slabgen = SlabGenerator(
     struct,
     miller_index=(1, 1, 1),
-    min_slab_size=10.0,     # Minimum slab thickness (Å)
-    min_vacuum_size=10.0,   # Minimum vacuum thickness (Å)
-    center_slab=True
+    min_slab_size=10.0,  # Minimum slab thickness (Å)
+    min_vacuum_size=10.0,  # Minimum vacuum thickness (Å)
+    center_slab=True,
 )
 
 slabs = slabgen.get_slabs()
 
 # Generate all slabs up to a Miller index
-all_slabs = generate_all_slabs(
-    struct,
-    max_index=2,
-    min_slab_size=10.0,
-    min_vacuum_size=10.0
-)
+all_slabs = generate_all_slabs(struct, max_index=2, min_slab_size=10.0, min_vacuum_size=10.0)
 ```
 
 ### Wulff Shape Construction
@@ -254,6 +253,7 @@ ads_sites = asf.find_adsorption_sites()
 
 # Generate structures with adsorbates
 from pymatgen.core import Molecule
+
 adsorbate = Molecule("O", [[0, 0, 0]])
 
 ads_structs = asf.generate_adsorption_structures(
@@ -314,6 +314,7 @@ from pymatgen.electronic_structure.plotter import BSPlotter
 
 # Read band structure from VASP calculation
 from pymatgen.io.vasp import Vasprun
+
 vasprun = Vasprun("vasprun.xml")
 bs = vasprun.get_band_structure()
 
@@ -445,10 +446,7 @@ chgcar_potential = ChgcarPotential.from_file("CHGCAR")
 
 # Find diffusion path
 neb_path = NEBPathfinder(
-    start_struct,
-    end_struct,
-    relax_sites=[i for i in range(len(start_struct))],
-    v=chgcar_potential
+    start_struct, end_struct, relax_sites=[i for i in range(len(start_struct))], v=chgcar_potential
 )
 
 images = neb_path.images  # Interpolated structures for NEB

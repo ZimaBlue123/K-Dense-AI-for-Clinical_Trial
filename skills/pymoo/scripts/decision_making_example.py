@@ -36,9 +36,7 @@ def apply_pseudo_weights(result, weights):
     print(f"Applying Pseudo-Weights with weights: {weights}")
 
     # Normalize objectives to [0, 1]
-    F_norm = (result.F - result.F.min(axis=0)) / (
-        result.F.max(axis=0) - result.F.min(axis=0)
-    )
+    F_norm = (result.F - result.F.min(axis=0)) / (result.F.max(axis=0) - result.F.min(axis=0))
 
     # Apply MCDM
     dm = PseudoWeights(weights)

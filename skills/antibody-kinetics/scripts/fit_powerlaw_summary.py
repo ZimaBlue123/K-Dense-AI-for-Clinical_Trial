@@ -35,9 +35,7 @@ def _ensure_positive(series: pd.Series, name: str) -> None:
 
 def fit_powerlaw_by_group(
     df: pd.DataFrame,
-) -> tuple[
-    dict[str, sm.regression.linear_model.RegressionResultsWrapper], list[PowerLawFit]
-]:
+) -> tuple[dict[str, sm.regression.linear_model.RegressionResultsWrapper], list[PowerLawFit]]:
     _require_cols(df, ["Group", "t_post", "GMC"])
     df = df.copy()
 
@@ -105,9 +103,7 @@ def main() -> int:
     ap = argparse.ArgumentParser(
         description="Power-law(幂律)模型：基于汇总GMC的log-log拟合、外推、绘图。"
     )
-    ap.add_argument(
-        "--in", dest="infile", required=True, help="输入CSV，至少包含 Group,t_post,GMC"
-    )
+    ap.add_argument("--in", dest="infile", required=True, help="输入CSV，至少包含 Group,t_post,GMC")
     ap.add_argument("--outdir", required=True, help="输出目录")
     ap.add_argument(
         "--target-t-post",
@@ -116,12 +112,8 @@ def main() -> int:
         help="外推的最大 t_post（如 30≈M36）",
     )
     ap.add_argument("--grid-n", type=int, default=200, help="预测网格点数")
-    ap.add_argument(
-        "--threshold", type=float, default=10.0, help="保护阈值（用于反解持续时间）"
-    )
-    ap.add_argument(
-        "--alpha", type=float, default=0.05, help="置信水平：alpha=0.05 表示 95%% CI"
-    )
+    ap.add_argument("--threshold", type=float, default=10.0, help="保护阈值（用于反解持续时间）")
+    ap.add_argument("--alpha", type=float, default=0.05, help="置信水平：alpha=0.05 表示 95%% CI")
     ap.add_argument(
         "--study-month-offset",
         type=float,
@@ -164,9 +156,7 @@ def main() -> int:
     fit_df = pd.DataFrame([asdict(x) for x in fits]).sort_values(["group"])
     fit_df.to_csv(outdir / "powerlaw_fits.csv", index=False)
 
-    pd.DataFrame(threshold_rows).to_csv(
-        outdir / "powerlaw_threshold_time.csv", index=False
-    )
+    pd.DataFrame(threshold_rows).to_csv(outdir / "powerlaw_threshold_time.csv", index=False)
     (outdir / "run_metadata.json").write_text(
         json.dumps(
             {
@@ -197,14 +187,10 @@ def main() -> int:
         # 观测点（若提供 StudyMonth 则优先）
         plot_df = df.copy()
         if "StudyMonth" not in plot_df.columns:
-            plot_df["StudyMonth"] = plot_df["t_post"].astype(float) + float(
-                args.study_month_offset
-            )
+            plot_df["StudyMonth"] = plot_df["t_post"].astype(float) + float(args.study_month_offset)
 
         pred_plot = pred_df.copy()
-        pred_plot["StudyMonth"] = pred_plot["t_post"].astype(float) + float(
-            args.study_month_offset
-        )
+        pred_plot["StudyMonth"] = pred_plot["t_post"].astype(float) + float(args.study_month_offset)
 
         fig, ax = plt.subplots(figsize=(8.0, 5.6))
         groups = sorted(pred_plot["Group"].unique().tolist())

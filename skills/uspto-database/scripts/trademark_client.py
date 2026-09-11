@@ -265,15 +265,9 @@ Environment:
     # Main operation arguments (mutually exclusive)
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("--serial", "-s", help="Get trademark by serial number")
-    group.add_argument(
-        "--registration", "-r", help="Get trademark by registration number"
-    )
-    group.add_argument(
-        "--status", help="Get status summary (serial or registration number)"
-    )
-    group.add_argument(
-        "--health", help="Check trademark health (serial or registration number)"
-    )
+    group.add_argument("--registration", "-r", help="Get trademark by registration number")
+    group.add_argument("--status", help="Get status summary (serial or registration number)")
+    group.add_argument("--health", help="Check trademark health (serial or registration number)")
     group.add_argument(
         "--goods", "-g", help="Get goods and services (serial or registration number)"
     )
@@ -287,9 +281,7 @@ Environment:
     )
 
     # API key option
-    parser.add_argument(
-        "--api-key", "-k", help="USPTO API key (overrides USPTO_API_KEY env var)"
-    )
+    parser.add_argument("--api-key", "-k", help="USPTO API key (overrides USPTO_API_KEY env var)")
 
     args = parser.parse_args()
 

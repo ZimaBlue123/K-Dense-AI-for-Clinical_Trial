@@ -45,14 +45,14 @@ X = np.random.rand(100, 2000)  # 100 cells × 2000 genes
 adata = ad.AnnData(X)
 
 # With metadata
-obs = pd.DataFrame({
-    'cell_type': ['T cell', 'B cell'] * 50,
-    'sample': ['A', 'B'] * 50
-}, index=[f'cell_{i}' for i in range(100)])
+obs = pd.DataFrame(
+    {"cell_type": ["T cell", "B cell"] * 50, "sample": ["A", "B"] * 50},
+    index=[f"cell_{i}" for i in range(100)],
+)
 
-var = pd.DataFrame({
-    'gene_name': [f'Gene_{i}' for i in range(2000)]
-}, index=[f'ENSG{i:05d}' for i in range(2000)])
+var = pd.DataFrame(
+    {"gene_name": [f"Gene_{i}" for i in range(2000)]}, index=[f"ENSG{i:05d}" for i in range(2000)]
+)
 
 adata = ad.AnnData(X=X, obs=obs, var=var)
 ```
@@ -60,41 +60,41 @@ adata = ad.AnnData(X=X, obs=obs, var=var)
 ### Reading data
 ```python
 # Read h5ad file
-adata = ad.read_h5ad('data.h5ad')
+adata = ad.read_h5ad("data.h5ad")
 
 # Read with backed mode (for large files)
-adata = ad.read_h5ad('large_data.h5ad', backed='r')
+adata = ad.read_h5ad("large_data.h5ad", backed="r")
 
 # Read other formats
-adata = ad.read_csv('data.csv')
-adata = ad.read_loom('data.loom')
-adata = ad.read_10x_h5('filtered_feature_bc_matrix.h5')
+adata = ad.read_csv("data.csv")
+adata = ad.read_loom("data.loom")
+adata = ad.read_10x_h5("filtered_feature_bc_matrix.h5")
 ```
 
 ### Writing data
 ```python
 # Write h5ad file
-adata.write_h5ad('output.h5ad')
+adata.write_h5ad("output.h5ad")
 
 # Write with compression
-adata.write_h5ad('output.h5ad', compression='gzip')
+adata.write_h5ad("output.h5ad", compression="gzip")
 
 # Write other formats
-adata.write_zarr('output.zarr')
-adata.write_csvs('output_dir/')
+adata.write_zarr("output.zarr")
+adata.write_csvs("output_dir/")
 ```
 
 ### Basic operations
 ```python
 # Subset by conditions
-t_cells = adata[adata.obs['cell_type'] == 'T cell']
+t_cells = adata[adata.obs["cell_type"] == "T cell"]
 
 # Subset by indices
 subset = adata[0:50, 0:100]
 
 # Add metadata
-adata.obs['quality_score'] = np.random.rand(adata.n_obs)
-adata.var['highly_variable'] = np.random.rand(adata.n_vars) > 0.8
+adata.obs["quality_score"] = np.random.rand(adata.n_obs)
+adata.var["highly_variable"] = np.random.rand(adata.n_vars) > 0.8
 
 # Access dimensions
 print(f"{adata.n_obs} observations × {adata.n_vars} variables")
@@ -127,14 +127,14 @@ Read and write data in various formats with support for compression, backed mode
 Common commands:
 ```python
 # Read/write h5ad
-adata = ad.read_h5ad('data.h5ad', backed='r')
-adata.write_h5ad('output.h5ad', compression='gzip')
+adata = ad.read_h5ad("data.h5ad", backed="r")
+adata.write_h5ad("output.h5ad", compression="gzip")
 
 # Read 10X data
-adata = ad.read_10x_h5('filtered_feature_bc_matrix.h5')
+adata = ad.read_10x_h5("filtered_feature_bc_matrix.h5")
 
 # Read MTX format
-adata = ad.read_mtx('matrix.mtx').T
+adata = ad.read_mtx("matrix.mtx").T
 ```
 
 ### 3. Concatenation
@@ -155,9 +155,9 @@ Common commands:
 adata = ad.concat(
     [adata1, adata2, adata3],
     axis=0,
-    join='inner',
-    label='batch',
-    keys=['batch1', 'batch2', 'batch3']
+    join="inner",
+    label="batch",
+    keys=["batch1", "batch2", "batch3"],
 )
 
 # Concatenate variables (combine modalities)
@@ -165,11 +165,8 @@ adata = ad.concat([adata_rna, adata_protein], axis=1)
 
 # Lazy concatenation
 from anndata.experimental import AnnCollection
-collection = AnnCollection(
-    ['data1.h5ad', 'data2.h5ad'],
-    join_obs='outer',
-    label='dataset'
-)
+
+collection = AnnCollection(["data1.h5ad", "data2.h5ad"], join_obs="outer", label="dataset")
 ```
 
 ### 4. Data Manipulation
@@ -189,8 +186,8 @@ Transform, subset, filter, and reorganize data efficiently.
 Common commands:
 ```python
 # Subset by metadata
-filtered = adata[adata.obs['quality_score'] > 0.8]
-hv_genes = adata[:, adata.var['highly_variable']]
+filtered = adata[adata.obs["quality_score"] > 0.8]
+hv_genes = adata[:, adata.var["highly_variable"]]
 
 # Transpose
 adata_T = adata.T
@@ -223,17 +220,18 @@ Key recommendations:
 ```python
 # Use sparse matrices for sparse data
 from scipy.sparse import csr_matrix
+
 adata.X = csr_matrix(adata.X)
 
 # Convert strings to categoricals
 adata.strings_to_categoricals()
 
 # Use backed mode for large files
-adata = ad.read_h5ad('large.h5ad', backed='r')
+adata = ad.read_h5ad("large.h5ad", backed="r")
 
 # Store raw before filtering
 adata.raw = adata.copy()
-adata = adata[:, adata.var['highly_variable']]
+adata = adata[:, adata.var["highly_variable"]]
 ```
 
 ## Integration with Scverse Ecosystem
@@ -257,7 +255,7 @@ sc.tl.umap(adata)
 sc.tl.leiden(adata)
 
 # Visualization
-sc.pl.umap(adata, color=['cell_type', 'leiden'])
+sc.pl.umap(adata, color=["cell_type", "leiden"])
 ```
 
 ### Muon (Multimodal data)
@@ -265,7 +263,7 @@ sc.pl.umap(adata, color=['cell_type', 'leiden'])
 import muon as mu
 
 # Combine RNA and protein data
-mdata = mu.MuData({'rna': adata_rna, 'protein': adata_protein})
+mdata = mu.MuData({"rna": adata_rna, "protein": adata_protein})
 ```
 
 ### PyTorch integration
@@ -288,13 +286,13 @@ import anndata as ad
 import scanpy as sc
 
 # 1. Load data
-adata = ad.read_10x_h5('filtered_feature_bc_matrix.h5')
+adata = ad.read_10x_h5("filtered_feature_bc_matrix.h5")
 
 # 2. Quality control
-adata.obs['n_genes'] = (adata.X > 0).sum(axis=1)
-adata.obs['n_counts'] = adata.X.sum(axis=1)
-adata = adata[adata.obs['n_genes'] > 200]
-adata = adata[adata.obs['n_counts'] < 50000]
+adata.obs["n_genes"] = (adata.X > 0).sum(axis=1)
+adata.obs["n_counts"] = adata.X.sum(axis=1)
+adata = adata[adata.obs["n_genes"] > 200]
+adata = adata[adata.obs["n_counts"] < 50000]
 
 # 3. Store raw
 adata.raw = adata.copy()
@@ -303,30 +301,28 @@ adata.raw = adata.copy()
 sc.pp.normalize_total(adata, target_sum=1e4)
 sc.pp.log1p(adata)
 sc.pp.highly_variable_genes(adata, n_top_genes=2000)
-adata = adata[:, adata.var['highly_variable']]
+adata = adata[:, adata.var["highly_variable"]]
 
 # 5. Save processed data
-adata.write_h5ad('processed.h5ad')
+adata.write_h5ad("processed.h5ad")
 ```
 
 ### Batch integration
 ```python
 # Load multiple batches
-adata1 = ad.read_h5ad('batch1.h5ad')
-adata2 = ad.read_h5ad('batch2.h5ad')
-adata3 = ad.read_h5ad('batch3.h5ad')
+adata1 = ad.read_h5ad("batch1.h5ad")
+adata2 = ad.read_h5ad("batch2.h5ad")
+adata3 = ad.read_h5ad("batch3.h5ad")
 
 # Concatenate with batch labels
 adata = ad.concat(
-    [adata1, adata2, adata3],
-    label='batch',
-    keys=['batch1', 'batch2', 'batch3'],
-    join='inner'
+    [adata1, adata2, adata3], label="batch", keys=["batch1", "batch2", "batch3"], join="inner"
 )
 
 # Apply batch correction
 import scanpy as sc
-sc.pp.combat(adata, key='batch')
+
+sc.pp.combat(adata, key="batch")
 
 # Continue analysis
 sc.pp.pca(adata)
@@ -337,10 +333,10 @@ sc.tl.umap(adata)
 ### Working with large datasets
 ```python
 # Open in backed mode
-adata = ad.read_h5ad('100GB_dataset.h5ad', backed='r')
+adata = ad.read_h5ad("100GB_dataset.h5ad", backed="r")
 
 # Filter based on metadata (no data loading)
-high_quality = adata[adata.obs['quality_score'] > 0.8]
+high_quality = adata[adata.obs["quality_score"] > 0.8]
 
 # Load filtered subset
 adata_subset = high_quality.to_memory()
@@ -351,7 +347,7 @@ process(adata_subset)
 # Or process in chunks
 chunk_size = 1000
 for i in range(0, adata.n_obs, chunk_size):
-    chunk = adata[i:i+chunk_size, :].to_memory()
+    chunk = adata[i : i + chunk_size, :].to_memory()
     process(chunk)
 ```
 
@@ -361,10 +357,11 @@ for i in range(0, adata.n_obs, chunk_size):
 Use backed mode or convert to sparse matrices:
 ```python
 # Backed mode
-adata = ad.read_h5ad('file.h5ad', backed='r')
+adata = ad.read_h5ad("file.h5ad", backed="r")
 
 # Sparse matrices
 from scipy.sparse import csr_matrix
+
 adata.X = csr_matrix(adata.X)
 ```
 
@@ -373,20 +370,20 @@ Use compression and appropriate formats:
 ```python
 # Optimize for storage
 adata.strings_to_categoricals()
-adata.write_h5ad('file.h5ad', compression='gzip')
+adata.write_h5ad("file.h5ad", compression="gzip")
 
 # Use Zarr for cloud storage
-adata.write_zarr('file.zarr', chunks=(1000, 1000))
+adata.write_zarr("file.zarr", chunks=(1000, 1000))
 ```
 
 ### Index alignment issues
 Always align external data on index:
 ```python
 # Wrong
-adata.obs['new_col'] = external_data['values']
+adata.obs["new_col"] = external_data["values"]
 
 # Correct
-adata.obs['new_col'] = external_data.set_index('cell_id').loc[adata.obs_names, 'values']
+adata.obs["new_col"] = external_data.set_index("cell_id").loc[adata.obs_names, "values"]
 ```
 
 ## Additional Resources

@@ -39,10 +39,12 @@ import modal
 
 app = modal.App(name="hello-modal")
 
+
 @app.function()
 def hello():
     print("Hello from Modal!")
     return "success"
+
 
 @app.local_entrypoint()
 def main():

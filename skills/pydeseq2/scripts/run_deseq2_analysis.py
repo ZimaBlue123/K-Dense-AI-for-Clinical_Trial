@@ -82,13 +82,9 @@ def filter_data(counts_df, metadata, min_counts=10, condition_col=None):
         metadata = metadata.loc[samples_to_keep]
         samples_removed = initial_samples - counts_df.shape[0]
         if samples_removed > 0:
-            print(
-                f"  Removed {samples_removed} samples with missing '{condition_col}' data"
-            )
+            print(f"  Removed {samples_removed} samples with missing '{condition_col}' data")
 
-    print(
-        f"  Final data shape: {counts_df.shape[0]} samples × {counts_df.shape[1]} genes"
-    )
+    print(f"  Final data shape: {counts_df.shape[0]} samples × {counts_df.shape[1]} genes")
 
     return counts_df, metadata
 
@@ -186,14 +182,14 @@ def save_results(ds, dds, output_dir, shrink_lfc=True):
     print(f"  Saved: {dds_path}")
 
     # Print summary
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print("ANALYSIS SUMMARY")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
     print(f"Total genes tested: {len(ds.results_df)}")
     print(f"Significant genes (padj < 0.05): {len(significant)}")
     print(f"Upregulated: {len(significant[significant.log2FoldChange > 0])}")
     print(f"Downregulated: {len(significant[significant.log2FoldChange < 0])}")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
     # Show top genes
     print("\nTop 10 most significant genes:")
@@ -307,9 +303,7 @@ Examples:
 
     parser.add_argument("--counts", required=True, help="Path to count matrix CSV file")
     parser.add_argument("--metadata", required=True, help="Path to metadata CSV file")
-    parser.add_argument(
-        "--design", required=True, help="Design formula (e.g., '~condition')"
-    )
+    parser.add_argument("--design", required=True, help="Design formula (e.g., '~condition')")
     parser.add_argument(
         "--contrast",
         nargs=3,
@@ -317,9 +311,7 @@ Examples:
         metavar=("VARIABLE", "TEST", "REFERENCE"),
         help="Contrast specification: variable test_level reference_level",
     )
-    parser.add_argument(
-        "--output", default="results", help="Output directory (default: results)"
-    )
+    parser.add_argument("--output", default="results", help="Output directory (default: results)")
     parser.add_argument(
         "--min-counts",
         type=int,
@@ -344,9 +336,7 @@ Examples:
         default=1,
         help="Number of CPUs for parallel processing (default: 1)",
     )
-    parser.add_argument(
-        "--plots", action="store_true", help="Generate volcano and MA plots"
-    )
+    parser.add_argument("--plots", action="store_true", help="Generate volcano and MA plots")
 
     args = parser.parse_args()
 

@@ -67,23 +67,20 @@ import requests
 BASE_URL = "http://localhost:5055/api"
 
 # Add a credential for an AI provider
-response = requests.post(f"{BASE_URL}/credentials", json={
-    "provider": "openai",
-    "name": "My OpenAI Key",
-    "api_key": "sk-..."
-})
+response = requests.post(
+    f"{BASE_URL}/credentials",
+    json={"provider": "openai", "name": "My OpenAI Key", "api_key": "sk-..."},
+)
 credential = response.json()
 
 # Discover available models
-response = requests.post(
-    f"{BASE_URL}/credentials/{credential['id']}/discover"
-)
+response = requests.post(f"{BASE_URL}/credentials/{credential['id']}/discover")
 discovered = response.json()
 
 # Register discovered models
 requests.post(
     f"{BASE_URL}/credentials/{credential['id']}/register-models",
-    json={"model_ids": [m["id"] for m in discovered["models"]]}
+    json={"model_ids": [m["id"] for m in discovered["models"]]},
 )
 ```
 
@@ -98,10 +95,13 @@ import requests
 BASE_URL = "http://localhost:5055/api"
 
 # Create a notebook
-response = requests.post(f"{BASE_URL}/notebooks", json={
-    "name": "Cancer Genomics Research",
-    "description": "Literature review on tumor mutational burden"
-})
+response = requests.post(
+    f"{BASE_URL}/notebooks",
+    json={
+        "name": "Cancer Genomics Research",
+        "description": "Literature review on tumor mutational burden",
+    },
+)
 notebook = response.json()
 notebook_id = notebook["id"]
 ```
@@ -111,11 +111,14 @@ Ingest diverse content types including PDFs, videos, audio files, web pages, and
 
 ```python
 # Add a web URL source
-response = requests.post(f"{BASE_URL}/sources", data={
-    "url": "https://arxiv.org/abs/2301.00001",
-    "notebook_id": notebook_id,
-    "process_async": "true"
-})
+response = requests.post(
+    f"{BASE_URL}/sources",
+    data={
+        "url": "https://arxiv.org/abs/2301.00001",
+        "notebook_id": notebook_id,
+        "process_async": "true",
+    },
+)
 source = response.json()
 
 # Upload a PDF file
@@ -123,7 +126,7 @@ with open("paper.pdf", "rb") as f:
     response = requests.post(
         f"{BASE_URL}/sources",
         data={"notebook_id": notebook_id},
-        files={"file": ("paper.pdf", f, "application/pdf")}
+        files={"file": ("paper.pdf", f, "application/pdf")},
     )
 ```
 
@@ -132,12 +135,15 @@ Create and manage notes (human or AI-generated) associated with notebooks.
 
 ```python
 # Create a human note
-response = requests.post(f"{BASE_URL}/notes", json={
-    "title": "Key Findings",
-    "content": "TMB correlates with immunotherapy response in NSCLC...",
-    "note_type": "human",
-    "notebook_id": notebook_id
-})
+response = requests.post(
+    f"{BASE_URL}/notes",
+    json={
+        "title": "Key Findings",
+        "content": "TMB correlates with immunotherapy response in NSCLC...",
+        "note_type": "human",
+        "notebook_id": notebook_id,
+    },
+)
 ```
 
 ### Context-Aware Chat
@@ -145,17 +151,19 @@ Chat with your research materials using AI that cites sources.
 
 ```python
 # Create a chat session
-session = requests.post(f"{BASE_URL}/chat/sessions", json={
-    "notebook_id": notebook_id,
-    "title": "TMB Discussion"
-}).json()
+session = requests.post(
+    f"{BASE_URL}/chat/sessions", json={"notebook_id": notebook_id, "title": "TMB Discussion"}
+).json()
 
 # Send a message with context from sources
-response = requests.post(f"{BASE_URL}/chat/execute", json={
-    "session_id": session["id"],
-    "message": "What are the key biomarkers for immunotherapy response?",
-    "context": {"include_sources": True, "include_notes": True}
-})
+response = requests.post(
+    f"{BASE_URL}/chat/execute",
+    json={
+        "session_id": session["id"],
+        "message": "What are the key biomarkers for immunotherapy response?",
+        "context": {"include_sources": True, "include_notes": True},
+    },
+)
 ```
 
 ### Search
@@ -163,16 +171,16 @@ Search across all materials using full-text or vector (semantic) search.
 
 ```python
 # Vector search across the knowledge base
-results = requests.post(f"{BASE_URL}/search", json={
-    "query": "tumor mutational burden immunotherapy",
-    "search_type": "vector",
-    "limit": 10
-}).json()
+results = requests.post(
+    f"{BASE_URL}/search",
+    json={"query": "tumor mutational burden immunotherapy", "search_type": "vector", "limit": 10},
+).json()
 
 # Ask a question with AI-powered answer
-answer = requests.post(f"{BASE_URL}/search/ask/simple", json={
-    "query": "How does TMB predict checkpoint inhibitor response?"
-}).json()
+answer = requests.post(
+    f"{BASE_URL}/search/ask/simple",
+    json={"query": "How does TMB predict checkpoint inhibitor response?"},
+).json()
 ```
 
 ### Podcast Generation
@@ -180,19 +188,20 @@ Generate professional multi-speaker podcasts from research materials with 1-4 cu
 
 ```python
 # Generate a podcast episode
-job = requests.post(f"{BASE_URL}/podcasts/generate", json={
-    "notebook_id": notebook_id,
-    "episode_profile_id": episode_profile_id,
-    "speaker_profile_ids": [speaker1_id, speaker2_id]
-}).json()
+job = requests.post(
+    f"{BASE_URL}/podcasts/generate",
+    json={
+        "notebook_id": notebook_id,
+        "episode_profile_id": episode_profile_id,
+        "speaker_profile_ids": [speaker1_id, speaker2_id],
+    },
+).json()
 
 # Check generation status
 status = requests.get(f"{BASE_URL}/podcasts/jobs/{job['job_id']}").json()
 
 # Download audio when ready
-audio = requests.get(
-    f"{BASE_URL}/podcasts/episodes/{status['episode_id']}/audio"
-)
+audio = requests.get(f"{BASE_URL}/podcasts/episodes/{status['episode_id']}/audio")
 ```
 
 ### Content Transformations
@@ -200,20 +209,22 @@ Apply custom AI-powered transformations to content for summarization, extraction
 
 ```python
 # Create a custom transformation
-transform = requests.post(f"{BASE_URL}/transformations", json={
-    "name": "extract_methods",
-    "title": "Extract Methods",
-    "description": "Extract methodology details from papers",
-    "prompt": "Extract and summarize the methodology section...",
-    "apply_default": False
-}).json()
+transform = requests.post(
+    f"{BASE_URL}/transformations",
+    json={
+        "name": "extract_methods",
+        "title": "Extract Methods",
+        "description": "Extract methodology details from papers",
+        "prompt": "Extract and summarize the methodology section...",
+        "apply_default": False,
+    },
+).json()
 
 # Execute transformation on text
-result = requests.post(f"{BASE_URL}/transformations/execute", json={
-    "transformation_id": transform["id"],
-    "input_text": "...",
-    "model_id": "model_id_here"
-}).json()
+result = requests.post(
+    f"{BASE_URL}/transformations/execute",
+    json={"transformation_id": transform["id"], "input_text": "...", "model_id": "model_id_here"},
+).json()
 ```
 
 ## Supported AI Providers

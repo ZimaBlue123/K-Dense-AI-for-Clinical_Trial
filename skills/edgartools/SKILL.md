@@ -16,6 +16,7 @@ The SEC requires identification for API access. Always set identity before any o
 
 ```python
 from edgar import set_identity
+
 set_identity("Your Name your.email@example.com")
 ```
 
@@ -36,9 +37,9 @@ uv pip install "edgartools[ai]"
 ```python
 from edgar import Company, find
 
-company = Company("AAPL")        # by ticker
-company = Company(320193)         # by CIK (fastest)
-results = find("Apple")           # by name search
+company = Company("AAPL")  # by ticker
+company = Company(320193)  # by CIK (fastest)
+results = find("Apple")  # by name search
 ```
 
 ### Get Filings
@@ -50,10 +51,12 @@ filing = filings.latest()
 
 # Global search across all filings
 from edgar import get_filings
+
 filings = get_filings(2024, 1, form="10-K")
 
 # By accession number
 from edgar import get_by_accession_number
+
 filing = get_by_accession_number("0000320193-23-000106")
 ```
 
@@ -61,10 +64,10 @@ filing = get_by_accession_number("0000320193-23-000106")
 
 ```python
 # Form-specific object (most common approach)
-tenk = filing.obj()              # Returns TenK, EightK, Form4, ThirteenF, etc.
+tenk = filing.obj()  # Returns TenK, EightK, Form4, ThirteenF, etc.
 
 # Financial statements (10-K/10-Q)
-financials = company.get_financials()     # annual
+financials = company.get_financials()  # annual
 financials = company.get_quarterly_financials()  # quarterly
 income = financials.income_statement()
 balance = financials.balance_sheet()
@@ -78,24 +81,24 @@ income = xbrl.statements.income_statement()
 ### Access Filing Content
 
 ```python
-text = filing.text()             # plain text
-html = filing.html()             # HTML
-md = filing.markdown()           # markdown (good for LLM processing)
-filing.open()                    # open in browser
+text = filing.text()  # plain text
+html = filing.html()  # HTML
+md = filing.markdown()  # markdown (good for LLM processing)
+filing.open()  # open in browser
 ```
 
 ## Key Company Properties
 
 ```python
-company.name                     # "Apple Inc."
-company.cik                      # 320193
-company.ticker                   # "AAPL"
-company.industry                 # "ELECTRONIC COMPUTERS"
-company.sic                      # "3571"
-company.shares_outstanding       # 15115785000.0
-company.public_float             # 2899948348000.0
-company.fiscal_year_end          # "0930"
-company.exchange                 # "Nasdaq"
+company.name  # "Apple Inc."
+company.cik  # 320193
+company.ticker  # "AAPL"
+company.industry  # "ELECTRONIC COMPUTERS"
+company.sic  # "3571"
+company.shares_outstanding  # 15115785000.0
+company.public_float  # 2899948348000.0
+company.fiscal_year_end  # "0930"
+company.exchange  # "Nasdaq"
 ```
 
 ## Form → Object Mapping

@@ -144,14 +144,14 @@ idata = pm.sample(target_accept=0.95)
 
 # Or reparameterize using non-centered parameterization
 # Bad (centered):
-mu = pm.Normal('mu', 0, 1)
-sigma = pm.HalfNormal('sigma', 1)
-x = pm.Normal('x', mu, sigma, observed=data)
+mu = pm.Normal("mu", 0, 1)
+sigma = pm.HalfNormal("sigma", 1)
+x = pm.Normal("x", mu, sigma, observed=data)
 
 # Good (non-centered):
-mu = pm.Normal('mu', 0, 1)
-sigma = pm.HalfNormal('sigma', 1)
-x_offset = pm.Normal('x_offset', 0, 1, observed=(data - mu) / sigma)
+mu = pm.Normal("mu", 0, 1)
+sigma = pm.HalfNormal("sigma", 1)
+x_offset = pm.Normal("x_offset", 0, 1, observed=(data - mu) / sigma)
 ```
 
 #### Slow Sampling
@@ -216,7 +216,7 @@ Captures correlations between parameters.
 
 ```python
 with model:
-    approx = pm.fit(method='fullrank_advi')
+    approx = pm.fit(method="fullrank_advi")
 ```
 
 More accurate than mean-field but slower.
@@ -227,7 +227,7 @@ Non-parametric variational inference.
 
 ```python
 with model:
-    approx = pm.fit(method='svgd', n=20000)
+    approx = pm.fit(method="svgd", n=20000)
 ```
 
 Better captures multimodality but more computationally expensive.
@@ -251,7 +251,7 @@ with model:
     prior_pred = pm.sample_prior_predictive(samples=1000)
 
 # Visualize prior predictions
-az.plot_ppc(prior_pred, group='prior')
+az.plot_ppc(prior_pred, group="prior")
 ```
 
 ### Posterior Predictive Sampling
@@ -288,13 +288,10 @@ with model:
     idata = pm.sample()
 
     # Update with new predictor values
-    pm.set_data({'X': X_new})
+    pm.set_data({"X": X_new})
 
     # Sample predictions
-    post_pred_new = pm.sample_posterior_predictive(
-        idata.posterior,
-        var_names=['y_pred']
-    )
+    post_pred_new = pm.sample_posterior_predictive(idata.posterior, var_names=["y_pred"])
 ```
 
 ## Maximum A Posteriori (MAP) Estimation
@@ -336,7 +333,7 @@ with model:
 
 3. **Check diagnostics**:
    ```python
-   az.summary(idata, var_names=['~mu_log__'])  # Exclude transformed vars
+   az.summary(idata, var_names=["~mu_log__"])  # Exclude transformed vars
    ```
 
 4. **Sample posterior predictive**:
@@ -361,15 +358,15 @@ with model:
 
 ```python
 # Centered (can cause divergences):
-mu = pm.Normal('mu', 0, 10)
-sigma = pm.HalfNormal('sigma', 1)
-theta = pm.Normal('theta', mu, sigma, shape=n_groups)
+mu = pm.Normal("mu", 0, 10)
+sigma = pm.HalfNormal("sigma", 1)
+theta = pm.Normal("theta", mu, sigma, shape=n_groups)
 
 # Non-centered (better sampling):
-mu = pm.Normal('mu', 0, 10)
-sigma = pm.HalfNormal('sigma', 1)
-theta_offset = pm.Normal('theta_offset', 0, 1, shape=n_groups)
-theta = pm.Deterministic('theta', mu + sigma * theta_offset)
+mu = pm.Normal("mu", 0, 10)
+sigma = pm.HalfNormal("sigma", 1)
+theta_offset = pm.Normal("theta_offset", 0, 1, shape=n_groups)
+theta = pm.Deterministic("theta", mu + sigma * theta_offset)
 ```
 
 **QR decomposition** for correlated predictors:
@@ -382,14 +379,14 @@ Q, R = np.linalg.qr(X)
 
 with pm.Model():
     # Uncorrelated coefficients
-    beta_tilde = pm.Normal('beta_tilde', 0, 1, shape=p)
+    beta_tilde = pm.Normal("beta_tilde", 0, 1, shape=p)
 
     # Transform back to original scale
-    beta = pm.Deterministic('beta', pm.math.solve(R, beta_tilde))
+    beta = pm.Deterministic("beta", pm.math.solve(R, beta_tilde))
 
     mu = pm.math.dot(Q, beta_tilde)
-    sigma = pm.HalfNormal('sigma', 1)
-    y = pm.Normal('y', mu, sigma, observed=y_obs)
+    sigma = pm.HalfNormal("sigma", 1)
+    y = pm.Normal("y", mu, sigma, observed=y_obs)
 ```
 
 ## Advanced Sampling
@@ -410,7 +407,7 @@ Good for multimodal posteriors or when NUTS struggles.
 Provide starting values:
 
 ```python
-start = {'mu': 0, 'sigma': 1}
+start = {"mu": 0, "sigma": 1}
 with model:
     idata = pm.sample(start=start)
 ```

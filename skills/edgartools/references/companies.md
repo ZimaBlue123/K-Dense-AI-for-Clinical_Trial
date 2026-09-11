@@ -17,6 +17,7 @@
 ### By Ticker (case-insensitive)
 ```python
 from edgar import Company
+
 company = Company("AAPL")
 company = Company("aapl")  # same result
 ```
@@ -31,6 +32,7 @@ company = Company("0000320193")  # zero-padded
 ### By Name Search
 ```python
 from edgar import find
+
 results = find("Apple")
 # Returns list: use results[0] or iterate
 for c in results:
@@ -51,22 +53,22 @@ brk_b = Company("BRK-B")  # Class B
 
 ```python
 company = Company("MSFT")
-company.name             # "Microsoft Corporation"
-company.cik              # 789019
-company.display_name     # "MSFT - Microsoft Corporation"
-company.ticker           # "MSFT"
-company.tickers          # ["MSFT"] (list of all tickers)
-company.industry         # "SERVICES-PREPACKAGED SOFTWARE"
-company.sic              # "7372"
+company.name  # "Microsoft Corporation"
+company.cik  # 789019
+company.display_name  # "MSFT - Microsoft Corporation"
+company.ticker  # "MSFT"
+company.tickers  # ["MSFT"] (list of all tickers)
+company.industry  # "SERVICES-PREPACKAGED SOFTWARE"
+company.sic  # "7372"
 company.fiscal_year_end  # "0630" (June 30)
-company.exchange         # "Nasdaq"
-company.website          # "https://www.microsoft.com"
-company.city             # "Redmond"
-company.state            # "WA"
+company.exchange  # "Nasdaq"
+company.website  # "https://www.microsoft.com"
+company.city  # "Redmond"
+company.state  # "WA"
 company.shares_outstanding  # float (from SEC company facts)
-company.public_float        # float in dollars
-company.is_company          # True
-company.not_found           # False if found
+company.public_float  # float in dollars
+company.is_company  # True
+company.not_found  # False if found
 ```
 
 ---
@@ -109,14 +111,14 @@ original = company.get_filings(amendments=False)
 
 ### latest()
 ```python
-latest_10k = company.latest("10-K")          # single Filing
-latest_3 = company.latest("10-Q", 3)         # list of Filings
+latest_10k = company.latest("10-K")  # single Filing
+latest_3 = company.latest("10-Q", 3)  # list of Filings
 ```
 
 ### Convenience Properties
 ```python
-tenk = company.latest_tenk   # TenK object or None
-tenq = company.latest_tenq   # TenQ object or None
+tenk = company.latest_tenk  # TenK object or None
+tenq = company.latest_tenq  # TenQ object or None
 ```
 
 ---
@@ -146,19 +148,21 @@ tickers = ["AAPL", "MSFT", "NVDA", "AMZN", "META"]
 rows = []
 for ticker in tickers:
     company = Company(ticker)
-    rows.append({
-        'ticker': ticker,
-        'name': company.name,
-        'industry': company.industry,
-        'shares_outstanding': company.shares_outstanding,
-        'public_float': company.public_float,
-    })
+    rows.append(
+        {
+            "ticker": ticker,
+            "name": company.name,
+            "industry": company.industry,
+            "shares_outstanding": company.shares_outstanding,
+            "public_float": company.public_float,
+        }
+    )
 
 df = pd.DataFrame(rows)
-df = df.sort_values('public_float', ascending=False)
+df = df.sort_values("public_float", ascending=False)
 
 # Filter mega-caps (float > $1T)
-mega_caps = df[df['public_float'] > 1e12]
+mega_caps = df[df["public_float"] > 1e12]
 ```
 
 ---
@@ -168,12 +172,14 @@ mega_caps = df[df['public_float'] > 1e12]
 ### By Industry (SIC code)
 ```python
 from edgar.reference import get_companies_by_industry
+
 software = get_companies_by_industry(sic=7372)
 ```
 
 ### By Exchange
 ```python
 from edgar.reference import get_companies_by_exchanges
+
 nyse = get_companies_by_exchanges("NYSE")
 nasdaq = get_companies_by_exchanges("Nasdaq")
 ```
@@ -181,6 +187,7 @@ nasdaq = get_companies_by_exchanges("Nasdaq")
 ### By State
 ```python
 from edgar.reference import get_companies_by_state
+
 delaware = get_companies_by_state("DE")
 ```
 
@@ -204,15 +211,16 @@ addr = company.mailing_address()
 
 ### Utility Methods
 ```python
-ticker = company.get_ticker()       # primary ticker
-exchanges = company.get_exchanges() # list of exchange names
-company_data = company.data         # EntityData with former_names, entity_type, flags
+ticker = company.get_ticker()  # primary ticker
+exchanges = company.get_exchanges()  # list of exchange names
+company_data = company.data  # EntityData with former_names, entity_type, flags
 ```
 
 ### Factory Functions
 ```python
 from edgar import get_company, get_entity
-company = get_company("AAPL")   # same as Company("AAPL")
+
+company = get_company("AAPL")  # same as Company("AAPL")
 entity = get_entity("AAPL")
 ```
 
@@ -250,12 +258,14 @@ companies = []
 for ticker in tickers:
     try:
         company = Company(ticker)
-        companies.append({
-            'ticker': ticker,
-            'name': company.name,
-            'cik': company.cik,
-            'industry': company.industry,
-        })
+        companies.append(
+            {
+                "ticker": ticker,
+                "name": company.name,
+                "cik": company.cik,
+                "industry": company.industry,
+            }
+        )
     except Exception as e:
         print(f"Error with {ticker}: {e}")
 ```

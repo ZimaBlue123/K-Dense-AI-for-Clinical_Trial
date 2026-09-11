@@ -119,9 +119,7 @@ gen = ScientificSchematicGenerator(api_key="your_key")
 
 # Generate
 results = gen.generate_iterative(
-    user_prompt="diagram description",
-    output_path="output.png",
-    iterations=2
+    user_prompt="diagram description", output_path="output.png", iterations=2
 )
 
 # Check quality

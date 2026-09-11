@@ -16,7 +16,8 @@ Run function repeatedly with different inputs in parallel:
 ```python
 @app.function()
 def evaluate_model(x):
-    return x ** 2
+    return x**2
+
 
 @app.local_entrypoint()
 def main():
@@ -35,6 +36,7 @@ For functions with multiple arguments:
 def add(a, b):
     return a + b
 
+
 @app.local_entrypoint()
 def main():
     results = list(add.starmap([(1, 2), (3, 4)]))
@@ -48,15 +50,12 @@ def main():
 def may_fail(a):
     if a == 2:
         raise Exception("error")
-    return a ** 2
+    return a**2
+
 
 @app.local_entrypoint()
 def main():
-    results = list(may_fail.map(
-        range(3),
-        return_exceptions=True,
-        wrap_returned_exceptions=False
-    ))
+    results = list(may_fail.map(range(3), return_exceptions=True, wrap_returned_exceptions=False))
     # [0, 1, Exception('error')]
 ```
 
@@ -66,13 +65,12 @@ Configure autoscaler behavior with parameters:
 
 ```python
 @app.function(
-    max_containers=100,      # Upper limit on containers
-    min_containers=2,        # Keep warm even when inactive
-    buffer_containers=5,     # Maintain buffer while active
-    scaledown_window=60,     # Max idle time before scaling down (seconds)
+    max_containers=100,  # Upper limit on containers
+    min_containers=2,  # Keep warm even when inactive
+    buffer_containers=5,  # Maintain buffer while active
+    scaledown_window=60,  # Max idle time before scaling down (seconds)
 )
-def my_function():
-    ...
+def my_function(): ...
 ```
 
 Parameters:
@@ -107,12 +105,13 @@ Adjust warm pool based on time of day:
 
 ```python
 @app.function()
-def inference_server():
-    ...
+def inference_server(): ...
+
 
 @app.function(schedule=modal.Cron("0 6 * * *", timezone="America/New_York"))
 def increase_warm_pool():
     inference_server.update_autoscaler(min_containers=4)
+
 
 @app.function(schedule=modal.Cron("0 22 * * *", timezone="America/New_York"))
 def decrease_warm_pool():
@@ -171,8 +170,8 @@ async def async_function():
 ```python
 @app.function()
 @modal.concurrent(
-    max_inputs=120,    # Hard limit
-    target_inputs=100  # Autoscaler target
+    max_inputs=120,  # Hard limit
+    target_inputs=100,  # Autoscaler target
 )
 def my_function(input: str):
     # Allow 20% burst above target
@@ -202,6 +201,7 @@ Use async APIs for arbitrary parallel execution patterns:
 async def async_task(x):
     await asyncio.sleep(1)
     return x * 2
+
 
 @app.local_entrypoint()
 async def main():

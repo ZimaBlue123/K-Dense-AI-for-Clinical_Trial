@@ -45,13 +45,13 @@ Convert gene names, protein names, and external IDs to STRING identifiers.
 from scripts.string_api import string_map_ids
 
 # Map single protein
-result = string_map_ids('TP53', species=9606)
+result = string_map_ids("TP53", species=9606)
 
 # Map multiple proteins
-result = string_map_ids(['TP53', 'BRCA1', 'EGFR', 'MDM2'], species=9606)
+result = string_map_ids(["TP53", "BRCA1", "EGFR", "MDM2"], species=9606)
 
 # Map with multiple matches per query
-result = string_map_ids('p53', species=9606, limit=5)
+result = string_map_ids("p53", species=9606, limit=5)
 ```
 
 **Parameters**:
@@ -72,17 +72,17 @@ Get protein-protein interaction network data in tabular format.
 from scripts.string_api import string_network
 
 # Get network for single protein
-network = string_network('9606.ENSP00000269305', species=9606)
+network = string_network("9606.ENSP00000269305", species=9606)
 
 # Get network with multiple proteins
-proteins = ['9606.ENSP00000269305', '9606.ENSP00000275493']
+proteins = ["9606.ENSP00000269305", "9606.ENSP00000275493"]
 network = string_network(proteins, required_score=700)
 
 # Expand network with additional interactors
-network = string_network('TP53', species=9606, add_nodes=10, required_score=400)
+network = string_network("TP53", species=9606, add_nodes=10, required_score=400)
 
 # Physical interactions only
-network = string_network('TP53', species=9606, network_type='physical')
+network = string_network("TP53", species=9606, network_type="physical")
 ```
 
 **Parameters**:
@@ -107,21 +107,21 @@ Generate network visualization as PNG image.
 from scripts.string_api import string_network_image
 
 # Get network image
-proteins = ['TP53', 'MDM2', 'ATM', 'CHEK2', 'BRCA1']
+proteins = ["TP53", "MDM2", "ATM", "CHEK2", "BRCA1"]
 img_data = string_network_image(proteins, species=9606, required_score=700)
 
 # Save image
-with open('network.png', 'wb') as f:
+with open("network.png", "wb") as f:
     f.write(img_data)
 
 # Evidence-colored network
-img = string_network_image(proteins, species=9606, network_flavor='evidence')
+img = string_network_image(proteins, species=9606, network_flavor="evidence")
 
 # Confidence-based visualization
-img = string_network_image(proteins, species=9606, network_flavor='confidence')
+img = string_network_image(proteins, species=9606, network_flavor="confidence")
 
 # Actions network (activation/inhibition)
-img = string_network_image(proteins, species=9606, network_flavor='actions')
+img = string_network_image(proteins, species=9606, network_flavor="actions")
 ```
 
 **Network flavors**:
@@ -140,15 +140,13 @@ Find all proteins that interact with given protein(s).
 from scripts.string_api import string_interaction_partners
 
 # Get top 10 interactors of TP53
-partners = string_interaction_partners('TP53', species=9606, limit=10)
+partners = string_interaction_partners("TP53", species=9606, limit=10)
 
 # Get high-confidence interactors
-partners = string_interaction_partners('TP53', species=9606,
-                                      limit=20, required_score=700)
+partners = string_interaction_partners("TP53", species=9606, limit=20, required_score=700)
 
 # Find interactors for multiple proteins
-partners = string_interaction_partners(['TP53', 'MDM2'],
-                                      species=9606, limit=15)
+partners = string_interaction_partners(["TP53", "MDM2"], species=9606, limit=15)
 ```
 
 **Parameters**:
@@ -171,13 +169,14 @@ Perform enrichment analysis across Gene Ontology, KEGG pathways, Pfam domains, a
 from scripts.string_enrichment import string_enrichment
 
 # Enrichment for a protein list
-proteins = ['TP53', 'MDM2', 'ATM', 'CHEK2', 'BRCA1', 'ATR', 'TP73']
+proteins = ["TP53", "MDM2", "ATM", "CHEK2", "BRCA1", "ATR", "TP73"]
 enrichment = string_enrichment(proteins, species=9606)
 
 # Parse results to find significant terms
 import pandas as pd
-df = pd.read_csv(io.StringIO(enrichment), sep='\t')
-significant = df[df['fdr'] < 0.05]
+
+df = pd.read_csv(io.StringIO(enrichment), sep="\t")
+significant = df[df["fdr"] < 0.05]
 ```
 
 **Enrichment categories**:
@@ -212,7 +211,7 @@ from scripts.string_api import string_ppi_enrichment
 import json
 
 # Test network connectivity
-proteins = ['TP53', 'MDM2', 'ATM', 'CHEK2', 'BRCA1']
+proteins = ["TP53", "MDM2", "ATM", "CHEK2", "BRCA1"]
 result = string_ppi_enrichment(proteins, species=9606, required_score=400)
 
 # Parse JSON result
@@ -243,7 +242,7 @@ Retrieve protein similarity and homology information.
 from scripts.string_api import string_homology
 
 # Get homology between proteins
-proteins = ['TP53', 'TP63', 'TP73']  # p53 family
+proteins = ["TP53", "TP63", "TP73"]  # p53 family
 homology = string_homology(proteins, species=9606)
 ```
 
@@ -273,12 +272,16 @@ print(f"STRING version: {version}")
 **Use case**: Analyze a list of proteins from experiment (e.g., differential expression, proteomics).
 
 ```python
-from scripts.string_api import (string_map_ids, string_network,
-                                string_enrichment, string_ppi_enrichment,
-                                string_network_image)
+from scripts.string_api import (
+    string_map_ids,
+    string_network,
+    string_enrichment,
+    string_ppi_enrichment,
+    string_network_image,
+)
 
 # Step 1: Map gene names to STRING IDs
-gene_list = ['TP53', 'BRCA1', 'ATM', 'CHEK2', 'MDM2', 'ATR', 'BRCA2']
+gene_list = ["TP53", "BRCA1", "ATM", "CHEK2", "MDM2", "ATR", "BRCA2"]
 mapping = string_map_ids(gene_list, species=9606)
 
 # Step 2: Get interaction network
@@ -291,9 +294,8 @@ ppi_result = string_ppi_enrichment(gene_list, species=9606)
 enrichment = string_enrichment(gene_list, species=9606)
 
 # Step 5: Generate network visualization
-img = string_network_image(gene_list, species=9606,
-                          network_flavor='evidence', required_score=400)
-with open('protein_network.png', 'wb') as f:
+img = string_network_image(gene_list, species=9606, network_flavor="evidence", required_score=400)
+with open("protein_network.png", "wb") as f:
     f.write(img)
 
 # Step 6: Parse and interpret results
@@ -304,21 +306,20 @@ with open('protein_network.png', 'wb') as f:
 **Use case**: Deep dive into one protein's interactions and partners.
 
 ```python
-from scripts.string_api import (string_map_ids, string_interaction_partners,
-                                string_network_image)
+from scripts.string_api import string_map_ids, string_interaction_partners, string_network_image
 
 # Step 1: Map protein name
-protein = 'TP53'
+protein = "TP53"
 mapping = string_map_ids(protein, species=9606)
 
 # Step 2: Get all interaction partners
-partners = string_interaction_partners(protein, species=9606,
-                                      limit=20, required_score=700)
+partners = string_interaction_partners(protein, species=9606, limit=20, required_score=700)
 
 # Step 3: Visualize expanded network
-img = string_network_image(protein, species=9606, add_nodes=15,
-                          network_flavor='confidence', required_score=700)
-with open('tp53_network.png', 'wb') as f:
+img = string_network_image(
+    protein, species=9606, add_nodes=15, network_flavor="confidence", required_score=700
+)
+with open("tp53_network.png", "wb") as f:
     f.write(img)
 ```
 
@@ -330,12 +331,10 @@ with open('tp53_network.png', 'wb') as f:
 from scripts.string_api import string_enrichment, string_network
 
 # Step 1: Start with known pathway proteins
-dna_repair_proteins = ['TP53', 'ATM', 'ATR', 'CHEK1', 'CHEK2',
-                       'BRCA1', 'BRCA2', 'RAD51', 'XRCC1']
+dna_repair_proteins = ["TP53", "ATM", "ATR", "CHEK1", "CHEK2", "BRCA1", "BRCA2", "RAD51", "XRCC1"]
 
 # Step 2: Get network
-network = string_network(dna_repair_proteins, species=9606,
-                        required_score=700, add_nodes=5)
+network = string_network(dna_repair_proteins, species=9606, required_score=700, add_nodes=5)
 
 # Step 3: Enrichment to confirm pathway annotation
 enrichment = string_enrichment(dna_repair_proteins, species=9606)
@@ -343,8 +342,9 @@ enrichment = string_enrichment(dna_repair_proteins, species=9606)
 # Step 4: Parse enrichment for DNA repair pathways
 import pandas as pd
 import io
-df = pd.read_csv(io.StringIO(enrichment), sep='\t')
-dna_repair = df[df['description'].str.contains('DNA repair', case=False)]
+
+df = pd.read_csv(io.StringIO(enrichment), sep="\t")
+dna_repair = df[df["description"].str.contains("DNA repair", case=False)]
 ```
 
 ### Workflow 4: Cross-Species Analysis
@@ -355,13 +355,13 @@ dna_repair = df[df['description'].str.contains('DNA repair', case=False)]
 from scripts.string_api import string_network
 
 # Human network
-human_network = string_network('TP53', species=9606, required_score=700)
+human_network = string_network("TP53", species=9606, required_score=700)
 
 # Mouse network
-mouse_network = string_network('Trp53', species=10090, required_score=700)
+mouse_network = string_network("Trp53", species=10090, required_score=700)
 
 # Yeast network (if ortholog exists)
-yeast_network = string_network('gene_name', species=4932, required_score=700)
+yeast_network = string_network("gene_name", species=4932, required_score=700)
 ```
 
 ### Workflow 5: Network Expansion and Discovery
@@ -369,29 +369,27 @@ yeast_network = string_network('gene_name', species=4932, required_score=700)
 **Use case**: Start with seed proteins and discover connected functional modules.
 
 ```python
-from scripts.string_api import (string_interaction_partners, string_network,
-                                string_enrichment)
+from scripts.string_api import string_interaction_partners, string_network, string_enrichment
 
 # Step 1: Start with seed protein(s)
-seed_proteins = ['TP53']
+seed_proteins = ["TP53"]
 
 # Step 2: Get first-degree interactors
-partners = string_interaction_partners(seed_proteins, species=9606,
-                                      limit=30, required_score=700)
+partners = string_interaction_partners(seed_proteins, species=9606, limit=30, required_score=700)
 
 # Step 3: Parse partners to get protein list
 import pandas as pd
 import io
-df = pd.read_csv(io.StringIO(partners), sep='\t')
-all_proteins = list(set(df['preferredName_A'].tolist() +
-                       df['preferredName_B'].tolist()))
+
+df = pd.read_csv(io.StringIO(partners), sep="\t")
+all_proteins = list(set(df["preferredName_A"].tolist() + df["preferredName_B"].tolist()))
 
 # Step 4: Perform enrichment on expanded network
 enrichment = string_enrichment(all_proteins[:50], species=9606)
 
 # Step 5: Filter for interesting functional modules
-enrichment_df = pd.read_csv(io.StringIO(enrichment), sep='\t')
-modules = enrichment_df[enrichment_df['fdr'] < 0.001]
+enrichment_df = pd.read_csv(io.StringIO(enrichment), sep="\t")
+modules = enrichment_df[enrichment_df["fdr"] < 0.001]
 ```
 
 ## Common Species

@@ -3,25 +3,26 @@
 ## BibTeX
 
 ```python
-zot.add_parameters(format='bibtex')
+zot.add_parameters(format="bibtex")
 bibtex_db = zot.top(limit=50)
 # Returns a bibtexparser BibDatabase object
 
 # Access entries as list of dicts
 entries = bibtex_db.entries
 for entry in entries:
-    print(entry.get('title'), entry.get('author'))
+    print(entry.get("title"), entry.get("author"))
 
 # Write to .bib file
 import bibtexparser
-with open('library.bib', 'w') as f:
+
+with open("library.bib", "w") as f:
     bibtexparser.dump(bibtex_db, f)
 ```
 
 ## CSL-JSON
 
 ```python
-zot.add_parameters(content='csljson', limit=50)
+zot.add_parameters(content="csljson", limit=50)
 csl_items = zot.items()
 # Returns a list of dicts in CSL-JSON format
 ```
@@ -30,7 +31,7 @@ csl_items = zot.items()
 
 ```python
 # APA style bibliography
-zot.add_parameters(content='bib', style='apa')
+zot.add_parameters(content="bib", style="apa")
 bib_entries = zot.items(limit=50)
 # Returns list of HTML <div> strings
 
@@ -55,7 +56,7 @@ Pass any valid CSL style name from the [Zotero style repository](https://www.zot
 ## In-Text Citations
 
 ```python
-zot.add_parameters(content='citation', style='apa')
+zot.add_parameters(content="citation", style="apa")
 citations = zot.items(limit=50)
 # Returns list of HTML <span> elements: ['<span>(Smith, 2024)</span>', ...]
 ```
@@ -78,25 +79,25 @@ Set `content` to any Zotero export format:
 
 ```python
 # Export as RIS
-zot.add_parameters(content='ris', limit=50)
+zot.add_parameters(content="ris", limit=50)
 ris_data = zot.items()
-with open('library.ris', 'w', encoding='utf-8') as f:
-    f.write('\n'.join(ris_data))
+with open("library.ris", "w", encoding="utf-8") as f:
+    f.write("\n".join(ris_data))
 ```
 
 ## Keys Only
 
 ```python
 # Get item keys as a newline-delimited string
-zot.add_parameters(format='keys')
+zot.add_parameters(format="keys")
 keys_str = zot.items()
-keys = keys_str.strip().split('\n')
+keys = keys_str.strip().split("\n")
 ```
 
 ## Version Information (for syncing)
 
 ```python
 # Dict of {key: version} for all items
-zot.add_parameters(format='versions')
+zot.add_parameters(format="versions")
 versions = zot.items()
 ```

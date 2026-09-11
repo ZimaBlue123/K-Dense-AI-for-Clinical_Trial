@@ -53,11 +53,7 @@ workflow.fetch_latest(in_place=True)
 
 ```python
 # Update metadata
-workflow.update(
-    name="New name",
-    notes="Additional notes",
-    starred=True
-)
+workflow.update(name="New name", notes="Additional notes", starred=True)
 
 # Delete workflow
 workflow.delete()
@@ -405,9 +401,5 @@ lead_folder = rowan.create_folder("Lead Compounds", project_uuid=project.uuid)
 backup_folder = rowan.create_folder("Backup Series", project_uuid=project.uuid)
 
 # Submit to specific folder
-workflow = rowan.submit_pka_workflow(
-    mol,
-    name="Lead 1 pKa",
-    folder_uuid=lead_folder.uuid
-)
+workflow = rowan.submit_pka_workflow(mol, name="Lead 1 pKa", folder_uuid=lead_folder.uuid)
 ```

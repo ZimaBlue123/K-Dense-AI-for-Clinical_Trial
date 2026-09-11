@@ -43,11 +43,8 @@ Retrieve user ID and notebook access information.
 
 **Example:**
 ```python
-params = {
-    'login_or_email': 'researcher@university.edu',
-    'password': 'external_app_password'
-}
-response = client.make_call('users', 'user_access_info', params=params)
+params = {"login_or_email": "researcher@university.edu", "password": "external_app_password"}
+response = client.make_call("users", "user_access_info", params=params)
 ```
 
 #### `users/user_info_via_id`
@@ -66,8 +63,8 @@ Retrieve detailed user information by user ID.
 
 **Example:**
 ```python
-params = {'uid': '12345'}
-response = client.make_call('users', 'user_info_via_id', params=params)
+params = {"uid": "12345"}
+response = client.make_call("users", "user_info_via_id", params=params)
 ```
 
 ### Notebooks API Class
@@ -96,29 +93,20 @@ The returned archive includes:
 **Example:**
 ```python
 # Full backup with attachments
-params = {
-    'uid': '12345',
-    'nbid': '67890',
-    'json': 'false',
-    'no_attachments': 'false'
-}
-response = client.make_call('notebooks', 'notebook_backup', params=params)
+params = {"uid": "12345", "nbid": "67890", "json": "false", "no_attachments": "false"}
+response = client.make_call("notebooks", "notebook_backup", params=params)
 
 # Write to file
-with open('notebook_backup.7z', 'wb') as f:
+with open("notebook_backup.7z", "wb") as f:
     f.write(response.content)
 ```
 
 ```python
 # Metadata only backup (JSON format, no attachments)
-params = {
-    'uid': '12345',
-    'nbid': '67890',
-    'json': 'true',
-    'no_attachments': 'true'
-}
-response = client.make_call('notebooks', 'notebook_backup', params=params)
+params = {"uid": "12345", "nbid": "67890", "json": "true", "no_attachments": "true"}
+response = client.make_call("notebooks", "notebook_backup", params=params)
 import json
+
 notebook_data = json.loads(response.content)
 ```
 
@@ -154,13 +142,13 @@ Create a new entry in a notebook.
 **Example:**
 ```python
 params = {
-    'uid': '12345',
-    'nbid': '67890',
-    'title': 'Experiment 2025-10-20',
-    'content': '<p>Conducted PCR amplification of target gene...</p>',
-    'date': '2025-10-20'
+    "uid": "12345",
+    "nbid": "67890",
+    "title": "Experiment 2025-10-20",
+    "content": "<p>Conducted PCR amplification of target gene...</p>",
+    "date": "2025-10-20",
 }
-response = client.make_call('entries', 'create_entry', params=params)
+response = client.make_call("entries", "create_entry", params=params)
 ```
 
 #### `entries/create_comment`
@@ -205,15 +193,15 @@ Upload a file attachment to an entry.
 ```python
 import requests
 
-url = f'{api_url}/entries/upload_attachment'
-files = {'file': open('/path/to/data.csv', 'rb')}
+url = f"{api_url}/entries/upload_attachment"
+files = {"file": open("/path/to/data.csv", "rb")}
 params = {
-    'uid': '12345',
-    'nbid': '67890',
-    'entry_id': '11111',
-    'filename': 'data.csv',
-    'access_key_id': access_key_id,
-    'access_password': access_password
+    "uid": "12345",
+    "nbid": "67890",
+    "entry_id": "11111",
+    "filename": "data.csv",
+    "access_key_id": access_key_id,
+    "access_password": access_password,
 }
 response = requests.post(url, files=files, data=params)
 ```

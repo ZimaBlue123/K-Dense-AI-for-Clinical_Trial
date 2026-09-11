@@ -62,8 +62,8 @@ response = requests.get(
         "file_type": "json",
         "order_by": "popularity",
         "sort_order": "desc",
-        "limit": 20
-    }
+        "limit": 20,
+    },
 )
 ```
 
@@ -115,8 +115,8 @@ response = requests.get(
         "file_type": "json",
         "tag_group_id": "geo",
         "order_by": "series_count",
-        "sort_order": "desc"
-    }
+        "sort_order": "desc",
+    },
 )
 ```
 
@@ -131,8 +131,8 @@ response = requests.get(
         "file_type": "json",
         "search_text": "inflation",
         "order_by": "series_count",
-        "sort_order": "desc"
-    }
+        "sort_order": "desc",
+    },
 )
 ```
 
@@ -177,8 +177,8 @@ response = requests.get(
         "file_type": "json",
         "order_by": "series_count",
         "sort_order": "desc",
-        "limit": 20
-    }
+        "limit": 20,
+    },
 )
 ```
 
@@ -225,8 +225,8 @@ response = requests.get(
         "file_type": "json",
         "tag_group_id": "geo",
         "order_by": "series_count",
-        "sort_order": "desc"
-    }
+        "sort_order": "desc",
+    },
 )
 ```
 
@@ -283,8 +283,8 @@ response = requests.get(
         "tag_names": "gdp;quarterly;usa",
         "file_type": "json",
         "order_by": "popularity",
-        "sort_order": "desc"
-    }
+        "sort_order": "desc",
+    },
 )
 ```
 
@@ -333,8 +333,8 @@ response = requests.get(
         "file_type": "json",
         "exclude_tag_names": "discontinued",
         "order_by": "title",
-        "limit": 100
-    }
+        "limit": 100,
+    },
 )
 ```
 
@@ -349,8 +349,8 @@ response = requests.get(
         "file_type": "json",
         "exclude_tag_names": "nsa",  # Exclude not seasonally adjusted
         "order_by": "popularity",
-        "sort_order": "desc"
-    }
+        "sort_order": "desc",
+    },
 )
 ```
 
@@ -417,8 +417,8 @@ def discover_tags_for_topic(api_key, topic):
             "search_text": topic,
             "order_by": "popularity",
             "sort_order": "desc",
-            "limit": 10
-        }
+            "limit": 10,
+        },
     )
     initial_tags = response.json().get("tags", [])
 
@@ -435,15 +435,13 @@ def discover_tags_for_topic(api_key, topic):
             "file_type": "json",
             "order_by": "series_count",
             "sort_order": "desc",
-            "limit": 20
-        }
+            "limit": 20,
+        },
     )
     related = response.json().get("tags", [])
 
-    return {
-        "primary_tags": initial_tags,
-        "related_tags": related
-    }
+    return {"primary_tags": initial_tags, "related_tags": related}
+
 
 # Example: Discover inflation-related tags
 tags = discover_tags_for_topic(API_KEY, "inflation")
@@ -469,17 +467,15 @@ def get_filtered_series(api_key, topic_tags, geo_tags=None, freq_tag=None):
             "file_type": "json",
             "order_by": "popularity",
             "sort_order": "desc",
-            "limit": 50
-        }
+            "limit": 50,
+        },
     )
 
     return response.json().get("seriess", [])
 
+
 # Example: Monthly US inflation series
 series = get_filtered_series(
-    API_KEY,
-    topic_tags=["inflation", "cpi"],
-    geo_tags=["usa"],
-    freq_tag="monthly"
+    API_KEY, topic_tags=["inflation", "cpi"], geo_tags=["usa"], freq_tag="monthly"
 )
 ```

@@ -96,7 +96,7 @@ result = client.sql_query("""
     LIMIT 3
 """)
 
-print(result[['SeriesInstanceUID', 'series_aws_url']])
+print(result[["SeriesInstanceUID", "series_aws_url"]])
 ```
 
 **Available URL column in index:**
@@ -183,19 +183,19 @@ result = client.sql_query("""
     LIMIT 1
 """)
 # series_aws_url is like: s3://idc-open-data/<uuid>/*
-series_url = result['series_aws_url'].iloc[0]
-series_path = series_url.replace('s3://', '').rstrip('/*')  # e.g., "idc-open-data/<uuid>"
+series_url = result["series_aws_url"].iloc[0]
+series_path = series_url.replace("s3://", "").rstrip("/*")  # e.g., "idc-open-data/<uuid>"
 
 # AWS S3 access
 s3 = s3fs.S3FileSystem(anon=True)
 files = s3.ls(series_path)
-with s3.open(files[0], 'rb') as f:
+with s3.open(files[0], "rb") as f:
     data = f.read()
 
 # GCS access (same path structure as AWS)
-gcs = gcsfs.GCSFileSystem(token='anon')
+gcs = gcsfs.GCSFileSystem(token="anon")
 files = gcs.ls(series_path)
-with gcs.open(files[0], 'rb') as f:
+with gcs.open(files[0], "rb") as f:
     data = f.read()
 ```
 
@@ -243,7 +243,7 @@ selection = client.sql_query("""
       AND Modality = 'CT'
     LIMIT 10
 """)
-series_uuids = list(selection['crdc_series_uuid'])
+series_uuids = list(selection["crdc_series_uuid"])
 
 # Download the data
 client.download_from_selection(seriesInstanceUID=series_uuids, downloadDir="./data")
@@ -253,7 +253,7 @@ manifest = {
     "crdc_series_uuids": series_uuids,
     "download_date": "2024-01-15",
     "idc_version": client.get_idc_version(),
-    "description": "CT scans for lung cancer analysis"
+    "description": "CT scans for lung cancer analysis",
 }
 with open("analysis_manifest.json", "w") as f:
     json.dump(manifest, f, indent=2)
@@ -262,8 +262,7 @@ with open("analysis_manifest.json", "w") as f:
 with open("analysis_manifest.json") as f:
     manifest = json.load(f)
 client.download_from_selection(
-    seriesInstanceUID=manifest["crdc_series_uuids"],
-    downloadDir="./reproduced_data"
+    seriesInstanceUID=manifest["crdc_series_uuids"], downloadDir="./reproduced_data"
 )
 ```
 

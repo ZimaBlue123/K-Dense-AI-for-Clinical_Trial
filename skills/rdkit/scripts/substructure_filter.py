@@ -17,9 +17,7 @@ from pathlib import Path
 try:
     from rdkit import Chem
 except ImportError:
-    print(
-        "Error: RDKit not installed. Install with: conda install -c conda-forge rdkit"
-    )
+    print("Error: RDKit not installed. Install with: conda install -c conda-forge rdkit")
     sys.exit(1)
 
 
@@ -86,7 +84,7 @@ def load_molecules(file_path, keep_props=True):
 
     for idx, mol in enumerate(suppl):
         if mol is None:
-            print(f"Warning: Failed to parse molecule {idx+1}")
+            print(f"Warning: Failed to parse molecule {idx + 1}")
             continue
 
         molecules.append(mol)
@@ -249,7 +247,7 @@ def print_summary(total, filtered, match_info):
     print(f"Total molecules:     {total}")
     print(f"Passed filter:       {len(filtered)}")
     print(f"Filtered out:        {total - len(filtered)}")
-    print(f"Pass rate:           {len(filtered)/total*100:.1f}%")
+    print(f"Pass rate:           {len(filtered) / total * 100:.1f}%")
 
     # Count by status
     status_counts = {}

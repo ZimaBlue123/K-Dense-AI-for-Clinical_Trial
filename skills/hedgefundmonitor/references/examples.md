@@ -42,18 +42,21 @@ import matplotlib.pyplot as plt
 BASE = "https://data.financialresearch.gov/hf/v1"
 
 # Fetch overall leverage ratio
-resp = requests.get(f"{BASE}/series/timeseries", params={
-    "mnemonic": "FPF-ALLQHF_LEVERAGERATIO_GAVWMEAN",
-    "remove_nulls": "true"
-})
+resp = requests.get(
+    f"{BASE}/series/timeseries",
+    params={"mnemonic": "FPF-ALLQHF_LEVERAGERATIO_GAVWMEAN", "remove_nulls": "true"},
+)
 df = pd.DataFrame(resp.json(), columns=["date", "leverage"])
 df["date"] = pd.to_datetime(df["date"])
 
 # Get metadata
-meta_resp = requests.get(f"{BASE}/metadata/query", params={
-    "mnemonic": "FPF-ALLQHF_LEVERAGERATIO_GAVWMEAN",
-    "fields": "description/name,schedule/observation_frequency"
-})
+meta_resp = requests.get(
+    f"{BASE}/metadata/query",
+    params={
+        "mnemonic": "FPF-ALLQHF_LEVERAGERATIO_GAVWMEAN",
+        "fields": "description/name,schedule/observation_frequency",
+    },
+)
 meta = meta_resp.json()
 title = meta["description"]["name"]
 
@@ -82,10 +85,10 @@ strategies = {
     "Macro": "FPF-STRATEGY_MACRO_LEVERAGERATIO_GAVWMEAN",
 }
 
-resp = requests.get(f"{BASE}/series/multifull", params={
-    "mnemonics": ",".join(strategies.values()),
-    "remove_nulls": "true"
-})
+resp = requests.get(
+    f"{BASE}/series/multifull",
+    params={"mnemonics": ",".join(strategies.values()), "remove_nulls": "true"},
+)
 results = resp.json()
 
 fig, ax = plt.subplots(figsize=(14, 6))
@@ -112,11 +115,10 @@ import pandas as pd
 BASE = "https://data.financialresearch.gov/hf/v1"
 
 # Download entire FPF dataset, recent data only
-resp = requests.get(f"{BASE}/series/dataset", params={
-    "dataset": "fpf",
-    "start_date": "2015-01-01",
-    "remove_nulls": "false"
-})
+resp = requests.get(
+    f"{BASE}/series/dataset",
+    params={"dataset": "fpf", "start_date": "2015-01-01", "remove_nulls": "false"},
+)
 data = resp.json()
 
 # Build a wide DataFrame with one column per series
@@ -124,10 +126,7 @@ frames = {}
 for mne, series_data in data["timeseries"].items():
     ts = series_data["timeseries"]["aggregation"]
     if ts:
-        s = pd.Series(
-            {row[0]: row[1] for row in ts},
-            name=mne
-        )
+        s = pd.Series({row[0]: row[1] for row in ts}, name=mne)
         frames[mne] = s
 
 df = pd.DataFrame(frames)
@@ -153,10 +152,10 @@ stress_mnemonics = [
     "FPF-ALLQHF_CDSUP250BPS_P50",
 ]
 
-resp = requests.get(f"{BASE}/series/multifull", params={
-    "mnemonics": ",".join(stress_mnemonics),
-    "remove_nulls": "true"
-})
+resp = requests.get(
+    f"{BASE}/series/multifull",
+    params={"mnemonics": ",".join(stress_mnemonics), "remove_nulls": "true"},
+)
 results = resp.json()
 
 frames = []
@@ -169,8 +168,9 @@ for mne in stress_mnemonics:
     frames.append(df)
 
 stress_df = pd.concat(frames, axis=1)
-stress_df.columns = [r["metadata"]["description"]["name"]
-                     for r in [results[m] for m in stress_mnemonics]]
+stress_df.columns = [
+    r["metadata"]["description"]["name"] for r in [results[m] for m in stress_mnemonics]
+]
 print(stress_df.tail(8).to_string())
 ```
 
@@ -183,10 +183,13 @@ import matplotlib.pyplot as plt
 
 BASE = "https://data.financialresearch.gov/hf/v1"
 
-resp = requests.get(f"{BASE}/series/multifull", params={
-    "mnemonics": "FICC-SPONSORED_REPO_VOL,FICC-SPONSORED_REVREPO_VOL",
-    "remove_nulls": "true"
-})
+resp = requests.get(
+    f"{BASE}/series/multifull",
+    params={
+        "mnemonics": "FICC-SPONSORED_REPO_VOL,FICC-SPONSORED_REVREPO_VOL",
+        "remove_nulls": "true",
+    },
+)
 results = resp.json()
 
 fig, ax = plt.subplots(figsize=(12, 5))
@@ -237,10 +240,10 @@ BASE = "https://data.financialresearch.gov/hf/v1"
 # Top 8 counterparties lending to all qualifying hedge funds
 party_mnemonics = [f"FPF-ALLQHF_PARTY{i}_SUM" for i in range(1, 9)]
 
-resp = requests.get(f"{BASE}/series/multifull", params={
-    "mnemonics": ",".join(party_mnemonics),
-    "remove_nulls": "false"
-})
+resp = requests.get(
+    f"{BASE}/series/multifull",
+    params={"mnemonics": ",".join(party_mnemonics), "remove_nulls": "false"},
+)
 results = resp.json()
 
 # Get the most recent quarter's values
@@ -266,14 +269,14 @@ from datetime import datetime, timedelta
 
 BASE = "https://data.financialresearch.gov/hf/v1"
 
+
 def get_recent_fpf(days_back: int = 180) -> pd.DataFrame:
     """Fetch only the most recent FPF observations (for periodic refreshes)."""
     start = (datetime.today() - timedelta(days=days_back)).strftime("%Y-%m-%d")
-    resp = requests.get(f"{BASE}/series/dataset", params={
-        "dataset": "fpf",
-        "start_date": start,
-        "remove_nulls": "true"
-    })
+    resp = requests.get(
+        f"{BASE}/series/dataset",
+        params={"dataset": "fpf", "start_date": start, "remove_nulls": "true"},
+    )
     data = resp.json()
     frames = {}
     for mne, series_data in data["timeseries"].items():
@@ -281,6 +284,7 @@ def get_recent_fpf(days_back: int = 180) -> pd.DataFrame:
         if ts:
             frames[mne] = pd.Series({row[0]: row[1] for row in ts}, name=mne)
     return pd.DataFrame(frames)
+
 
 recent = get_recent_fpf(days_back=365)
 print(recent.shape)

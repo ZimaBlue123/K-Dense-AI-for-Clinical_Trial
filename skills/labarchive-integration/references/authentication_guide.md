@@ -87,25 +87,22 @@ from labarchivespy.client import Client
 import yaml
 
 # Load configuration
-with open('config.yaml', 'r') as f:
+with open("config.yaml", "r") as f:
     config = yaml.safe_load(f)
 
 # Initialize client with institutional credentials
-client = Client(
-    config['api_url'],
-    config['access_key_id'],
-    config['access_password']
-)
+client = Client(config["api_url"], config["access_key_id"], config["access_password"])
 
 # Authenticate as specific user to get UID
 login_params = {
-    'login_or_email': config['user_email'],
-    'password': config['user_external_password']
+    "login_or_email": config["user_email"],
+    "password": config["user_external_password"],
 }
-response = client.make_call('users', 'user_access_info', params=login_params)
+response = client.make_call("users", "user_access_info", params=login_params)
 
 # Parse response to extract UID
 import xml.etree.ElementTree as ET
+
 uid = ET.fromstring(response.content)[0].text
 print(f"Authenticated as user ID: {uid}")
 ```
@@ -117,16 +114,16 @@ import requests
 import yaml
 
 # Load configuration
-with open('config.yaml', 'r') as f:
+with open("config.yaml", "r") as f:
     config = yaml.safe_load(f)
 
 # Construct API call
 url = f"{config['api_url']}/users/user_access_info"
 params = {
-    'access_key_id': config['access_key_id'],
-    'access_password': config['access_password'],
-    'login_or_email': config['user_email'],
-    'password': config['user_external_password']
+    "access_key_id": config["access_key_id"],
+    "access_password": config["access_password"],
+    "login_or_email": config["user_email"],
+    "password": config["user_external_password"],
 }
 
 # Make authenticated request
@@ -134,10 +131,10 @@ response = requests.get(url, params=params)
 
 if response.status_code == 200:
     print("Authentication successful!")
-    print(response.content.decode('utf-8'))
+    print(response.content.decode("utf-8"))
 else:
     print(f"Authentication failed: {response.status_code}")
-    print(response.content.decode('utf-8'))
+    print(response.content.decode("utf-8"))
 ```
 
 ### Option 3: Using R
@@ -232,10 +229,7 @@ If your institution uses a firewall or proxy:
 import requests
 
 # Configure proxy
-proxies = {
-    'http': 'http://proxy.university.edu:8080',
-    'https': 'http://proxy.university.edu:8080'
-}
+proxies = {"http": "http://proxy.university.edu:8080", "https": "http://proxy.university.edu:8080"}
 
 # Make request with proxy
 response = requests.get(url, params=params, proxies=proxies)
@@ -284,55 +278,55 @@ from labarchivespy.client import Client
 import yaml
 import sys
 
+
 def test_authentication():
     try:
         # Load config
-        with open('config.yaml', 'r') as f:
+        with open("config.yaml", "r") as f:
             config = yaml.safe_load(f)
 
         print("Configuration loaded successfully")
         print(f"API URL: {config['api_url']}")
 
         # Initialize client
-        client = Client(
-            config['api_url'],
-            config['access_key_id'],
-            config['access_password']
-        )
+        client = Client(config["api_url"], config["access_key_id"], config["access_password"])
         print("Client initialized")
 
         # Test authentication
         login_params = {
-            'login_or_email': config['user_email'],
-            'password': config['user_external_password']
+            "login_or_email": config["user_email"],
+            "password": config["user_external_password"],
         }
-        response = client.make_call('users', 'user_access_info', params=login_params)
+        response = client.make_call("users", "user_access_info", params=login_params)
 
         if response.status_code == 200:
             print("✅ Authentication successful!")
 
             # Extract UID
             import xml.etree.ElementTree as ET
+
             uid = ET.fromstring(response.content)[0].text
             print(f"User ID: {uid}")
 
             # Get user info
-            user_response = client.make_call('users', 'user_info_via_id', params={'uid': uid})
+            user_response = client.make_call("users", "user_info_via_id", params={"uid": uid})
             print("✅ User information retrieved successfully")
 
             return True
         else:
             print(f"❌ Authentication failed: {response.status_code}")
-            print(response.content.decode('utf-8'))
+            print(response.content.decode("utf-8"))
             return False
 
     except Exception as e:
         print(f"❌ Error: {str(e)}")
         import traceback
+
         traceback.print_exc()
         return False
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     success = test_authentication()
     sys.exit(0 if success else 1)
 ```

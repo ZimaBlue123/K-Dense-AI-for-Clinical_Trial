@@ -37,6 +37,7 @@ Many models on the Hugging Face Hub require authentication. Set up access:
 
 ```python
 from huggingface_hub import login
+
 login()  # Follow prompts to enter token
 ```
 

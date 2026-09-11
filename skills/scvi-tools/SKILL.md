@@ -81,7 +81,7 @@ scvi.model.SCVI.setup_anndata(
     layer="counts",  # Use raw counts, not log-normalized
     batch_key="batch",
     categorical_covariate_keys=["donor"],
-    continuous_covariate_keys=["percent_mito"]
+    continuous_covariate_keys=["percent_mito"],
 )
 
 # 3. Create and train model
@@ -120,7 +120,7 @@ de_results = model.differential_expression(
     group1="TypeA",
     group2="TypeB",
     mode="change",  # Use composite hypothesis testing
-    delta=0.25      # Minimum effect size threshold
+    delta=0.25,  # Minimum effect size threshold
 )
 ```
 

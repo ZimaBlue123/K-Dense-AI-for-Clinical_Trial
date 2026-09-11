@@ -54,7 +54,7 @@ bt.Tissue.import_source()
 
 # Import diseases
 bt.Disease.import_source(source="mondo")  # Mondo Disease Ontology
-bt.Disease.import_source(source="doid")   # Disease Ontology
+bt.Disease.import_source(source="doid")  # Disease Ontology
 ```
 
 ## Searching and Accessing Records
@@ -221,7 +221,7 @@ cell_types = bt.CellType.from_values(adata.obs.cell_type)
 artifact = ln.Artifact.from_anndata(
     adata,
     key="scrna/annotated_data.h5ad",
-    description="scRNA-seq data with validated cell type annotations"
+    description="scRNA-seq data with validated cell type annotations",
 ).save()
 
 # Link ontology records to artifact
@@ -234,21 +234,20 @@ artifact.feature_sets.add_ontology(cell_types)
 import pandas as pd
 
 # Create DataFrame with biological entities
-df = pd.DataFrame({
-    "cell_type": ["T cell", "B cell", "NK cell"],
-    "tissue": ["blood", "spleen", "liver"],
-    "disease": ["healthy", "lymphoma", "healthy"]
-})
+df = pd.DataFrame(
+    {
+        "cell_type": ["T cell", "B cell", "NK cell"],
+        "tissue": ["blood", "spleen", "liver"],
+        "disease": ["healthy", "lymphoma", "healthy"],
+    }
+)
 
 # Validate and standardize
 df["cell_type"] = bt.CellType.standardize(df["cell_type"])
 df["tissue"] = bt.Tissue.standardize(df["tissue"])
 
 # Create artifact
-artifact = ln.Artifact.from_dataframe(
-    df,
-    key="metadata/sample_info.parquet"
-).save()
+artifact = ln.Artifact.from_dataframe(df, key="metadata/sample_info.parquet").save()
 
 # Link ontology records
 cell_type_records = bt.CellType.from_values(df["cell_type"])
@@ -370,9 +369,9 @@ cell_type.source  # Returns Source metadata
 
 # View source details
 source = cell_type.source
-print(source.name)        # e.g., "cl"
-print(source.version)     # e.g., "2023-05-18"
-print(source.url)         # Ontology URL
+print(source.name)  # e.g., "cl"
+print(source.version)  # e.g., "2023-05-18"
+print(source.url)  # Ontology URL
 ```
 
 ## Ontology Integration Workflows
@@ -417,7 +416,7 @@ df["tissue"] = bt.Tissue.standardize(df["tissue"])
 artifact = ln.Artifact.from_dataframe(
     df,
     key="curated/experiment_2025_10.parquet",
-    description="Curated experimental data with ontology-validated annotations"
+    description="Curated experimental data with ontology-validated annotations",
 ).save()
 
 # Link ontology records
@@ -456,9 +455,7 @@ ln.Artifact.filter(feature_sets__genes=cd8a).to_dataframe()
 # Query across ontology hierarchy
 # Find all datasets with T cell or T cell subtypes
 t_cell_subtypes = t_cell.query_children()
-ln.Artifact.filter(
-    feature_sets__cell_types__in=t_cell_subtypes
-).to_dataframe()
+ln.Artifact.filter(feature_sets__cell_types__in=t_cell_subtypes).to_dataframe()
 ```
 
 ## Best Practices
@@ -491,7 +488,6 @@ orphans = bt.CellType.filter(parents__isnull=True)
 
 # Get recently added terms
 from datetime import datetime, timedelta
-recent = bt.CellType.filter(
-    created_at__gte=datetime.now() - timedelta(days=7)
-)
+
+recent = bt.CellType.filter(created_at__gte=datetime.now() - timedelta(days=7))
 ```

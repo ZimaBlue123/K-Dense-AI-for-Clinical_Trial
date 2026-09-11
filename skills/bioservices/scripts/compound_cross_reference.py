@@ -26,9 +26,9 @@ from bioservices import KEGG, ChEBI, ChEMBL, UniChem
 
 def search_kegg_compound(compound_name):
     """Search KEGG for compound by name."""
-    print(f"\n{'='*70}")
+    print(f"\n{'=' * 70}")
     print("STEP 1: KEGG Compound Search")
-    print(f"{'='*70}")
+    print(f"{'=' * 70}")
 
     k = KEGG()
 
@@ -66,9 +66,9 @@ def search_kegg_compound(compound_name):
 
 def get_kegg_info(kegg, kegg_id):
     """Retrieve detailed KEGG compound information."""
-    print(f"\n{'='*70}")
+    print(f"\n{'=' * 70}")
     print("STEP 2: KEGG Compound Details")
-    print(f"{'='*70}")
+    print(f"{'=' * 70}")
 
     try:
         print(f"Retrieving KEGG entry for {kegg_id}...")
@@ -147,9 +147,9 @@ def get_kegg_info(kegg, kegg_id):
 
 def get_chembl_id(kegg_id):
     """Map KEGG ID to ChEMBL via UniChem."""
-    print(f"\n{'='*70}")
+    print(f"\n{'=' * 70}")
     print("STEP 3: ChEMBL Mapping (via UniChem)")
-    print(f"{'='*70}")
+    print(f"{'=' * 70}")
 
     try:
         u = UniChem()
@@ -172,9 +172,9 @@ def get_chembl_id(kegg_id):
 
 def get_chebi_info(chebi_id):
     """Retrieve ChEBI compound information."""
-    print(f"\n{'='*70}")
+    print(f"\n{'=' * 70}")
     print("STEP 4: ChEBI Details")
-    print(f"{'='*70}")
+    print(f"{'=' * 70}")
 
     if not chebi_id:
         print("⊘ No ChEBI ID available")
@@ -222,9 +222,9 @@ def get_chebi_info(chebi_id):
 
 def get_chembl_info(chembl_id):
     """Retrieve ChEMBL compound information."""
-    print(f"\n{'='*70}")
+    print(f"\n{'=' * 70}")
     print("STEP 5: ChEMBL Details")
-    print(f"{'='*70}")
+    print(f"{'=' * 70}")
 
     if not chembl_id:
         print("⊘ No ChEMBL ID available")
@@ -278,9 +278,9 @@ def get_chembl_info(chembl_id):
 
 def save_results(compound_name, kegg_info, chembl_id, output_file):
     """Save results to file."""
-    print(f"\n{'='*70}")
+    print(f"\n{'=' * 70}")
     print(f"Saving results to {output_file}")
-    print(f"{'='*70}")
+    print(f"{'=' * 70}")
 
     with open(output_file, "w") as f:
         f.write("=" * 70 + "\n")
@@ -326,9 +326,7 @@ Examples:
         """,
     )
     parser.add_argument("compound", help="Compound name to search")
-    parser.add_argument(
-        "--output", default=None, help="Output file for results (optional)"
-    )
+    parser.add_argument("--output", default=None, help="Output file for results (optional)")
 
     args = parser.parse_args()
 
@@ -359,9 +357,9 @@ Examples:
         chembl_info = get_chembl_info(chembl_id)
 
     # Summary
-    print(f"\n{'='*70}")
+    print(f"\n{'=' * 70}")
     print("SUMMARY")
-    print(f"{'='*70}")
+    print(f"{'=' * 70}")
     print(f"  Compound: {args.compound}")
     if kegg_info:
         print(f"  KEGG ID: {kegg_info['kegg_id']}")
@@ -369,7 +367,7 @@ Examples:
             print(f"  ChEBI ID: {kegg_info['chebi_id']}")
     if chembl_id:
         print(f"  ChEMBL ID: {chembl_id}")
-    print(f"{'='*70}")
+    print(f"{'=' * 70}")
 
     # Save to file if requested
     if args.output:

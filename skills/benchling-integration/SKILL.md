@@ -45,8 +45,7 @@ from benchling_sdk.benchling import Benchling
 from benchling_sdk.auth.api_key_auth import ApiKeyAuth
 
 benchling = Benchling(
-    url="https://your-tenant.benchling.com",
-    auth_method=ApiKeyAuth("your_api_key")
+    url="https://your-tenant.benchling.com", auth_method=ApiKeyAuth("your_api_key")
 )
 ```
 
@@ -55,13 +54,9 @@ OAuth Client Credentials (for apps):
 from benchling_sdk.auth.client_credentials_oauth2 import ClientCredentialsOAuth2
 
 auth_method = ClientCredentialsOAuth2(
-    client_id="your_client_id",
-    client_secret="your_client_secret"
+    client_id="your_client_id", client_secret="your_client_secret"
 )
-benchling = Benchling(
-    url="https://your-tenant.benchling.com",
-    auth_method=auth_method
-)
+benchling = Benchling(url="https://your-tenant.benchling.com", auth_method=auth_method)
 ```
 
 **Key Points:**
@@ -87,7 +82,7 @@ sequence = benchling.dna_sequences.create(
         is_circular=True,
         folder_id="fld_abc123",
         schema_id="ts_abc123",  # optional
-        fields=benchling.models.fields({"gene_name": "GFP"})
+        fields=benchling.models.fields({"gene_name": "GFP"}),
     )
 )
 ```
@@ -103,7 +98,7 @@ sequence = benchling.dna_sequences.create(
         is_circular=True,
         folder_id="fld_abc123",
         entity_registry_id="src_abc123",  # Registry to register in
-        naming_strategy="NEW_IDS"  # or "IDS_FROM_NAMES"
+        naming_strategy="NEW_IDS",  # or "IDS_FROM_NAMES"
     )
 )
 ```
@@ -117,9 +112,8 @@ from benchling_sdk.models import DnaSequenceUpdate
 updated = benchling.dna_sequences.update(
     sequence_id="seq_abc123",
     dna_sequence=DnaSequenceUpdate(
-        name="Updated Plasmid Name",
-        fields=benchling.models.fields({"gene_name": "mCherry"})
-    )
+        name="Updated Plasmid Name", fields=benchling.models.fields({"gene_name": "mCherry"})
+    ),
 )
 ```
 
@@ -160,7 +154,7 @@ container = benchling.containers.create(
         name="Sample Tube 001",
         schema_id="cont_schema_abc123",
         parent_storage_id="box_abc123",  # optional
-        fields=benchling.models.fields({"concentration": "100 ng/μL"})
+        fields=benchling.models.fields({"concentration": "100 ng/μL"}),
     )
 )
 ```
@@ -170,21 +164,14 @@ container = benchling.containers.create(
 from benchling_sdk.models import BoxCreate
 
 box = benchling.boxes.create(
-    BoxCreate(
-        name="Freezer Box A1",
-        schema_id="box_schema_abc123",
-        parent_storage_id="loc_abc123"
-    )
+    BoxCreate(name="Freezer Box A1", schema_id="box_schema_abc123", parent_storage_id="loc_abc123")
 )
 ```
 
 **Transferring Items:**
 ```python
 # Transfer a container to a new location
-transfer = benchling.containers.transfer(
-    container_id="cont_abc123",
-    destination_id="box_xyz789"
-)
+transfer = benchling.containers.transfer(container_id="cont_abc123", destination_id="box_xyz789")
 ```
 
 **Key Inventory Operations:**
@@ -207,7 +194,7 @@ entry = benchling.entries.create(
         name="Experiment 2025-10-20",
         folder_id="fld_abc123",
         schema_id="entry_schema_abc123",
-        fields=benchling.models.fields({"objective": "Test gene expression"})
+        fields=benchling.models.fields({"objective": "Test gene expression"}),
     )
 )
 ```
@@ -215,10 +202,7 @@ entry = benchling.entries.create(
 **Linking Entities to Entries:**
 ```python
 # Add references to entities in an entry
-entry_link = benchling.entry_links.create(
-    entry_id="entry_abc123",
-    entity_id="seq_xyz789"
-)
+entry_link = benchling.entry_links.create(entry_id="entry_abc123", entity_id="seq_xyz789")
 ```
 
 **Key Notebook Operations:**
@@ -240,7 +224,7 @@ task = benchling.workflow_tasks.create(
         name="PCR Amplification",
         workflow_id="wf_abc123",
         assignee_id="user_abc123",
-        fields=benchling.models.fields({"template": "seq_abc123"})
+        fields=benchling.models.fields({"template": "seq_abc123"}),
     )
 )
 ```
@@ -250,10 +234,7 @@ task = benchling.workflow_tasks.create(
 from benchling_sdk.models import WorkflowTaskUpdate
 
 updated_task = benchling.workflow_tasks.update(
-    task_id="task_abc123",
-    workflow_task=WorkflowTaskUpdate(
-        status_id="status_complete_abc123"
-    )
+    task_id="task_abc123", workflow_task=WorkflowTaskUpdate(status_id="status_complete_abc123")
 )
 ```
 
@@ -265,10 +246,7 @@ Some operations are asynchronous and return tasks:
 from benchling_sdk.helpers.tasks import wait_for_task
 
 result = wait_for_task(
-    benchling,
-    task_id="task_abc123",
-    interval_wait_seconds=2,
-    max_wait_seconds=300
+    benchling, task_id="task_abc123", interval_wait_seconds=2, max_wait_seconds=300
 )
 ```
 
@@ -335,7 +313,7 @@ from benchling_sdk.retry import RetryStrategy
 benchling = Benchling(
     url="https://your-tenant.benchling.com",
     auth_method=ApiKeyAuth("your_api_key"),
-    retry_strategy=RetryStrategy(max_retries=3)
+    retry_strategy=RetryStrategy(max_retries=3),
 )
 ```
 
@@ -357,11 +335,9 @@ total = benchling.dna_sequences.list().estimated_count()
 Use the `fields()` helper for custom schema fields:
 ```python
 # Convert dict to Fields object
-custom_fields = benchling.models.fields({
-    "concentration": "100 ng/μL",
-    "date_prepared": "2025-10-20",
-    "notes": "High quality prep"
-})
+custom_fields = benchling.models.fields(
+    {"concentration": "100 ng/μL", "date_prepared": "2025-10-20", "notes": "High quality prep"}
+)
 ```
 
 ### Forward Compatibility
@@ -405,10 +381,7 @@ from Bio import SeqIO
 for record in SeqIO.parse("sequences.fasta", "fasta"):
     benchling.dna_sequences.create(
         DnaSequenceCreate(
-            name=record.id,
-            bases=str(record.seq),
-            is_circular=False,
-            folder_id="fld_abc123"
+            name=record.id, bases=str(record.seq), is_circular=False, folder_id="fld_abc123"
         )
     )
 ```
@@ -416,9 +389,7 @@ for record in SeqIO.parse("sequences.fasta", "fasta"):
 **2. Inventory Audit:**
 ```python
 # List all containers in a specific location
-containers = benchling.containers.list(
-    parent_storage_id="box_abc123"
-)
+containers = benchling.containers.list(parent_storage_id="box_abc123")
 
 for page in containers:
     for container in page:
@@ -428,20 +399,14 @@ for page in containers:
 **3. Workflow Automation:**
 ```python
 # Update all pending tasks for a workflow
-tasks = benchling.workflow_tasks.list(
-    workflow_id="wf_abc123",
-    status="pending"
-)
+tasks = benchling.workflow_tasks.list(workflow_id="wf_abc123", status="pending")
 
 for page in tasks:
     for task in page:
         # Perform automated checks
         if auto_validate(task):
             benchling.workflow_tasks.update(
-                task_id=task.id,
-                workflow_task=WorkflowTaskUpdate(
-                    status_id="status_complete"
-                )
+                task_id=task.id, workflow_task=WorkflowTaskUpdate(status_id="status_complete")
             )
 ```
 
@@ -454,15 +419,13 @@ export_data = []
 for page in sequences:
     for seq in page:
         if seq.schema_id == "target_schema_id":
-            export_data.append({
-                "id": seq.id,
-                "name": seq.name,
-                "bases": seq.bases,
-                "length": len(seq.bases)
-            })
+            export_data.append(
+                {"id": seq.id, "name": seq.name, "bases": seq.bases, "length": len(seq.bases)}
+            )
 
 # Save to CSV or database
 import csv
+
 with open("sequences.csv", "w") as f:
     writer = csv.DictWriter(f, fieldnames=export_data[0].keys())
     writer.writeheader()

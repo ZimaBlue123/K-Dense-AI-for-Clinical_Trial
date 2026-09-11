@@ -228,10 +228,12 @@ from molfeat.trans import FeatConcat
 from molfeat.calc import FPCalculator
 
 # Combine multiple fingerprints
-concat = FeatConcat([
-    FPCalculator("maccs"),      # 167 dimensions
-    FPCalculator("ecfp")         # 2048 dimensions
-])
+concat = FeatConcat(
+    [
+        FPCalculator("maccs"),  # 167 dimensions
+        FPCalculator("ecfp"),  # 2048 dimensions
+    ]
+)
 
 # Result: 2167-dimensional features
 transformer = MoleculeTransformer(concat, n_jobs=-1)
@@ -323,12 +325,7 @@ transformer = store.load("ChemBERTa-77M-MLM")
 
 ```python
 # Enable error tolerance
-featurizer = MoleculeTransformer(
-    calc,
-    n_jobs=-1,
-    verbose=True,
-    ignore_errors=True
-)
+featurizer = MoleculeTransformer(calc, n_jobs=-1, verbose=True, ignore_errors=True)
 
 # Failed molecules return None
 features = featurizer(smiles_with_errors)
@@ -342,6 +339,7 @@ features = transformer(smiles, enforce_dtype=True)
 
 # PyTorch tensors
 import torch
+
 transformer = MoleculeTransformer(calc, dtype=torch.float32)
 features = transformer(smiles)
 ```
@@ -381,10 +379,12 @@ from molfeat.trans import MoleculeTransformer
 from molfeat.calc import FPCalculator
 
 # Create pipeline
-pipeline = Pipeline([
-    ('featurizer', MoleculeTransformer(FPCalculator("ecfp"))),
-    ('classifier', RandomForestClassifier())
-])
+pipeline = Pipeline(
+    [
+        ("featurizer", MoleculeTransformer(FPCalculator("ecfp"))),
+        ("classifier", RandomForestClassifier()),
+    ]
+)
 
 # Fit and predict
 pipeline.fit(smiles_train, y_train)
@@ -398,6 +398,7 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 from molfeat.trans import MoleculeTransformer
 
+
 class MoleculeDataset(Dataset):
     def __init__(self, smiles, labels, transformer):
         self.smiles = smiles
@@ -410,6 +411,7 @@ class MoleculeDataset(Dataset):
     def __getitem__(self, idx):
         features = self.transformer(self.smiles[idx])
         return torch.tensor(features), torch.tensor(self.labels[idx])
+
 
 # Create dataset and dataloader
 transformer = MoleculeTransformer(FPCalculator("ecfp"))

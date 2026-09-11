@@ -7,6 +7,7 @@ Create web endpoint with single decorator:
 ```python
 image = modal.Image.debian_slim().pip_install("fastapi[standard]")
 
+
 @app.function(image=image)
 @modal.fastapi_endpoint()
 def hello():
@@ -53,7 +54,7 @@ curl "https://workspace--app-square.modal.run?x=42"
 @app.function(image=image)
 @modal.fastapi_endpoint(method="POST")
 def square(item: dict):
-    return {"square": item['x']**2}
+    return {"square": item["x"] ** 2}
 ```
 
 Call with:
@@ -68,9 +69,11 @@ curl -X POST -H 'Content-Type: application/json' \
 ```python
 from pydantic import BaseModel
 
+
 class Item(BaseModel):
     name: str
     qty: int = 42
+
 
 @app.function()
 @modal.fastapi_endpoint(method="POST")
@@ -84,6 +87,7 @@ Serve full ASGI applications:
 
 ```python
 image = modal.Image.debian_slim().pip_install("fastapi[standard]")
+
 
 @app.function(image=image)
 @modal.concurrent(max_inputs=100)
@@ -112,6 +116,7 @@ Serve synchronous web frameworks:
 ```python
 image = modal.Image.debian_slim().pip_install("flask")
 
+
 @app.function(image=image)
 @modal.concurrent(max_inputs=100)
 @modal.wsgi_app()
@@ -139,6 +144,7 @@ For frameworks with custom network binding:
 @modal.web_server(8000)
 def my_server():
     import subprocess
+
     # Must bind to 0.0.0.0, not 127.0.0.1
     # Use list form instead of shell=True for security
     subprocess.Popen(["python", "-m", "http.server", "-d", "/", "8000"])
@@ -151,19 +157,19 @@ Use FastAPI's `StreamingResponse`:
 ```python
 import time
 
+
 def event_generator():
     for i in range(10):
         yield f"data: event {i}\n\n".encode()
         time.sleep(0.5)
 
+
 @app.function(image=modal.Image.debian_slim().pip_install("fastapi[standard]"))
 @modal.fastapi_endpoint()
 def stream():
     from fastapi.responses import StreamingResponse
-    return StreamingResponse(
-        event_generator(),
-        media_type="text/event-stream"
-    )
+
+    return StreamingResponse(event_generator(), media_type="text/event-stream")
 ```
 
 ### Streaming from Modal Functions
@@ -175,14 +181,13 @@ def process_gpu():
         yield f"data: result {i}\n\n".encode()
         time.sleep(1)
 
+
 @app.function(image=modal.Image.debian_slim().pip_install("fastapi[standard]"))
 @modal.fastapi_endpoint()
 def hook():
     from fastapi.responses import StreamingResponse
-    return StreamingResponse(
-        process_gpu.remote_gen(),
-        media_type="text/event-stream"
-    )
+
+    return StreamingResponse(process_gpu.remote_gen(), media_type="text/event-stream")
 ```
 
 ### With .map()
@@ -192,14 +197,13 @@ def hook():
 def process_segment(i):
     return f"segment {i}\n"
 
+
 @app.function(image=modal.Image.debian_slim().pip_install("fastapi[standard]"))
 @modal.fastapi_endpoint()
 def stream_parallel():
     from fastapi.responses import StreamingResponse
-    return StreamingResponse(
-        process_segment.map(range(10)),
-        media_type="text/plain"
-    )
+
+    return StreamingResponse(process_segment.map(range(10)), media_type="text/plain")
 ```
 
 ## WebSockets
@@ -233,15 +237,14 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 auth_scheme = HTTPBearer()
 
+
 @app.function(secrets=[modal.Secret.from_name("auth-token")])
 @modal.fastapi_endpoint()
 async def protected(token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
     import os
+
     if token.credentials != os.environ["AUTH_TOKEN"]:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid token"
-        )
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
     return "success!"
 ```
 
@@ -249,6 +252,7 @@ async def protected(token: HTTPAuthorizationCredentials = Depends(auth_scheme)):
 
 ```python
 from fastapi import Request
+
 
 @app.function()
 @modal.fastapi_endpoint()
@@ -269,8 +273,9 @@ With environment suffix: `https://<workspace>-<suffix>--<app>-<function>.modal.r
 ```python
 @app.function()
 @modal.fastapi_endpoint(label="api")
-def handler():
-    ...
+def handler(): ...
+
+
 # URL: https://workspace--api.modal.run
 ```
 
@@ -282,6 +287,7 @@ def handler():
 def my_endpoint():
     url = my_endpoint.get_web_url()
     return {"url": url}
+
 
 # From deployed function
 f = modal.Function.from_name("app-name", "my_endpoint")

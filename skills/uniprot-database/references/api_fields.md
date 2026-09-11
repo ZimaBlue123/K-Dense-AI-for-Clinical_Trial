@@ -220,6 +220,7 @@ curl https://rest.uniprot.org/configure/uniprotkb/result-fields
 Or in Python:
 ```python
 import requests
+
 response = requests.get("https://rest.uniprot.org/configure/uniprotkb/result-fields")
 fields = response.json()
 ```

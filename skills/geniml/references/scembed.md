@@ -27,14 +27,13 @@ import scipy.io
 import anndata
 
 # Load data
-barcodes = pd.read_csv('barcodes.txt', header=None, names=['barcode'])
-peaks = pd.read_csv('peaks.bed', sep='\t', header=None,
-                    names=['chr', 'start', 'end'])
-matrix = scipy.io.mmread('matrix.mtx').tocsr()
+barcodes = pd.read_csv("barcodes.txt", header=None, names=["barcode"])
+peaks = pd.read_csv("peaks.bed", sep="\t", header=None, names=["chr", "start", "end"])
+matrix = scipy.io.mmread("matrix.mtx").tocsr()
 
 # Create AnnData
 adata = anndata.AnnData(X=matrix.T, obs=barcodes, var=peaks)
-adata.write('scatac_data.h5ad')
+adata.write("scatac_data.h5ad")
 ```
 
 ### Step 2: Pre-tokenization
@@ -45,9 +44,7 @@ Convert genomic regions into tokens using gtars utilities. This creates a parque
 from geniml.io import tokenize_cells
 
 tokenize_cells(
-    adata='scatac_data.h5ad',
-    universe_file='universe.bed',
-    output='tokenized_cells.parquet'
+    adata="scatac_data.h5ad", universe_file="universe.bed", output="tokenized_cells.parquet"
 )
 ```
 
@@ -65,24 +62,15 @@ from geniml.scembed import ScEmbed
 from geniml.region2vec import Region2VecDataset
 
 # Load tokenized dataset
-dataset = Region2VecDataset('tokenized_cells.parquet')
+dataset = Region2VecDataset("tokenized_cells.parquet")
 
 # Initialize and train model
-model = ScEmbed(
-    embedding_dim=100,
-    window_size=5,
-    negative_samples=5
-)
+model = ScEmbed(embedding_dim=100, window_size=5, negative_samples=5)
 
-model.train(
-    dataset=dataset,
-    epochs=100,
-    batch_size=256,
-    learning_rate=0.025
-)
+model.train(dataset=dataset, epochs=100, batch_size=256, learning_rate=0.025)
 
 # Save model
-model.save('scembed_model/')
+model.save("scembed_model/")
 ```
 
 ### Step 4: Generate Cell Embeddings
@@ -93,13 +81,13 @@ Use the trained model to generate embeddings for cells:
 from geniml.scembed import ScEmbed
 
 # Load trained model
-model = ScEmbed.from_pretrained('scembed_model/')
+model = ScEmbed.from_pretrained("scembed_model/")
 
 # Generate embeddings for AnnData object
 embeddings = model.encode(adata)
 
 # Add to AnnData for downstream analysis
-adata.obsm['scembed_X'] = embeddings
+adata.obsm["scembed_X"] = embeddings
 ```
 
 ### Step 5: Downstream Analysis
@@ -110,7 +98,7 @@ Integrate with scanpy for clustering and visualization:
 import scanpy as sc
 
 # Use scEmbed embeddings for neighborhood graph
-sc.pp.neighbors(adata, use_rep='scembed_X')
+sc.pp.neighbors(adata, use_rep="scembed_X")
 
 # Cluster cells
 sc.tl.leiden(adata, resolution=0.5)
@@ -119,7 +107,7 @@ sc.tl.leiden(adata, resolution=0.5)
 sc.tl.umap(adata)
 
 # Plot results
-sc.pl.umap(adata, color='leiden')
+sc.pl.umap(adata, color="leiden")
 ```
 
 ## Key Parameters
@@ -148,7 +136,7 @@ Pre-trained scEmbed models are available on Hugging Face for common reference da
 from geniml.scembed import ScEmbed
 
 # Load pre-trained model
-model = ScEmbed.from_pretrained('databio/scembed-pbmc-10k')
+model = ScEmbed.from_pretrained("databio/scembed-pbmc-10k")
 
 # Generate embeddings
 embeddings = model.encode(adata)
@@ -179,13 +167,10 @@ from geniml.scembed import annotate_celltypes
 
 # Annotate using reference
 annotations = annotate_celltypes(
-    query_adata=adata,
-    reference_adata=reference,
-    embedding_key='scembed_X',
-    k=10
+    query_adata=adata, reference_adata=reference, embedding_key="scembed_X", k=10
 )
 
-adata.obs['cell_type'] = annotations
+adata.obs["cell_type"] = annotations
 ```
 
 ## Output

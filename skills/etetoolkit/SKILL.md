@@ -85,9 +85,11 @@ from ete3 import PhyloTree
 # Load gene tree with alignment
 tree = PhyloTree("gene_tree.nw", alignment="alignment.fasta")
 
+
 # Set species naming function
 def get_species(gene_name):
     return gene_name.split("_")[0]
+
 
 tree.set_species_naming_function(get_species)
 
@@ -247,6 +249,7 @@ tree = Tree("tree.nw")
 for leaf in tree:
     leaf.add_feature("habitat", "marine" if "fish" in leaf.name else "land")
 
+
 # Layout function
 def layout(node):
     if node.is_leaf():
@@ -258,6 +261,7 @@ def layout(node):
         # Add label
         label = TextFace(node.name, fsize=10)
         node.add_face(label, column=1, position="aligned")
+
 
 ts = TreeStyle()
 ts.layout_fn = layout
@@ -325,7 +329,7 @@ tree2 = Tree("tree2.nw")
 rf, max_rf, common_leaves, parts_t1, parts_t2 = tree1.robinson_foulds(tree2)
 
 print(f"RF distance: {rf}/{max_rf}")
-print(f"Normalized RF: {rf/max_rf:.3f}")
+print(f"Normalized RF: {rf / max_rf:.3f}")
 print(f"Common leaves: {len(common_leaves)}")
 
 # Find unique partitions
@@ -348,7 +352,7 @@ n = len(trees)
 dist_matrix = np.zeros((n, n))
 
 for i in range(n):
-    for j in range(i+1, n):
+    for j in range(i + 1, n):
         rf, max_rf, _, _, _ = trees[i].robinson_foulds(trees[j])
         norm_rf = rf / max_rf if max_rf > 0 else 0
         dist_matrix[i, j] = norm_rf
@@ -380,6 +384,7 @@ The first time NCBITaxa is instantiated, it automatically downloads the NCBI tax
 
 ```python
 from ete3 import NCBITaxa
+
 ncbi = NCBITaxa()  # Downloads database on first run
 ```
 
@@ -451,11 +456,8 @@ from ete3 import Tree, TreeStyle, NodeStyle, TextFace
 tree = Tree("tree.nw")
 
 # Define clade colors
-clade_colors = {
-    "Mammals": "red",
-    "Birds": "blue",
-    "Fish": "green"
-}
+clade_colors = {"Mammals": "red", "Birds": "blue", "Fish": "green"}
+
 
 def layout(node):
     # Highlight clades
@@ -471,6 +473,7 @@ def layout(node):
         if node.support > 0.95:
             support = TextFace(f"{node.support:.2f}", fsize=8)
             node.add_face(support, column=0, position="branch-top")
+
 
 ts = TreeStyle()
 ts.layout_fn = layout
@@ -503,7 +506,7 @@ for filename in os.listdir(input_dir):
 
         # Filter low support branches
         for node in tree.traverse():
-            if hasattr(node, 'support') and node.support < 0.5:
+            if hasattr(node, "support") and node.support < 0.5:
                 if not node.is_leaf() and not node.is_root():
                     node.delete()
 
@@ -563,6 +566,7 @@ If database download fails or becomes corrupted:
 
 ```python
 from ete3 import NCBITaxa
+
 ncbi = NCBITaxa()
 ncbi.update_taxonomy_database()  # Redownload database
 ```

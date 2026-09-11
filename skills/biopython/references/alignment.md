@@ -51,10 +51,10 @@ aligner.right_extend_gap_score = 0.0
 
 ```python
 # Global alignment (default)
-aligner.mode = 'global'
+aligner.mode = "global"
 
 # Local alignment
-aligner.mode = 'local'
+aligner.mode = "local"
 ```
 
 ### Performing Alignments
@@ -187,6 +187,7 @@ pssm = summary.pos_specific_score_matrix(consensus)
 
 # Calculate information content
 from Bio import motifs
+
 motif = motifs.create([record.seq for record in alignment])
 information = motif.counts.information_content()
 ```
@@ -236,7 +237,7 @@ from Bio.Align import AlignInfo
 no_gaps = []
 for i in range(alignment.get_alignment_length()):
     column = alignment[:, i]
-    if set(column) != {'-'}:  # Not all gaps
+    if set(column) != {"-"}:  # Not all gaps
         no_gaps.append(column)
 ```
 
@@ -253,13 +254,14 @@ alignment = MultipleSeqAlignment(sorted_alignment)
 ```python
 def pairwise_identity(seq1, seq2):
     """Calculate percent identity between two sequences."""
-    matches = sum(a == b for a, b in zip(seq1, seq2) if a != '-' and b != '-')
-    length = sum(1 for a, b in zip(seq1, seq2) if a != '-' and b != '-')
+    matches = sum(a == b for a, b in zip(seq1, seq2) if a != "-" and b != "-")
+    length = sum(1 for a, b in zip(seq1, seq2) if a != "-" and b != "-")
     return matches / length if length > 0 else 0
+
 
 # Calculate all pairwise identities
 for i, record1 in enumerate(alignment):
-    for record2 in alignment[i+1:]:
+    for record2 in alignment[i + 1 :]:
         identity = pairwise_identity(record1.seq, record2.seq)
         print(f"{record1.id} vs {record2.id}: {identity:.2%}")
 ```
@@ -273,10 +275,7 @@ from Bio.Align.Applications import ClustalOmegaCommandline
 
 # Setup command
 clustal_cmd = ClustalOmegaCommandline(
-    infile="sequences.fasta",
-    outfile="alignment.aln",
-    verbose=True,
-    auto=True
+    infile="sequences.fasta", outfile="alignment.aln", verbose=True, auto=True
 )
 
 # Run alignment
@@ -291,10 +290,7 @@ alignment = AlignIO.read("alignment.aln", "clustal")
 ```python
 from Bio.Align.Applications import MuscleCommandline
 
-muscle_cmd = MuscleCommandline(
-    input="sequences.fasta",
-    out="alignment.aln"
-)
+muscle_cmd = MuscleCommandline(input="sequences.fasta", out="alignment.aln")
 stdout, stderr = muscle_cmd()
 ```
 
@@ -317,7 +313,7 @@ from Bio.Align import PairwiseAligner
 from Bio.Seq import Seq
 
 aligner = PairwiseAligner()
-aligner.mode = 'local'
+aligner.mode = "local"
 aligner.match_score = 2
 aligner.mismatch_score = -1
 

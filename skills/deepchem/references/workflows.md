@@ -37,11 +37,11 @@ featurizer = dc.feat.CircularFingerprint(radius=2, size=2048)
 featurizer = dc.feat.MolGraphConvFeaturizer()
 
 loader = dc.data.CSVLoader(
-    tasks=['solubility', 'toxicity'],  # column names to predict
-    feature_field='smiles',             # column with SMILES
-    featurizer=featurizer
+    tasks=["solubility", "toxicity"],  # column names to predict
+    feature_field="smiles",  # column with SMILES
+    featurizer=featurizer,
 )
-dataset = loader.create_dataset('data.csv')
+dataset = loader.create_dataset("data.csv")
 ```
 
 #### 4. Split Data
@@ -50,21 +50,13 @@ dataset = loader.create_dataset('data.csv')
 ```python
 splitter = dc.splits.ScaffoldSplitter()
 train, valid, test = splitter.train_valid_test_split(
-    dataset,
-    frac_train=0.8,
-    frac_valid=0.1,
-    frac_test=0.1
+    dataset, frac_train=0.8, frac_valid=0.1, frac_test=0.1
 )
 ```
 
 #### 5. Transform Data (Optional but Recommended)
 ```python
-transformers = [
-    dc.trans.NormalizationTransformer(
-        transform_y=True,
-        dataset=train
-    )
-]
+transformers = [dc.trans.NormalizationTransformer(transform_y=True, dataset=train)]
 
 for transformer in transformers:
     train = transformer.transform(train)
@@ -76,20 +68,15 @@ for transformer in transformers:
 ```python
 # For fingerprints
 model = dc.models.MultitaskRegressor(
-    n_tasks=2,                    # number of properties to predict
-    n_features=2048,              # fingerprint size
-    layer_sizes=[1000, 500],      # hidden layer sizes
+    n_tasks=2,  # number of properties to predict
+    n_features=2048,  # fingerprint size
+    layer_sizes=[1000, 500],  # hidden layer sizes
     dropouts=0.25,
-    learning_rate=0.001
+    learning_rate=0.001,
 )
 
 # OR for graphs
-model = dc.models.GCNModel(
-    n_tasks=2,
-    mode='regression',
-    batch_size=128,
-    learning_rate=0.001
-)
+model = dc.models.GCNModel(n_tasks=2, mode="regression", batch_size=128, learning_rate=0.001)
 
 # Train
 model.fit(train, nb_epoch=50)
@@ -110,7 +97,7 @@ print(f"Test R²: {test_score}")
 #### 8. Make Predictions
 ```python
 # Predict on new molecules
-new_smiles = ['CCO', 'CC(C)O', 'c1ccccc1']
+new_smiles = ["CCO", "CC(C)O", "c1ccccc1"]
 new_featurizer = dc.feat.CircularFingerprint(radius=2, size=2048)
 new_features = new_featurizer.featurize(new_smiles)
 new_dataset = dc.data.NumpyDataset(X=new_features)
@@ -133,17 +120,11 @@ predictions = model.predict(new_dataset)
 import deepchem as dc
 
 # Load benchmark dataset
-tasks, datasets, transformers = dc.molnet.load_tox21(
-    featurizer='GraphConv',
-    splitter='scaffold'
-)
+tasks, datasets, transformers = dc.molnet.load_tox21(featurizer="GraphConv", splitter="scaffold")
 train, valid, test = datasets
 
 # Train model
-model = dc.models.GCNModel(
-    n_tasks=len(tasks),
-    mode='classification'
-)
+model = dc.models.GCNModel(n_tasks=len(tasks), mode="classification")
 model.fit(train, nb_epoch=50)
 
 # Evaluate
@@ -178,26 +159,21 @@ import deepchem as dc
 import numpy as np
 
 # Load data
-tasks, datasets, transformers = dc.molnet.load_bbbp(
-    featurizer='ECFP',
-    splitter='scaffold'
-)
+tasks, datasets, transformers = dc.molnet.load_bbbp(featurizer="ECFP", splitter="scaffold")
 train, valid, test = datasets
 
 # Define parameter grid
 params_dict = {
-    'layer_sizes': [[1000], [1000, 500], [1000, 1000]],
-    'dropouts': [0.0, 0.25, 0.5],
-    'learning_rate': [0.001, 0.0001]
+    "layer_sizes": [[1000], [1000, 500], [1000, 1000]],
+    "dropouts": [0.0, 0.25, 0.5],
+    "learning_rate": [0.001, 0.0001],
 }
+
 
 # Define model builder function
 def model_builder(model_params, model_dir):
-    return dc.models.MultitaskClassifier(
-        n_tasks=len(tasks),
-        n_features=1024,
-        **model_params
-    )
+    return dc.models.MultitaskClassifier(n_tasks=len(tasks), n_features=1024, **model_params)
+
 
 # Setup optimizer
 metric = dc.metrics.Metric(dc.metrics.roc_auc_score)
@@ -205,11 +181,7 @@ optimizer = dc.hyper.GridHyperparamOpt(model_builder)
 
 # Run optimization
 best_model, best_params, all_results = optimizer.hyperparam_search(
-    params_dict,
-    train,
-    valid,
-    metric,
-    transformers=transformers
+    params_dict, train, valid, metric, transformers=transformers
 )
 
 print(f"Best parameters: {best_params}")
@@ -229,11 +201,11 @@ from transformers import AutoTokenizer
 
 # Load your data
 loader = dc.data.CSVLoader(
-    tasks=['activity'],
-    feature_field='smiles',
-    featurizer=dc.feat.DummyFeaturizer()  # ChemBERTa handles featurization
+    tasks=["activity"],
+    feature_field="smiles",
+    featurizer=dc.feat.DummyFeaturizer(),  # ChemBERTa handles featurization
 )
-dataset = loader.create_dataset('data.csv')
+dataset = loader.create_dataset("data.csv")
 
 # Split data
 splitter = dc.splits.ScaffoldSplitter()
@@ -241,9 +213,7 @@ train, test = splitter.train_test_split(dataset)
 
 # Load pretrained ChemBERTa
 model = dc.models.HuggingFaceModel(
-    model='seyonec/ChemBERTa-zinc-base-v1',
-    task='regression',
-    n_tasks=1
+    model="seyonec/ChemBERTa-zinc-base-v1", task="regression", n_tasks=1
 )
 
 # Fine-tune
@@ -256,11 +226,7 @@ predictions = model.predict(test)
 ### Using GROVER
 ```python
 # GROVER: pre-trained on molecular graphs
-model = dc.models.GroverModel(
-    task='classification',
-    n_tasks=1,
-    model_dir='./grover_model'
-)
+model = dc.models.GroverModel(task="classification", n_tasks=1, model_dir="./grover_model")
 
 # Fine-tune on your data
 model.fit(train_dataset, nb_epoch=20)
@@ -277,27 +243,19 @@ model.fit(train_dataset, nb_epoch=20)
 import deepchem as dc
 
 # Load training data (molecules for the generator to learn from)
-tasks, datasets, _ = dc.molnet.load_qm9(
-    featurizer='GraphConv',
-    splitter='random'
-)
+tasks, datasets, _ = dc.molnet.load_qm9(featurizer="GraphConv", splitter="random")
 train, _, _ = datasets
 
 # Create and train MolGAN
 gan = dc.models.BasicMolGANModel(
     learning_rate=0.001,
     vertices=9,  # max atoms in molecule
-    edges=5,     # max bonds
-    nodes=[128, 256, 512]
+    edges=5,  # max bonds
+    nodes=[128, 256, 512],
 )
 
 # Train
-gan.fit_gan(
-    train,
-    nb_epoch=100,
-    generator_steps=0.2,
-    checkpoint_interval=10
-)
+gan.fit_gan(train, nb_epoch=100, generator_steps=0.2, checkpoint_interval=10)
 
 # Generate new molecules
 generated_molecules = gan.predict_gan_generator(1000)
@@ -310,7 +268,7 @@ from deepchem.models.optimizers import ExponentialDecay
 
 gan = dc.models.BasicMolGANModel(
     learning_rate=ExponentialDecay(0.001, 0.9, 1000),
-    conditional=True  # enable conditional generation
+    conditional=True,  # enable conditional generation
 )
 
 # Train with properties
@@ -318,10 +276,7 @@ gan.fit_gan(train, nb_epoch=100)
 
 # Generate molecules with target properties
 target_properties = np.array([[5.0, 300.0]])  # e.g., [logP, MW]
-molecules = gan.predict_gan_generator(
-    1000,
-    conditional_inputs=target_properties
-)
+molecules = gan.predict_gan_generator(1000, conditional_inputs=target_properties)
 ```
 
 ---
@@ -336,19 +291,14 @@ import deepchem as dc
 
 # Load materials data (structure files in CIF format)
 loader = dc.data.CIFLoader()
-dataset = loader.create_dataset('materials.csv')
+dataset = loader.create_dataset("materials.csv")
 
 # Split data
 splitter = dc.splits.RandomSplitter()
 train, test = splitter.train_test_split(dataset)
 
 # Create CGCNN model
-model = dc.models.CGCNNModel(
-    n_tasks=1,
-    mode='regression',
-    batch_size=32,
-    learning_rate=0.001
-)
+model = dc.models.CGCNNModel(n_tasks=1, mode="regression", batch_size=32, learning_rate=0.001)
 
 # Train
 model.fit(train, nb_epoch=100)
@@ -370,14 +320,10 @@ import deepchem as dc
 
 # Load protein sequence data
 loader = dc.data.FASTALoader()
-dataset = loader.create_dataset('proteins.fasta')
+dataset = loader.create_dataset("proteins.fasta")
 
 # Use ProtBERT
-model = dc.models.HuggingFaceModel(
-    model='Rostlab/prot_bert',
-    task='classification',
-    n_tasks=1
-)
+model = dc.models.HuggingFaceModel(model="Rostlab/prot_bert", task="classification", n_tasks=1)
 
 # Split and train
 splitter = dc.splits.RandomSplitter()
@@ -400,11 +346,7 @@ from sklearn.ensemble import RandomForestRegressor
 import deepchem as dc
 
 # Create scikit-learn model
-sklearn_model = RandomForestRegressor(
-    n_estimators=100,
-    max_depth=10,
-    random_state=42
-)
+sklearn_model = RandomForestRegressor(n_estimators=100, max_depth=10, random_state=42)
 
 # Wrap in DeepChem
 model = dc.models.SklearnModel(model=sklearn_model)
@@ -424,6 +366,7 @@ import torch
 import torch.nn as nn
 import deepchem as dc
 
+
 class CustomNetwork(nn.Module):
     def __init__(self, n_features, n_tasks):
         super().__init__()
@@ -440,11 +383,10 @@ class CustomNetwork(nn.Module):
         x = self.dropout(x)
         return self.fc3(x)
 
+
 # Wrap in DeepChem TorchModel
 model = dc.models.TorchModel(
-    model=CustomNetwork(n_features=2048, n_tasks=1),
-    loss=nn.MSELoss(),
-    output_types=['prediction']
+    model=CustomNetwork(n_features=2048, n_tasks=1), loss=nn.MSELoss(), output_types=["prediction"]
 )
 
 # Train

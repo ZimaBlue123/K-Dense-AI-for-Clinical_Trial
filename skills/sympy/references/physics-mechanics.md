@@ -10,15 +10,15 @@ This document covers SymPy's physics modules including classical mechanics, quan
 from sympy.physics.vector import ReferenceFrame, dynamicsymbols
 
 # Create reference frames
-N = ReferenceFrame('N')  # Inertial frame
-B = ReferenceFrame('B')  # Body frame
+N = ReferenceFrame("N")  # Inertial frame
+B = ReferenceFrame("B")  # Body frame
 
 # Create vectors
-v = 3*N.x + 4*N.y + 5*N.z
+v = 3 * N.x + 4 * N.y + 5 * N.z
 
 # Time-varying quantities
 t = dynamicsymbols._t
-x = dynamicsymbols('x')  # Function of time
+x = dynamicsymbols("x")  # Function of time
 v = x.diff(t) * N.x  # Velocity vector
 ```
 
@@ -27,8 +27,8 @@ v = x.diff(t) * N.x  # Velocity vector
 ```python
 from sympy.physics.vector import dot, cross
 
-v1 = 3*N.x + 4*N.y
-v2 = 1*N.x + 2*N.y + 3*N.z
+v1 = 3 * N.x + 4 * N.y
+v2 = 1 * N.x + 2 * N.y + 3 * N.z
 
 # Dot product
 d = dot(v1, v2)
@@ -48,10 +48,11 @@ v1_norm = v1.normalize()
 ```python
 # Rotate frame B relative to N
 from sympy import symbols, cos, sin
-theta = symbols('theta')
+
+theta = symbols("theta")
 
 # Simple rotation about z-axis
-B.orient(N, 'Axis', [theta, N.z])
+B.orient(N, "Axis", [theta, N.z])
 
 # Direction cosine matrix (DCM)
 dcm = N.dcm(B)
@@ -66,14 +67,14 @@ omega = B.ang_vel_in(N)
 from sympy.physics.vector import Point
 
 # Create points
-O = Point('O')  # Origin
-P = Point('P')
+O = Point("O")  # Origin
+P = Point("P")
 
 # Set position
-P.set_pos(O, 3*N.x + 4*N.y)
+P.set_pos(O, 3 * N.x + 4 * N.y)
 
 # Set velocity
-P.set_vel(N, 5*N.x + 2*N.y)
+P.set_vel(N, 5 * N.x + 2 * N.y)
 
 # Get velocity of P in frame N
 v = P.vel(N)
@@ -91,14 +92,15 @@ from sympy import symbols, Function
 from sympy.physics.mechanics import dynamicsymbols, LagrangesMethod
 
 # Define generalized coordinates
-q = dynamicsymbols('q')
-qd = dynamicsymbols('q', 1)  # q dot (velocity)
+q = dynamicsymbols("q")
+qd = dynamicsymbols("q", 1)  # q dot (velocity)
 
 # Define Lagrangian (L = T - V)
 from sympy import Rational
-m, g, l = symbols('m g l')
-T = Rational(1, 2) * m * (l * qd)**2  # Kinetic energy
-V = m * g * l * (1 - cos(q))           # Potential energy
+
+m, g, l = symbols("m g l")
+T = Rational(1, 2) * m * (l * qd) ** 2  # Kinetic energy
+V = m * g * l * (1 - cos(q))  # Potential energy
 L = T - V
 
 # Apply Lagrange's method
@@ -114,9 +116,9 @@ from sympy.physics.mechanics import KanesMethod, ReferenceFrame, Point
 from sympy.physics.vector import dynamicsymbols
 
 # Define system
-N = ReferenceFrame('N')
-q = dynamicsymbols('q')
-u = dynamicsymbols('u')  # Generalized speed
+N = ReferenceFrame("N")
+q = dynamicsymbols("q")
+u = dynamicsymbols("u")  # Generalized speed
 
 # Create Kane's equations
 kd = [u - q.diff()]  # Kinematic differential equations
@@ -134,18 +136,18 @@ from sympy.physics.mechanics import RigidBody, Inertia, Point, ReferenceFrame
 from sympy import symbols
 
 # Mass and inertia parameters
-m = symbols('m')
-Ixx, Iyy, Izz = symbols('I_xx I_yy I_zz')
+m = symbols("m")
+Ixx, Iyy, Izz = symbols("I_xx I_yy I_zz")
 
 # Create reference frame and mass center
-A = ReferenceFrame('A')
-P = Point('P')
+A = ReferenceFrame("A")
+P = Point("P")
 
 # Define inertia dyadic
 I = Inertia(A, Ixx, Iyy, Izz)
 
 # Create rigid body
-body = RigidBody('Body', P, A, m, (I, P))
+body = RigidBody("Body", P, A, m, (I, P))
 ```
 
 ### Joints Framework
@@ -154,14 +156,14 @@ body = RigidBody('Body', P, A, m, (I, P))
 from sympy.physics.mechanics import Body, PinJoint, PrismaticJoint
 
 # Create bodies
-parent = Body('P')
-child = Body('C')
+parent = Body("P")
+child = Body("C")
 
 # Create pin (revolute) joint
-pin = PinJoint('pin', parent, child)
+pin = PinJoint("pin", parent, child)
 
 # Create prismatic (sliding) joint
-slider = PrismaticJoint('slider', parent, child, axis=parent.frame.z)
+slider = PrismaticJoint("slider", parent, child, axis=parent.frame.z)
 ```
 
 ### Linearization
@@ -169,9 +171,7 @@ slider = PrismaticJoint('slider', parent, child, axis=parent.frame.z)
 ```python
 # Linearize equations of motion about an equilibrium
 operating_point = {q: 0, u: 0}  # Equilibrium point
-A, B = KM.linearize(q_ind=[q], u_ind=[u],
-                     A_and_B=True,
-                     op_point=operating_point)
+A, B = KM.linearize(q_ind=[q], u_ind=[u], A_and_B=True, op_point=operating_point)
 # A: state matrix, B: input matrix
 ```
 
@@ -183,15 +183,15 @@ A, B = KM.linearize(q_ind=[q], u_ind=[u],
 from sympy.physics.quantum import Ket, Bra, Operator, Dagger
 
 # Define states
-psi = Ket('psi')
-phi = Ket('phi')
+psi = Ket("psi")
+phi = Ket("phi")
 
 # Bra states
-bra_psi = Bra('psi')
+bra_psi = Bra("psi")
 
 # Operators
-A = Operator('A')
-B = Operator('B')
+A = Operator("A")
+B = Operator("B")
 
 # Hermitian conjugate
 A_dag = Dagger(A)
@@ -220,26 +220,32 @@ anti.doit()
 from sympy.physics.quantum.qho_1d import RaisingOp, LoweringOp, NumberOp
 
 # Creation and annihilation operators
-a_dag = RaisingOp('a')  # Creation operator
-a = LoweringOp('a')      # Annihilation operator
-N = NumberOp('N')        # Number operator
+a_dag = RaisingOp("a")  # Creation operator
+a = LoweringOp("a")  # Annihilation operator
+N = NumberOp("N")  # Number operator
 
 # Number states
 from sympy.physics.quantum.qho_1d import Ket as QHOKet
-n = QHOKet('n')
+
+n = QHOKet("n")
 ```
 
 ### Spin Systems
 
 ```python
 from sympy.physics.quantum.spin import (
-    JzKet, JxKet, JyKet,  # Spin states
-    Jz, Jx, Jy,            # Spin operators
-    J2                     # Total angular momentum squared
+    JzKet,
+    JxKet,
+    JyKet,  # Spin states
+    Jz,
+    Jx,
+    Jy,  # Spin operators
+    J2,  # Total angular momentum squared
 )
 
 # Spin-1/2 state
 from sympy import Rational
+
 psi = JzKet(Rational(1, 2), Rational(1, 2))  # |1/2, 1/2⟩
 
 # Apply operator
@@ -250,15 +256,18 @@ result = Jz * psi
 
 ```python
 from sympy.physics.quantum.gate import (
-    H,      # Hadamard gate
-    X, Y, Z,  # Pauli gates
-    CNOT,    # Controlled-NOT
-    SWAP     # Swap gate
+    H,  # Hadamard gate
+    X,
+    Y,
+    Z,  # Pauli gates
+    CNOT,  # Controlled-NOT
+    SWAP,  # Swap gate
 )
 
 # Apply gate to quantum state
 from sympy.physics.quantum.qubit import Qubit
-q = Qubit('01')
+
+q = Qubit("01")
 result = H(0) * q  # Apply Hadamard to qubit 0
 ```
 
@@ -277,11 +286,7 @@ from sympy.physics.quantum.grover import grover_iteration, OracleGate
 ### Working with Units
 
 ```python
-from sympy.physics.units import (
-    meter, kilogram, second,
-    newton, joule, watt,
-    convert_to
-)
+from sympy.physics.units import meter, kilogram, second, newton, joule, watt, convert_to
 
 # Define quantities
 distance = 5 * meter
@@ -314,7 +319,7 @@ c = speed_of_light
 from sympy.physics.units import Quantity, meter, second
 
 # Define custom unit
-parsec = Quantity('parsec')
+parsec = Quantity("parsec")
 parsec.set_global_relative_scale_factor(3.0857e16 * meter, meter)
 ```
 
@@ -325,6 +330,7 @@ from sympy.physics.units import Dimension, length, time, mass
 
 # Check dimensions
 from sympy.physics.units import convert_to, meter, second
+
 velocity = 10 * meter / second
 print(velocity.dimension)  # Dimension(length/time)
 ```
@@ -339,7 +345,7 @@ from sympy.physics.optics import (
     FreeSpace,
     FlatRefraction,
     CurvedRefraction,
-    ThinLens
+    ThinLens,
 )
 
 # Gaussian beam parameter
@@ -362,7 +368,8 @@ wave = TWave(amplitude=1, frequency=5e14, phase=0)
 
 # Medium properties (refractive index, etc.)
 from sympy.physics.optics import Medium
-medium = Medium('glass', permittivity=2.25)
+
+medium = Medium("glass", permittivity=2.25)
 ```
 
 ## Continuum Mechanics
@@ -374,20 +381,21 @@ from sympy.physics.continuum_mechanics.beam import Beam
 from sympy import symbols
 
 # Define beam
-E, I = symbols('E I', positive=True)  # Young's modulus, moment of inertia
+E, I = symbols("E I", positive=True)  # Young's modulus, moment of inertia
 length = 10
 
 beam = Beam(length, E, I)
 
 # Apply loads
 from sympy.physics.continuum_mechanics.beam import Beam
+
 beam.apply_load(-1000, 5, -1)  # Point load of -1000 at x=5
 
 # Calculate reactions
 beam.solve_for_reaction_loads()
 
 # Get shear force, bending moment, deflection
-x = symbols('x')
+x = symbols("x")
 shear = beam.shear_force()
 moment = beam.bending_moment()
 deflection = beam.deflection()
@@ -402,13 +410,13 @@ from sympy.physics.continuum_mechanics.truss import Truss
 truss = Truss()
 
 # Add nodes
-truss.add_node(('A', 0, 0), ('B', 4, 0), ('C', 2, 3))
+truss.add_node(("A", 0, 0), ("B", 4, 0), ("C", 2, 3))
 
 # Add members
-truss.add_member(('AB', 'A', 'B'), ('BC', 'B', 'C'))
+truss.add_member(("AB", "A", "B"), ("BC", "B", "C"))
 
 # Apply loads
-truss.apply_load(('C', 1000, 270))  # 1000 N at 270° at node C
+truss.apply_load(("C", 1000, 270))  # 1000 N at 270° at node C
 
 # Solve
 truss.solve()
@@ -420,7 +428,7 @@ truss.solve()
 from sympy.physics.continuum_mechanics.cable import Cable
 
 # Create cable
-cable = Cable(('A', 0, 10), ('B', 10, 10))
+cable = Cable(("A", 0, 10), ("B", 10, 10))
 
 # Apply loads
 cable.apply_load(-1, 5)  # Distributed load
@@ -438,7 +446,7 @@ from sympy.physics.control import TransferFunction, StateSpace
 from sympy.abc import s
 
 # Transfer function
-tf = TransferFunction(s + 1, s**2 + 2*s + 1, s)
+tf = TransferFunction(s + 1, s**2 + 2 * s + 1, s)
 
 # State-space representation
 A = [[0, 1], [-1, -2]]
@@ -472,16 +480,13 @@ is_stable = tf.is_stable()
 ### Musculotendon Models
 
 ```python
-from sympy.physics.biomechanics import (
-    MusculotendonDeGroote2016,
-    FirstOrderActivationDeGroote2016
-)
+from sympy.physics.biomechanics import MusculotendonDeGroote2016, FirstOrderActivationDeGroote2016
 
 # Create musculotendon model
-mt = MusculotendonDeGroote2016('muscle')
+mt = MusculotendonDeGroote2016("muscle")
 
 # Activation dynamics
-activation = FirstOrderActivationDeGroote2016('muscle_activation')
+activation = FirstOrderActivationDeGroote2016("muscle_activation")
 ```
 
 ## High Energy Physics
@@ -505,15 +510,15 @@ from sympy.physics.mechanics import dynamicsymbols, ReferenceFrame, Point
 from sympy import symbols
 
 # 1. Define reference frame
-N = ReferenceFrame('N')
+N = ReferenceFrame("N")
 
 # 2. Define generalized coordinates
-q = dynamicsymbols('q')
-q_dot = dynamicsymbols('q', 1)
+q = dynamicsymbols("q")
+q_dot = dynamicsymbols("q", 1)
 
 # 3. Define points and vectors
-O = Point('O')
-P = Point('P')
+O = Point("O")
+P = Point("P")
 
 # 4. Set kinematics
 P.set_pos(O, length * N.x)
@@ -528,10 +533,10 @@ P.set_vel(N, length * q_dot * N.x)
 from sympy.physics.quantum import Ket, Operator, qapply
 
 # Define state
-psi = Ket('psi')
+psi = Ket("psi")
 
 # Define operator
-H = Operator('H')  # Hamiltonian
+H = Operator("H")  # Hamiltonian
 
 # Apply operator
 result = qapply(H * psi)
@@ -550,8 +555,8 @@ time = 5 * minute
 speed = distance / time
 
 # Convert to desired units
-speed_m_per_s = convert_to(speed, meter/second)
-speed_ft_per_min = convert_to(speed, foot/minute)
+speed_m_per_s = convert_to(speed, meter / second)
+speed_ft_per_min = convert_to(speed, foot / minute)
 ```
 
 ### Pattern 4: Beam Deflection Analysis
@@ -560,12 +565,12 @@ speed_ft_per_min = convert_to(speed, foot/minute)
 from sympy.physics.continuum_mechanics.beam import Beam
 from sympy import symbols
 
-E, I = symbols('E I', positive=True, real=True)
+E, I = symbols("E I", positive=True, real=True)
 beam = Beam(10, E, I)
 
 # Apply boundary conditions
-beam.apply_support(0, 'pin')
-beam.apply_support(10, 'roller')
+beam.apply_support(0, "pin")
+beam.apply_support(10, "roller")
 
 # Apply loads
 beam.apply_load(-1000, 5, -1)  # Point load
@@ -576,7 +581,7 @@ beam.solve_for_reaction_loads()
 
 # Get results at specific locations
 x = 5
-deflection_at_mid = beam.deflection().subs(symbols('x'), x)
+deflection_at_mid = beam.deflection().subs(symbols("x"), x)
 ```
 
 ## Important Notes

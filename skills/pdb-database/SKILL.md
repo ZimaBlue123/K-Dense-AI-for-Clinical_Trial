@@ -30,6 +30,7 @@ Find PDB entries using various search criteria:
 **Text Search:** Search by protein name, keywords, or descriptions
 ```python
 from rcsbapi.search import TextQuery
+
 query = TextQuery("hemoglobin")
 results = list(query())
 print(f"Found {len(results)} structures")
@@ -44,7 +45,7 @@ from rcsbapi.search.attrs import rcsb_entity_source_organism
 query = AttributeQuery(
     attribute=rcsb_entity_source_organism.scientific_name,
     operator="exact_match",
-    value="Homo sapiens"
+    value="Homo sapiens",
 )
 results = list(query())
 ```
@@ -56,7 +57,7 @@ from rcsbapi.search import SequenceQuery
 query = SequenceQuery(
     value="MTEYKLVVVGAGGVGKSALTIQLIQNHFVDEYDPTIEDSYRKQVVIDGETCLLDILDTAGQEEYSAMRDQYMRTGEGFLCVFAINNTKSFEDIHHYREQIKRVKDSEDVPMVLVGNKCDLPSRTVDTKQAQDLARSYGIPFIETSAKTRQGVDDAFYTLVREIRKHKEKMSKDGKKKKKKSKTKCVIM",
     evalue_cutoff=0.1,
-    identity_cutoff=0.9
+    identity_cutoff=0.9,
 )
 results = list(query())
 ```
@@ -67,7 +68,7 @@ from rcsbapi.search import StructSimilarityQuery
 
 query = StructSimilarityQuery(
     structure_search_type="entry",
-    entry_id="4HHB"  # Hemoglobin
+    entry_id="4HHB",  # Hemoglobin
 )
 results = list(query())
 ```
@@ -81,13 +82,9 @@ from rcsbapi.search.attrs import rcsb_entry_info
 query1 = AttributeQuery(
     attribute=rcsb_entity_source_organism.scientific_name,
     operator="exact_match",
-    value="Homo sapiens"
+    value="Homo sapiens",
 )
-query2 = AttributeQuery(
-    attribute=rcsb_entry_info.resolution_combined,
-    operator="less",
-    value=2.0
-)
+query2 = AttributeQuery(attribute=rcsb_entry_info.resolution_combined, operator="less", value=2.0)
 combined_query = query1 & query2  # AND operation
 results = list(combined_query())
 ```
@@ -218,7 +215,7 @@ for pdb_id in pdb_ids:
         results[pdb_id] = {
             "title": data["struct"]["title"],
             "resolution": data.get("rcsb_entry_info", {}).get("resolution_combined"),
-            "organism": data.get("rcsb_entity_source_organism", [{}])[0].get("scientific_name")
+            "organism": data.get("rcsb_entity_source_organism", [{}])[0].get("scientific_name"),
         }
     except Exception as e:
         print(f"Error fetching {pdb_id}: {e}")

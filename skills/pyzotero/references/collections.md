@@ -10,13 +10,13 @@ all_cols = zot.collections()
 top_cols = zot.collections_top()
 
 # Specific collection
-col = zot.collection('COLKEY')
+col = zot.collection("COLKEY")
 
 # Sub-collections of a collection
-sub_cols = zot.collections_sub('COLKEY')
+sub_cols = zot.collections_sub("COLKEY")
 
 # All collections under a given collection (recursive)
-tree = zot.all_collections('COLKEY')
+tree = zot.all_collections("COLKEY")
 # Or all collections in the library:
 tree = zot.all_collections()
 ```
@@ -24,33 +24,32 @@ tree = zot.all_collections()
 ## Collection Data Structure
 
 ```python
-col = zot.collection('5TSDXJG6')
-name = col['data']['name']
-key = col['data']['key']
-parent = col['data']['parentCollection']  # False if top-level, else parent key
-version = col['data']['version']
-n_items = col['meta']['numItems']
-n_sub_collections = col['meta']['numCollections']
+col = zot.collection("5TSDXJG6")
+name = col["data"]["name"]
+key = col["data"]["key"]
+parent = col["data"]["parentCollection"]  # False if top-level, else parent key
+version = col["data"]["version"]
+n_items = col["meta"]["numItems"]
+n_sub_collections = col["meta"]["numCollections"]
 ```
 
 ## Creating Collections
 
 ```python
 # Create a top-level collection
-zot.create_collections([{'name': 'My New Collection'}])
+zot.create_collections([{"name": "My New Collection"}])
 
 # Create a nested collection
-zot.create_collections([{
-    'name': 'Sub-Collection',
-    'parentCollection': 'PARENTCOLKEY'
-}])
+zot.create_collections([{"name": "Sub-Collection", "parentCollection": "PARENTCOLKEY"}])
 
 # Create multiple at once
-zot.create_collections([
-    {'name': 'Collection A'},
-    {'name': 'Collection B'},
-    {'name': 'Sub-B', 'parentCollection': 'BKEY'},
-])
+zot.create_collections(
+    [
+        {"name": "Collection A"},
+        {"name": "Collection B"},
+        {"name": "Sub-B", "parentCollection": "BKEY"},
+    ]
+)
 ```
 
 ## Updating Collections
@@ -58,7 +57,7 @@ zot.create_collections([
 ```python
 cols = zot.collections()
 # Rename the first collection
-cols[0]['data']['name'] = 'Renamed Collection'
+cols[0]["data"]["name"] = "Renamed Collection"
 zot.update_collection(cols[0])
 
 # Update multiple collections (auto-chunked at 50)
@@ -69,7 +68,7 @@ zot.update_collections(cols)
 
 ```python
 # Delete a single collection
-col = zot.collection('COLKEY')
+col = zot.collection("COLKEY")
 zot.delete_collection(col)
 
 # Delete multiple collections
@@ -81,23 +80,23 @@ zot.delete_collection(cols)  # pass a list of dicts
 
 ```python
 # Add an item to a collection
-item = zot.item('ITEMKEY')
-zot.addto_collection('COLKEY', item)
+item = zot.item("ITEMKEY")
+zot.addto_collection("COLKEY", item)
 
 # Remove an item from a collection
-zot.deletefrom_collection('COLKEY', item)
+zot.deletefrom_collection("COLKEY", item)
 
 # Get all items in a collection
-items = zot.collection_items('COLKEY')
+items = zot.collection_items("COLKEY")
 
 # Get only top-level items in a collection
-top_items = zot.collection_items_top('COLKEY')
+top_items = zot.collection_items_top("COLKEY")
 
 # Count items in a collection
-n = zot.num_collectionitems('COLKEY')
+n = zot.num_collectionitems("COLKEY")
 
 # Get tags in a collection
-tags = zot.collection_tags('COLKEY')
+tags = zot.collection_tags("COLKEY")
 ```
 
 ## Find Collection Key by Name
@@ -105,9 +104,10 @@ tags = zot.collection_tags('COLKEY')
 ```python
 def find_collection(zot, name):
     for col in zot.everything(zot.collections()):
-        if col['data']['name'] == name:
-            return col['data']['key']
+        if col["data"]["name"] == name:
+            return col["data"]["key"]
     return None
 
-key = find_collection(zot, 'Machine Learning Papers')
+
+key = find_collection(zot, "Machine Learning Papers")
 ```

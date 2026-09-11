@@ -12,18 +12,14 @@ import numpy as np
 
 # Create circuit
 q0, q1 = cirq.LineQubit.range(2)
-circuit = cirq.Circuit(
-    cirq.H(q0),
-    cirq.CNOT(q0, q1),
-    cirq.measure(q0, q1, key='result')
-)
+circuit = cirq.Circuit(cirq.H(q0), cirq.CNOT(q0, q1), cirq.measure(q0, q1, key="result"))
 
 # Simulate
 simulator = cirq.Simulator()
 result = simulator.run(circuit, repetitions=1000)
 
 # Get measurement results
-print(result.histogram(key='result'))
+print(result.histogram(key="result"))
 ```
 
 ### State Vector Simulation
@@ -72,11 +68,11 @@ for step in simulator.simulate_moment_steps(circuit):
 result = simulator.run(circuit, repetitions=10000)
 
 # Access measurement counts
-counts = result.histogram(key='result')
+counts = result.histogram(key="result")
 print(f"Measurement counts: {counts}")
 
 # Get raw measurements
-measurements = result.measurements['result']
+measurements = result.measurements["result"]
 print(f"Shape: {measurements.shape}")  # (repetitions, num_qubits)
 ```
 
@@ -87,10 +83,7 @@ print(f"Shape: {measurements.shape}")  # (repetitions, num_qubits)
 from cirq import PauliString
 
 observable = PauliString({q0: cirq.Z, q1: cirq.Z})
-result = simulator.simulate_expectation_values(
-    circuit,
-    observables=[observable]
-)
+result = simulator.simulate_expectation_values(circuit, observables=[observable])
 print(f"⟨ZZ⟩ = {result[0]}")
 ```
 
@@ -102,15 +95,12 @@ print(f"⟨ZZ⟩ = {result[0]}")
 import sympy
 
 # Create parameterized circuit
-theta = sympy.Symbol('theta')
+theta = sympy.Symbol("theta")
 q = cirq.LineQubit(0)
-circuit = cirq.Circuit(
-    cirq.ry(theta)(q),
-    cirq.measure(q, key='m')
-)
+circuit = cirq.Circuit(cirq.ry(theta)(q), cirq.measure(q, key="m"))
 
 # Define parameter sweep
-sweep = cirq.Linspace(key='theta', start=0, stop=2*np.pi, length=50)
+sweep = cirq.Linspace(key="theta", start=0, stop=2 * np.pi, length=50)
 
 # Run sweep
 simulator = cirq.Simulator()
@@ -118,8 +108,8 @@ results = simulator.run_sweep(circuit, params=sweep, repetitions=1000)
 
 # Process results
 for params, result in zip(sweep, results):
-    theta_val = params['theta']
-    counts = result.histogram(key='m')
+    theta_val = params["theta"]
+    counts = result.histogram(key="m")
     print(f"θ={theta_val:.2f}: {counts}")
 ```
 
@@ -127,19 +117,13 @@ for params, result in zip(sweep, results):
 
 ```python
 # Sweep over multiple parameters
-theta = sympy.Symbol('theta')
-phi = sympy.Symbol('phi')
+theta = sympy.Symbol("theta")
+phi = sympy.Symbol("phi")
 
-circuit = cirq.Circuit(
-    cirq.ry(theta)(q0),
-    cirq.rz(phi)(q1)
-)
+circuit = cirq.Circuit(cirq.ry(theta)(q0), cirq.rz(phi)(q1))
 
 # Product sweep (all combinations)
-sweep = cirq.Product(
-    cirq.Linspace('theta', 0, np.pi, 10),
-    cirq.Linspace('phi', 0, 2*np.pi, 10)
-)
+sweep = cirq.Product(cirq.Linspace("theta", 0, np.pi, 10), cirq.Linspace("phi", 0, 2 * np.pi, 10))
 
 results = simulator.run_sweep(circuit, params=sweep, repetitions=100)
 ```
@@ -148,10 +132,7 @@ results = simulator.run_sweep(circuit, params=sweep, repetitions=100)
 
 ```python
 # Sweep parameters together
-sweep = cirq.Zip(
-    cirq.Linspace('theta', 0, np.pi, 20),
-    cirq.Linspace('phi', 0, 2*np.pi, 20)
-)
+sweep = cirq.Zip(cirq.Linspace("theta", 0, np.pi, 20), cirq.Linspace("phi", 0, 2 * np.pi, 20))
 
 results = simulator.run_sweep(circuit, params=sweep, repetitions=100)
 ```
@@ -178,9 +159,7 @@ noise_model = cirq.NoiseModel.from_noise_model_like(
 )
 
 # Simulate with noise model
-result = cirq.DensityMatrixSimulator(noise=noise_model).run(
-    circuit, repetitions=1000
-)
+result = cirq.DensityMatrixSimulator(noise=noise_model).run(circuit, repetitions=1000)
 ```
 
 See `noise.md` for comprehensive noise modeling details.
@@ -194,13 +173,13 @@ import matplotlib.pyplot as plt
 
 # Get histogram
 result = simulator.run(circuit, repetitions=1000)
-counts = result.histogram(key='result')
+counts = result.histogram(key="result")
 
 # Plot
 plt.bar(counts.keys(), counts.values())
-plt.xlabel('State')
-plt.ylabel('Counts')
-plt.title('Measurement Results')
+plt.xlabel("State")
+plt.ylabel("Counts")
+plt.title("Measurement Results")
 plt.show()
 ```
 
@@ -216,8 +195,8 @@ probabilities = np.abs(state_vector) ** 2
 
 # Plot
 plt.bar(range(len(probabilities)), probabilities)
-plt.xlabel('Basis State Index')
-plt.ylabel('Probability')
+plt.xlabel("Basis State Index")
+plt.ylabel("Probability")
 plt.show()
 ```
 
@@ -249,7 +228,7 @@ device.validate_circuit(circuit)
 
 ```python
 # Simulate with device noise
-processor = cirq_google.get_engine().get_processor('weber')
+processor = cirq_google.get_engine().get_processor("weber")
 noise_props = processor.get_device_specification()
 
 # Create realistic noisy simulator
@@ -281,6 +260,7 @@ full_state = result.final_state_vector
 
 # Compute reduced density matrix for first qubit
 from cirq import partial_trace
+
 reduced_dm = partial_trace(result.final_density_matrix, keep_indices=[0])
 ```
 
@@ -310,8 +290,7 @@ for i, step in enumerate(simulator.simulate_moment_steps(circuit)):
 results = simulator.run_sweep(circuit, params=sweep, repetitions=100)
 
 # Inefficient: Multiple individual runs
-results = [simulator.run(circuit, param_resolver=p, repetitions=100)
-           for p in sweep]
+results = [simulator.run(circuit, param_resolver=p, repetitions=100) for p in sweep]
 ```
 
 ### Memory Considerations
@@ -329,11 +308,7 @@ For circuits with only Clifford gates, use efficient stabilizer simulation:
 
 ```python
 # Clifford circuit (H, S, CNOT)
-circuit = cirq.Circuit(
-    cirq.H(q0),
-    cirq.S(q1),
-    cirq.CNOT(q0, q1)
-)
+circuit = cirq.Circuit(cirq.H(q0), cirq.S(q1), cirq.CNOT(q0, q1))
 
 # Use stabilizer simulator (exponentially faster)
 simulator = cirq.CliffordSimulator()

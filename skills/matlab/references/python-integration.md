@@ -279,7 +279,7 @@ eng = matlab.engine.start_matlab()
 # Python to MATLAB types
 matlab_double = matlab.double([1.0, 2.0, 3.0])
 matlab_int = matlab.int32([1, 2, 3])
-matlab_complex = matlab.double([1+2j, 3+4j], is_complex=True)
+matlab_complex = matlab.double([1 + 2j, 3 + 4j], is_complex=True)
 
 # 2D array
 matlab_matrix = matlab.double([[1, 2, 3], [4, 5, 6]])
@@ -352,6 +352,7 @@ import numpy as np
 # Start MATLAB
 eng = matlab.engine.start_matlab()
 
+
 # Use MATLAB's optimization
 def matlab_fmincon(objective, x0, A, b, Aeq, beq, lb, ub):
     """Wrapper for MATLAB's fmincon."""
@@ -365,13 +366,15 @@ def matlab_fmincon(objective, x0, A, b, Aeq, beq, lb, ub):
 
     return np.array(x).flatten(), fval
 
+
 # Use MATLAB's plotting
 def matlab_plot(x, y, title_str):
     """Create plot using MATLAB."""
     eng.figure(nargout=0)
     eng.plot(matlab.double(x.tolist()), matlab.double(y.tolist()), nargout=0)
     eng.title(title_str, nargout=0)
-    eng.saveas(eng.gcf(), 'plot.png', nargout=0)
+    eng.saveas(eng.gcf(), "plot.png", nargout=0)
+
 
 eng.quit()
 ```

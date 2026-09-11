@@ -31,10 +31,10 @@ results = resp.json()
 # Each result: {mnemonic, dataset, field, value, type}
 
 # Fetch a single time series
-resp = requests.get(f"{BASE}/series/timeseries", params={
-    "mnemonic": "FPF-ALLQHF_LEVERAGERATIO_GAVWMEAN",
-    "start_date": "2015-01-01"
-})
+resp = requests.get(
+    f"{BASE}/series/timeseries",
+    params={"mnemonic": "FPF-ALLQHF_LEVERAGERATIO_GAVWMEAN", "start_date": "2015-01-01"},
+)
 series = resp.json()  # [[date, value], ...]
 df = pd.DataFrame(series, columns=["date", "value"])
 df["date"] = pd.to_datetime(df["date"])
@@ -105,11 +105,11 @@ Mnemonics follow the pattern `FPF-{SCOPE}_{METRIC}_{STAT}`:
 ```python
 # Common series examples
 mnemonics = [
-    "FPF-ALLQHF_LEVERAGERATIO_GAVWMEAN",   # All funds: leverage (gross asset-weighted)
-    "FPF-ALLQHF_GAV_SUM",                  # All funds: gross assets (total)
-    "FPF-ALLQHF_NAV_SUM",                  # All funds: net assets (total)
-    "FPF-ALLQHF_GNE_SUM",                  # All funds: gross notional exposure
-    "FICC-SPONSORED_REPO_VOL",             # FICC: sponsored repo volume
+    "FPF-ALLQHF_LEVERAGERATIO_GAVWMEAN",  # All funds: leverage (gross asset-weighted)
+    "FPF-ALLQHF_GAV_SUM",  # All funds: gross assets (total)
+    "FPF-ALLQHF_NAV_SUM",  # All funds: net assets (total)
+    "FPF-ALLQHF_GNE_SUM",  # All funds: gross notional exposure
+    "FICC-SPONSORED_REPO_VOL",  # FICC: sponsored repo volume
 ]
 ```
 

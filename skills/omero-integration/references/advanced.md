@@ -154,7 +154,7 @@ if fileset:
         raw_file_store.setFileId(orig_file.getId())
 
         # Download in chunks
-        with open(file_path, 'wb') as f:
+        with open(file_path, "wb") as f:
             offset = 0
             chunk_size = 1024 * 1024  # 1MB chunks
             size = orig_file.getSize()
@@ -191,13 +191,13 @@ perm_string = str(permissions)
 
 # Map to readable names
 permission_names = {
-    'rw----': 'PRIVATE',
-    'rwr---': 'READ-ONLY',
-    'rwra--': 'READ-ANNOTATE',
-    'rwrw--': 'READ-WRITE'
+    "rw----": "PRIVATE",
+    "rwr---": "READ-ONLY",
+    "rwra--": "READ-ANNOTATE",
+    "rwrw--": "READ-WRITE",
 }
 
-perm_name = permission_names.get(perm_string, 'UNKNOWN')
+perm_name = permission_names.get(perm_string, "UNKNOWN")
 print(f"Group: {group.getName()}")
 print(f"Permissions: {perm_name} ({perm_string})")
 ```
@@ -233,7 +233,7 @@ for member in group.getMembers():
 
 ```python
 # Set context to query all accessible groups
-conn.SERVICE_OPTS.setOmeroGroup('-1')
+conn.SERVICE_OPTS.setOmeroGroup("-1")
 
 # Now queries span all groups
 image = conn.getObject("Image", image_id)
@@ -386,8 +386,7 @@ roi_service = conn.getRoiService()
 result = roi_service.findByImage(image_id, None)
 
 # Get shape statistics
-shape_ids = [shape.id.val for roi in result.rois
-             for shape in roi.copyShapes()]
+shape_ids = [shape.id.val for roi in result.rois for shape in roi.copyShapes()]
 stats = roi_service.getShapeStatsRestricted(shape_ids, 0, 0, [0])
 ```
 
@@ -402,10 +401,7 @@ ns_to_include = ["mylab.analysis"]
 ns_to_exclude = []
 
 annotations = metadataService.loadSpecifiedAnnotations(
-    'omero.model.FileAnnotation',
-    ns_to_include,
-    ns_to_exclude,
-    None
+    "omero.model.FileAnnotation", ns_to_include, ns_to_exclude, None
 )
 
 for ann in annotations:
@@ -528,9 +524,9 @@ print(f"Is Admin: {ctx.isAdmin}")
 from omero.gateway import BlitzGateway
 
 # Connect as admin
-ADMIN_USER = 'root'
-ADMIN_PASS = 'password'
-HOST = 'omero.example.com'
+ADMIN_USER = "root"
+ADMIN_PASS = "password"
+HOST = "omero.example.com"
 PORT = 4064
 
 with BlitzGateway(ADMIN_USER, ADMIN_PASS, host=HOST, port=PORT) as admin_conn:
@@ -553,7 +549,7 @@ with BlitzGateway(ADMIN_USER, ADMIN_PASS, host=HOST, port=PORT) as admin_conn:
 
     # Query across all groups
     print("\nAll Projects (all groups):")
-    admin_conn.SERVICE_OPTS.setOmeroGroup('-1')
+    admin_conn.SERVICE_OPTS.setOmeroGroup("-1")
 
     for project in admin_conn.getObjects("Project"):
         owner = project.getDetails().getOwner()
@@ -621,7 +617,7 @@ else:
 
 ```python
 # If object not found, try cross-group query
-conn.SERVICE_OPTS.setOmeroGroup('-1')
+conn.SERVICE_OPTS.setOmeroGroup("-1")
 obj = conn.getObject("Image", image_id)
 
 if obj:

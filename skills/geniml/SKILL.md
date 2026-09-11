@@ -121,25 +121,17 @@ from geniml.evaluation import evaluate_embeddings
 
 # Step 1: Tokenize BED files
 hard_tokenization(
-    src_folder='bed_files/',
-    dst_folder='tokens/',
-    universe_file='universe.bed',
-    p_value_threshold=1e-9
+    src_folder="bed_files/",
+    dst_folder="tokens/",
+    universe_file="universe.bed",
+    p_value_threshold=1e-9,
 )
 
 # Step 2: Train Region2Vec
-region2vec(
-    token_folder='tokens/',
-    save_dir='model/',
-    num_shufflings=1000,
-    embedding_dim=100
-)
+region2vec(token_folder="tokens/", save_dir="model/", num_shufflings=1000, embedding_dim=100)
 
 # Step 3: Evaluate
-metrics = evaluate_embeddings(
-    embeddings_file='model/embeddings.npy',
-    labels_file='metadata.csv'
-)
+metrics = evaluate_embeddings(embeddings_file="model/embeddings.npy", labels_file="metadata.csv")
 ```
 
 ### scATAC-seq Analysis Pipeline
@@ -150,25 +142,21 @@ from geniml.scembed import ScEmbed
 from geniml.io import tokenize_cells
 
 # Step 1: Load data
-adata = sc.read_h5ad('scatac_data.h5ad')
+adata = sc.read_h5ad("scatac_data.h5ad")
 
 # Step 2: Tokenize cells
-tokenize_cells(
-    adata='scatac_data.h5ad',
-    universe_file='universe.bed',
-    output='tokens.parquet'
-)
+tokenize_cells(adata="scatac_data.h5ad", universe_file="universe.bed", output="tokens.parquet")
 
 # Step 3: Train scEmbed
 model = ScEmbed(embedding_dim=100)
-model.train(dataset='tokens.parquet', epochs=100)
+model.train(dataset="tokens.parquet", epochs=100)
 
 # Step 4: Generate embeddings
 embeddings = model.encode(adata)
-adata.obsm['scembed_X'] = embeddings
+adata.obsm["scembed_X"] = embeddings
 
 # Step 5: Cluster with scanpy
-sc.pp.neighbors(adata, use_rep='scembed_X')
+sc.pp.neighbors(adata, use_rep="scembed_X")
 sc.tl.leiden(adata)
 sc.tl.umap(adata)
 ```

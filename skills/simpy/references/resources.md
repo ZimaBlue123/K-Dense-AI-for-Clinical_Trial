@@ -24,16 +24,18 @@ import simpy
 env = simpy.Environment()
 resource = simpy.Resource(env, capacity=2)
 
+
 def process(env, resource, name):
     with resource.request() as req:
         yield req
-        print(f'{name} has the resource at {env.now}')
+        print(f"{name} has the resource at {env.now}")
         yield env.timeout(5)
-        print(f'{name} releases the resource at {env.now}')
+        print(f"{name} releases the resource at {env.now}")
 
-env.process(process(env, resource, 'Process 1'))
-env.process(process(env, resource, 'Process 2'))
-env.process(process(env, resource, 'Process 3'))
+
+env.process(process(env, resource, "Process 1"))
+env.process(process(env, resource, "Process 2"))
+env.process(process(env, resource, "Process 3"))
 env.run()
 ```
 
@@ -52,14 +54,16 @@ import simpy
 env = simpy.Environment()
 resource = simpy.PriorityResource(env, capacity=1)
 
+
 def process(env, resource, name, priority):
     with resource.request(priority=priority) as req:
         yield req
-        print(f'{name} (priority {priority}) has the resource at {env.now}')
+        print(f"{name} (priority {priority}) has the resource at {env.now}")
         yield env.timeout(5)
 
-env.process(process(env, resource, 'Low priority', priority=10))
-env.process(process(env, resource, 'High priority', priority=1))
+
+env.process(process(env, resource, "Low priority", priority=10))
+env.process(process(env, resource, "High priority", priority=1))
 env.run()
 ```
 
@@ -78,18 +82,20 @@ import simpy
 env = simpy.Environment()
 resource = simpy.PreemptiveResource(env, capacity=1)
 
+
 def process(env, resource, name, priority):
     with resource.request(priority=priority) as req:
         try:
             yield req
-            print(f'{name} acquired resource at {env.now}')
+            print(f"{name} acquired resource at {env.now}")
             yield env.timeout(10)
-            print(f'{name} finished at {env.now}')
+            print(f"{name} finished at {env.now}")
         except simpy.Interrupt:
-            print(f'{name} was preempted at {env.now}')
+            print(f"{name} was preempted at {env.now}")
 
-env.process(process(env, resource, 'Low priority', priority=10))
-env.process(process(env, resource, 'High priority', priority=1))
+
+env.process(process(env, resource, "Low priority", priority=10))
+env.process(process(env, resource, "High priority", priority=1))
 env.run()
 ```
 
@@ -108,17 +114,20 @@ import simpy
 env = simpy.Environment()
 container = simpy.Container(env, capacity=100, init=50)
 
+
 def producer(env, container):
     while True:
         yield env.timeout(5)
         yield container.put(20)
-        print(f'Produced 20. Level: {container.level}')
+        print(f"Produced 20. Level: {container.level}")
+
 
 def consumer(env, container):
     while True:
         yield env.timeout(7)
         yield container.get(15)
-        print(f'Consumed 15. Level: {container.level}')
+        print(f"Consumed 15. Level: {container.level}")
+
 
 env.process(producer(env, container))
 env.process(consumer(env, container))
@@ -154,18 +163,21 @@ import simpy
 env = simpy.Environment()
 store = simpy.Store(env, capacity=2)
 
+
 def producer(env, store):
     for i in range(5):
         yield env.timeout(2)
-        item = f'Item {i}'
+        item = f"Item {i}"
         yield store.put(item)
-        print(f'Produced {item} at {env.now}')
+        print(f"Produced {item} at {env.now}")
+
 
 def consumer(env, store):
     while True:
         yield env.timeout(3)
         item = yield store.get()
-        print(f'Consumed {item} at {env.now}')
+        print(f"Consumed {item} at {env.now}")
+
 
 env.process(producer(env, store))
 env.process(consumer(env, store))
@@ -190,21 +202,24 @@ import simpy
 env = simpy.Environment()
 store = simpy.FilterStore(env, capacity=10)
 
+
 def producer(env, store):
-    for color in ['red', 'blue', 'green', 'red', 'blue']:
+    for color in ["red", "blue", "green", "red", "blue"]:
         yield env.timeout(1)
-        yield store.put({'color': color, 'time': env.now})
-        print(f'Produced {color} item at {env.now}')
+        yield store.put({"color": color, "time": env.now})
+        print(f"Produced {color} item at {env.now}")
+
 
 def consumer(env, store, color):
     while True:
         yield env.timeout(2)
-        item = yield store.get(lambda x: x['color'] == color)
-        print(f'{color} consumer got item from {item["time"]} at {env.now}')
+        item = yield store.get(lambda x: x["color"] == color)
+        print(f"{color} consumer got item from {item['time']} at {env.now}")
+
 
 env.process(producer(env, store))
-env.process(consumer(env, store, 'red'))
-env.process(consumer(env, store, 'blue'))
+env.process(consumer(env, store, "red"))
+env.process(consumer(env, store, "blue"))
 env.run(until=15)
 ```
 
@@ -220,6 +235,7 @@ Items retrieved in priority order (lowest first).
 ```python
 import simpy
 
+
 class PriorityItem:
     def __init__(self, priority, data):
         self.priority = priority
@@ -228,21 +244,25 @@ class PriorityItem:
     def __lt__(self, other):
         return self.priority < other.priority
 
+
 env = simpy.Environment()
 store = simpy.PriorityStore(env, capacity=10)
 
+
 def producer(env, store):
-    items = [(10, 'Low'), (1, 'High'), (5, 'Medium')]
+    items = [(10, "Low"), (1, "High"), (5, "Medium")]
     for priority, name in items:
         yield env.timeout(1)
         yield store.put(PriorityItem(priority, name))
-        print(f'Produced {name} priority item')
+        print(f"Produced {name} priority item")
+
 
 def consumer(env, store):
     while True:
         yield env.timeout(5)
         item = yield store.get()
-        print(f'Retrieved {item.data} priority item')
+        print(f"Retrieved {item.data} priority item")
+
 
 env.process(producer(env, store))
 env.process(consumer(env, store))

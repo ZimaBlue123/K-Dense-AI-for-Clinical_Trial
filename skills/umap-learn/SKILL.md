@@ -55,18 +55,14 @@ scaled_data = scaler.fit_transform(raw_data)
 
 # 2. Create and fit UMAP
 reducer = umap.UMAP(
-    n_neighbors=15,
-    min_dist=0.1,
-    n_components=2,
-    metric='euclidean',
-    random_state=42
+    n_neighbors=15, min_dist=0.1, n_components=2, metric="euclidean", random_state=42
 )
 embedding = reducer.fit_transform(scaled_data)
 
 # 3. Visualize
-plt.scatter(embedding[:, 0], embedding[:, 1], c=labels, cmap='Spectral', s=5)
+plt.scatter(embedding[:, 0], embedding[:, 1], c=labels, cmap="Spectral", s=5)
 plt.colorbar()
-plt.title('UMAP Embedding')
+plt.title("UMAP Embedding")
 plt.show()
 ```
 
@@ -129,16 +125,16 @@ UMAP has four primary parameters that control the embedding behavior. Understand
 
 ```python
 # For visualization with emphasis on local structure
-umap.UMAP(n_neighbors=15, min_dist=0.1, n_components=2, metric='euclidean')
+umap.UMAP(n_neighbors=15, min_dist=0.1, n_components=2, metric="euclidean")
 
 # For clustering preprocessing
-umap.UMAP(n_neighbors=30, min_dist=0.0, n_components=10, metric='euclidean')
+umap.UMAP(n_neighbors=30, min_dist=0.0, n_components=10, metric="euclidean")
 
 # For document embeddings
-umap.UMAP(n_neighbors=15, min_dist=0.1, n_components=2, metric='cosine')
+umap.UMAP(n_neighbors=15, min_dist=0.1, n_components=2, metric="cosine")
 
 # For preserving global structure
-umap.UMAP(n_neighbors=100, min_dist=0.5, n_components=2, metric='euclidean')
+umap.UMAP(n_neighbors=100, min_dist=0.5, n_components=2, metric="euclidean")
 ```
 
 ## Supervised and Semi-Supervised Dimension Reduction
@@ -189,6 +185,7 @@ test_embedding = mapper.transform(test_data)
 
 # Use as feature engineering for downstream classifier
 from sklearn.svm import SVC
+
 clf = SVC().fit(mapper.embedding_, train_labels)
 predictions = clf.predict(test_embedding)
 ```
@@ -223,21 +220,18 @@ reducer = umap.UMAP(
     n_neighbors=30,
     min_dist=0.0,
     n_components=10,  # Higher than 2 for better density preservation
-    metric='euclidean',
-    random_state=42
+    metric="euclidean",
+    random_state=42,
 )
 embedding = reducer.fit_transform(scaled_data)
 
 # 3. Apply HDBSCAN clustering
-clusterer = hdbscan.HDBSCAN(
-    min_cluster_size=15,
-    min_samples=5,
-    metric='euclidean'
-)
+clusterer = hdbscan.HDBSCAN(min_cluster_size=15, min_samples=5, metric="euclidean")
 labels = clusterer.fit_predict(embedding)
 
 # 4. Evaluate
 from sklearn.metrics import adjusted_rand_score
+
 score = adjusted_rand_score(true_labels, labels)
 print(f"Adjusted Rand Score: {score:.3f}")
 print(f"Number of clusters: {len(set(labels)) - (1 if -1 in labels else 0)}")
@@ -253,9 +247,10 @@ vis_embedding = vis_reducer.fit_transform(scaled_data)
 
 # Plot with cluster labels
 import matplotlib.pyplot as plt
-plt.scatter(vis_embedding[:, 0], vis_embedding[:, 1], c=labels, cmap='Spectral', s=5)
+
+plt.scatter(vis_embedding[:, 0], vis_embedding[:, 1], c=labels, cmap="Spectral", s=5)
 plt.colorbar()
-plt.title('UMAP Visualization with HDBSCAN Clusters')
+plt.title("UMAP Visualization with HDBSCAN Clusters")
 plt.show()
 ```
 
@@ -314,11 +309,9 @@ print(f"Test accuracy: {accuracy:.3f}")
 ```python
 from sklearn.pipeline import Pipeline
 
-pipeline = Pipeline([
-    ('scaler', StandardScaler()),
-    ('umap', umap.UMAP(n_components=10)),
-    ('classifier', SVC())
-])
+pipeline = Pipeline(
+    [("scaler", StandardScaler()), ("umap", umap.UMAP(n_components=10)), ("classifier", SVC())]
+)
 
 pipeline.fit(X_train, y_train)
 predictions = pipeline.predict(X_test)
@@ -359,12 +352,14 @@ new_embedding = embedder.transform(new_data)
 import tensorflow as tf
 
 # Define custom encoder
-encoder = tf.keras.Sequential([
-    tf.keras.layers.InputLayer(input_shape=(input_dim,)),
-    tf.keras.layers.Dense(128, activation='relu'),
-    tf.keras.layers.Dense(64, activation='relu'),
-    tf.keras.layers.Dense(2)  # Output dimension
-])
+encoder = tf.keras.Sequential(
+    [
+        tf.keras.layers.InputLayer(input_shape=(input_dim,)),
+        tf.keras.layers.Dense(128, activation="relu"),
+        tf.keras.layers.Dense(64, activation="relu"),
+        tf.keras.layers.Dense(2),  # Output dimension
+    ]
+)
 
 embedder = ParametricUMAP(encoder=encoder, dims=(input_dim,))
 embedding = embedder.fit_transform(data)

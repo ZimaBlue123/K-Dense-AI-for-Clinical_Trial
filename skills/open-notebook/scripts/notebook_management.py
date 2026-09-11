@@ -103,9 +103,7 @@ def link_source_to_notebook(notebook_id, source_id):
 
 def unlink_source_from_notebook(notebook_id, source_id):
     """Remove the association between a source and a notebook."""
-    response = requests.delete(
-        f"{BASE_URL}/notebooks/{notebook_id}/sources/{source_id}"
-    )
+    response = requests.delete(f"{BASE_URL}/notebooks/{notebook_id}/sources/{source_id}")
     response.raise_for_status()
     print(f"Unlinked source {source_id} from notebook {notebook_id}")
 

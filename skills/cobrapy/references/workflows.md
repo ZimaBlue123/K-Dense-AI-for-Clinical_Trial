@@ -15,7 +15,9 @@ from cobra.flux_analysis import single_gene_deletion, double_gene_deletion
 # Step 1: Load model
 model = load_model("ecoli")
 print(f"Loaded model: {model.id}")
-print(f"Model contains {len(model.reactions)} reactions, {len(model.metabolites)} metabolites, {len(model.genes)} genes")
+print(
+    f"Model contains {len(model.reactions)} reactions, {len(model.metabolites)} metabolites, {len(model.genes)} genes"
+)
 
 # Step 2: Get baseline growth rate
 baseline = model.slim_optimize()
@@ -27,10 +29,12 @@ single_results = single_gene_deletion(model)
 
 # Step 4: Classify genes by impact
 essential_genes = single_results[single_results["growth"] < 0.01]
-severely_impaired = single_results[(single_results["growth"] >= 0.01) &
-                                   (single_results["growth"] < 0.5 * baseline)]
-moderately_impaired = single_results[(single_results["growth"] >= 0.5 * baseline) &
-                                     (single_results["growth"] < 0.9 * baseline)]
+severely_impaired = single_results[
+    (single_results["growth"] >= 0.01) & (single_results["growth"] < 0.5 * baseline)
+]
+moderately_impaired = single_results[
+    (single_results["growth"] >= 0.5 * baseline) & (single_results["growth"] < 0.9 * baseline)
+]
 neutral_genes = single_results[single_results["growth"] >= 0.9 * baseline]
 
 print(f"\nSingle Deletion Results:")
@@ -42,7 +46,7 @@ print(f"  Neutral genes: {len(neutral_genes)}")
 # Step 5: Visualize distribution
 fig, ax = plt.subplots(figsize=(10, 6))
 single_results["growth"].hist(bins=50, ax=ax)
-ax.axvline(baseline, color='r', linestyle='--', label='Baseline')
+ax.axvline(baseline, color="r", linestyle="--", label="Baseline")
 ax.set_xlabel("Growth rate (/h)")
 ax.set_ylabel("Number of genes")
 ax.set_title("Distribution of Growth Rates After Single Gene Deletions")
@@ -56,17 +60,19 @@ target_genes = single_results[single_results["growth"] >= 0.5 * baseline].index.
 target_genes = [list(gene)[0] for gene in target_genes[:50]]  # Limit for performance
 
 print(f"\nPerforming double deletions on {len(target_genes)} genes...")
-double_results = double_gene_deletion(
-    model,
-    gene_list1=target_genes,
-    processes=4
-)
+double_results = double_gene_deletion(model, gene_list1=target_genes, processes=4)
 
 # Step 7: Find synthetic lethal pairs
 synthetic_lethals = double_results[
-    (double_results["growth"] < 0.01) &
-    (single_results.loc[double_results.index.get_level_values(0)]["growth"].values >= 0.5 * baseline) &
-    (single_results.loc[double_results.index.get_level_values(1)]["growth"].values >= 0.5 * baseline)
+    (double_results["growth"] < 0.01)
+    & (
+        single_results.loc[double_results.index.get_level_values(0)]["growth"].values
+        >= 0.5 * baseline
+    )
+    & (
+        single_results.loc[double_results.index.get_level_values(1)]["growth"].values
+        >= 0.5 * baseline
+    )
 ]
 
 print(f"Found {len(synthetic_lethals)} synthetic lethal gene pairs")
@@ -106,14 +112,11 @@ minimal_media = {}
 
 for fraction in growth_targets:
     target_growth = baseline_growth * fraction
-    print(f"\nCalculating minimal medium for {fraction*100:.0f}% growth ({target_growth:.3f} /h)...")
-
-    min_medium = minimal_medium(
-        model,
-        target_growth,
-        minimize_components=True,
-        open_exchanges=True
+    print(
+        f"\nCalculating minimal medium for {fraction * 100:.0f}% growth ({target_growth:.3f} /h)..."
     )
+
+    min_medium = minimal_medium(model, target_growth, minimize_components=True, open_exchanges=True)
 
     minimal_media[fraction] = min_medium
     print(f"  Required components: {len(min_medium)}")
@@ -155,10 +158,10 @@ print(f"Anaerobic-only: {anaerobic_only}")
 print("\n--- Testing Custom Medium ---")
 custom_medium = {
     "EX_glc__D_e": 10.0,  # Glucose
-    "EX_o2_e": 20.0,       # Oxygen
-    "EX_nh4_e": 5.0,       # Ammonium
-    "EX_pi_e": 5.0,        # Phosphate
-    "EX_so4_e": 1.0,       # Sulfate
+    "EX_o2_e": 20.0,  # Oxygen
+    "EX_nh4_e": 5.0,  # Ammonium
+    "EX_pi_e": 5.0,  # Phosphate
+    "EX_so4_e": 1.0,  # Sulfate
 }
 
 with model:
@@ -215,10 +218,7 @@ fva_suboptimal = flux_variability_analysis(model, fraction_of_optimum=0.9)
 fva_suboptimal["range"] = fva_suboptimal["maximum"] - fva_suboptimal["minimum"]
 
 # Step 5: Compare flexibility at different optimality levels
-comparison = pd.DataFrame({
-    "range_100": fva_optimal["range"],
-    "range_90": fva_suboptimal["range"]
-})
+comparison = pd.DataFrame({"range_100": fva_optimal["range"], "range_90": fva_suboptimal["range"]})
 comparison["range_increase"] = comparison["range_90"] - comparison["range_100"]
 
 print("\nReactions with largest increase in flexibility at suboptimality:")
@@ -243,8 +243,8 @@ if available_key_reactions:
         # Overlay FVA bounds
         fva_min = fva_optimal.loc[reaction_id, "minimum"]
         fva_max = fva_optimal.loc[reaction_id, "maximum"]
-        ax.axvline(fva_min, color='r', linestyle='--', label='FVA min')
-        ax.axvline(fva_max, color='r', linestyle='--', label='FVA max')
+        ax.axvline(fva_min, color="r", linestyle="--", label="FVA min")
+        ax.axvline(fva_max, color="r", linestyle="--", label="FVA max")
 
         ax.set_xlabel("Flux (mmol/gDW/h)")
         ax.set_ylabel("Frequency")
@@ -260,8 +260,9 @@ print("\nCalculating flux correlations...")
 correlation_matrix = samples[available_key_reactions].corr()
 
 fig, ax = plt.subplots(figsize=(10, 8))
-sns.heatmap(correlation_matrix, annot=True, fmt=".2f", cmap="coolwarm",
-            center=0, ax=ax, square=True)
+sns.heatmap(
+    correlation_matrix, annot=True, fmt=".2f", cmap="coolwarm", center=0, ax=ax, square=True
+)
 ax.set_title("Flux Correlations Between Key Glycolysis Reactions")
 plt.tight_layout()
 plt.savefig("flux_correlations.png", dpi=300)
@@ -269,10 +270,12 @@ plt.savefig("flux_correlations.png", dpi=300)
 # Step 9: Identify reaction modules (highly correlated groups)
 print("\nHighly correlated reaction pairs (|r| > 0.9):")
 for i in range(len(correlation_matrix)):
-    for j in range(i+1, len(correlation_matrix)):
+    for j in range(i + 1, len(correlation_matrix)):
         corr = correlation_matrix.iloc[i, j]
         if abs(corr) > 0.9:
-            print(f"  {correlation_matrix.index[i]} <-> {correlation_matrix.columns[j]}: {corr:.3f}")
+            print(
+                f"  {correlation_matrix.index[i]} <-> {correlation_matrix.columns[j]}: {corr:.3f}"
+            )
 
 # Step 10: Export all results
 fva_optimal.to_csv("fva_optimal.csv")
@@ -287,11 +290,7 @@ This workflow demonstrates how to design a production strain for a target metabo
 
 ```python
 from cobra.io import load_model
-from cobra.flux_analysis import (
-    production_envelope,
-    flux_variability_analysis,
-    single_gene_deletion
-)
+from cobra.flux_analysis import production_envelope, flux_variability_analysis, single_gene_deletion
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -306,15 +305,13 @@ print(f"Designing strain for {TARGET_METABOLITE} production")
 # Step 3: Calculate baseline production envelope
 print("\nCalculating production envelope...")
 envelope = production_envelope(
-    model,
-    reactions=[CARBON_SOURCE, TARGET_METABOLITE],
-    carbon_sources=CARBON_SOURCE
+    model, reactions=[CARBON_SOURCE, TARGET_METABOLITE], carbon_sources=CARBON_SOURCE
 )
 
 # Visualize production envelope
 fig, ax = plt.subplots(figsize=(10, 6))
-ax.plot(envelope[CARBON_SOURCE], envelope["mass_yield_maximum"], 'b-', label='Max yield')
-ax.plot(envelope[CARBON_SOURCE], envelope["mass_yield_minimum"], 'r-', label='Min yield')
+ax.plot(envelope[CARBON_SOURCE], envelope["mass_yield_maximum"], "b-", label="Max yield")
+ax.plot(envelope[CARBON_SOURCE], envelope["mass_yield_minimum"], "r-", label="Min yield")
 ax.set_xlabel(f"Glucose uptake (mmol/gDW/h)")
 ax.set_ylabel(f"Acetate yield")
 ax.set_title("Wild-type Production Envelope")
@@ -335,7 +332,11 @@ with model:
     model.objective_direction = "max"
 
     # Add growth constraint
-    growth_reaction = model.reactions.get_by_id(model.objective.name) if hasattr(model.objective, 'name') else list(model.objective.variables.keys())[0].name
+    growth_reaction = (
+        model.reactions.get_by_id(model.objective.name)
+        if hasattr(model.objective, "name")
+        else list(model.objective.variables.keys())[0].name
+    )
     max_growth = model.slim_optimize()
 
 model.reactions.BIOMASS_Ecoli_core_w_GAM.lower_bound = MIN_GROWTH
@@ -368,12 +369,14 @@ for gene in model.genes:
                 growth = solution.fluxes["BIOMASS_Ecoli_core_w_GAM"]
 
                 if production > max_production * 1.05:  # >5% improvement
-                    knockout_results.append({
-                        "gene": gene.id,
-                        "production": production,
-                        "growth": growth,
-                        "improvement": (production / max_production - 1) * 100
-                    })
+                    knockout_results.append(
+                        {
+                            "gene": gene.id,
+                            "production": production,
+                            "growth": growth,
+                            "improvement": (production / max_production - 1) * 100,
+                        }
+                    )
         except:
             continue
 
@@ -449,6 +452,7 @@ except:
 
     # Check for blocked reactions
     from cobra.flux_analysis import find_blocked_reactions
+
     blocked = find_blocked_reactions(model)
     print(f"  Blocked reactions: {len(blocked)}")
     if len(blocked) > 0:
@@ -476,10 +480,7 @@ for reaction in model.reactions:
     try:
         balance = reaction.check_mass_balance()
         if balance:
-            unbalanced_reactions.append({
-                "reaction": reaction.id,
-                "imbalance": balance
-            })
+            unbalanced_reactions.append({"reaction": reaction.id, "imbalance": balance})
     except:
         pass
 
@@ -494,22 +495,24 @@ else:
 print("\n--- Dead-end Metabolite Check ---")
 dead_end_metabolites = []
 for metabolite in model.metabolites:
-    producing_reactions = [r for r in metabolite.reactions
-                          if r.metabolites[metabolite] > 0]
-    consuming_reactions = [r for r in metabolite.reactions
-                          if r.metabolites[metabolite] < 0]
+    producing_reactions = [r for r in metabolite.reactions if r.metabolites[metabolite] > 0]
+    consuming_reactions = [r for r in metabolite.reactions if r.metabolites[metabolite] < 0]
 
     if len(producing_reactions) == 0 or len(consuming_reactions) == 0:
-        dead_end_metabolites.append({
-            "metabolite": metabolite.id,
-            "producers": len(producing_reactions),
-            "consumers": len(consuming_reactions)
-        })
+        dead_end_metabolites.append(
+            {
+                "metabolite": metabolite.id,
+                "producers": len(producing_reactions),
+                "consumers": len(consuming_reactions),
+            }
+        )
 
 if dead_end_metabolites:
     print(f"Found {len(dead_end_metabolites)} dead-end metabolites:")
     for item in dead_end_metabolites[:10]:
-        print(f"  {item['metabolite']}: {item['producers']} producers, {item['consumers']} consumers")
+        print(
+            f"  {item['metabolite']}: {item['producers']} producers, {item['consumers']} consumers"
+        )
 else:
     print("No dead-end metabolites found")
 
@@ -521,11 +524,13 @@ duplicates = []
 for reaction in model.reactions:
     equation = reaction.build_reaction_string()
     if equation in reaction_equations:
-        duplicates.append({
-            "reaction1": reaction_equations[equation],
-            "reaction2": reaction.id,
-            "equation": equation
-        })
+        duplicates.append(
+            {
+                "reaction1": reaction_equations[equation],
+                "reaction2": reaction.id,
+                "equation": equation,
+            }
+        )
     else:
         reaction_equations[equation] = reaction.id
 
@@ -553,15 +558,21 @@ fva_standard = flux_variability_analysis(model)
 
 loop_reactions = []
 for reaction_id in fva_standard.index:
-    standard_range = fva_standard.loc[reaction_id, "maximum"] - fva_standard.loc[reaction_id, "minimum"]
-    loopless_range = fva_loopless.loc[reaction_id, "maximum"] - fva_loopless.loc[reaction_id, "minimum"]
+    standard_range = (
+        fva_standard.loc[reaction_id, "maximum"] - fva_standard.loc[reaction_id, "minimum"]
+    )
+    loopless_range = (
+        fva_loopless.loc[reaction_id, "maximum"] - fva_loopless.loc[reaction_id, "minimum"]
+    )
 
     if standard_range > loopless_range + 0.1:
-        loop_reactions.append({
-            "reaction": reaction_id,
-            "standard_range": standard_range,
-            "loopless_range": loopless_range
-        })
+        loop_reactions.append(
+            {
+                "reaction": reaction_id,
+                "standard_range": standard_range,
+                "loopless_range": loopless_range,
+            }
+        )
 
 if loop_reactions:
     print(f"Found {len(loop_reactions)} reactions potentially involved in loops:")
@@ -574,7 +585,7 @@ else:
 print("\n--- Generating Validation Report ---")
 validation_report = {
     "model_id": model.id,
-    "feasible": objective_value if 'objective_value' in locals() else None,
+    "feasible": objective_value if "objective_value" in locals() else None,
     "n_reactions": len(model.reactions),
     "n_metabolites": len(model.metabolites),
     "n_genes": len(model.genes),
@@ -582,7 +593,7 @@ validation_report = {
     "n_dead_ends": len(dead_end_metabolites),
     "n_duplicates": len(duplicates),
     "n_orphan_genes": len(orphan_genes),
-    "n_loop_reactions": len(loop_reactions)
+    "n_loop_reactions": len(loop_reactions),
 }
 
 validation_df = pd.DataFrame([validation_report])

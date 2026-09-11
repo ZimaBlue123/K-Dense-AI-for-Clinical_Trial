@@ -27,6 +27,7 @@ X_test, y_test = load_regression("Covid3Month", split="test")
 
 # Bulk download
 from aeon.datasets import download_all_regression
+
 download_all_regression()  # Downloads Monash TSER archive
 ```
 
@@ -143,10 +144,7 @@ Access pre-computed benchmark results:
 from aeon.benchmarking import get_estimator_results
 
 # Get results for specific algorithm on dataset
-results = get_estimator_results(
-    estimator_name="ROCKET",
-    dataset_name="GunPoint"
-)
+results = get_estimator_results(estimator_name="ROCKET", dataset_name="GunPoint")
 
 # Get all available estimators for a dataset
 estimators = get_available_estimators("GunPoint")
@@ -160,11 +158,7 @@ Create reproducible train/test splits:
 from aeon.benchmarking import stratified_resample
 
 # Stratified resampling maintaining class distribution
-X_train, X_test, y_train, y_test = stratified_resample(
-    X, y,
-    random_state=42,
-    test_size=0.3
-)
+X_train, X_test, y_train, y_test = stratified_resample(X, y, random_state=42, test_size=0.3)
 ```
 
 ### Performance Metrics
@@ -177,7 +171,7 @@ from aeon.benchmarking.metrics.anomaly_detection import (
     range_precision,
     range_recall,
     range_f_score,
-    range_roc_auc_score
+    range_roc_auc_score,
 )
 
 # Range-based metrics for window detection
@@ -197,10 +191,7 @@ accuracy = clustering_accuracy(y_true, y_pred)
 
 **Segmentation Metrics**:
 ```python
-from aeon.benchmarking.metrics.segmentation import (
-    count_error,
-    hausdorff_error
-)
+from aeon.benchmarking.metrics.segmentation import count_error, hausdorff_error
 
 # Number of change points difference
 count_err = count_error(y_true, y_pred)
@@ -214,10 +205,7 @@ hausdorff_err = hausdorff_error(y_true, y_pred)
 Post-hoc analysis for algorithm comparison:
 
 ```python
-from aeon.benchmarking import (
-    nemenyi_test,
-    wilcoxon_test
-)
+from aeon.benchmarking import nemenyi_test, wilcoxon_test
 
 # Nemenyi test for multiple algorithms
 results = nemenyi_test(scores_matrix, alpha=0.05)
@@ -317,8 +305,8 @@ Don't rely on single metric:
 from sklearn.metrics import accuracy_score, f1_score, precision_score
 
 accuracy = accuracy_score(y_test, y_pred)
-f1 = f1_score(y_test, y_pred, average='weighted')
-precision = precision_score(y_test, y_pred, average='weighted')
+f1 = f1_score(y_test, y_pred, average="weighted")
+precision = precision_score(y_test, y_pred, average="weighted")
 ```
 
 ### 4. Cross-Validation
@@ -328,11 +316,7 @@ For robust evaluation on small datasets:
 ```python
 from sklearn.model_selection import cross_val_score
 
-scores = cross_val_score(
-    clf, X_train, y_train,
-    cv=5,
-    scoring='accuracy'
-)
+scores = cross_val_score(clf, X_train, y_train, cv=5, scoring="accuracy")
 print(f"CV Accuracy: {scores.mean():.4f} (+/- {scores.std():.4f})")
 ```
 
@@ -380,8 +364,5 @@ datasets = get_available_datasets("classification")
 print(f"Found {len(datasets)} classification datasets")
 
 # Filter by properties
-univariate_datasets = [
-    d for d in datasets
-    if get_dataset_meta_data(d)['n_channels'] == 1
-]
+univariate_datasets = [d for d in datasets if get_dataset_meta_data(d)["n_channels"] == 1]
 ```

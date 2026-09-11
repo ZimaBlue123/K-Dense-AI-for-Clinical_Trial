@@ -91,15 +91,16 @@ amplitude = nk.emg_amplitude(cleaned_emg, sampling_rate=1000)
 Detect periods of muscle activation (onsets and offsets).
 
 ```python
-activity, info = nk.emg_activation(emg_amplitude, sampling_rate=1000, method='threshold',
-                                   threshold='auto', duration_min=0.05)
+activity, info = nk.emg_activation(
+    emg_amplitude, sampling_rate=1000, method="threshold", threshold="auto", duration_min=0.05
+)
 ```
 
 **Methods:**
 
 **1. Threshold-based (default):**
 ```python
-activity = nk.emg_activation(amplitude, method='threshold', threshold='auto')
+activity = nk.emg_activation(amplitude, method="threshold", threshold="auto")
 ```
 - Compares amplitude to threshold
 - `threshold='auto'`: Automatic based on signal statistics (e.g., mean + 1 SD)
@@ -108,7 +109,7 @@ activity = nk.emg_activation(amplitude, method='threshold', threshold='auto')
 
 **2. Gaussian Mixture Model (GMM):**
 ```python
-activity = nk.emg_activation(amplitude, method='mixture', n_clusters=2)
+activity = nk.emg_activation(amplitude, method="mixture", n_clusters=2)
 ```
 - Unsupervised clustering: active vs. rest
 - Adaptive to signal characteristics
@@ -116,7 +117,7 @@ activity = nk.emg_activation(amplitude, method='mixture', n_clusters=2)
 
 **3. Changepoint detection:**
 ```python
-activity = nk.emg_activation(amplitude, method='changepoint')
+activity = nk.emg_activation(amplitude, method="changepoint")
 ```
 - Detects abrupt transitions in signal properties
 - Identifies activation/deactivation points
@@ -124,7 +125,7 @@ activity = nk.emg_activation(amplitude, method='changepoint')
 
 **4. Bimodality (Silva et al., 2013):**
 ```python
-activity = nk.emg_activation(amplitude, method='bimodal')
+activity = nk.emg_activation(amplitude, method="bimodal")
 ```
 - Tests for bimodal distribution (active vs. rest)
 - Determines optimal separation threshold
@@ -208,8 +209,9 @@ results = nk.emg_intervalrelated(signals, sampling_rate=1000)
 Generate synthetic EMG signals for testing.
 
 ```python
-synthetic_emg = nk.emg_simulate(duration=10, sampling_rate=1000, burst_number=3,
-                                noise=0.1, random_state=42)
+synthetic_emg = nk.emg_simulate(
+    duration=10, sampling_rate=1000, burst_number=3, noise=0.1, random_state=42
+)
 ```
 
 **Parameters:**
@@ -312,8 +314,9 @@ cleaned = nk.emg_clean(emg_raw, sampling_rate=1000)
 amplitude = nk.emg_amplitude(cleaned, sampling_rate=1000)
 
 # 3. Detect activation periods
-activity, info = nk.emg_activation(amplitude, sampling_rate=1000,
-                                   method='threshold', threshold='auto')
+activity, info = nk.emg_activation(
+    amplitude, sampling_rate=1000, method="threshold", threshold="auto"
+)
 
 # 4. Comprehensive processing (alternative)
 signals, info = nk.emg_process(emg_raw, sampling_rate=1000)

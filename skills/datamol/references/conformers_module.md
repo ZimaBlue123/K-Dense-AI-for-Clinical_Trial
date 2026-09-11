@@ -63,7 +63,7 @@ Calculate Solvent Accessible Surface Area (SASA) using FreeSASA.
   sasa_values = dm.conformers.sasa(mol_3d)
   # Or access from conformer properties
   conf = mol_3d.GetConformer(0)
-  sasa = conf.GetDoubleProp('rdkit_free_sasa')
+  sasa = conf.GetDoubleProp("rdkit_free_sasa")
   ```
 
 ## Low-Level Conformer Manipulation
@@ -100,9 +100,9 @@ import datamol as dm
 mol = dm.to_mol("CC(C)CCO")  # Isopentanol
 mol_3d = dm.conformers.generate(
     mol,
-    n_confs=50,           # Generate 50 initial conformers
-    rms_cutoff=0.5,       # Filter similar conformers
-    minimize_energy=True   # Minimize energy
+    n_confs=50,  # Generate 50 initial conformers
+    rms_cutoff=0.5,  # Filter similar conformers
+    minimize_energy=True,  # Minimize energy
 )
 
 # 2. Analyze conformers

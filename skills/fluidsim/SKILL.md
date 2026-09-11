@@ -100,12 +100,14 @@ from fluidsim.solvers.ns3d.solver import Simul
 **Stratified flows** (`ns2d.strat`, `ns3d.strat`): Oceanic/atmospheric flows
 ```python
 from fluidsim.solvers.ns2d.strat.solver import Simul
+
 params.N = 1.0  # Brunt-Väisälä frequency
 ```
 
 **Shallow water** (`sw1l`): Geophysical flows, rotating systems
 ```python
 from fluidsim.solvers.sw1l.solver import Simul
+
 params.f = 1.0  # Coriolis parameter
 ```
 
@@ -124,7 +126,7 @@ params.oper.Lx = 2 * pi  # domain size
 **Physical parameters**:
 ```python
 params.nu_2 = 1e-3  # viscosity
-params.nu_4 = 0     # hyperviscosity (optional)
+params.nu_4 = 0  # hyperviscosity (optional)
 ```
 
 **Time stepping**:
@@ -174,6 +176,7 @@ sim.output.spectra.plot2d()
 **Load previous simulations**:
 ```python
 from fluidsim import load_sim_for_plot
+
 sim = load_sim_for_plot("simulation_dir")
 sim.output.phys_fields.plot()
 ```
@@ -259,7 +262,7 @@ params.init_fields.type = "in_script"
 sim = Simul(params)
 X, Y = sim.oper.get_XY_loc()
 b = sim.state.state_phys.get_var("b")
-b[:] = exp(-((X - 3.14)**2 + (Y - 3.14)**2) / 0.5)
+b[:] = exp(-((X - 3.14) ** 2 + (Y - 3.14) ** 2) / 0.5)
 sim.state.statephys_from_statespect()
 
 sim.time_stepping.start()

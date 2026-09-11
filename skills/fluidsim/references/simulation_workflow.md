@@ -11,6 +11,7 @@ from fluidsim.solvers.ns2d.solver import Simul
 
 # Or use dynamic import
 import fluidsim
+
 Simul = fluidsim.import_simul_class_from_key("ns2d")
 ```
 
@@ -137,11 +138,7 @@ from fluiddyn.clusters.legi import Calcul8 as Cluster
 # Configure cluster job
 cluster = Cluster()
 cluster.submit_script(
-    "my_simulation.py",
-    name_run="my_job",
-    nb_nodes=4,
-    nb_cores_per_node=24,
-    walltime="24:00:00"
+    "my_simulation.py", name_run="my_job", nb_nodes=4, nb_cores_per_node=24, walltime="24:00:00"
 )
 ```
 

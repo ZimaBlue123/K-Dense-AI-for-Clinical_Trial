@@ -18,9 +18,7 @@ try:
     from rdkit import Chem
     from rdkit.Chem import Descriptors, Lipinski
 except ImportError:
-    print(
-        "Error: RDKit not installed. Install with: conda install -c conda-forge rdkit"
-    )
+    print("Error: RDKit not installed. Install with: conda install -c conda-forge rdkit")
     sys.exit(1)
 
 
@@ -113,7 +111,7 @@ def process_file(input_file, output_file=None):
     results = []
     for idx, mol in enumerate(suppl):
         if mol is None:
-            print(f"Warning: Failed to parse molecule {idx+1}")
+            print(f"Warning: Failed to parse molecule {idx + 1}")
             continue
 
         props = calculate_properties(mol)

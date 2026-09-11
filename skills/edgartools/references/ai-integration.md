@@ -160,7 +160,7 @@ Every major object has searchable API docs:
 from edgar import Company
 
 company = Company("AAPL")
-company.docs                       # Full API reference
+company.docs  # Full API reference
 company.docs.search("financials")  # Search specific topic
 
 # Also available on:
@@ -178,18 +178,18 @@ Token-efficient output for LLM context windows:
 company = Company("AAPL")
 
 # Control detail level
-company.to_context(detail='minimal')    # ~100 tokens
-company.to_context(detail='standard')   # ~300 tokens (default)
-company.to_context(detail='full')       # ~500 tokens
+company.to_context(detail="minimal")  # ~100 tokens
+company.to_context(detail="standard")  # ~300 tokens (default)
+company.to_context(detail="full")  # ~500 tokens
 
 # Hard token limit
 company.to_context(max_tokens=200)
 
 # Also available on:
-filing.to_context(detail='standard')
-filings.to_context(detail='minimal')
-xbrl.to_context(detail='standard')
-statement.to_context(detail='full')
+filing.to_context(detail="standard")
+filings.to_context(detail="minimal")
+xbrl.to_context(detail="standard")
+statement.to_context(detail="full")
 ```
 
 ---
@@ -202,6 +202,7 @@ Skills teach Claude to write better edgartools code by providing patterns and be
 
 ```python
 from edgar.ai import install_skill
+
 install_skill()  # installs to ~/.claude/skills/edgartools/
 ```
 
@@ -209,6 +210,7 @@ install_skill()  # installs to ~/.claude/skills/edgartools/
 
 ```python
 from edgar.ai import package_skill
+
 package_skill()  # creates edgartools.zip
 # Upload the ZIP to a Claude Desktop Project
 ```

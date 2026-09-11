@@ -8,7 +8,7 @@ Transforms modify `Data` or `HeteroData` objects before or during training. Appl
 
 ```python
 # During dataset loading
-dataset = MyDataset(root='/tmp', transform=MyTransform())
+dataset = MyDataset(root="/tmp", transform=MyTransform())
 
 # Apply to individual data
 transform = MyTransform()
@@ -16,6 +16,7 @@ data = transform(data)
 
 # Compose multiple transforms
 from torch_geometric.transforms import Compose
+
 transform = Compose([Transform1(), Transform2(), Transform3()])
 ```
 
@@ -26,6 +27,7 @@ transform = Compose([Transform1(), Transform2(), Transform3()])
 **Use case**: Feature scaling, probability-like features
 ```python
 from torch_geometric.transforms import NormalizeFeatures
+
 transform = NormalizeFeatures()
 ```
 
@@ -34,7 +36,8 @@ transform = NormalizeFeatures()
 **Use case**: GPU training, device management
 ```python
 from torch_geometric.transforms import ToDevice
-transform = ToDevice('cuda')
+
+transform = ToDevice("cuda")
 ```
 
 ### RandomNodeSplit
@@ -43,6 +46,7 @@ transform = ToDevice('cuda')
 **Parameters**: `split='train_rest'`, `num_splits`, `num_val`, `num_test`
 ```python
 from torch_geometric.transforms import RandomNodeSplit
+
 transform = RandomNodeSplit(num_val=0.1, num_test=0.2)
 ```
 
@@ -52,6 +56,7 @@ transform = RandomNodeSplit(num_val=0.1, num_test=0.2)
 **Parameters**: `num_val`, `num_test`, `is_undirected`, `split_labels`
 ```python
 from torch_geometric.transforms import RandomLinkSplit
+
 transform = RandomLinkSplit(num_val=0.1, num_test=0.2)
 ```
 
@@ -60,6 +65,7 @@ transform = RandomLinkSplit(num_val=0.1, num_test=0.2)
 **Use case**: Data preprocessing
 ```python
 from torch_geometric.transforms import IndexToMask
+
 transform = IndexToMask()
 ```
 
@@ -68,6 +74,7 @@ transform = IndexToMask()
 **Use case**: Data preprocessing
 ```python
 from torch_geometric.transforms import MaskToIndex
+
 transform = MaskToIndex()
 ```
 
@@ -77,6 +84,7 @@ transform = MaskToIndex()
 **Parameters**: `num`, `replace`, `allow_duplicates`
 ```python
 from torch_geometric.transforms import FixedPoints
+
 transform = FixedPoints(1024)
 ```
 
@@ -85,6 +93,7 @@ transform = FixedPoints(1024)
 **Use case**: Small graphs, dense operations
 ```python
 from torch_geometric.transforms import ToDense
+
 transform = ToDense(num_nodes=100)
 ```
 
@@ -94,6 +103,7 @@ transform = ToDense(num_nodes=100)
 **Parameters**: `remove_edge_index`, `fill_cache`
 ```python
 from torch_geometric.transforms import ToSparseTensor
+
 transform = ToSparseTensor()
 ```
 
@@ -105,6 +115,7 @@ transform = ToSparseTensor()
 **Parameters**: `reduce='add'` (how to handle duplicate edges)
 ```python
 from torch_geometric.transforms import ToUndirected
+
 transform = ToUndirected()
 ```
 
@@ -114,6 +125,7 @@ transform = ToUndirected()
 **Parameters**: `fill_value` (edge attribute for self-loops)
 ```python
 from torch_geometric.transforms import AddSelfLoops
+
 transform = AddSelfLoops()
 ```
 
@@ -122,6 +134,7 @@ transform = AddSelfLoops()
 **Use case**: Cleaning graph structure
 ```python
 from torch_geometric.transforms import RemoveSelfLoops
+
 transform = RemoveSelfLoops()
 ```
 
@@ -130,6 +143,7 @@ transform = RemoveSelfLoops()
 **Use case**: Graph cleaning
 ```python
 from torch_geometric.transforms import RemoveIsolatedNodes
+
 transform = RemoveIsolatedNodes()
 ```
 
@@ -138,6 +152,7 @@ transform = RemoveIsolatedNodes()
 **Use case**: Graph cleaning
 ```python
 from torch_geometric.transforms import RemoveDuplicatedEdges
+
 transform = RemoveDuplicatedEdges()
 ```
 
@@ -147,6 +162,7 @@ transform = RemoveDuplicatedEdges()
 **Parameters**: `num_components` (how many components to keep)
 ```python
 from torch_geometric.transforms import LargestConnectedComponents
+
 transform = LargestConnectedComponents(num_components=1)
 ```
 
@@ -156,6 +172,7 @@ transform = LargestConnectedComponents(num_components=1)
 **Parameters**: `k`, `loop`, `force_undirected`, `flow`
 ```python
 from torch_geometric.transforms import KNNGraph
+
 transform = KNNGraph(k=6)
 ```
 
@@ -165,6 +182,7 @@ transform = KNNGraph(k=6)
 **Parameters**: `r`, `loop`, `max_num_neighbors`, `flow`
 ```python
 from torch_geometric.transforms import RadiusGraph
+
 transform = RadiusGraph(r=0.1)
 ```
 
@@ -173,6 +191,7 @@ transform = RadiusGraph(r=0.1)
 **Use case**: 2D/3D spatial graphs
 ```python
 from torch_geometric.transforms import Delaunay
+
 transform = Delaunay()
 ```
 
@@ -181,6 +200,7 @@ transform = Delaunay()
 **Use case**: Mesh processing
 ```python
 from torch_geometric.transforms import FaceToEdge
+
 transform = FaceToEdge()
 ```
 
@@ -190,6 +210,7 @@ transform = FaceToEdge()
 **Parameters**: `force_directed`
 ```python
 from torch_geometric.transforms import LineGraph
+
 transform = LineGraph()
 ```
 
@@ -199,8 +220,10 @@ transform = LineGraph()
 **Parameters**: `self_loop_weight`, `normalization_in`, `normalization_out`, `diffusion_kwargs`
 ```python
 from torch_geometric.transforms import GDC
-transform = GDC(self_loop_weight=1, normalization_in='sym',
-                diffusion_kwargs=dict(method='ppr', alpha=0.15))
+
+transform = GDC(
+    self_loop_weight=1, normalization_in="sym", diffusion_kwargs=dict(method="ppr", alpha=0.15)
+)
 ```
 
 ### SIGN
@@ -209,6 +232,7 @@ transform = GDC(self_loop_weight=1, normalization_in='sym',
 **Parameters**: `K` (number of hops)
 ```python
 from torch_geometric.transforms import SIGN
+
 transform = SIGN(K=3)
 ```
 
@@ -220,6 +244,7 @@ transform = SIGN(K=3)
 **Parameters**: `max_degree`, `cat` (concatenate with existing features)
 ```python
 from torch_geometric.transforms import OneHotDegree
+
 transform = OneHotDegree(max_degree=100)
 ```
 
@@ -228,6 +253,7 @@ transform = OneHotDegree(max_degree=100)
 **Use case**: Structural node features
 ```python
 from torch_geometric.transforms import LocalDegreeProfile
+
 transform = LocalDegreeProfile()
 ```
 
@@ -237,6 +263,7 @@ transform = LocalDegreeProfile()
 **Parameters**: `value`, `cat`
 ```python
 from torch_geometric.transforms import Constant
+
 transform = Constant(value=1.0)
 ```
 
@@ -246,6 +273,7 @@ transform = Constant(value=1.0)
 **Parameters**: `norm`, `max_value`
 ```python
 from torch_geometric.transforms import TargetIndegree
+
 transform = TargetIndegree(norm=False)
 ```
 
@@ -255,6 +283,7 @@ transform = TargetIndegree(norm=False)
 **Parameters**: `walk_length`, `attr_name`
 ```python
 from torch_geometric.transforms import AddRandomWalkPE
+
 transform = AddRandomWalkPE(walk_length=20)
 ```
 
@@ -264,6 +293,7 @@ transform = AddRandomWalkPE(walk_length=20)
 **Parameters**: `k` (number of eigenvectors), `attr_name`
 ```python
 from torch_geometric.transforms import AddLaplacianEigenvectorPE
+
 transform = AddLaplacianEigenvectorPE(k=10)
 ```
 
@@ -273,7 +303,8 @@ transform = AddLaplacianEigenvectorPE(k=10)
 **Parameters**: `metapaths`, `drop_orig_edges`, `drop_unconnected_nodes`
 ```python
 from torch_geometric.transforms import AddMetaPaths
-metapaths = [[('author', 'paper'), ('paper', 'author')]]  # Co-authorship
+
+metapaths = [[("author", "paper"), ("paper", "author")]]  # Co-authorship
 transform = AddMetaPaths(metapaths)
 ```
 
@@ -283,6 +314,7 @@ transform = AddMetaPaths(metapaths)
 **Parameters**: `out_channels`
 ```python
 from torch_geometric.transforms import SVDFeatureReduction
+
 transform = SVDFeatureReduction(out_channels=64)
 ```
 
@@ -293,6 +325,7 @@ transform = SVDFeatureReduction(out_channels=64)
 **Use case**: Point cloud preprocessing
 ```python
 from torch_geometric.transforms import Center
+
 transform = Center()
 ```
 
@@ -301,6 +334,7 @@ transform = Center()
 **Use case**: Point cloud normalization
 ```python
 from torch_geometric.transforms import NormalizeScale
+
 transform = NormalizeScale()
 ```
 
@@ -310,6 +344,7 @@ transform = NormalizeScale()
 **Parameters**: `max_points`
 ```python
 from torch_geometric.transforms import NormalizeRotation
+
 transform = NormalizeRotation()
 ```
 
@@ -319,6 +354,7 @@ transform = NormalizeRotation()
 **Parameters**: `norm`, `max_value`, `cat`
 ```python
 from torch_geometric.transforms import Distance
+
 transform = Distance(norm=False, cat=False)
 ```
 
@@ -328,6 +364,7 @@ transform = Distance(norm=False, cat=False)
 **Parameters**: `norm`, `max_value`, `cat`
 ```python
 from torch_geometric.transforms import Cartesian
+
 transform = Cartesian(norm=False)
 ```
 
@@ -337,6 +374,7 @@ transform = Cartesian(norm=False)
 **Parameters**: `norm`, `max_value`, `cat`
 ```python
 from torch_geometric.transforms import Polar
+
 transform = Polar(norm=False)
 ```
 
@@ -346,6 +384,7 @@ transform = Polar(norm=False)
 **Parameters**: `norm`, `max_value`, `cat`
 ```python
 from torch_geometric.transforms import Spherical
+
 transform = Spherical(norm=False)
 ```
 
@@ -355,6 +394,7 @@ transform = Spherical(norm=False)
 **Parameters**: `norm`, `cat`
 ```python
 from torch_geometric.transforms import LocalCartesian
+
 transform = LocalCartesian()
 ```
 
@@ -364,6 +404,7 @@ transform = LocalCartesian()
 **Parameters**: `cat`
 ```python
 from torch_geometric.transforms import PointPairFeatures
+
 transform = PointPairFeatures()
 ```
 
@@ -375,6 +416,7 @@ transform = PointPairFeatures()
 **Parameters**: `translate`, `scale`
 ```python
 from torch_geometric.transforms import RandomJitter
+
 transform = RandomJitter(0.01)
 ```
 
@@ -384,6 +426,7 @@ transform = RandomJitter(0.01)
 **Parameters**: `axis`, `p` (probability)
 ```python
 from torch_geometric.transforms import RandomFlip
+
 transform = RandomFlip(axis=0, p=0.5)
 ```
 
@@ -393,6 +436,7 @@ transform = RandomFlip(axis=0, p=0.5)
 **Parameters**: `scales` (min, max)
 ```python
 from torch_geometric.transforms import RandomScale
+
 transform = RandomScale((0.9, 1.1))
 ```
 
@@ -402,6 +446,7 @@ transform = RandomScale((0.9, 1.1))
 **Parameters**: `degrees` (range), `axis` (rotation axis)
 ```python
 from torch_geometric.transforms import RandomRotate
+
 transform = RandomRotate(degrees=15, axis=2)
 ```
 
@@ -411,6 +456,7 @@ transform = RandomRotate(degrees=15, axis=2)
 **Parameters**: `shear` (range)
 ```python
 from torch_geometric.transforms import RandomShear
+
 transform = RandomShear(0.1)
 ```
 
@@ -420,6 +466,7 @@ transform = RandomShear(0.1)
 **Parameters**: `translate` (range)
 ```python
 from torch_geometric.transforms import RandomTranslate
+
 transform = RandomTranslate(0.1)
 ```
 
@@ -430,6 +477,7 @@ transform = RandomTranslate(0.1)
 ```python
 from torch_geometric.transforms import LinearTransformation
 import torch
+
 matrix = torch.eye(3)
 transform = LinearTransformation(matrix)
 ```
@@ -442,6 +490,7 @@ transform = LinearTransformation(matrix)
 **Parameters**: `num`, `remove_faces`, `include_normals`
 ```python
 from torch_geometric.transforms import SamplePoints
+
 transform = SamplePoints(num=1024)
 ```
 
@@ -450,6 +499,7 @@ transform = SamplePoints(num=1024)
 **Use case**: Mesh processing
 ```python
 from torch_geometric.transforms import GenerateMeshNormals
+
 transform = GenerateMeshNormals()
 ```
 
@@ -459,6 +509,7 @@ transform = GenerateMeshNormals()
 **Parameters**: `remove_faces`
 ```python
 from torch_geometric.transforms import FaceToEdge
+
 transform = FaceToEdge()
 ```
 
@@ -470,6 +521,7 @@ transform = FaceToEdge()
 **Parameters**: `size` (voxel size), `start`, `end`
 ```python
 from torch_geometric.transforms import GridSampling
+
 transform = GridSampling(size=0.1)
 ```
 
@@ -479,6 +531,7 @@ transform = GridSampling(size=0.1)
 **Parameters**: `num`, `replace`, `allow_duplicates`
 ```python
 from torch_geometric.transforms import FixedPoints
+
 transform = FixedPoints(num=2048, replace=False)
 ```
 
@@ -491,6 +544,7 @@ transform = FixedPoints(num=2048, replace=False)
 **Use case**: Global information propagation
 ```python
 from torch_geometric.transforms import VirtualNode
+
 transform = VirtualNode()
 ```
 
@@ -502,6 +556,7 @@ transform = VirtualNode()
 **Parameters**: `num_segments`, `compactness`, `add_seg`, `add_img`
 ```python
 from torch_geometric.transforms import ToSLIC
+
 transform = ToSLIC(num_segments=75)
 ```
 
@@ -511,6 +566,7 @@ transform = ToSLIC(num_segments=75)
 **Parameters**: `add_self_loops`
 ```python
 from torch_geometric.transforms import GCNNorm
+
 transform = GCNNorm(add_self_loops=True)
 ```
 
@@ -520,7 +576,8 @@ transform = GCNNorm(add_self_loops=True)
 **Parameters**: `normalization`, `is_undirected`
 ```python
 from torch_geometric.transforms import LaplacianLambdaMax
-transform = LaplacianLambdaMax(normalization='sym')
+
+transform = LaplacianLambdaMax(normalization="sym")
 ```
 
 ### NormalizeRotation
@@ -529,6 +586,7 @@ transform = LaplacianLambdaMax(normalization='sym')
 **Parameters**: `max_points`
 ```python
 from torch_geometric.transforms import NormalizeRotation
+
 transform = NormalizeRotation()
 ```
 
@@ -539,12 +597,15 @@ transform = NormalizeRotation()
 **Use case**: Complex preprocessing pipelines
 ```python
 from torch_geometric.transforms import Compose
-transform = Compose([
-    Center(),
-    NormalizeScale(),
-    KNNGraph(k=6),
-    Distance(norm=False),
-])
+
+transform = Compose(
+    [
+        Center(),
+        NormalizeScale(),
+        KNNGraph(k=6),
+        Distance(norm=False),
+    ]
+)
 ```
 
 ### BaseTransform
@@ -552,6 +613,7 @@ transform = Compose([
 **Use case**: Implementing custom transforms
 ```python
 from torch_geometric.transforms import BaseTransform
+
 
 class MyTransform(BaseTransform):
     def __init__(self, param):
@@ -567,60 +629,79 @@ class MyTransform(BaseTransform):
 
 ### Node Classification Preprocessing
 ```python
-transform = Compose([
-    NormalizeFeatures(),
-    RandomNodeSplit(num_val=0.1, num_test=0.2),
-])
+transform = Compose(
+    [
+        NormalizeFeatures(),
+        RandomNodeSplit(num_val=0.1, num_test=0.2),
+    ]
+)
 ```
 
 ### Point Cloud Processing
 ```python
-transform = Compose([
-    Center(),
-    NormalizeScale(),
-    RandomRotate(degrees=15, axis=2),
-    RandomJitter(0.01),
-    KNNGraph(k=6),
-    Distance(norm=False),
-])
+transform = Compose(
+    [
+        Center(),
+        NormalizeScale(),
+        RandomRotate(degrees=15, axis=2),
+        RandomJitter(0.01),
+        KNNGraph(k=6),
+        Distance(norm=False),
+    ]
+)
 ```
 
 ### Mesh to Graph
 ```python
-transform = Compose([
-    FaceToEdge(remove_faces=True),
-    GenerateMeshNormals(),
-    Distance(norm=True),
-])
+transform = Compose(
+    [
+        FaceToEdge(remove_faces=True),
+        GenerateMeshNormals(),
+        Distance(norm=True),
+    ]
+)
 ```
 
 ### Graph Structure Enhancement
 ```python
-transform = Compose([
-    ToUndirected(),
-    AddSelfLoops(),
-    RemoveIsolatedNodes(),
-    GCNNorm(),
-])
+transform = Compose(
+    [
+        ToUndirected(),
+        AddSelfLoops(),
+        RemoveIsolatedNodes(),
+        GCNNorm(),
+    ]
+)
 ```
 
 ### Heterogeneous Graph Preprocessing
 ```python
-transform = Compose([
-    AddMetaPaths(metapaths=[
-        [('author', 'paper'), ('paper', 'author')],
-        [('author', 'paper'), ('paper', 'conference'), ('conference', 'paper'), ('paper', 'author')]
-    ]),
-    RandomNodeSplit(split='train_rest', num_val=0.1, num_test=0.2),
-])
+transform = Compose(
+    [
+        AddMetaPaths(
+            metapaths=[
+                [("author", "paper"), ("paper", "author")],
+                [
+                    ("author", "paper"),
+                    ("paper", "conference"),
+                    ("conference", "paper"),
+                    ("paper", "author"),
+                ],
+            ]
+        ),
+        RandomNodeSplit(split="train_rest", num_val=0.1, num_test=0.2),
+    ]
+)
 ```
 
 ### Link Prediction
 ```python
-transform = Compose([
-    NormalizeFeatures(),
-    RandomLinkSplit(num_val=0.1, num_test=0.2, is_undirected=True),
-])
+transform = Compose(
+    [
+        NormalizeFeatures(),
+        RandomLinkSplit(num_val=0.1, num_test=0.2, is_undirected=True),
+    ]
+)
 ```
 
 ## Usage Tips
@@ -632,11 +713,11 @@ transform = Compose([
 5. **Custom transforms**: Inherit from `BaseTransform` for custom logic
 6. **Pre-transforms**: Apply expensive transforms once during dataset processing:
    ```python
-   dataset = MyDataset(root='/tmp', pre_transform=ExpensiveTransform())
+   dataset = MyDataset(root="/tmp", pre_transform=ExpensiveTransform())
    ```
 7. **Dynamic transforms**: Apply cheap transforms during training:
    ```python
-   dataset = MyDataset(root='/tmp', transform=CheapTransform())
+   dataset = MyDataset(root="/tmp", transform=CheapTransform())
    ```
 
 ## Performance Considerations
@@ -662,18 +743,11 @@ from torch_geometric.transforms import Compose, GDC, NormalizeFeatures
 
 # Expensive preprocessing done once
 pre_transform = GDC(
-    self_loop_weight=1,
-    normalization_in='sym',
-    diffusion_kwargs=dict(method='ppr', alpha=0.15)
+    self_loop_weight=1, normalization_in="sym", diffusion_kwargs=dict(method="ppr", alpha=0.15)
 )
 
 # Cheap transform applied each time
 transform = NormalizeFeatures()
 
-dataset = Planetoid(
-    root='/tmp/Cora',
-    name='Cora',
-    pre_transform=pre_transform,
-    transform=transform
-)
+dataset = Planetoid(root="/tmp/Cora", name="Cora", pre_transform=pre_transform, transform=transform)
 ```

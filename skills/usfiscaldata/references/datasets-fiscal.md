@@ -38,7 +38,7 @@ The DTS dataset has **9 data tables**, all under `/v1/accounting/dts/`. Updated 
 # Get current Treasury General Account (TGA) balance
 resp = requests.get(
     "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v1/accounting/dts/operating_cash_balance",
-    params={"sort": "-record_date", "page[size]": 5}
+    params={"sort": "-record_date", "page[size]": 5},
 )
 for row in resp.json()["data"]:
     print(f"{row['record_date']}: ${float(row['close_today_bal']):,.0f}M (closing balance)")
@@ -49,8 +49,8 @@ resp = requests.get(
     params={
         "filter": "record_date:gte:2024-01-01,record_date:lte:2024-01-31",
         "sort": "record_date",
-        "page[size]": 1000
-    }
+        "page[size]": 1000,
+    },
 )
 ```
 
@@ -62,8 +62,8 @@ resp = requests.get(
     "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v1/accounting/dts/deposits_withdrawals_operating_cash",
     params={
         "fields": "record_date,transaction_type,transaction_today_amt",
-        "filter": "record_date:eq:2024-01-15"
-    }
+        "filter": "record_date:eq:2024-01-15",
+    },
 )
 ```
 
@@ -114,21 +114,14 @@ The MTS dataset has **16 data tables**, all under `/v1/accounting/mts/`. Updated
 # MTS Table 1: Summary of receipts and outlays
 resp = requests.get(
     "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v1/accounting/mts/mts_table_1",
-    params={
-        "filter": "record_fiscal_year:eq:2024",
-        "sort": "record_date"
-    }
+    params={"filter": "record_fiscal_year:eq:2024", "sort": "record_date"},
 )
 df = pd.DataFrame(resp.json()["data"])
 
 # MTS Table 9: Get line 120 (Total Receipts) for most recent period
 resp = requests.get(
     "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v1/accounting/mts/mts_table_9",
-    params={
-        "filter": "line_code_nbr:eq:120",
-        "sort": "-record_date",
-        "page[size]": 1
-    }
+    params={"filter": "line_code_nbr:eq:120", "sort": "-record_date", "page[size]": 1},
 )
 ```
 

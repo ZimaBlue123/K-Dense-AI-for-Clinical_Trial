@@ -12,7 +12,7 @@ Returns the realtime exchange rate for any currency pair (fiat or crypto).
 # Fiat to fiat
 data = av_get("CURRENCY_EXCHANGE_RATE", from_currency="USD", to_currency="EUR")
 rate_info = data["Realtime Currency Exchange Rate"]
-print(rate_info["5. Exchange Rate"])   # e.g., "0.92"
+print(rate_info["5. Exchange Rate"])  # e.g., "0.92"
 print(rate_info["6. Last Refreshed"])
 print(rate_info["8. Bid Price"])
 print(rate_info["9. Ask Price"])
@@ -113,6 +113,7 @@ ts = data["Time Series (Digital Currency Daily)"]
 
 # Convert to DataFrame
 import pandas as pd
+
 df = pd.DataFrame.from_dict(ts, orient="index")
 df.index = pd.to_datetime(df.index)
 df = df.sort_index()

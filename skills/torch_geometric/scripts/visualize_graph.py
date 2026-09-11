@@ -53,9 +53,7 @@ def visualize_data(
     """
     # Sample nodes if graph is too large
     if max_nodes and data.num_nodes > max_nodes:
-        print(
-            f"Graph has {data.num_nodes} nodes. Sampling {max_nodes} nodes for visualization."
-        )
+        print(f"Graph has {data.num_nodes} nodes. Sampling {max_nodes} nodes for visualization.")
         node_indices = torch.randperm(data.num_nodes)[:max_nodes]
         data = data.subgraph(node_indices)
 
@@ -277,13 +275,9 @@ def main():
         help="Graph layout algorithm",
     )
     parser.add_argument("--show-labels", action="store_true", help="Show node labels")
-    parser.add_argument(
-        "--max-nodes", type=int, default=500, help="Maximum nodes to visualize"
-    )
+    parser.add_argument("--max-nodes", type=int, default=500, help="Maximum nodes to visualize")
     parser.add_argument("--stats", action="store_true", help="Show graph statistics")
-    parser.add_argument(
-        "--degree", action="store_true", help="Show degree distribution"
-    )
+    parser.add_argument("--degree", action="store_true", help="Show degree distribution")
 
     args = parser.parse_args()
 
@@ -312,15 +306,11 @@ def main():
 
     # Generate visualizations
     if args.stats:
-        stats_output = (
-            args.output.replace(".png", "_stats.png") if args.output else None
-        )
+        stats_output = args.output.replace(".png", "_stats.png") if args.output else None
         plot_graph_statistics(data, stats_output)
 
     if args.degree:
-        degree_output = (
-            args.output.replace(".png", "_degree.png") if args.output else None
-        )
+        degree_output = args.output.replace(".png", "_degree.png") if args.output else None
         plot_degree_distribution(data, degree_output)
 
     # Main visualization

@@ -176,6 +176,7 @@ def track_patent_ownership(patent_number, api_key):
         return response.text
     return None
 
+
 def find_company_patents(company_name, api_key):
     """Find patents assigned to a company."""
     url = "https://assignment-api.uspto.gov/patent/v1.4/assignment/search"
@@ -297,10 +298,11 @@ def get_code_description(code, api_key):
     # Fetch from OCE API
     pass
 
+
 def enrich_peds_data(peds_transactions, api_key):
     """Add descriptions to PEDS transaction codes."""
     for trans in peds_transactions:
-        trans['description'] = get_code_description(trans['code'], api_key)
+        trans["description"] = get_code_description(trans["code"], api_key)
     return peds_transactions
 ```
 
@@ -316,22 +318,22 @@ def comprehensive_patent_analysis(patent_number, api_key):
     results = {}
 
     # 1. Get patent details from PatentSearch
-    results['patent_data'] = search_patent(patent_number, api_key)
+    results["patent_data"] = search_patent(patent_number, api_key)
 
     # 2. Get examination history from PEDS
-    results['prosecution'] = get_peds_data(patent_number, api_key)
+    results["prosecution"] = get_peds_data(patent_number, api_key)
 
     # 3. Get assignment history
-    results['assignments'] = get_assignments(patent_number, api_key)
+    results["assignments"] = get_assignments(patent_number, api_key)
 
     # 4. Get citation data
-    results['citations'] = get_citations(patent_number, api_key)
+    results["citations"] = get_citations(patent_number, api_key)
 
     # 5. Check litigation history
-    results['litigation'] = get_litigation(patent_number, api_key)
+    results["litigation"] = get_litigation(patent_number, api_key)
 
     # 6. Get PTAB challenges
-    results['ptab'] = get_ptab_proceedings(patent_number, api_key)
+    results["ptab"] = get_ptab_proceedings(patent_number, api_key)
 
     return results
 ```
@@ -351,22 +353,22 @@ def analyze_company_portfolio(company_name, api_key):
     portfolio = []
     for patent_num in patent_numbers:
         patent_data = {
-            'number': patent_num,
-            'details': search_patent(patent_num, api_key),
-            'citations': get_citations(patent_num, api_key),
-            'litigation': get_litigation(patent_num, api_key)
+            "number": patent_num,
+            "details": search_patent(patent_num, api_key),
+            "citations": get_citations(patent_num, api_key),
+            "litigation": get_litigation(patent_num, api_key),
         }
         portfolio.append(patent_data)
 
     # 3. Aggregate statistics
     stats = {
-        'total_patents': len(portfolio),
-        'cited_by_count': sum(len(p['citations']) for p in portfolio),
-        'litigated_count': sum(1 for p in portfolio if p['litigation']),
-        'technology_areas': aggregate_tech_areas(portfolio)
+        "total_patents": len(portfolio),
+        "cited_by_count": sum(len(p["citations"]) for p in portfolio),
+        "litigated_count": sum(1 for p in portfolio if p["litigation"]),
+        "technology_areas": aggregate_tech_areas(portfolio),
     }
 
-    return {'portfolio': portfolio, 'statistics': stats}
+    return {"portfolio": portfolio, "statistics": stats}
 ```
 
 ## Best Practices

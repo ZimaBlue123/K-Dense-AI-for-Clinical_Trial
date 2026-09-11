@@ -93,12 +93,7 @@ import requests
 
 # Search for samples from a specific study
 base_url = "https://www.ebi.ac.uk/ena/portal/api/search"
-params = {
-    "result": "sample",
-    "query": "study_accession=PRJEB1234",
-    "format": "json",
-    "limit": 100
-}
+params = {"result": "sample", "query": "study_accession=PRJEB1234", "format": "json", "limit": 100}
 
 response = requests.get(base_url, params=params)
 samples = response.json()

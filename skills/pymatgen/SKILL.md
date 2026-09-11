@@ -52,7 +52,7 @@ struct = Structure.from_file("POSCAR")
 
 # Create structure from scratch
 lattice = Lattice.cubic(3.84)
-struct = Structure(lattice, ["Si", "Si"], [[0,0,0], [0.25,0.25,0.25]])
+struct = Structure(lattice, ["Si", "Si"], [[0, 0, 0], [0.25, 0.25, 0.25]])
 
 # Write to different format
 struct.to(filename="structure.cif")
@@ -78,10 +78,7 @@ with MPRester() as mpr:
     struct = mpr.get_structure_by_material_id("mp-149")
 
     # Search for materials
-    materials = mpr.materials.summary.search(
-        formula="Fe2O3",
-        energy_above_hull=(0, 0.05)
-    )
+    materials = mpr.materials.summary.search(formula="Fe2O3", energy_above_hull=(0, 0.05))
 ```
 
 ## Core Capabilities
@@ -103,18 +100,12 @@ mol = Molecule.from_file("molecule.xyz")
 from pymatgen.core import Structure, Lattice
 
 # Using lattice parameters
-lattice = Lattice.from_parameters(a=3.84, b=3.84, c=3.84,
-                                  alpha=120, beta=90, gamma=60)
+lattice = Lattice.from_parameters(a=3.84, b=3.84, c=3.84, alpha=120, beta=90, gamma=60)
 coords = [[0, 0, 0], [0.75, 0.5, 0.75]]
 struct = Structure(lattice, ["Si", "Si"], coords)
 
 # From space group
-struct = Structure.from_spacegroup(
-    "Fm-3m",
-    Lattice.cubic(3.5),
-    ["Si"],
-    [[0, 0, 0]]
-)
+struct = Structure.from_spacegroup("Fm-3m", Lattice.cubic(3.5), ["Si"], [[0, 0, 0]])
 ```
 
 **Transformations:**
@@ -122,11 +113,11 @@ struct = Structure.from_spacegroup(
 from pymatgen.transformations.standard_transformations import (
     SupercellTransformation,
     SubstitutionTransformation,
-    PrimitiveCellTransformation
+    PrimitiveCellTransformation,
 )
 
 # Create supercell
-trans = SupercellTransformation([[2,0,0],[0,2,0],[0,0,2]])
+trans = SupercellTransformation([[2, 0, 0], [0, 2, 0], [0, 0, 2]])
 supercell = trans.apply_transformation(struct)
 
 # Substitute elements
@@ -195,7 +186,7 @@ neighbors = cnn.get_nn_info(struct, n=0)  # Neighbors of site 0
 
 print(f"Coordination number: {len(neighbors)}")
 for neighbor in neighbors:
-    site = struct[neighbor['site_index']]
+    site = struct[neighbor["site_index"]]
     print(f"  {site.species_string} at {neighbor['weight']:.3f} Å")
 ```
 
@@ -228,6 +219,7 @@ pd = PhaseDiagram(entries)
 
 # Check stability
 from pymatgen.core import Composition
+
 comp = Composition("LiFeO2")
 
 # Find entry for composition
@@ -312,9 +304,9 @@ from pymatgen.core.surface import SlabGenerator
 slabgen = SlabGenerator(
     struct,
     miller_index=(1, 1, 1),
-    min_slab_size=10.0,      # Å
-    min_vacuum_size=10.0,    # Å
-    center_slab=True
+    min_slab_size=10.0,  # Å
+    min_vacuum_size=10.0,  # Å
+    center_slab=True,
 )
 
 slabs = slabgen.get_slabs()
@@ -385,7 +377,7 @@ with MPRester() as mpr:
     materials = mpr.materials.summary.search(
         chemsys="Li-Fe-O",
         energy_above_hull=(0, 0.05),  # Stable/metastable
-        band_gap=(1.0, 3.0)            # Semiconducting
+        band_gap=(1.0, 3.0),  # Semiconducting
     )
 
     # Get structure
@@ -430,12 +422,7 @@ custom.write_input("./custom_calc")
 # Gaussian
 from pymatgen.io.gaussian import GaussianInput
 
-gin = GaussianInput(
-    mol,
-    functional="B3LYP",
-    basis_set="6-31G(d)",
-    route_parameters={"Opt": None}
-)
+gin = GaussianInput(mol, functional="B3LYP", basis_set="6-31G(d)", route_parameters={"Opt": None})
 gin.write_file("input.gjf")
 
 # Quantum ESPRESSO
@@ -484,7 +471,7 @@ trans = MagOrderingTransformation({"Fe": 5.0})
 mag_structs = trans.apply_transformation(struct, return_ranked_list=True)
 
 # Get lowest energy magnetic structure
-lowest_energy_struct = mag_structs[0]['structure']
+lowest_energy_struct = mag_structs[0]["structure"]
 ```
 
 **Reference:** See `references/analysis_modules.md` for comprehensive analysis module documentation.
@@ -560,6 +547,7 @@ nscf.write_input("./3_bandstructure")
 
 # 4. Analysis
 from pymatgen.io.vasp import Vasprun
+
 vasprun = Vasprun("3_bandstructure/vasprun.xml")
 bs = vasprun.get_band_structure()
 bs.get_band_gap()
@@ -573,7 +561,7 @@ bulk_vasprun = Vasprun("bulk/vasprun.xml")
 bulk_E_per_atom = bulk_vasprun.final_energy / len(bulk)
 
 # 2. Generate and calculate slabs
-slabgen = SlabGenerator(bulk, (1,1,1), 10, 15)
+slabgen = SlabGenerator(bulk, (1, 1, 1), 10, 15)
 slab = slabgen.get_slabs()[0]
 
 MPRelaxSet(slab).write_input("./slab_calc")
@@ -667,6 +655,7 @@ struct = Structure.from_file("file.txt", fmt="cif")
 ```python
 # Increase tolerance
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
+
 sga = SpacegroupAnalyzer(struct, symprec=0.1)
 ```
 

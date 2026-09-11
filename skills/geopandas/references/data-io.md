@@ -39,7 +39,7 @@ gdf = gpd.read_file("data.gpkg", rows=100)  # First 100 rows
 gdf = gpd.read_file("data.gpkg", rows=slice(10, 20))  # Rows 10-20
 
 # Load specific columns
-gdf = gpd.read_file("data.gpkg", columns=['name', 'population'])
+gdf = gpd.read_file("data.gpkg", columns=["name", "population"])
 
 # Spatial filter with bounding box
 gdf = gpd.read_file("data.gpkg", bbox=(xmin, ymin, xmax, ymax))
@@ -63,10 +63,10 @@ Use `to_file()` to export:
 gdf.to_file("output.shp")
 
 # Write to GeoJSON
-gdf.to_file("output.geojson", driver='GeoJSON')
+gdf.to_file("output.geojson", driver="GeoJSON")
 
 # Write to GeoPackage (supports multiple layers)
-gdf.to_file("output.gpkg", layer='layer1', driver="GPKG")
+gdf.to_file("output.gpkg", layer="layer1", driver="GPKG")
 
 # Arrow acceleration for faster writing
 gdf.to_file("output.gpkg", use_arrow=True)
@@ -78,6 +78,7 @@ List all available drivers:
 
 ```python
 import pyogrio
+
 pyogrio.list_drivers()
 ```
 
@@ -110,26 +111,28 @@ Advantages:
 ```python
 from sqlalchemy import create_engine
 
-engine = create_engine('postgresql://user:password@host:port/database')
+engine = create_engine("postgresql://user:password@host:port/database")
 
 # Read entire table
-gdf = gpd.read_postgis("SELECT * FROM table_name", con=engine, geom_col='geometry')
+gdf = gpd.read_postgis("SELECT * FROM table_name", con=engine, geom_col="geometry")
 
 # Read with SQL query
-gdf = gpd.read_postgis("SELECT * FROM table WHERE population > 100000", con=engine, geom_col='geometry')
+gdf = gpd.read_postgis(
+    "SELECT * FROM table WHERE population > 100000", con=engine, geom_col="geometry"
+)
 ```
 
 ### Writing to PostGIS
 
 ```python
 # Create or replace table
-gdf.to_postgis("table_name", con=engine, if_exists='replace')
+gdf.to_postgis("table_name", con=engine, if_exists="replace")
 
 # Append to existing table
-gdf.to_postgis("table_name", con=engine, if_exists='append')
+gdf.to_postgis("table_name", con=engine, if_exists="append")
 
 # Fail if table exists
-gdf.to_postgis("table_name", con=engine, if_exists='fail')
+gdf.to_postgis("table_name", con=engine, if_exists="fail")
 ```
 
 Requires: `uv pip install psycopg2` or `uv pip install psycopg` and `uv pip install geoalchemy2`
@@ -140,11 +143,12 @@ Read from file handles or in-memory buffers:
 
 ```python
 # From file handle
-with open('data.geojson', 'r') as f:
+with open("data.geojson", "r") as f:
     gdf = gpd.read_file(f)
 
 # From StringIO
 from io import StringIO
+
 geojson_string = '{"type": "FeatureCollection", ...}'
 gdf = gpd.read_file(StringIO(geojson_string))
 ```

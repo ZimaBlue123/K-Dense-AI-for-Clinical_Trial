@@ -16,6 +16,7 @@ adata = ad.AnnData(X=np.random.rand(100, 2000))
 
 # Create with sparse matrix (recommended for large, sparse data)
 from scipy.sparse import csr_matrix
+
 sparse_data = csr_matrix(np.random.rand(100, 2000))
 adata = ad.AnnData(X=sparse_data)
 ```
@@ -39,17 +40,20 @@ DataFrame storing metadata about observations (rows). Each row corresponds to on
 import pandas as pd
 
 # Create AnnData with observation metadata
-obs_df = pd.DataFrame({
-    'cell_type': ['T cell', 'B cell', 'Monocyte'],
-    'treatment': ['control', 'treated', 'control'],
-    'timepoint': [0, 24, 24]
-}, index=['cell_1', 'cell_2', 'cell_3'])
+obs_df = pd.DataFrame(
+    {
+        "cell_type": ["T cell", "B cell", "Monocyte"],
+        "treatment": ["control", "treated", "control"],
+        "timepoint": [0, 24, 24],
+    },
+    index=["cell_1", "cell_2", "cell_3"],
+)
 
 adata = ad.AnnData(X=np.random.rand(3, 100), obs=obs_df)
 
 # Access observation metadata
-print(adata.obs['cell_type'])
-print(adata.obs.loc['cell_1'])
+print(adata.obs["cell_type"])
+print(adata.obs.loc["cell_1"])
 ```
 
 ### var (Variable Annotations)
@@ -57,17 +61,20 @@ DataFrame storing metadata about variables (columns). Each row corresponds to on
 
 ```python
 # Create AnnData with variable metadata
-var_df = pd.DataFrame({
-    'gene_name': ['ACTB', 'GAPDH', 'TP53'],
-    'chromosome': ['7', '12', '17'],
-    'highly_variable': [True, False, True]
-}, index=['ENSG00001', 'ENSG00002', 'ENSG00003'])
+var_df = pd.DataFrame(
+    {
+        "gene_name": ["ACTB", "GAPDH", "TP53"],
+        "chromosome": ["7", "12", "17"],
+        "highly_variable": [True, False, True],
+    },
+    index=["ENSG00001", "ENSG00002", "ENSG00003"],
+)
 
 adata = ad.AnnData(X=np.random.rand(100, 3), var=var_df)
 
 # Access variable metadata
-print(adata.var['gene_name'])
-print(adata.var.loc['ENSG00001'])
+print(adata.var["gene_name"])
+print(adata.var.loc["ENSG00001"])
 ```
 
 ### layers (Alternative Data Representations)
@@ -76,13 +83,13 @@ Dictionary storing alternative matrices with the same dimensions as X.
 ```python
 # Store raw counts, normalized data, and scaled data
 adata = ad.AnnData(X=np.random.rand(100, 2000))
-adata.layers['raw_counts'] = np.random.randint(0, 100, (100, 2000))
-adata.layers['normalized'] = adata.X / np.sum(adata.X, axis=1, keepdims=True)
-adata.layers['scaled'] = (adata.X - adata.X.mean()) / adata.X.std()
+adata.layers["raw_counts"] = np.random.randint(0, 100, (100, 2000))
+adata.layers["normalized"] = adata.X / np.sum(adata.X, axis=1, keepdims=True)
+adata.layers["scaled"] = (adata.X - adata.X.mean()) / adata.X.std()
 
 # Access layers
-raw_data = adata.layers['raw_counts']
-normalized_data = adata.layers['normalized']
+raw_data = adata.layers["raw_counts"]
+normalized_data = adata.layers["normalized"]
 ```
 
 Common layer uses:
@@ -96,13 +103,13 @@ Dictionary storing multi-dimensional arrays aligned to observations.
 
 ```python
 # Store PCA coordinates and UMAP embeddings
-adata.obsm['X_pca'] = np.random.rand(100, 50)  # 50 principal components
-adata.obsm['X_umap'] = np.random.rand(100, 2)  # 2D UMAP coordinates
-adata.obsm['X_tsne'] = np.random.rand(100, 2)  # 2D t-SNE coordinates
+adata.obsm["X_pca"] = np.random.rand(100, 50)  # 50 principal components
+adata.obsm["X_umap"] = np.random.rand(100, 2)  # 2D UMAP coordinates
+adata.obsm["X_tsne"] = np.random.rand(100, 2)  # 2D t-SNE coordinates
 
 # Access embeddings
-pca_coords = adata.obsm['X_pca']
-umap_coords = adata.obsm['X_umap']
+pca_coords = adata.obsm["X_pca"]
+umap_coords = adata.obsm["X_umap"]
 ```
 
 Common obsm uses:
@@ -117,11 +124,11 @@ Dictionary storing multi-dimensional arrays aligned to variables.
 
 ```python
 # Store PCA loadings
-adata.varm['PCs'] = np.random.rand(2000, 50)  # Loadings for 50 components
-adata.varm['gene_modules'] = np.random.rand(2000, 10)  # Gene module scores
+adata.varm["PCs"] = np.random.rand(2000, 50)  # Loadings for 50 components
+adata.varm["gene_modules"] = np.random.rand(2000, 10)  # Gene module scores
 
 # Access loadings
-pc_loadings = adata.varm['PCs']
+pc_loadings = adata.varm["PCs"]
 ```
 
 Common varm uses:
@@ -137,12 +144,12 @@ from scipy.sparse import csr_matrix
 # Store k-nearest neighbor graph
 n_obs = 100
 knn_graph = csr_matrix(np.random.rand(n_obs, n_obs) > 0.95)
-adata.obsp['connectivities'] = knn_graph
-adata.obsp['distances'] = csr_matrix(np.random.rand(n_obs, n_obs))
+adata.obsp["connectivities"] = knn_graph
+adata.obsp["distances"] = csr_matrix(np.random.rand(n_obs, n_obs))
 
 # Access graphs
-knn_connections = adata.obsp['connectivities']
-distances = adata.obsp['distances']
+knn_connections = adata.obsp["connectivities"]
+distances = adata.obsp["distances"]
 ```
 
 Common obsp uses:
@@ -156,10 +163,10 @@ Dictionary storing sparse matrices representing relationships between variables.
 # Store gene-gene correlation matrix
 n_vars = 2000
 gene_corr = csr_matrix(np.random.rand(n_vars, n_vars) > 0.99)
-adata.varp['correlations'] = gene_corr
+adata.varp["correlations"] = gene_corr
 
 # Access correlations
-gene_correlations = adata.varp['correlations']
+gene_correlations = adata.varp["correlations"]
 ```
 
 ### uns (Unstructured Annotations)
@@ -167,19 +174,16 @@ Dictionary storing arbitrary unstructured metadata.
 
 ```python
 # Store analysis parameters and results
-adata.uns['experiment_date'] = '2025-11-03'
-adata.uns['pca'] = {
-    'variance_ratio': [0.15, 0.10, 0.08],
-    'params': {'n_comps': 50}
-}
-adata.uns['neighbors'] = {
-    'params': {'n_neighbors': 15, 'method': 'umap'},
-    'connectivities_key': 'connectivities'
+adata.uns["experiment_date"] = "2025-11-03"
+adata.uns["pca"] = {"variance_ratio": [0.15, 0.10, 0.08], "params": {"n_comps": 50}}
+adata.uns["neighbors"] = {
+    "params": {"n_neighbors": 15, "method": "umap"},
+    "connectivities_key": "connectivities",
 }
 
 # Access unstructured data
-exp_date = adata.uns['experiment_date']
-pca_params = adata.uns['pca']['params']
+exp_date = adata.uns["experiment_date"]
+pca_params = adata.uns["pca"]["params"]
 ```
 
 Common uns uses:
@@ -194,7 +198,7 @@ Optional attribute preserving the original data matrix and variable annotations 
 ```python
 # Create AnnData and store raw state
 adata = ad.AnnData(X=np.random.rand(100, 5000))
-adata.var['gene_name'] = [f'Gene_{i}' for i in range(5000)]
+adata.var["gene_name"] = [f"Gene_{i}" for i in range(5000)]
 
 # Store raw state before filtering
 adata.raw = adata.copy()
@@ -239,8 +243,10 @@ X = np.random.rand(100, 2000)
 adata = ad.AnnData(X)
 
 # With metadata
-obs = pd.DataFrame({'cell_type': ['A', 'B'] * 50}, index=[f'cell_{i}' for i in range(100)])
-var = pd.DataFrame({'gene_name': [f'Gene_{i}' for i in range(2000)]}, index=[f'ENSG{i:05d}' for i in range(2000)])
+obs = pd.DataFrame({"cell_type": ["A", "B"] * 50}, index=[f"cell_{i}" for i in range(100)])
+var = pd.DataFrame(
+    {"gene_name": [f"Gene_{i}" for i in range(2000)]}, index=[f"ENSG{i:05d}" for i in range(2000)]
+)
 adata = ad.AnnData(X=X, obs=obs, var=var)
 
 # With all components
@@ -248,9 +254,9 @@ adata = ad.AnnData(
     X=X,
     obs=obs,
     var=var,
-    layers={'raw': np.random.randint(0, 100, (100, 2000))},
-    obsm={'X_pca': np.random.rand(100, 50)},
-    uns={'experiment': 'test'}
+    layers={"raw": np.random.randint(0, 100, (100, 2000))},
+    obsm={"X_pca": np.random.rand(100, 50)},
+    uns={"experiment": "test"},
 )
 ```
 
@@ -259,8 +265,8 @@ adata = ad.AnnData(
 # Create from pandas DataFrame (genes as columns, cells as rows)
 df = pd.DataFrame(
     np.random.rand(100, 50),
-    columns=[f'Gene_{i}' for i in range(50)],
-    index=[f'Cell_{i}' for i in range(100)]
+    columns=[f"Gene_{i}" for i in range(50)],
+    index=[f"Cell_{i}" for i in range(100)],
 )
 adata = ad.AnnData(df)
 ```
@@ -270,13 +276,13 @@ adata = ad.AnnData(df)
 ### Vector extraction
 ```python
 # Get observation annotation as array
-cell_types = adata.obs_vector('cell_type')
+cell_types = adata.obs_vector("cell_type")
 
 # Get variable values across observations
-gene_expression = adata.obs_vector('ACTB')  # If ACTB is in var_names
+gene_expression = adata.obs_vector("ACTB")  # If ACTB is in var_names
 
 # Get variable annotation as array
-gene_names = adata.var_vector('gene_name')
+gene_names = adata.var_vector("gene_name")
 ```
 
 ### Subsetting
@@ -285,14 +291,14 @@ gene_names = adata.var_vector('gene_name')
 subset = adata[0:10, 0:100]  # First 10 obs, first 100 vars
 
 # By name
-subset = adata[['cell_1', 'cell_2'], ['ACTB', 'GAPDH']]
+subset = adata[["cell_1", "cell_2"], ["ACTB", "GAPDH"]]
 
 # By boolean mask
-high_count_cells = adata.obs['total_counts'] > 1000
+high_count_cells = adata.obs["total_counts"] > 1000
 subset = adata[high_count_cells, :]
 
 # By observation metadata
-t_cells = adata[adata.obs['cell_type'] == 'T cell']
+t_cells = adata[adata.obs["cell_type"] == "T cell"]
 ```
 
 ## Memory Considerations
@@ -305,7 +311,7 @@ The AnnData structure is designed for memory efficiency:
 
 ```python
 # Convert strings to categoricals (more memory efficient)
-adata.obs['cell_type'] = adata.obs['cell_type'].astype('category')
+adata.obs["cell_type"] = adata.obs["cell_type"].astype("category")
 adata.strings_to_categoricals()
 
 # Check if object is a view (doesn't own data)

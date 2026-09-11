@@ -96,9 +96,7 @@ Environment Variables:
         default=2,
         help="Maximum refinement iterations (default: 2, max: 2)",
     )
-    parser.add_argument(
-        "--api-key", help="OpenRouter API key (or use OPENROUTER_API_KEY env var)"
-    )
+    parser.add_argument("--api-key", help="OpenRouter API key (or use OPENROUTER_API_KEY env var)")
     parser.add_argument("-v", "--verbose", action="store_true", help="Verbose output")
 
     args = parser.parse_args()

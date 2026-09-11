@@ -44,21 +44,15 @@ import pufferlib
 from pufferlib import PuffeRL
 
 # Create vectorized environment
-env = pufferlib.make('procgen-coinrun', num_envs=256)
+env = pufferlib.make("procgen-coinrun", num_envs=256)
 
 # Create trainer
-trainer = PuffeRL(
-    env=env,
-    policy=my_policy,
-    device='cuda',
-    learning_rate=3e-4,
-    batch_size=32768
-)
+trainer = PuffeRL(env=env, policy=my_policy, device="cuda", learning_rate=3e-4, batch_size=32768)
 
 # Training loop
 for iteration in range(num_iterations):
     trainer.evaluate()  # Collect rollouts
-    trainer.train()     # Train on batch
+    trainer.train()  # Train on batch
     trainer.mean_and_log()  # Log results
 ```
 
@@ -79,6 +73,7 @@ Create custom high-performance environments with the PufferEnv API.
 ```python
 import numpy as np
 from pufferlib import PufferEnv
+
 
 class MyEnvironment(PufferEnv):
     def __init__(self, buf=None):
@@ -128,7 +123,7 @@ Achieve maximum throughput with optimized parallel simulation.
 import pufferlib
 
 # Automatic vectorization
-env = pufferlib.make('environment_name', num_envs=256, num_workers=8)
+env = pufferlib.make("environment_name", num_envs=256, num_workers=8)
 
 # Performance benchmarks:
 # - Pure Python envs: 100k-500k SPS
@@ -160,6 +155,7 @@ Build policies as standard PyTorch modules with optional utilities.
 import torch.nn as nn
 from pufferlib.pytorch import layer_init
 
+
 class Policy(nn.Module):
     def __init__(self, observation_space, action_space):
         super().__init__()
@@ -169,7 +165,7 @@ class Policy(nn.Module):
             layer_init(nn.Linear(obs_dim, 256)),
             nn.ReLU(),
             layer_init(nn.Linear(256, 256)),
-            nn.ReLU()
+            nn.ReLU(),
         )
 
         # Actor and critic heads
@@ -201,17 +197,17 @@ import gymnasium as gym
 import pufferlib
 
 # Wrap Gymnasium environment
-gym_env = gym.make('CartPole-v1')
+gym_env = gym.make("CartPole-v1")
 env = pufferlib.emulate(gym_env, num_envs=256)
 
 # Or use make directly
-env = pufferlib.make('gym-CartPole-v1', num_envs=256)
+env = pufferlib.make("gym-CartPole-v1", num_envs=256)
 ```
 
 **PettingZoo multi-agent:**
 ```python
 # Multi-agent environment
-env = pufferlib.make('pettingzoo-knights-archers-zombies', num_envs=128)
+env = pufferlib.make("pettingzoo-knights-archers-zombies", num_envs=128)
 ```
 
 **Supported frameworks:**
@@ -379,19 +375,19 @@ env = pufferlib.make('pettingzoo-knights-archers-zombies', num_envs=128)
 ### Training on Standard Benchmarks
 ```python
 # Atari
-env = pufferlib.make('atari-pong', num_envs=256)
+env = pufferlib.make("atari-pong", num_envs=256)
 
 # Procgen
-env = pufferlib.make('procgen-coinrun', num_envs=256)
+env = pufferlib.make("procgen-coinrun", num_envs=256)
 
 # Minigrid
-env = pufferlib.make('minigrid-empty-8x8', num_envs=256)
+env = pufferlib.make("minigrid-empty-8x8", num_envs=256)
 ```
 
 ### Multi-Agent Learning
 ```python
 # PettingZoo
-env = pufferlib.make('pettingzoo-pistonball', num_envs=128)
+env = pufferlib.make("pettingzoo-pistonball", num_envs=128)
 
 # Shared policy for all agents
 policy = create_policy(env.observation_space, env.action_space)
@@ -413,10 +409,10 @@ trainer = PuffeRL(env=env, policy=my_policy)
 ```python
 # Maximize throughput
 env = pufferlib.make(
-    'my-env',
-    num_envs=1024,      # Large batch
-    num_workers=16,     # Many workers
-    envs_per_worker=64  # Optimize per worker
+    "my-env",
+    num_envs=1024,  # Large batch
+    num_workers=16,  # Many workers
+    envs_per_worker=64,  # Optimize per worker
 )
 ```
 

@@ -54,20 +54,19 @@ drug = new_client.drug
 **Retrieve by ChEMBL ID:**
 ```python
 molecule = new_client.molecule
-aspirin = molecule.get('CHEMBL25')
+aspirin = molecule.get("CHEMBL25")
 ```
 
 **Search by name:**
 ```python
-results = molecule.filter(pref_name__icontains='aspirin')
+results = molecule.filter(pref_name__icontains="aspirin")
 ```
 
 **Filter by properties:**
 ```python
 # Find small molecules (MW <= 500) with favorable LogP
 results = molecule.filter(
-    molecule_properties__mw_freebase__lte=500,
-    molecule_properties__alogp__lte=5
+    molecule_properties__mw_freebase__lte=500, molecule_properties__alogp__lte=5
 )
 ```
 
@@ -76,16 +75,13 @@ results = molecule.filter(
 **Retrieve target information:**
 ```python
 target = new_client.target
-egfr = target.get('CHEMBL203')
+egfr = target.get("CHEMBL203")
 ```
 
 **Search for specific target types:**
 ```python
 # Find all kinase targets
-kinases = target.filter(
-    target_type='SINGLE PROTEIN',
-    pref_name__icontains='kinase'
-)
+kinases = target.filter(target_type="SINGLE PROTEIN", pref_name__icontains="kinase")
 ```
 
 ### 3. Bioactivity Data
@@ -95,19 +91,13 @@ kinases = target.filter(
 activity = new_client.activity
 # Find potent EGFR inhibitors
 results = activity.filter(
-    target_chembl_id='CHEMBL203',
-    standard_type='IC50',
-    standard_value__lte=100,
-    standard_units='nM'
+    target_chembl_id="CHEMBL203", standard_type="IC50", standard_value__lte=100, standard_units="nM"
 )
 ```
 
 **Get all activities for a compound:**
 ```python
-compound_activities = activity.filter(
-    molecule_chembl_id='CHEMBL25',
-    pchembl_value__isnull=False
-)
+compound_activities = activity.filter(molecule_chembl_id="CHEMBL25", pchembl_value__isnull=False)
 ```
 
 ### 4. Structure-Based Searches
@@ -117,8 +107,8 @@ compound_activities = activity.filter(
 similarity = new_client.similarity
 # Find compounds similar to aspirin
 similar = similarity.filter(
-    smiles='CC(=O)Oc1ccccc1C(=O)O',
-    similarity=85  # 85% similarity threshold
+    smiles="CC(=O)Oc1ccccc1C(=O)O",
+    similarity=85,  # 85% similarity threshold
 )
 ```
 
@@ -126,7 +116,7 @@ similar = similarity.filter(
 ```python
 substructure = new_client.substructure
 # Find compounds containing benzene ring
-results = substructure.filter(smiles='c1ccccc1')
+results = substructure.filter(smiles="c1ccccc1")
 ```
 
 ### 5. Drug Information
@@ -134,19 +124,19 @@ results = substructure.filter(smiles='c1ccccc1')
 **Retrieve drug data:**
 ```python
 drug = new_client.drug
-drug_info = drug.get('CHEMBL25')
+drug_info = drug.get("CHEMBL25")
 ```
 
 **Get mechanisms of action:**
 ```python
 mechanism = new_client.mechanism
-mechanisms = mechanism.filter(molecule_chembl_id='CHEMBL25')
+mechanisms = mechanism.filter(molecule_chembl_id="CHEMBL25")
 ```
 
 **Query drug indications:**
 ```python
 drug_indication = new_client.drug_indication
-indications = drug_indication.filter(molecule_chembl_id='CHEMBL25')
+indications = drug_indication.filter(molecule_chembl_id="CHEMBL25")
 ```
 
 ## Query Workflow
@@ -155,22 +145,20 @@ indications = drug_indication.filter(molecule_chembl_id='CHEMBL25')
 
 1. **Identify the target** by searching by name:
    ```python
-   targets = new_client.target.filter(pref_name__icontains='EGFR')
-   target_id = targets[0]['target_chembl_id']
+   targets = new_client.target.filter(pref_name__icontains="EGFR")
+   target_id = targets[0]["target_chembl_id"]
    ```
 
 2. **Query bioactivity data** for that target:
    ```python
    activities = new_client.activity.filter(
-       target_chembl_id=target_id,
-       standard_type='IC50',
-       standard_value__lte=100
+       target_chembl_id=target_id, standard_type="IC50", standard_value__lte=100
    )
    ```
 
 3. **Extract compound IDs** and retrieve details:
    ```python
-   compound_ids = [act['molecule_chembl_id'] for act in activities]
+   compound_ids = [act["molecule_chembl_id"] for act in activities]
    compounds = [new_client.molecule.get(cid) for cid in compound_ids]
    ```
 
@@ -178,32 +166,30 @@ indications = drug_indication.filter(molecule_chembl_id='CHEMBL25')
 
 1. **Get drug information**:
    ```python
-   drug_info = new_client.drug.get('CHEMBL1234')
+   drug_info = new_client.drug.get("CHEMBL1234")
    ```
 
 2. **Retrieve mechanisms**:
    ```python
-   mechanisms = new_client.mechanism.filter(molecule_chembl_id='CHEMBL1234')
+   mechanisms = new_client.mechanism.filter(molecule_chembl_id="CHEMBL1234")
    ```
 
 3. **Find all bioactivities**:
    ```python
-   activities = new_client.activity.filter(molecule_chembl_id='CHEMBL1234')
+   activities = new_client.activity.filter(molecule_chembl_id="CHEMBL1234")
    ```
 
 ### Workflow 3: Structure-Activity Relationship (SAR) Study
 
 1. **Find similar compounds**:
    ```python
-   similar = new_client.similarity.filter(smiles='query_smiles', similarity=80)
+   similar = new_client.similarity.filter(smiles="query_smiles", similarity=80)
    ```
 
 2. **Get activities for each compound**:
    ```python
    for compound in similar:
-       activities = new_client.activity.filter(
-           molecule_chembl_id=compound['molecule_chembl_id']
-       )
+       activities = new_client.activity.filter(molecule_chembl_id=compound["molecule_chembl_id"])
    ```
 
 3. **Analyze property-activity relationships** using molecular properties from results.
@@ -228,12 +214,12 @@ Convert results to pandas DataFrame for analysis:
 ```python
 import pandas as pd
 
-activities = new_client.activity.filter(target_chembl_id='CHEMBL203')
+activities = new_client.activity.filter(target_chembl_id="CHEMBL203")
 df = pd.DataFrame(list(activities))
 
 # Analyze results
-print(df['standard_value'].describe())
-print(df.groupby('standard_type').size())
+print(df["standard_value"].describe())
+print(df.groupby("standard_type").size())
 ```
 
 ## Performance Optimization
@@ -258,7 +244,7 @@ Queries execute only when data is accessed. Convert to list to force execution:
 
 ```python
 # Query is not executed yet
-results = molecule.filter(pref_name__icontains='aspirin')
+results = molecule.filter(pref_name__icontains="aspirin")
 
 # Force execution
 results_list = list(results)
@@ -269,9 +255,9 @@ results_list = list(results)
 Results are paginated automatically. Iterate through all results:
 
 ```python
-for activity in new_client.activity.filter(target_chembl_id='CHEMBL203'):
+for activity in new_client.activity.filter(target_chembl_id="CHEMBL203"):
     # Process each activity
-    print(activity['molecule_chembl_id'])
+    print(activity["molecule_chembl_id"])
 ```
 
 ## Common Use Cases
@@ -280,17 +266,12 @@ for activity in new_client.activity.filter(target_chembl_id='CHEMBL203'):
 
 ```python
 # Identify kinase targets
-kinases = new_client.target.filter(
-    target_type='SINGLE PROTEIN',
-    pref_name__icontains='kinase'
-)
+kinases = new_client.target.filter(target_type="SINGLE PROTEIN", pref_name__icontains="kinase")
 
 # Get potent inhibitors
 for kinase in kinases[:5]:  # First 5 kinases
     activities = new_client.activity.filter(
-        target_chembl_id=kinase['target_chembl_id'],
-        standard_type='IC50',
-        standard_value__lte=50
+        target_chembl_id=kinase["target_chembl_id"], standard_type="IC50", standard_value__lte=50
     )
 ```
 
@@ -302,9 +283,7 @@ drugs = new_client.drug.filter()
 
 # For each drug, find all targets
 for drug in drugs[:10]:
-    mechanisms = new_client.mechanism.filter(
-        molecule_chembl_id=drug['molecule_chembl_id']
-    )
+    mechanisms = new_client.mechanism.filter(molecule_chembl_id=drug["molecule_chembl_id"])
 ```
 
 ### Virtual Screening
@@ -315,7 +294,7 @@ candidates = new_client.molecule.filter(
     molecule_properties__mw_freebase__range=[300, 500],
     molecule_properties__alogp__lte=5,
     molecule_properties__hba__lte=10,
-    molecule_properties__hbd__lte=5
+    molecule_properties__hbd__lte=5,
 )
 ```
 

@@ -59,36 +59,44 @@ print(data)
 import numpy as np
 import rasterio
 
+
 def ndvi(nir, red):
     """Normalized Difference Vegetation Index"""
     return (nir - red) / (nir + red + 1e-8)
 
+
 def evi(nir, red, blue):
     """Enhanced Vegetation Index"""
-    return 2.5 * (nir - red) / (nir + 6*red - 7.5*blue + 1)
+    return 2.5 * (nir - red) / (nir + 6 * red - 7.5 * blue + 1)
+
 
 def savi(nir, red, L=0.5):
     """Soil Adjusted Vegetation Index"""
     return ((nir - red) / (nir + red + L)) * (1 + L)
 
+
 def ndwi(green, nir):
     """Normalized Difference Water Index"""
     return (green - nir) / (green + nir + 1e-8)
+
 
 def mndwi(green, swir):
     """Modified NDWI for open water"""
     return (green - swir) / (green + swir + 1e-8)
 
+
 def nbr(nir, swir):
     """Normalized Burn Ratio"""
     return (nir - swir) / (nir + swir + 1e-8)
+
 
 def ndbi(swir, nir):
     """Normalized Difference Built-up Index"""
     return (swir - nir) / (swir + nir + 1e-8)
 
+
 # Batch processing
-with rasterio.open('sentinel2.tif') as src:
+with rasterio.open("sentinel2.tif") as src:
     # Sentinel-2 band mapping
     B02 = src.read(1).astype(float)  # Blue (10m)
     B03 = src.read(2).astype(float)  # Green (10m)
@@ -113,26 +121,32 @@ with rasterio.open('sentinel2.tif') as src:
 import ee
 
 # Initialize Earth Engine
-ee.Initialize(project='your-project')
+ee.Initialize(project="your-project")
 
 # Landsat 8 Collection 2 Level 2
-landsat = ee.ImageCollection('LANDSAT/LC08/C02/T1_L2') \
-    .filterBounds(ee.Geometry.Point([-122.4, 37.7])) \
-    .filterDate('2020-01-01', '2023-12-31') \
-    .filter(ee.Filter.lt('CLOUD_COVER', 20))
+landsat = (
+    ee.ImageCollection("LANDSAT/LC08/C02/T1_L2")
+    .filterBounds(ee.Geometry.Point([-122.4, 37.7]))
+    .filterDate("2020-01-01", "2023-12-31")
+    .filter(ee.Filter.lt("CLOUD_COVER", 20))
+)
+
 
 # Apply scaling factors (Collection 2)
 def apply_scale_factors(image):
-    optical = image.select('SR_B.').multiply(0.0000275).add(-0.2)
-    thermal = image.select('ST_B10').multiply(0.00341802).add(149.0)
+    optical = image.select("SR_B.").multiply(0.0000275).add(-0.2)
+    thermal = image.select("ST_B10").multiply(0.00341802).add(149.0)
     return image.addBands(optical, None, True).addBands(thermal, None, True)
+
 
 landsat_scaled = landsat.map(apply_scale_factors)
 
+
 # Calculate NDVI
 def add_ndvi(image):
-    ndvi = image.normalizedDifference(['SR_B5', 'SR_B4']).rename('NDVI')
+    ndvi = image.normalizedDifference(["SR_B5", "SR_B4"]).rename("NDVI")
     return image.addBands(ndvi)
+
 
 landsat_ndvi = landsat_scaled.map(add_ndvi)
 
@@ -146,10 +160,10 @@ composite = landsat_ndvi.median()
 def land_surface_temperature(image):
     """Calculate land surface temperature from Landsat 8."""
     # Brightness temperature
-    Tb = image.select('ST_B10')
+    Tb = image.select("ST_B10")
 
     # NDVI for emissivity
-    ndvi = image.normalizedDifference(['SR_B5', 'SR_B4'])
+    ndvi = image.normalizedDifference(["SR_B5", "SR_B4"])
     pv = ((ndvi - 0.2) / (0.5 - 0.2)) ** 2  # Proportion of vegetation
 
     # Emissivity
@@ -159,9 +173,10 @@ def land_surface_temperature(image):
     lst = Tb.divide(1 + (0.00115 * Tb / 1.4388) * np.log(em))
 
     # Convert to Celsius
-    lst_c = lst.subtract(273.15).rename('LST')
+    lst_c = lst.subtract(273.15).rename("LST")
 
     return image.addBands(lst_c)
+
 
 landsat_lst = landsat_scaled.map(land_surface_temperature)
 ```
@@ -174,6 +189,7 @@ landsat_lst = landsat_scaled.map(land_surface_temperature)
 import rasterio
 from scipy.ndimage import gaussian_filter
 import numpy as np
+
 
 def process_sentinel1_grd(input_path, output_path):
     """Process Sentinel-1 GRD data."""
@@ -209,13 +225,14 @@ def process_sentinel1_grd(input_path, output_path):
         profile = src.profile
         profile.update(dtype=rasterio.float32, count=3)
 
-        with rasterio.open(output_path, 'w', **profile) as dst:
+        with rasterio.open(output_path, "w", **profile) as dst:
             dst.write(vv_filtered.astype(np.float32), 1)
             dst.write(vh_filtered.astype(np.float32), 2)
             dst.write(ratio.astype(np.float32), 3)
 
+
 # Usage
-process_sentinel1_grd('S1A_IW_GRDH.tif', 'S1A_processed.tif')
+process_sentinel1_grd("S1A_IW_GRDH.tif", "S1A_processed.tif")
 ```
 
 ### SAR Polarimetric Indices
@@ -245,7 +262,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Load hyperspectral cube
-hdr_path = 'hyperspectral.hdr'
+hdr_path = "hyperspectral.hdr"
 img = envi.open(hdr_path)
 data = img.load()
 
@@ -254,9 +271,10 @@ print(f"Data shape: {data.shape}")  # (rows, cols, bands)
 # Extract spectral signature at a pixel
 pixel_signature = data[100, 100, :]
 plt.plot(img.bands.centers, pixel_signature)
-plt.xlabel('Wavelength (nm)')
-plt.ylabel('Reflectance')
+plt.xlabel("Wavelength (nm)")
+plt.ylabel("Reflectance")
 plt.show()
+
 
 # Spectral indices for hyperspectral
 def calculate_ndi(hyper_data, band1_idx, band2_idx):
@@ -264,6 +282,7 @@ def calculate_ndi(hyper_data, band1_idx, band2_idx):
     band1 = hyper_data[:, :, band1_idx]
     band2 = hyper_data[:, :, band2_idx]
     return (band1 - band2) / (band1 + band2 + 1e-8)
+
 
 # Red Edge Position (REP)
 def red_edge_position(hyper_data, wavelengths):
@@ -304,6 +323,7 @@ s.run()
 # Get correction coefficients
 xa, xb, xc = s.outputs.coef_xa, s.outputs.coef_xb, s.outputs.coef_xc
 
+
 def atmospheric_correction(dn, xa, xb, xc):
     """Apply 6S atmospheric correction."""
     y = xa * dn - xb
@@ -317,15 +337,16 @@ def atmospheric_correction(dn, xa, xb, xc):
 def sentinel2_cloud_mask(s2_image):
     """Generate cloud mask for Sentinel-2."""
     # Simple cloud detection using spectral tests
-    scl = s2_image.select('SCL')  # Scene Classification Layer
+    scl = s2_image.select("SCL")  # Scene Classification Layer
 
     # Cloud classes: 8=Cloud, 9=Cloud medium, 10=Cloud high
     cloud_mask = scl.gt(7).And(scl.lt(11))
 
     # Additional test: Brightness threshold
-    brightness = s2_image.select(['B02','B03','B04','B08']).mean()
+    brightness = s2_image.select(["B02", "B03", "B04", "B08"]).mean()
 
     return cloud_mask.Or(brightness.gt(0.4))
+
 
 # Apply mask
 def apply_mask(image):
@@ -339,14 +360,14 @@ def apply_mask(image):
 import cv2
 import numpy as np
 
+
 def gram_schmidt_pansharpen(ms, pan):
     """Gram-Schmidt pan-sharpening."""
     # Multispectral: (H, W, bands)
     # Panchromatic: (H, W)
 
     # 1. Upsample MS to pan resolution
-    ms_up = cv2.resize(ms, (pan.shape[1], pan.shape[0]),
-                       interpolation=cv2.INTER_CUBIC)
+    ms_up = cv2.resize(ms, (pan.shape[1], pan.shape[0]), interpolation=cv2.INTER_CUBIC)
 
     # 2. Simulate panchromatic from MS
     weights = np.array([0.25, 0.25, 0.25, 0.25])  # Equal weights

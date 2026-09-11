@@ -153,7 +153,9 @@ Tools: Biopython, TensorFlow, scikit-learn
 """)
 
 # Generate idea
-den.set_idea("Develop a deep learning model for predicting protein secondary structure from amino acid sequences")
+den.set_idea(
+    "Develop a deep learning model for predicting protein secondary structure from amino acid sequences"
+)
 
 # NOTE: Literature search functionality would be integrated here
 # The specific API for literature search should be checked in denario's documentation

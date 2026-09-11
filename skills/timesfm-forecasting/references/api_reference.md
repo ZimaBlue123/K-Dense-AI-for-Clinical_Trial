@@ -11,8 +11,8 @@ The primary model class for TimesFM 2.5 (200M parameters, PyTorch backend).
 ```python
 model = timesfm.TimesFM_2p5_200M_torch.from_pretrained(
     "google/timesfm-2.5-200m-pytorch",
-    cache_dir=None,         # Optional: custom cache directory
-    force_download=True,    # Re-download even if cached
+    cache_dir=None,  # Optional: custom cache directory
+    force_download=True,  # Re-download even if cached
 )
 ```
 

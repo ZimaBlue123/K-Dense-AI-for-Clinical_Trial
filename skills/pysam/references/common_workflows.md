@@ -11,6 +11,7 @@ This document provides practical examples of common bioinformatics workflows usi
 ```python
 import pysam
 
+
 def calculate_bam_stats(bam_file):
     """Calculate basic statistics for BAM file."""
     samfile = pysam.AlignmentFile(bam_file, "rb")
@@ -23,7 +24,7 @@ def calculate_bam_stats(bam_file):
         "proper_pairs": 0,
         "duplicates": 0,
         "total_bases": 0,
-        "mapped_bases": 0
+        "mapped_bases": 0,
     }
 
     for read in samfile.fetch(until_eof=True):
@@ -48,8 +49,12 @@ def calculate_bam_stats(bam_file):
     samfile.close()
 
     # Calculate derived statistics
-    stats["mapping_rate"] = stats["mapped_reads"] / stats["total_reads"] if stats["total_reads"] > 0 else 0
-    stats["duplication_rate"] = stats["duplicates"] / stats["total_reads"] if stats["total_reads"] > 0 else 0
+    stats["mapping_rate"] = (
+        stats["mapped_reads"] / stats["total_reads"] if stats["total_reads"] > 0 else 0
+    )
+    stats["duplication_rate"] = (
+        stats["duplicates"] / stats["total_reads"] if stats["total_reads"] > 0 else 0
+    )
 
     return stats
 ```
@@ -70,11 +75,7 @@ def check_bam_reference_consistency(bam_file, fasta_file):
             continue
 
         # Get reference sequence for aligned region
-        ref_seq = fasta.fetch(
-            read.reference_name,
-            read.reference_start,
-            read.reference_end
-        )
+        ref_seq = fasta.fetch(read.reference_name, read.reference_start, read.reference_end)
 
         # Get read sequence aligned to reference
         aligned_pairs = read.get_aligned_pairs(with_seq=True)
@@ -93,11 +94,7 @@ def check_bam_reference_consistency(bam_file, fasta_file):
     fasta.close()
 
     error_rate = mismatches / total_checked if total_checked > 0 else 0
-    return {
-        "positions_checked": total_checked,
-        "mismatches": mismatches,
-        "error_rate": error_rate
-    }
+    return {"positions_checked": total_checked, "mismatches": mismatches, "error_rate": error_rate}
 ```
 
 ## Coverage Analysis
@@ -185,7 +182,7 @@ def coverage_statistics(bam_file, chrom, start, end):
         "median": coverages[n // 2],
         "min": coverages[0],
         "max": coverages[-1],
-        "positions": n
+        "positions": n,
     }
 ```
 
@@ -212,7 +209,7 @@ def extract_variants_in_genes(vcf_file, bed_file):
                 "pos": variant.pos,
                 "ref": variant.ref,
                 "alt": variant.alts,
-                "qual": variant.qual
+                "qual": variant.qual,
             }
             variants_by_gene[gene_name].append(variant_info)
 
@@ -241,7 +238,7 @@ def annotate_variants_with_coverage(vcf_file, bam_file, output_file):
         coverage = samfile.count(
             variant.chrom,
             variant.pos - 1,  # Convert to 0-based
-            variant.pos
+            variant.pos,
         )
 
         # Add to INFO field
@@ -270,25 +267,16 @@ def filter_variants_by_support(vcf_file, bam_file, output_file, min_alt_reads=3)
             allele_counts[alt] = 0
 
         # Pileup at variant position
-        for pileupcolumn in samfile.pileup(
-            variant.chrom,
-            variant.pos - 1,
-            variant.pos
-        ):
+        for pileupcolumn in samfile.pileup(variant.chrom, variant.pos - 1, variant.pos):
             if pileupcolumn.pos == variant.pos - 1:  # 0-based
                 for pileupread in pileupcolumn.pileups:
                     if not pileupread.is_del and not pileupread.is_refskip:
-                        base = pileupread.alignment.query_sequence[
-                            pileupread.query_position
-                        ]
+                        base = pileupread.alignment.query_sequence[pileupread.query_position]
                         if base in allele_counts:
                             allele_counts[base] += 1
 
         # Check if any alt allele has sufficient support
-        has_support = any(
-            allele_counts.get(alt, 0) >= min_alt_reads
-            for alt in variant.alts
-        )
+        has_support = any(allele_counts.get(alt, 0) >= min_alt_reads for alt in variant.alts)
 
         if has_support:
             outvcf.write(variant)
@@ -308,7 +296,7 @@ def extract_variant_contexts(vcf_file, fasta_file, output_file, window=50):
     vcf = pysam.VariantFile(vcf_file)
     fasta = pysam.FastaFile(fasta_file)
 
-    with open(output_file, 'w') as out:
+    with open(output_file, "w") as out:
         for variant in vcf:
             # Get sequence context
             start = max(0, variant.pos - window - 1)  # Convert to 0-based
@@ -321,8 +309,8 @@ def extract_variant_contexts(vcf_file, fasta_file, output_file, window=50):
 
             out.write(f">{variant.chrom}:{variant.pos} {variant.ref}>{variant.alts}\n")
             out.write(context[:var_pos_in_context].lower())
-            out.write(context[var_pos_in_context:var_pos_in_context+len(variant.ref)].upper())
-            out.write(context[var_pos_in_context+len(variant.ref):].lower())
+            out.write(context[var_pos_in_context : var_pos_in_context + len(variant.ref)].upper())
+            out.write(context[var_pos_in_context + len(variant.ref) :].lower())
             out.write("\n")
 
     vcf.close()
@@ -337,12 +325,12 @@ def extract_gene_sequences(bed_file, fasta_file, output_fasta):
     bed = pysam.TabixFile(bed_file)
     fasta = pysam.FastaFile(fasta_file)
 
-    with open(output_fasta, 'w') as out:
+    with open(output_fasta, "w") as out:
         for gene in bed.fetch(parser=pysam.asBed()):
             sequence = fasta.fetch(gene.contig, gene.start, gene.end)
 
             # Handle strand
-            if hasattr(gene, 'strand') and gene.strand == '-':
+            if hasattr(gene, "strand") and gene.strand == "-":
                 # Reverse complement
                 complement = str.maketrans("ATGCatgcNn", "TACGtacgNn")
                 sequence = sequence.translate(complement)[::-1]
@@ -351,7 +339,7 @@ def extract_gene_sequences(bed_file, fasta_file, output_fasta):
 
             # Write sequence in 60-character lines
             for i in range(0, len(sequence), 60):
-                out.write(sequence[i:i+60] + "\n")
+                out.write(sequence[i : i + 60] + "\n")
 
     bed.close()
     fasta.close()
@@ -423,8 +411,8 @@ def create_coverage_bedgraph(bam_file, output_file, chrom=None):
 
     chroms = [chrom] if chrom else samfile.references
 
-    with open(output_file, 'w') as out:
-        out.write("track type=bedGraph name=\"Coverage\"\n")
+    with open(output_file, "w") as out:
+        out.write('track type=bedGraph name="Coverage"\n')
 
         for chrom in chroms:
             current_cov = None
@@ -445,7 +433,7 @@ def create_coverage_bedgraph(bam_file, output_file, chrom=None):
 
             # Write final region
             if current_cov is not None:
-                out.write(f"{chrom}\t{region_start}\t{pos+1}\t{current_cov}\n")
+                out.write(f"{chrom}\t{region_start}\t{pos + 1}\t{current_cov}\n")
 
     samfile.close()
 ```
@@ -482,7 +470,7 @@ def merge_vcf_samples(vcf_files, output_file):
             contig=variants[0].chrom,
             start=variants[0].start,
             stop=variants[0].stop,
-            alleles=variants[0].alleles
+            alleles=variants[0].alleles,
         )
 
         # Add genotypes from all samples

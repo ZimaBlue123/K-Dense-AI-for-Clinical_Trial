@@ -157,13 +157,13 @@ inputs = tokenizer(texts, padding=True, return_length=True)
 
 Access special tokens:
 ```python
-print(tokenizer.cls_token)      # [CLS] or <s>
-print(tokenizer.sep_token)      # [SEP] or </s>
-print(tokenizer.pad_token)      # [PAD]
-print(tokenizer.unk_token)      # [UNK]
-print(tokenizer.mask_token)     # [MASK]
-print(tokenizer.eos_token)      # End of sequence
-print(tokenizer.bos_token)      # Beginning of sequence
+print(tokenizer.cls_token)  # [CLS] or <s>
+print(tokenizer.sep_token)  # [SEP] or </s>
+print(tokenizer.pad_token)  # [PAD]
+print(tokenizer.unk_token)  # [UNK]
+print(tokenizer.mask_token)  # [MASK]
+print(tokenizer.eos_token)  # End of sequence
+print(tokenizer.bos_token)  # Beginning of sequence
 
 # Get IDs
 print(tokenizer.cls_token_id)
@@ -184,9 +184,7 @@ inputs = tokenizer(text, add_special_tokens=False)
 ### Custom Special Tokens
 
 ```python
-special_tokens_dict = {
-    "additional_special_tokens": ["<CUSTOM>", "<SPECIAL>"]
-}
+special_tokens_dict = {"additional_special_tokens": ["<CUSTOM>", "<SPECIAL>"]}
 
 num_added = tokenizer.add_special_tokens(special_tokens_dict)
 print(f"Added {num_added} tokens")
@@ -323,7 +321,7 @@ messages = [
     {"role": "system", "content": "You are helpful."},
     {"role": "user", "content": "Hello!"},
     {"role": "assistant", "content": "Hi there!"},
-    {"role": "user", "content": "How are you?"}
+    {"role": "user", "content": "How are you?"},
 ]
 
 # Apply chat template
@@ -342,13 +340,7 @@ inputs = tokenizer.apply_chat_template(messages, tokenize=True, return_tensors="
 texts = ["I love this!", "I hate this!"]
 labels = [1, 0]
 
-inputs = tokenizer(
-    texts,
-    padding=True,
-    truncation=True,
-    max_length=512,
-    return_tensors="pt"
-)
+inputs = tokenizer(texts, padding=True, truncation=True, max_length=512, return_tensors="pt")
 
 # Use with model
 outputs = model(**inputs, labels=torch.tensor(labels))
@@ -361,12 +353,7 @@ question = "What is the capital?"
 context = "Paris is the capital of France."
 
 inputs = tokenizer(
-    question,
-    context,
-    padding=True,
-    truncation=True,
-    max_length=384,
-    return_tensors="pt"
+    question, context, padding=True, truncation=True, max_length=384, return_tensors="pt"
 )
 ```
 
@@ -379,9 +366,7 @@ inputs = tokenizer(prompt, return_tensors="pt")
 
 # Generate
 outputs = model.generate(
-    inputs["input_ids"],
-    max_new_tokens=50,
-    pad_token_id=tokenizer.eos_token_id
+    inputs["input_ids"], max_new_tokens=50, pad_token_id=tokenizer.eos_token_id
 )
 
 # Decode
@@ -392,12 +377,8 @@ text = tokenizer.decode(outputs[0], skip_special_tokens=True)
 
 ```python
 def tokenize_function(examples):
-    return tokenizer(
-        examples["text"],
-        padding="max_length",
-        truncation=True,
-        max_length=512
-    )
+    return tokenizer(examples["text"], padding="max_length", truncation=True, max_length=512)
+
 
 # Apply to dataset
 tokenized_dataset = dataset.map(tokenize_function, batched=True)
@@ -440,8 +421,5 @@ model = AutoModel.from_pretrained("model-id")
 **Attention mask issues:**
 ```python
 # Ensure attention_mask is passed
-outputs = model(
-    input_ids=inputs["input_ids"],
-    attention_mask=inputs["attention_mask"]
-)
+outputs = model(input_ids=inputs["input_ids"], attention_mask=inputs["attention_mask"])
 ```

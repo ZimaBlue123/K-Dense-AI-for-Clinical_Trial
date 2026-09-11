@@ -40,6 +40,7 @@ import os
 API_KEY = os.environ.get("ALPHAVANTAGE_API_KEY")
 BASE_URL = "https://www.alphavantage.co/query"
 
+
 def av_get(function, **params):
     response = requests.get(BASE_URL, params={"function": function, "apikey": API_KEY, **params})
     return response.json()
@@ -106,6 +107,7 @@ rsi = av_get("RSI", symbol="AAPL", interval="daily", time_period=14, series_type
 
 ```python
 import time
+
 # Add delay to avoid rate limits
 time.sleep(0.5)  # 0.5s between requests on free tier
 ```

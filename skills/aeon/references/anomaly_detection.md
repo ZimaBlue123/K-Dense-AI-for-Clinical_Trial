@@ -91,11 +91,13 @@ from aeon.anomaly_detection import STOMP
 import numpy as np
 
 # Create time series with anomaly
-y = np.concatenate([
-    np.sin(np.linspace(0, 10, 100)),
-    [5.0],  # Anomaly spike
-    np.sin(np.linspace(10, 20, 100))
-])
+y = np.concatenate(
+    [
+        np.sin(np.linspace(0, 10, 100)),
+        [5.0],  # Anomaly spike
+        np.sin(np.linspace(10, 20, 100)),
+    ]
+)
 
 # Detect anomalies
 detector = STOMP(window_size=10)
@@ -126,7 +128,7 @@ from aeon.benchmarking.metrics.anomaly_detection import (
     range_precision,
     range_recall,
     range_f_score,
-    roc_auc_score
+    roc_auc_score,
 )
 
 # Range-based metrics account for window detection

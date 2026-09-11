@@ -24,7 +24,7 @@ def classify_urban_land_use(sentinel2_path, training_data_path):
 
     # 3. Train classifier
     rf = RandomForestClassifier(n_estimators=100, max_depth=20)
-    rf.fit(features['X'], features['y'])
+    rf.fit(features["X"], features["y"])
 
     # 4. Classify full image
     classified = classify_image(sentinel2_path, rf)
@@ -38,6 +38,7 @@ def classify_urban_land_use(sentinel2_path, training_data_path):
 
     return cleaned, stats
 
+
 def extract_features(image_path, training_gdf):
     """Extract spectral and textural features."""
     with rasterio.open(image_path) as src:
@@ -46,10 +47,10 @@ def extract_features(image_path, training_gdf):
 
     # Spectral features
     features = {
-        'NDVI': (image[7] - image[3]) / (image[7] + image[3] + 1e-8),
-        'NDWI': (image[2] - image[7]) / (image[2] + image[7] + 1e-8),
-        'NDBI': (image[10] - image[7]) / (image[10] + image[7] + 1e-8),
-        'UI': (image[10] + image[3]) / (image[7] + image[2] + 1e-8)  # Urban Index
+        "NDVI": (image[7] - image[3]) / (image[7] + image[3] + 1e-8),
+        "NDWI": (image[2] - image[7]) / (image[2] + image[7] + 1e-8),
+        "NDBI": (image[10] - image[7]) / (image[10] + image[7] + 1e-8),
+        "UI": (image[10] + image[3]) / (image[7] + image[2] + 1e-8),  # Urban Index
     }
 
     # Textural features (GLCM)
@@ -61,11 +62,11 @@ def extract_features(image_path, training_gdf):
         band_8bit = ((band - band.min()) / (band.max() - band.min()) * 255).astype(np.uint8)
 
         glcm = graycomatrix(band_8bit, distances=[1], angles=[0], levels=256, symmetric=True)
-        contrast = graycoprops(glcm, 'contrast')[0, 0]
-        homogeneity = graycoprops(glcm, 'homogeneity')[0, 0]
+        contrast = graycoprops(glcm, "contrast")[0, 0]
+        homogeneity = graycoprops(glcm, "homogeneity")[0, 0]
 
-        textures[f'contrast_{band_idx}'] = contrast
-        textures[f'homogeneity_{band_idx}'] = homogeneity
+        textures[f"contrast_{band_idx}"] = contrast
+        textures[f"homogeneity_{band_idx}"] = homogeneity
 
     # Combine all features
     # ... (implementation)
@@ -82,9 +83,9 @@ def dasymetric_population(population_raster, land_use_classified):
     """
     # 1. Identify inhabitable areas
     inhabitable_mask = (
-        (land_use_classified != 0) &  # Water
-        (land_use_classified != 4) &  # Industrial
-        (land_use_classified != 5)    # Roads
+        (land_use_classified != 0)  # Water
+        & (land_use_classified != 4)  # Industrial
+        & (land_use_classified != 5)  # Roads
     )
 
     # 2. Assign weights by land use type
@@ -123,9 +124,9 @@ def flood_risk_assessment(dem_path, river_path, return_period_years=100):
     flood_depth = estimate_flood_extent(dem_path, river_path, return_period_years)
 
     # 3. Exposure analysis
-    settlements = gpd.read_file('settlements.shp')
-    roads = gpd.read_file('roads.shp')
-    infrastructure = gpd.read_file('infrastructure.shp')
+    settlements = gpd.read_file("settlements.shp")
+    roads = gpd.read_file("roads.shp")
+    infrastructure = gpd.read_file("infrastructure.shp")
 
     exposed_settlements = gpd.clip(settlements, flood_extent_polygon)
     exposed_roads = gpd.clip(roads, flood_extent_polygon)
@@ -137,13 +138,14 @@ def flood_risk_assessment(dem_path, river_path, return_period_years=100):
     risk = flood_depth * vulnerability  # Risk = Hazard × Vulnerability
 
     # 6. Generate risk maps
-    create_risk_map(risk, settlements, output_path='flood_risk.tif')
+    create_risk_map(risk, settlements, output_path="flood_risk.tif")
 
     return {
-        'flood_extent': flood_extent_polygon,
-        'exposed_population': calculate_exposed_population(exposed_settlements),
-        'risk_zones': risk
+        "flood_extent": flood_extent_polygon,
+        "exposed_population": calculate_exposed_population(exposed_settlements),
+        "risk_zones": risk,
     }
+
 
 def estimate_flood_extent(dem_path, river_path, return_period):
     """
@@ -192,8 +194,8 @@ def wildfire_risk_assessment(vegetation_path, dem_path, weather_data, infrastruc
     slope_factor = 1 + (slope / 90) * 0.5  # Up to 50% increase
 
     # 3. Wind influence
-    wind_speed = weather_data['wind_speed']
-    wind_direction = weather_data['wind_direction']
+    wind_speed = weather_data["wind_speed"]
+    wind_direction = weather_data["wind_direction"]
     wind_factor = 1 + (wind_speed / 50) * 0.3
 
     # 4. Vegetation dryness (from NDWI anomaly)
@@ -207,8 +209,8 @@ def wildfire_risk_assessment(vegetation_path, dem_path, weather_data, infrastruc
     infrastructure = gpd.read_file(infrastructure_path)
     risk_at_infrastructure = extract_raster_values_at_points(risk, infrastructure)
 
-    infrastructure['risk_level'] = risk_at_infrastructure
-    high_risk_assets = infrastructure[infrastructure['risk_level'] > 0.7]
+    infrastructure["risk_level"] = risk_at_infrastructure
+    high_risk_assets = infrastructure[infrastructure["risk_level"] > 0.7]
 
     return risk, high_risk_assets
 ```
@@ -253,17 +255,20 @@ def power_line_corridor_analysis(power_lines_path, vegetation_height_path, buffe
 
     # 8. Create work order points
     from scipy import ndimage
+
     labeled, num_features = ndimage.label(high_risk)
 
     work_orders = []
     for i in range(1, num_features + 1):
         mask = labeled == i
         centroid = ndimage.center_of_mass(mask)
-        work_orders.append({
-            'location': centroid,
-            'area_ha': np.sum(mask) * 0.0001,  # Assuming 1m resolution
-            'priority': 'Urgent'
-        })
+        work_orders.append(
+            {
+                "location": centroid,
+                "area_ha": np.sum(mask) * 0.0001,  # Assuming 1m resolution
+                "priority": "Urgent",
+            }
+        )
 
     return priority, work_orders
 ```
@@ -283,11 +288,11 @@ def optimize_pipeline_route(origin, destination, constraints_path, cost_surface_
 
     # 2. Apply constraints
     constraints = gpd.read_file(constraints_path)
-    no_go_zones = constraints[constraints['type'] == 'no_go']
+    no_go_zones = constraints[constraints["type"] == "no_go"]
 
     # Set very high cost for no-go zones
     for _, zone in no_go_zones.iterrows():
-        mask = rasterize_features(zone.geometry, profile['shape'])
+        mask = rasterize_features(zone.geometry, profile["shape"])
         cost[mask > 0] = 999999
 
     # 3. Least-cost path (Dijkstra)
@@ -302,10 +307,9 @@ def optimize_pipeline_route(origin, destination, constraints_path, cost_surface_
     dest_node = coord_to_node(destination, profile)
 
     # Find path
-    _, predecessors = shortest_path(csgraph=graph,
-                                   directed=True,
-                                   indices=orig_node,
-                                   return_predecessors=True)
+    _, predecessors = shortest_path(
+        csgraph=graph, directed=True, indices=orig_node, return_predecessors=True
+    )
 
     # Reconstruct path
     path = reconstruct_path(predecessors, dest_node)
@@ -315,6 +319,7 @@ def optimize_pipeline_route(origin, destination, constraints_path, cost_surface_
     route = LineString(route_coords)
 
     return route
+
 
 def create_graph_from_raster(cost_raster):
     """Create graph from cost raster for least-cost path."""
@@ -344,17 +349,15 @@ def traffic_analysis(roads_gdf, traffic_counts_path):
     for _, road in roads_gdf.iterrows():
         coords = list(road.geometry.coords)
         for i in range(len(coords) - 1):
-            G.add_edge(coords[i], coords[i+1],
-                      length=road.geometry.length,
-                      road_id=road.id)
+            G.add_edge(coords[i], coords[i + 1], length=road.geometry.length, road_id=road.id)
 
     # 3. Spatial interpolation of counts
     from sklearn.neighbors import KNeighborsRegressor
 
     count_coords = np.array([[p.x, p.y] for p in counts.geometry])
-    count_values = counts['AADT'].values
+    count_values = counts["AADT"].values
 
-    knn = KNeighborsRegressor(n_neighbors=5, weights='distance')
+    knn = KNeighborsRegressor(n_neighbors=5, weights="distance")
     knn.fit(count_coords, count_values)
 
     # 4. Predict traffic for all road segments
@@ -363,15 +366,16 @@ def traffic_analysis(roads_gdf, traffic_counts_path):
 
     # 5. Identify congested segments
     for i, (u, v) in enumerate(G.edges()):
-        avg_traffic = (predicted_traffic[list(G.nodes()).index(u)] +
-                      predicted_traffic[list(G.nodes()).index(v)]) / 2
-        capacity = G[u][v]['capacity']  # Need capacity data
+        avg_traffic = (
+            predicted_traffic[list(G.nodes()).index(u)]
+            + predicted_traffic[list(G.nodes()).index(v)]
+        ) / 2
+        capacity = G[u][v]["capacity"]  # Need capacity data
 
-        G[u][v]['v_c_ratio'] = avg_traffic / capacity
+        G[u][v]["v_c_ratio"] = avg_traffic / capacity
 
     # 6. Congestion hotspots
-    congested_edges = [(u, v) for u, v, d in G.edges(data=True)
-                      if d.get('v_c_ratio', 0) > 0.9]
+    congested_edges = [(u, v) for u, v, d in G.edges(data=True) if d.get("v_c_ratio", 0) > 0.9]
 
     return G, congested_edges
 ```
@@ -388,7 +392,7 @@ def transit_service_area(stops_gdf, max_walk_distance=800, max_time=30):
     walk_buffer = stops_gdf.buffer(max_walk_distance)
 
     # 2. Load road network for walk time
-    roads = gpd.read_file('roads.shp')
+    roads = gpd.read_file("roads.shp")
     G = osmnx.graph_from_gdf(roads)
 
     # 3. For each stop, calculate accessible area within walk time
@@ -408,11 +412,13 @@ def transit_service_area(stops_gdf, max_walk_distance=800, max_time=30):
         reachable_nodes = ox.graph_to_gdfs(subgraph, edges=False)
         service_area = reachable_nodes.geometry.unary_union.convex_hull
 
-        service_areas.append({
-            'stop_id': stop.stop_id,
-            'service_area': service_area,
-            'area_km2': service_area.area / 1e6
-        })
+        service_areas.append(
+            {
+                "stop_id": stop.stop_id,
+                "service_area": service_area,
+                "area_km2": service_area.area / 1e6,
+            }
+        )
 
     return service_areas
 ```

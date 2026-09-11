@@ -141,15 +141,15 @@ import json
 from biorxiv_search import BioRxivSearcher
 
 # Load search results
-with open('results.json') as f:
+with open("results.json") as f:
     data = json.load(f)
 
 searcher = BioRxivSearcher(verbose=True)
 
 # Download each paper
-for i, paper in enumerate(data['results'][:10]):  # First 10 papers
-    doi = paper['doi']
-    searcher.download_pdf(doi, f"papers/paper_{i+1}.pdf")
+for i, paper in enumerate(data["results"][:10]):  # First 10 papers
+    doi = paper["doi"]
+    searcher.download_pdf(doi, f"papers/paper_{i + 1}.pdf")
 ```
 
 ## Valid Categories
@@ -237,12 +237,12 @@ python scripts/biorxiv_search.py \
 ```python
 import json
 
-with open('organoid_papers.json') as f:
+with open("organoid_papers.json") as f:
     data = json.load(f)
 
 print(f"Found {data['result_count']} papers")
 
-for paper in data['results'][:5]:
+for paper in data["results"][:5]:
     print(f"\nTitle: {paper['title']}")
     print(f"Authors: {paper['authors']}")
     print(f"Date: {paper['date']}")
@@ -306,23 +306,18 @@ keywords_papers = searcher.search_by_keywords(
     keywords=["CRISPR", "gene editing"],
     start_date="2024-01-01",
     end_date="2024-12-31",
-    category="genomics"
+    category="genomics",
 )
 
 author_papers = searcher.search_by_author(
-    author_name="Smith",
-    start_date="2023-01-01",
-    end_date="2024-12-31"
+    author_name="Smith", start_date="2023-01-01", end_date="2024-12-31"
 )
 
 # Get specific paper details
 paper = searcher.get_paper_details("10.1101/2024.01.15.123456")
 
 # Download PDF
-success = searcher.download_pdf(
-    doi="10.1101/2024.01.15.123456",
-    output_path="paper.pdf"
-)
+success = searcher.download_pdf(doi="10.1101/2024.01.15.123456", output_path="paper.pdf")
 
 # Format results consistently
 formatted = searcher.format_result(paper, include_abstract=True)
@@ -394,21 +389,21 @@ import json
 import pandas as pd
 
 # Load results
-with open('results.json') as f:
+with open("results.json") as f:
     data = json.load(f)
 
 # Convert to DataFrame for analysis
-df = pd.DataFrame(data['results'])
+df = pd.DataFrame(data["results"])
 
 # Analyze
 print(f"Total papers: {len(df)}")
 print(f"Date range: {df['date'].min()} to {df['date'].max()}")
 print(f"\nTop authors by paper count:")
-print(df['authors'].str.split(',').explode().str.strip().value_counts().head(10))
+print(df["authors"].str.split(",").explode().str.strip().value_counts().head(10))
 
 # Filter and export
-recent = df[df['date'] >= '2024-06-01']
-recent.to_csv('recent_papers.csv', index=False)
+recent = df[df["date"] >= "2024-06-01"]
+recent.to_csv("recent_papers.csv", index=False)
 ```
 
 ## Testing the Skill

@@ -55,11 +55,7 @@ Get all releases of economic data.
 ```python
 response = requests.get(
     "https://api.stlouisfed.org/fred/releases",
-    params={
-        "api_key": API_KEY,
-        "file_type": "json",
-        "order_by": "name"
-    }
+    params={"api_key": API_KEY, "file_type": "json", "order_by": "name"},
 )
 ```
 
@@ -140,8 +136,8 @@ response = requests.get(
         "realtime_end": next_week,
         "order_by": "release_date",
         "sort_order": "asc",
-        "include_release_dates_with_no_data": "true"
-    }
+        "include_release_dates_with_no_data": "true",
+    },
 )
 ```
 
@@ -196,11 +192,7 @@ Get a specific release of economic data.
 # Get GDP release info
 response = requests.get(
     "https://api.stlouisfed.org/fred/release",
-    params={
-        "api_key": API_KEY,
-        "release_id": 53,
-        "file_type": "json"
-    }
+    params={"api_key": API_KEY, "release_id": 53, "file_type": "json"},
 )
 ```
 
@@ -261,8 +253,8 @@ response = requests.get(
         "release_id": 53,
         "file_type": "json",
         "sort_order": "desc",
-        "limit": 20
-    }
+        "limit": 20,
+    },
 )
 ```
 
@@ -343,8 +335,8 @@ response = requests.get(
         "filter_value": "Quarterly",
         "order_by": "popularity",
         "sort_order": "desc",
-        "limit": 10
-    }
+        "limit": 10,
+    },
 )
 ```
 
@@ -408,11 +400,7 @@ Get the sources for a release.
 ```python
 response = requests.get(
     "https://api.stlouisfed.org/fred/release/sources",
-    params={
-        "api_key": API_KEY,
-        "release_id": 51,
-        "file_type": "json"
-    }
+    params={"api_key": API_KEY, "release_id": 51, "file_type": "json"},
 )
 ```
 
@@ -476,12 +464,7 @@ Get the tags for a release.
 ```python
 response = requests.get(
     "https://api.stlouisfed.org/fred/release/tags",
-    params={
-        "api_key": API_KEY,
-        "release_id": 53,
-        "file_type": "json",
-        "tag_group_id": "gen"
-    }
+    params={"api_key": API_KEY, "release_id": 53, "file_type": "json", "tag_group_id": "gen"},
 )
 ```
 
@@ -555,11 +538,7 @@ Get release table trees for a release.
 # Get GDP release table structure
 response = requests.get(
     "https://api.stlouisfed.org/fred/release/tables",
-    params={
-        "api_key": API_KEY,
-        "release_id": 53,
-        "file_type": "json"
-    }
+    params={"api_key": API_KEY, "release_id": 53, "file_type": "json"},
 )
 ```
 
@@ -608,6 +587,7 @@ response = requests.get(
 ```python
 from datetime import datetime, timedelta
 
+
 def get_release_calendar(api_key, days_ahead=14):
     """Get upcoming data releases."""
     today = datetime.now()
@@ -622,8 +602,8 @@ def get_release_calendar(api_key, days_ahead=14):
             "realtime_end": end_date.strftime("%Y-%m-%d"),
             "order_by": "release_date",
             "sort_order": "asc",
-            "include_release_dates_with_no_data": "true"
-        }
+            "include_release_dates_with_no_data": "true",
+        },
     )
 
     data = response.json()
@@ -633,10 +613,7 @@ def get_release_calendar(api_key, days_ahead=14):
         date = item["date"]
         if date not in calendar:
             calendar[date] = []
-        calendar[date].append({
-            "release_id": item["release_id"],
-            "name": item["release_name"]
-        })
+        calendar[date].append({"release_id": item["release_id"], "name": item["release_name"]})
 
     return calendar
 ```

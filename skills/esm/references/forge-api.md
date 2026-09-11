@@ -34,9 +34,7 @@ from esm.sdk.api import ESMProtein, GenerationConfig
 
 # Initialize client
 client = ESM3ForgeInferenceClient(
-    model="esm3-medium-2024-08",
-    url="https://forge.evolutionaryscale.ai",
-    token="<your-token-here>"
+    model="esm3-medium-2024-08", url="https://forge.evolutionaryscale.ai", token="<your-token-here>"
 )
 
 # Test connection
@@ -69,23 +67,18 @@ print(result.sequence)
 from esm.sdk.forge import ESM3ForgeInferenceClient
 
 # Basic initialization
-client = ESM3ForgeInferenceClient(
-    model="esm3-medium-2024-08",
-    token="<your-token>"
-)
+client = ESM3ForgeInferenceClient(model="esm3-medium-2024-08", token="<your-token>")
 
 # With custom URL (for enterprise deployments)
 client = ESM3ForgeInferenceClient(
-    model="esm3-medium-2024-08",
-    url="https://custom.forge.instance.com",
-    token="<your-token>"
+    model="esm3-medium-2024-08", url="https://custom.forge.instance.com", token="<your-token>"
 )
 
 # With timeout configuration
 client = ESM3ForgeInferenceClient(
     model="esm3-medium-2024-08",
     token="<your-token>",
-    timeout=300  # 5 minutes
+    timeout=300,  # 5 minutes
 )
 ```
 
@@ -112,25 +105,24 @@ For concurrent processing of multiple proteins:
 import asyncio
 from esm.sdk.api import ESMProtein, GenerationConfig
 
+
 async def generate_many(client, proteins):
     """Generate multiple proteins concurrently."""
     tasks = []
 
     for protein in proteins:
-        task = client.async_generate(
-            protein,
-            GenerationConfig(track="sequence", num_steps=8)
-        )
+        task = client.async_generate(protein, GenerationConfig(track="sequence", num_steps=8))
         tasks.append(task)
 
     results = await asyncio.gather(*tasks)
     return results
 
+
 # Usage
 proteins = [
     ESMProtein(sequence=f"MPRT{'_' * 10}KEND"),
     ESMProtein(sequence=f"AGLV{'_' * 10}HSPQ"),
-    ESMProtein(sequence=f"KEIT{'_' * 10}NDFL")
+    ESMProtein(sequence=f"KEIT{'_' * 10}NDFL"),
 ]
 
 results = asyncio.run(generate_many(client, proteins))
@@ -148,7 +140,7 @@ from esm.sdk.api import ESMProtein, GenerationConfig
 # Create batch executor
 executor = BatchExecutor(
     client=client,
-    max_concurrent=10  # Process 10 requests concurrently
+    max_concurrent=10,  # Process 10 requests concurrently
 )
 
 # Prepare batch of proteins
@@ -159,7 +151,7 @@ config = GenerationConfig(track="sequence", num_steps=25)
 batch_results = executor.submit_batch(
     proteins=proteins,
     config=config,
-    progress_callback=lambda i, total: print(f"Processed {i}/{total}")
+    progress_callback=lambda i, total: print(f"Processed {i}/{total}"),
 )
 
 print(f"Completed {len(batch_results)} generations")
@@ -185,6 +177,7 @@ Forge implements rate limiting based on:
 import time
 from requests.exceptions import HTTPError
 
+
 def generate_with_retry(client, protein, config, max_retries=3):
     """Generate with automatic retry on rate limit."""
     for attempt in range(max_retries):
@@ -192,12 +185,13 @@ def generate_with_retry(client, protein, config, max_retries=3):
             return client.generate(protein, config)
         except HTTPError as e:
             if e.response.status_code == 429:  # Rate limit
-                wait_time = 2 ** attempt  # Exponential backoff
+                wait_time = 2**attempt  # Exponential backoff
                 print(f"Rate limited, waiting {wait_time}s...")
                 time.sleep(wait_time)
             else:
                 raise
     raise Exception("Max retries exceeded")
+
 
 # Usage
 result = generate_with_retry(client, protein, config)
@@ -208,6 +202,7 @@ result = generate_with_retry(client, protein, config)
 ```python
 import time
 from collections import deque
+
 
 class RateLimiter:
     """Simple rate limiter for API calls."""
@@ -233,6 +228,7 @@ class RateLimiter:
 
         self.calls.append(now)
 
+
 # Usage
 limiter = RateLimiter(max_per_minute=60)
 
@@ -251,20 +247,17 @@ Process results as they complete:
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
 
+
 async def stream_generate(client, proteins, config):
     """Stream results as they complete."""
     pending = {
-        asyncio.create_task(client.async_generate(p, config)): i
-        for i, p in enumerate(proteins)
+        asyncio.create_task(client.async_generate(p, config)): i for i, p in enumerate(proteins)
     }
 
     results = [None] * len(proteins)
 
     while pending:
-        done, pending = await asyncio.wait(
-            pending.keys(),
-            return_when=asyncio.FIRST_COMPLETED
-        )
+        done, pending = await asyncio.wait(pending.keys(), return_when=asyncio.FIRST_COMPLETED)
 
         for task in done:
             idx = pending.pop(task)
@@ -272,10 +265,12 @@ async def stream_generate(client, proteins, config):
             results[idx] = result
             yield idx, result
 
+
 # Usage
 async def process_stream():
     async for idx, result in stream_generate(client, proteins, config):
         print(f"Completed protein {idx}: {result.sequence[:20]}...")
+
 
 asyncio.run(process_stream())
 ```
@@ -285,6 +280,7 @@ asyncio.run(process_stream())
 ```python
 from tqdm import tqdm
 import asyncio
+
 
 async def batch_with_progress(client, proteins, config):
     """Process batch with progress bar."""
@@ -298,6 +294,7 @@ async def batch_with_progress(client, proteins, config):
 
     return results
 
+
 # Usage
 results = asyncio.run(batch_with_progress(client, proteins, config))
 ```
@@ -310,6 +307,7 @@ For long-running batch jobs:
 import pickle
 import os
 
+
 class CheckpointedBatchProcessor:
     """Batch processor with checkpoint/resume capability."""
 
@@ -320,12 +318,12 @@ class CheckpointedBatchProcessor:
 
     def load_checkpoint(self):
         if os.path.exists(self.checkpoint_file):
-            with open(self.checkpoint_file, 'rb') as f:
+            with open(self.checkpoint_file, "rb") as f:
                 return pickle.load(f)
         return {}
 
     def save_checkpoint(self):
-        with open(self.checkpoint_file, 'wb') as f:
+        with open(self.checkpoint_file, "wb") as f:
             pickle.dump(self.completed, f)
 
     def process_batch(self, proteins, config):
@@ -355,6 +353,7 @@ class CheckpointedBatchProcessor:
         self.save_checkpoint()
         return results
 
+
 # Usage
 processor = CheckpointedBatchProcessor(client)
 results = processor.process_batch(proteins, config)
@@ -366,6 +365,7 @@ results = processor.process_batch(proteins, config)
 
 ```python
 from requests.exceptions import HTTPError, ConnectionError, Timeout
+
 
 def robust_generate(client, protein, config):
     """Generate with comprehensive error handling."""
@@ -391,6 +391,7 @@ def robust_generate(client, protein, config):
     except Exception as e:
         raise ValueError(f"Unexpected error: {str(e)}")
 
+
 # Usage with retry logic
 def generate_with_full_retry(client, protein, config, max_retries=3):
     """Combine error handling with retry logic."""
@@ -399,7 +400,7 @@ def generate_with_full_retry(client, protein, config, max_retries=3):
             return robust_generate(client, protein, config)
         except ValueError as e:
             if "rate limit" in str(e).lower() and attempt < max_retries - 1:
-                time.sleep(2 ** attempt)
+                time.sleep(2**attempt)
                 continue
             raise
 ```
@@ -412,16 +413,10 @@ def generate_with_full_retry(client, protein, config, max_retries=3):
 
 ```python
 # Use smaller model for testing
-dev_client = ESM3ForgeInferenceClient(
-    model="esm3-small-2024-08",
-    token=token
-)
+dev_client = ESM3ForgeInferenceClient(model="esm3-small-2024-08", token=token)
 
 # Use larger model only for final generation
-prod_client = ESM3ForgeInferenceClient(
-    model="esm3-large-2024-03",
-    token=token
-)
+prod_client = ESM3ForgeInferenceClient(model="esm3-large-2024-03", token=token)
 ```
 
 **2. Cache Results:**
@@ -429,6 +424,7 @@ prod_client = ESM3ForgeInferenceClient(
 ```python
 import hashlib
 import json
+
 
 class ForgeCache:
     """Cache Forge API results locally."""
@@ -439,10 +435,7 @@ class ForgeCache:
 
     def get_cache_key(self, protein, config):
         """Generate cache key from inputs."""
-        data = {
-            'sequence': protein.sequence,
-            'config': str(config)
-        }
+        data = {"sequence": protein.sequence, "config": str(config)}
         return hashlib.md5(json.dumps(data, sort_keys=True).encode()).hexdigest()
 
     def get(self, protein, config):
@@ -451,7 +444,7 @@ class ForgeCache:
         path = os.path.join(self.cache_dir, f"{key}.pkl")
 
         if os.path.exists(path):
-            with open(path, 'rb') as f:
+            with open(path, "rb") as f:
                 return pickle.load(f)
         return None
 
@@ -460,11 +453,13 @@ class ForgeCache:
         key = self.get_cache_key(protein, config)
         path = os.path.join(self.cache_dir, f"{key}.pkl")
 
-        with open(path, 'wb') as f:
+        with open(path, "wb") as f:
             pickle.dump(result, f)
+
 
 # Usage
 cache = ForgeCache()
+
 
 def cached_generate(client, protein, config):
     """Generate with caching."""
@@ -511,6 +506,7 @@ def batch_similar_tasks(proteins, max_batch_size=50):
 import logging
 from datetime import datetime
 
+
 class ForgeMonitor:
     """Monitor Forge API usage."""
 
@@ -521,12 +517,12 @@ class ForgeMonitor:
     def log_call(self, model, protein_length, duration, success=True, error=None):
         """Log API call."""
         entry = {
-            'timestamp': datetime.now(),
-            'model': model,
-            'protein_length': protein_length,
-            'duration': duration,
-            'success': success,
-            'error': str(error) if error else None
+            "timestamp": datetime.now(),
+            "model": model,
+            "protein_length": protein_length,
+            "duration": duration,
+            "success": success,
+            "error": str(error) if error else None,
         }
 
         if success:
@@ -538,18 +534,20 @@ class ForgeMonitor:
         """Get usage statistics."""
         total_calls = len(self.calls) + len(self.errors)
         success_rate = len(self.calls) / total_calls if total_calls > 0 else 0
-        avg_duration = sum(c['duration'] for c in self.calls) / len(self.calls) if self.calls else 0
+        avg_duration = sum(c["duration"] for c in self.calls) / len(self.calls) if self.calls else 0
 
         return {
-            'total_calls': total_calls,
-            'successful': len(self.calls),
-            'failed': len(self.errors),
-            'success_rate': success_rate,
-            'avg_duration': avg_duration
+            "total_calls": total_calls,
+            "successful": len(self.calls),
+            "failed": len(self.errors),
+            "success_rate": success_rate,
+            "avg_duration": avg_duration,
         }
+
 
 # Usage
 monitor = ForgeMonitor()
+
 
 def monitored_generate(client, protein, config):
     """Generate with monitoring."""
@@ -562,7 +560,7 @@ def monitored_generate(client, protein, config):
             model=client.model,
             protein_length=len(protein.sequence),
             duration=duration,
-            success=True
+            success=True,
         )
         return result
 
@@ -573,9 +571,10 @@ def monitored_generate(client, protein, config):
             protein_length=len(protein.sequence),
             duration=duration,
             success=False,
-            error=e
+            error=e,
         )
         raise
+
 
 # Check stats
 print(monitor.get_stats())
@@ -635,10 +634,7 @@ except Exception as e:
 def validate_token(token):
     """Validate API token."""
     try:
-        client = ESM3ForgeInferenceClient(
-            model="esm3-small-2024-08",
-            token=token
-        )
+        client = ESM3ForgeInferenceClient(model="esm3-small-2024-08", token=token)
         # Make minimal test call
         test = ESMProtein(sequence="MPR")
         client.generate(test, GenerationConfig(track="sequence", num_steps=1))

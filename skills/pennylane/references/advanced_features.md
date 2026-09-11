@@ -18,13 +18,15 @@ import pennylane as qml
 from pennylane.templates import *
 from pennylane import numpy as np
 
-dev = qml.device('default.qubit', wires=4)
+dev = qml.device("default.qubit", wires=4)
+
 
 # Strongly Entangling Layers
 @qml.qnode(dev)
 def circuit_sel(weights):
     StronglyEntanglingLayers(weights, wires=range(4))
     return qml.expval(qml.PauliZ(0))
+
 
 # Generate appropriately shaped weights
 n_layers = 3
@@ -44,6 +46,7 @@ def circuit_bel(weights):
     BasicEntanglerLayers(weights, wires=range(4))
     return qml.expval(qml.PauliZ(0))
 
+
 n_layers = 2
 weights = np.random.random((n_layers, 4))
 ```
@@ -57,6 +60,7 @@ def circuit_random(weights):
     RandomLayers(weights, wires=range(4))
     return qml.expval(qml.PauliZ(0))
 
+
 n_layers = 5
 weights = np.random.random((n_layers, 4))
 ```
@@ -67,9 +71,7 @@ weights = np.random.random((n_layers, 4))
 @qml.qnode(dev)
 def circuit_s2d(weights):
     # Simplified two-design
-    SimplifiedTwoDesign(initial_layer_weights=weights[0],
-                       weights=weights[1:],
-                       wires=range(4))
+    SimplifiedTwoDesign(initial_layer_weights=weights[0], weights=weights[1:], wires=range(4))
     return qml.expval(qml.PauliZ(0))
 ```
 
@@ -81,6 +83,7 @@ def circuit_particle_conserving(weights):
     # Preserve particle number (useful for chemistry)
     ParticleConservingU1(weights, wires=range(4))
     return qml.expval(qml.PauliZ(0))
+
 
 shape = ParticleConservingU1.shape(n_layers=2, n_wires=4)
 weights = np.random.random(shape)
@@ -95,7 +98,9 @@ def angle_embed(features):
     AngleEmbedding(features, wires=range(4))
     return qml.expval(qml.PauliZ(0))
 
+
 features = np.array([0.1, 0.2, 0.3, 0.4])
+
 
 # Amplitude embedding
 @qml.qnode(dev)
@@ -103,7 +108,9 @@ def amplitude_embed(features):
     AmplitudeEmbedding(features, wires=range(2), normalize=True)
     return qml.expval(qml.PauliZ(0))
 
+
 features = np.array([0.5, 0.5, 0.5, 0.5])
+
 
 # IQP embedding
 @qml.qnode(dev)
@@ -124,11 +131,12 @@ def custom_layer(weights, wires):
         qml.RY(weights[i], wires=wire)
 
     # Entanglement pattern
-    for i in range(0, n_wires-1, 2):
-        qml.CNOT(wires=[wires[i], wires[i+1]])
+    for i in range(0, n_wires - 1, 2):
+        qml.CNOT(wires=[wires[i], wires[i + 1]])
 
-    for i in range(1, n_wires-1, 2):
-        qml.CNOT(wires=[wires[i], wires[i+1]])
+    for i in range(1, n_wires - 1, 2):
+        qml.CNOT(wires=[wires[i], wires[i + 1]])
+
 
 @qml.qnode(dev)
 def circuit_custom(weights, n_layers):
@@ -145,6 +153,7 @@ def circuit_custom(weights, n_layers):
 # Cancel adjacent inverse operations
 from pennylane import transforms
 
+
 @transforms.cancel_inverses
 @qml.qnode(dev)
 def circuit():
@@ -153,6 +162,7 @@ def circuit():
     qml.RX(0.5, wires=1)
     return qml.expval(qml.PauliZ(0))
 
+
 # Merge rotations
 @transforms.merge_rotations
 @qml.qnode(dev)
@@ -160,6 +170,7 @@ def circuit():
     qml.RX(0.1, wires=0)
     qml.RX(0.2, wires=0)  # These merge into single RX(0.3)
     return qml.expval(qml.PauliZ(0))
+
 
 # Commute measurements to end
 @transforms.commute_controlled
@@ -179,6 +190,7 @@ def circuit(x):
     qml.RX(x, wires=0)
     return qml.expval(qml.PauliZ(0))
 
+
 # Broadcast over parameters
 params = np.array([0.1, 0.2, 0.3, 0.4])
 results = circuit(params)  # Returns array of results
@@ -193,8 +205,9 @@ def variational_circuit(params):
     for i, param in enumerate(params):
         qml.RY(param, wires=i % 4)
     for i in range(3):
-        qml.CNOT(wires=[i, i+1])
+        qml.CNOT(wires=[i, i + 1])
     return qml.expval(qml.PauliZ(0))
+
 
 params = np.array([0.1, 0.2, 0.3, 0.4], requires_grad=True)
 
@@ -229,6 +242,7 @@ def circuit():
     qml.U3(0.1, 0.2, 0.3, wires=0)  # Arbitrary single-qubit gate
     return qml.expval(qml.PauliZ(0))
 
+
 # Decompose U3 into RZ, RY
 decomposed = qml.transforms.decompose(circuit, gate_set={qml.RZ, qml.RY, qml.CNOT})
 ```
@@ -240,22 +254,21 @@ decomposed = qml.transforms.decompose(circuit, gate_set={qml.RZ, qml.RY, qml.CNO
 ```python
 from pennylane import pulse
 
+
 # Define pulse envelope
 def gaussian_pulse(t, amplitude, sigma):
     return amplitude * np.exp(-(t**2) / (2 * sigma**2))
 
+
 # Create pulse program
-dev_pulse = qml.device('default.qubit', wires=2)
+dev_pulse = qml.device("default.qubit", wires=2)
+
 
 @qml.qnode(dev_pulse)
 def pulse_circuit():
     # Apply pulse to qubit
     pulse.drive(
-        amplitude=lambda t: gaussian_pulse(t, 1.0, 0.5),
-        phase=0.0,
-        freq=5.0,
-        wires=0,
-        duration=2.0
+        amplitude=lambda t: gaussian_pulse(t, 1.0, 0.5), phase=0.0, freq=5.0, wires=0, duration=2.0
     )
 
     return qml.expval(qml.PauliZ(0))
@@ -275,16 +288,16 @@ def pulse_sequence():
         phase=0.0,
         freq=5.0,
         wires=0,
-        duration=duration
+        duration=duration,
     )
 
     # Y pulse
     pulse.drive(
         amplitude=lambda t: np.sin(np.pi * t / duration),
-        phase=np.pi/2,
+        phase=np.pi / 2,
         freq=5.0,
         wires=0,
-        duration=duration
+        duration=duration,
     )
 
     return qml.expval(qml.PauliZ(0))
@@ -303,11 +316,7 @@ def optimize_pulse(target_gate):
     @qml.qnode(dev_pulse)
     def pulse_circuit(params):
         pulse.drive(
-            amplitude=lambda t: pulse_fn(t, params),
-            phase=0.0,
-            freq=5.0,
-            wires=0,
-            duration=2.0
+            amplitude=lambda t: pulse_fn(t, params), phase=0.0, freq=5.0, wires=0, duration=2.0
         )
         return qml.expval(qml.PauliZ(0))
 
@@ -315,7 +324,7 @@ def optimize_pulse(target_gate):
     def cost(params):
         result_state = pulse_circuit(params)
         target_state = target_gate()
-        return 1 - np.abs(np.vdot(result_state, target_state))**2
+        return 1 - np.abs(np.vdot(result_state, target_state)) ** 2
 
     # Optimize
     opt = qml.AdamOptimizer(stepsize=0.01)
@@ -334,7 +343,8 @@ def optimize_pulse(target_gate):
 ```python
 from catalyst import qjit
 
-dev = qml.device('lightning.qubit', wires=4)
+dev = qml.device("lightning.qubit", wires=4)
+
 
 @qjit  # Just-in-time compile
 @qml.qnode(dev)
@@ -343,6 +353,7 @@ def compiled_circuit(x):
     qml.Hadamard(wires=1)
     qml.CNOT(wires=[0, 1])
     return qml.expval(qml.PauliZ(0))
+
 
 # First call compiles, subsequent calls are fast
 result = compiled_circuit(0.5)
@@ -364,6 +375,7 @@ def circuit_with_loops(n):
     loop_body()
 
     return qml.expval(qml.PauliZ(0))
+
 
 result = circuit_with_loops(10)
 ```
@@ -397,6 +409,7 @@ def circuit(params):
     qml.RY(params[1], wires=1)
     return qml.expval(qml.PauliZ(0))
 
+
 # Compiled gradient
 grad_fn = qjit(qml.grad(circuit))
 
@@ -409,7 +422,8 @@ gradients = grad_fn(params)
 ### Mid-Circuit Measurements with Feedback
 
 ```python
-dev = qml.device('default.qubit', wires=3)
+dev = qml.device("default.qubit", wires=3)
+
 
 @qml.qnode(dev)
 def adaptive_circuit():
@@ -496,7 +510,8 @@ def bit_flip_code():
 ### Built-in Noise Channels
 
 ```python
-dev_noisy = qml.device('default.mixed', wires=2)
+dev_noisy = qml.device("default.mixed", wires=2)
+
 
 @qml.qnode(dev_noisy)
 def noisy_circuit():
@@ -529,11 +544,12 @@ def custom_noise(p):
     """Custom noise channel."""
     # Kraus operators for custom noise
     K0 = np.sqrt(1 - p) * np.eye(2)
-    K1 = np.sqrt(p/3) * np.array([[0, 1], [1, 0]])  # X
-    K2 = np.sqrt(p/3) * np.array([[0, -1j], [1j, 0]])  # Y
-    K3 = np.sqrt(p/3) * np.array([[1, 0], [0, -1]])  # Z
+    K1 = np.sqrt(p / 3) * np.array([[0, 1], [1, 0]])  # X
+    K2 = np.sqrt(p / 3) * np.array([[0, -1j], [1j, 0]])  # Y
+    K3 = np.sqrt(p / 3) * np.array([[1, 0], [0, -1]])  # Z
 
     return [K0, K1, K2, K3]
+
 
 @qml.qnode(dev_noisy)
 def circuit_custom_noise():
@@ -551,8 +567,8 @@ def circuit_custom_noise():
 def train_with_noise(circuit, params, noise_level):
     """Train considering hardware noise."""
 
-    dev_ideal = qml.device('default.qubit', wires=4)
-    dev_noisy = qml.device('default.mixed', wires=4)
+    dev_ideal = qml.device("default.qubit", wires=4)
+    dev_noisy = qml.device("default.mixed", wires=4)
 
     @qml.qnode(dev_noisy)
     def noisy_circuit(p):
@@ -583,8 +599,9 @@ def circuit(params):
     for i, param in enumerate(params):
         qml.RY(param, wires=i % 4)
     for i in range(3):
-        qml.CNOT(wires=[i, i+1])
+        qml.CNOT(wires=[i, i + 1])
     return qml.expval(qml.PauliZ(0))
+
 
 params = np.random.random(10)
 
@@ -603,6 +620,7 @@ print(f"Trainable params: {specs['num_trainable_params']}")
 ```python
 import time
 
+
 def estimate_runtime(circuit, params, n_runs=10):
     """Estimate circuit execution time."""
 
@@ -615,8 +633,8 @@ def estimate_runtime(circuit, params, n_runs=10):
     mean_time = np.mean(times)
     std_time = np.std(times)
 
-    print(f"Mean execution time: {mean_time*1000:.2f} ms")
-    print(f"Std deviation: {std_time*1000:.2f} ms")
+    print(f"Mean execution time: {mean_time * 1000:.2f} ms")
+    print(f"Std deviation: {std_time * 1000:.2f} ms")
 
     return mean_time
 ```
@@ -644,11 +662,8 @@ def estimate_resources(n_qubits, depth):
 
     print(f"Estimated simulation time: {total_time:.4f} seconds")
 
-    return {
-        'memory': state_vector_size,
-        'operations': n_operations,
-        'time': total_time
-    }
+    return {"memory": state_vector_size, "operations": n_operations, "time": total_time}
+
 
 estimate_resources(n_qubits=20, depth=100)
 ```

@@ -334,19 +334,21 @@ from matchms.importing import load_from_mgf
 from matchms.exporting import save_as_mgf
 from matchms.filtering import default_filters, normalize_intensities
 
+
 # Process large file without loading all into memory
 def process_spectrum(spectrum):
     spectrum = default_filters(spectrum)
     spectrum = normalize_intensities(spectrum)
     return spectrum
 
+
 # Stream processing
-with open("output.mgf", 'w') as outfile:
+with open("output.mgf", "w") as outfile:
     for spectrum in load_from_mgf("large_file.mgf"):
         processed = process_spectrum(spectrum)
         if processed is not None:
             # Write immediately without storing in memory
-            save_as_mgf([processed], outfile, write_mode='a')
+            save_as_mgf([processed], outfile, write_mode="a")
 ```
 
 ## Format Selection Guidelines

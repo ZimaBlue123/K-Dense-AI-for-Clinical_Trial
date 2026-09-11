@@ -10,8 +10,7 @@ The `Slide` class is the primary interface for working with whole slide images (
 from histolab.slide import Slide
 
 # Initialize a slide with a WSI file and output directory
-slide = Slide(processed_path="path/to/processed/output",
-              slide_path="path/to/slide.svs")
+slide = Slide(processed_path="path/to/processed/output", slide_path="path/to/slide.svs")
 ```
 
 **Parameters:**
@@ -23,7 +22,13 @@ slide = Slide(processed_path="path/to/processed/output",
 Histolab provides built-in sample datasets from TCGA for testing and demonstration:
 
 ```python
-from histolab.data import prostate_tissue, ovarian_tissue, breast_tissue, heart_tissue, kidney_tissue
+from histolab.data import (
+    prostate_tissue,
+    ovarian_tissue,
+    breast_tissue,
+    heart_tissue,
+    kidney_tissue,
+)
 
 # Load prostate tissue sample
 prostate_svs, prostate_path = prostate_tissue()
@@ -92,7 +97,7 @@ import matplotlib.pyplot as plt
 plt.figure(figsize=(10, 10))
 plt.imshow(slide.thumbnail)
 plt.title(f"Slide: {slide.name}")
-plt.axis('off')
+plt.axis("off")
 plt.show()
 ```
 
@@ -103,7 +108,7 @@ plt.show()
 region = slide.extract_region(
     location=(x, y),  # Top-left coordinates at level 0
     size=(width, height),  # Region size
-    level=0  # Pyramid level
+    level=0,  # Pyramid level
 )
 ```
 

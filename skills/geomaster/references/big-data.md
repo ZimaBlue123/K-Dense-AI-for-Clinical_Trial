@@ -12,20 +12,20 @@ import geopandas as gpd
 import dask.dataframe as dd
 
 # Read large GeoPackage in chunks
-dask_gdf = dask_geopandas.read_file('large.gpkg', npartitions=10)
+dask_gdf = dask_geopandas.read_file("large.gpkg", npartitions=10)
 
 # Perform spatial operations
-dask_gdf['area'] = dask_gdf.geometry.area
-dask_gdf['buffer'] = dask_gdf.geometry.buffer(1000)
+dask_gdf["area"] = dask_gdf.geometry.area
+dask_gdf["buffer"] = dask_gdf.geometry.buffer(1000)
 
 # Compute result
 result = dask_gdf.compute()
 
 # Distributed spatial join
-dask_points = dask_geopandas.read_file('points.gpkg', npartitions=5)
-dask_zones = dask_geopandas.read_file('zones.gpkg', npartitions=3)
+dask_points = dask_geopandas.read_file("points.gpkg", npartitions=5)
+dask_zones = dask_geopandas.read_file("zones.gpkg", npartitions=3)
 
-joined = dask_points.sjoin(dask_zones, how='inner', predicate='within')
+joined = dask_points.sjoin(dask_zones, how="inner", predicate="within")
 result = joined.compute()
 ```
 
@@ -34,6 +34,7 @@ result = joined.compute()
 ```python
 import dask.array as da
 import rasterio
+
 
 # Create lazy-loaded raster array
 def lazy_raster(path, chunks=(1, 1024, 1024)):
@@ -44,20 +45,23 @@ def lazy_raster(path, chunks=(1, 1024, 1024)):
 
     return raster, profile
 
+
 # Process large raster
-raster, profile = lazy_raster('very_large.tif')
+raster, profile = lazy_raster("very_large.tif")
 
 # Calculate NDVI (lazy operation)
 ndvi = (raster[3] - raster[2]) / (raster[3] + raster[2] + 1e-8)
+
 
 # Apply function to each chunk
 def process_chunk(chunk):
     return (chunk - chunk.min()) / (chunk.max() - chunk.min())
 
+
 normalized = da.map_blocks(process_chunk, ndvi, dtype=np.float32)
 
 # Compute and save
-with rasterio.open('output.tif', 'w', **profile) as dst:
+with rasterio.open("output.tif", "w", **profile) as dst:
     dst.write(normalized.compute())
 ```
 
@@ -67,11 +71,12 @@ with rasterio.open('output.tif', 'w', **profile) as dst:
 from dask.distributed import Client
 
 # Connect to cluster
-client = Client('scheduler-address:8786')
+client = Client("scheduler-address:8786")
 
 # Or create local cluster
 from dask.distributed import LocalCluster
-cluster = LocalCluster(n_workers=4, threads_per_worker=2, memory_limit='4GB')
+
+cluster = LocalCluster(n_workers=4, threads_per_worker=2, memory_limit="4GB")
 client = Client(cluster)
 
 # Use Dask-GeoPandas with cluster
@@ -90,25 +95,27 @@ result = dask_gdf.buffer(1000).compute()
 import ee
 
 # Initialize
-ee.Initialize(project='your-project')
+ee.Initialize(project="your-project")
+
 
 # Large-scale composite
 def create_annual_composite(year):
     """Create cloud-free annual composite."""
 
     # Sentinel-2 collection
-    s2 = ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED') \
-        .filterBounds(ee.Geometry.Rectangle([-125, 32, -114, 42])) \
-        .filterDate(f'{year}-01-01', f'{year}-12-31') \
-        .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 20))
+    s2 = (
+        ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED")
+        .filterBounds(ee.Geometry.Rectangle([-125, 32, -114, 42]))
+        .filterDate(f"{year}-01-01", f"{year}-12-31")
+        .filter(ee.Filter.lt("CLOUDY_PIXEL_PERCENTAGE", 20))
+    )
 
     # Cloud masking
     def mask_s2(image):
-        qa = image.select('QA60')
+        qa = image.select("QA60")
         cloud_bit_mask = 1 << 10
         cirrus_bit_mask = 1 << 11
-        mask = qa.bitwiseAnd(cloud_bit_mask).eq(0).And(
-               qa.bitwiseAnd(cirrus_bit_mask).eq(0))
+        mask = qa.bitwiseAnd(cloud_bit_mask).eq(0).And(qa.bitwiseAnd(cirrus_bit_mask).eq(0))
         return image.updateMask(mask.Not())
 
     s2_masked = s2.map(mask_s2)
@@ -118,14 +125,15 @@ def create_annual_composite(year):
 
     return composite
 
+
 # Export to Google Drive
 task = ee.batch.Export.image.toDrive(
     image=composite,
-    description='CA_composite_2023',
+    description="CA_composite_2023",
     scale=10,
     region=roi,
-    crs='EPSG:32611',
-    maxPixels=1e13
+    crs="EPSG:32611",
+    maxPixels=1e13,
 )
 task.start()
 ```
@@ -169,7 +177,8 @@ std = data.std().compute()
 
 # Export to COG
 import rioxarray
-data.isel(time=0).rio.to_raster('naip_composite.tif', compress='DEFLATE')
+
+data.isel(time=0).rio.to_raster("naip_composite.tif", compress="DEFLATE")
 ```
 
 ### Google Cloud Storage
@@ -181,20 +190,18 @@ from rasterio.session import GSSession
 
 # Upload to GCS
 client = storage.Client()
-bucket = client.bucket('my-bucket')
-blob = bucket.blob('geospatial/data.tif')
-blob.upload_from_filename('local_data.tif')
+bucket = client.bucket("my-bucket")
+blob = bucket.blob("geospatial/data.tif")
+blob.upload_from_filename("local_data.tif")
 
 # Read directly from GCS
-with rasterio.open(
-    'gs://my-bucket/geospatial/data.tif',
-    session=GSSession()
-) as src:
+with rasterio.open("gs://my-bucket/geospatial/data.tif", session=GSSession()) as src:
     data = src.read()
 
 # Use with Rioxarray
 import rioxarray
-da = rioxarray.open_rasterio('gs://my-bucket/geospatial/data.tif')
+
+da = rioxarray.open_rasterio("gs://my-bucket/geospatial/data.tif")
 ```
 
 ## GPU Acceleration
@@ -204,6 +211,7 @@ da = rioxarray.open_rasterio('gs://my-bucket/geospatial/data.tif')
 ```python
 import cupy as cp
 import numpy as np
+
 
 def gpu_ndvi(nir, red):
     """Calculate NDVI on GPU."""
@@ -217,6 +225,7 @@ def gpu_ndvi(nir, red):
     # Transfer back
     return cp.asnumpy(ndvi_gpu)
 
+
 # Batch processing
 def batch_process_gpu(raster_path):
     with rasterio.open(raster_path) as src:
@@ -226,8 +235,7 @@ def batch_process_gpu(raster_path):
 
     # Process all bands
     for i in range(data.shape[0]):
-        data_gpu[i] = (data_gpu[i] - data_gpu[i].min()) / \
-                      (data_gpu[i].max() - data_gpu[i].min())
+        data_gpu[i] = (data_gpu[i] - data_gpu[i].min()) / (data_gpu[i].max() - data_gpu[i].min())
 
     return cp.asnumpy(data_gpu)
 ```
@@ -245,10 +253,7 @@ gdf_gpu = cuspatial.from_geopandas(gdf)
 points_gpu = cuspatial.from_geopandas(points_gdf)
 polygons_gpu = cuspatial.from_geopandas(polygons_gdf)
 
-joined = cuspatial.join_polygon_points(
-    polygons_gpu,
-    points_gpu
-)
+joined = cuspatial.join_polygon_points(polygons_gpu, points_gpu)
 
 # Convert back
 result = joined.to_pandas()
@@ -259,6 +264,7 @@ result = joined.to_pandas()
 ```python
 import torch
 from torch.utils.data import DataLoader
+
 
 # Custom dataset
 class SatelliteDataset(torch.utils.data.Dataset):
@@ -274,6 +280,7 @@ class SatelliteDataset(torch.utils.data.Dataset):
             label = src.read(1).astype(np.int64)
 
         return torch.from_numpy(image), torch.from_numpy(label)
+
 
 # DataLoader with GPU prefetching
 dataset = SatelliteDataset(images, labels)
@@ -291,7 +298,7 @@ from torch.cuda.amp import autocast, GradScaler
 scaler = GradScaler()
 
 for images, labels in loader:
-    images, labels = images.to('cuda'), labels.to('cuda')
+    images, labels = images.to("cuda"), labels.to("cuda")
 
     with autocast():
         outputs = model(images)
@@ -311,18 +318,18 @@ from rio_cogeo.cogeo import cog_translate
 
 # Convert to COG
 cog_translate(
-    src_path='input.tif',
-    dst_path='output_cog.tif',
-    dst_kwds={'compress': 'DEFLATE', 'predictor': 2},
+    src_path="input.tif",
+    dst_path="output_cog.tif",
+    dst_kwds={"compress": "DEFLATE", "predictor": 2},
     overview_level=5,
-    overview_resampling='average',
-    config={'GDAL_TIFF_INTERNAL_MASK': True}
+    overview_resampling="average",
+    config={"GDAL_TIFF_INTERNAL_MASK": True},
 )
 
 # Create overviews for faster access
-with rasterio.open('output.tif', 'r+') as src:
-    src.build_overviews([2, 4, 8, 16], resampling='average')
-    src.update_tags(ns='rio_overview', resampling='average')
+with rasterio.open("output.tif", "r+") as src:
+    src.build_overviews([2, 4, 8, 16], resampling="average")
+    src.update_tags(ns="rio_overview", resampling="average")
 ```
 
 ### Zarr for Multidimensional Arrays
@@ -332,16 +339,16 @@ import xarray as xr
 import zarr
 
 # Create Zarr store
-store = zarr.DirectoryStore('data.zarr')
+store = zarr.DirectoryStore("data.zarr")
 
 # Save datacube to Zarr
 ds.to_zarr(store, consolidated=True)
 
 # Read efficiently
-ds = xr.open_zarr('data.zarr', consolidated=True)
+ds = xr.open_zarr("data.zarr", consolidated=True)
 
 # Extract subset efficiently
-subset = ds.sel(time='2023-01', latitude=slice(30, 40))
+subset = ds.sel(time="2023-01", latitude=slice(30, 40))
 ```
 
 ### Parquet for Vector Data
@@ -350,14 +357,15 @@ subset = ds.sel(time='2023-01', latitude=slice(30, 40))
 import geopandas as gpd
 
 # Write to Parquet (with spatial index)
-gdf.to_parquet('data.parquet', compression='snappy', index=True)
+gdf.to_parquet("data.parquet", compression="snappy", index=True)
 
 # Read efficiently
-gdf = gpd.read_parquet('data.parquet')
+gdf = gpd.read_parquet("data.parquet")
 
 # Read subset with filtering
 import pyarrow.parquet as pq
-table = pq.read_table('data.parquet', filters=[('column', '==', 'value')])
+
+table = pq.read_table("data.parquet", filters=[("column", "==", "value")])
 ```
 
 For more big data examples, see [code-examples.md](code-examples.md).

@@ -28,6 +28,7 @@ from qiskit.quantum_info import SparsePauliOp
 from scipy.optimize import minimize
 import numpy as np
 
+
 def vqe_algorithm(hamiltonian, ansatz, backend, initial_params):
     """
     Run VQE algorithm
@@ -57,19 +58,14 @@ def vqe_algorithm(hamiltonian, ansatz, backend, initial_params):
             return energy
 
         # Classical optimization
-        result = minimize(
-            cost_function,
-            initial_params,
-            method='COBYLA',
-            options={'maxiter': 100}
-        )
+        result = minimize(cost_function, initial_params, method="COBYLA", options={"maxiter": 100})
 
     return result.fun, result.x
 
+
 # Example: H2 molecule Hamiltonian
 hamiltonian = SparsePauliOp(
-    ["IIII", "ZZII", "IIZZ", "ZZZI", "IZZI"],
-    coeffs=[-0.8, 0.17, 0.17, -0.24, 0.17]
+    ["IIII", "ZZII", "IIZZ", "ZZZI", "IZZI"], coeffs=[-0.8, 0.17, 0.17, -0.24, 0.17]
 )
 
 # Create ansatz
@@ -99,6 +95,7 @@ from qiskit import QuantumCircuit
 from qiskit.circuit import Parameter
 import networkx as nx
 
+
 def qaoa_maxcut(graph, p, backend):
     """
     QAOA for MaxCut problem
@@ -115,8 +112,8 @@ def qaoa_maxcut(graph, p, backend):
     qc.h(range(num_qubits))
 
     # Alternating layers
-    betas = [Parameter(f'β_{i}') for i in range(p)]
-    gammas = [Parameter(f'γ_{i}') for i in range(p)]
+    betas = [Parameter(f"β_{i}") for i in range(p)]
+    gammas = [Parameter(f"γ_{i}") for i in range(p)]
 
     for i in range(p):
         # Problem Hamiltonian (MaxCut)
@@ -132,6 +129,7 @@ def qaoa_maxcut(graph, p, backend):
 
     qc.measure_all()
     return qc, betas + gammas
+
 
 # Example: MaxCut on 4-node graph
 G = nx.Graph()
@@ -156,6 +154,7 @@ Quantum search algorithm providing quadratic speedup for unstructured search.
 ```python
 from qiskit import QuantumCircuit
 
+
 def grover_oracle(marked_states):
     """Create oracle that marks target states"""
     num_qubits = len(marked_states[0])
@@ -164,7 +163,7 @@ def grover_oracle(marked_states):
     for target in marked_states:
         # Flip phase of target state
         for i, bit in enumerate(target):
-            if bit == '0':
+            if bit == "0":
                 qc.x(i)
 
         # Multi-controlled Z
@@ -173,10 +172,11 @@ def grover_oracle(marked_states):
         qc.h(num_qubits - 1)
 
         for i, bit in enumerate(target):
-            if bit == '0':
+            if bit == "0":
                 qc.x(i)
 
     return qc
+
 
 def grover_diffusion(num_qubits):
     """Create Grover diffusion operator"""
@@ -193,6 +193,7 @@ def grover_diffusion(num_qubits):
     qc.h(range(num_qubits))
 
     return qc
+
 
 def grover_algorithm(marked_states, num_iterations):
     """Complete Grover's algorithm"""
@@ -213,9 +214,10 @@ def grover_algorithm(marked_states, num_iterations):
     qc.measure_all()
     return qc
 
+
 # Search for state |101⟩ in 3-qubit space
-marked = ['101']
-iterations = int(np.pi/4 * np.sqrt(2**3))  # Optimal iterations
+marked = ["101"]
+iterations = int(np.pi / 4 * np.sqrt(2**3))  # Optimal iterations
 qc_grover = grover_algorithm(marked, iterations)
 ```
 
@@ -235,12 +237,7 @@ from qiskit_nature.second_q.mappers import JordanWignerMapper, ParityMapper
 from qiskit_nature.second_q.circuit.library import UCCSD, HartreeFock
 
 # Define molecule
-driver = PySCFDriver(
-    atom="H 0 0 0; H 0 0 0.735",
-    basis="sto3g",
-    charge=0,
-    spin=0
-)
+driver = PySCFDriver(atom="H 0 0 0; H 0 0 0.735", basis="sto3g", charge=0, spin=0)
 
 # Get electronic structure problem
 problem = driver.run()
@@ -253,27 +250,13 @@ hamiltonian = mapper.map(problem.hamiltonian.second_q_op())
 num_particles = problem.num_particles
 num_spatial_orbitals = problem.num_spatial_orbitals
 
-init_state = HartreeFock(
-    num_spatial_orbitals,
-    num_particles,
-    mapper
-)
+init_state = HartreeFock(num_spatial_orbitals, num_particles, mapper)
 
 # Create ansatz
-ansatz = UCCSD(
-    num_spatial_orbitals,
-    num_particles,
-    mapper,
-    initial_state=init_state
-)
+ansatz = UCCSD(num_spatial_orbitals, num_particles, mapper, initial_state=init_state)
 
 # Run VQE
-energy, params = vqe_algorithm(
-    hamiltonian,
-    ansatz,
-    backend,
-    np.zeros(ansatz.num_parameters)
-)
+energy, params = vqe_algorithm(hamiltonian, ansatz, backend, np.zeros(ansatz.num_parameters))
 
 # Add nuclear repulsion energy
 total_energy = energy + problem.nuclear_repulsion_energy
@@ -293,6 +276,7 @@ ham_parity = parity_mapper.map(problem.hamiltonian.second_q_op())
 
 # Bravyi-Kitaev mapping
 from qiskit_nature.second_q.mappers import BravyiKitaevMapper
+
 bk_mapper = BravyiKitaevMapper()
 ham_bk = bk_mapper.map(problem.hamiltonian.second_q_op())
 ```
@@ -303,7 +287,7 @@ ham_bk = bk_mapper.map(problem.hamiltonian.second_q_op())
 from qiskit_nature.second_q.algorithms import QEOM
 
 # Quantum Equation of Motion for excited states
-qeom = QEOM(estimator, ansatz, 'sd')  # Singles and doubles excitations
+qeom = QEOM(estimator, ansatz, "sd")  # Singles and doubles excitations
 excited_states = qeom.solve(problem)
 ```
 
@@ -342,7 +326,7 @@ y_train = np.random.choice([0, 1], 50)
 kernel_matrix = qkernel.evaluate(X_train)
 
 # Train SVM with quantum kernel
-svc = SVC(kernel='precomputed')
+svc = SVC(kernel="precomputed")
 svc.fit(kernel_matrix, y_train)
 
 # Predict
@@ -362,12 +346,7 @@ feature_map = ZZFeatureMap(2)
 ansatz = RealAmplitudes(2, reps=1)
 
 # Create VQC
-vqc = VQC(
-    sampler=sampler,
-    feature_map=feature_map,
-    ansatz=ansatz,
-    optimizer='COBYLA'
-)
+vqc = VQC(sampler=sampler, feature_map=feature_map, ansatz=ansatz, optimizer="COBYLA")
 
 # Train
 vqc.fit(X_train, y_train)
@@ -385,7 +364,7 @@ from qiskit.circuit import QuantumCircuit, Parameter
 
 # Create parameterized circuit
 qc = QuantumCircuit(2)
-params = [Parameter(f'θ_{i}') for i in range(4)]
+params = [Parameter(f"θ_{i}") for i in range(4)]
 
 # Network structure
 for i, param in enumerate(params[:2]):
@@ -403,7 +382,7 @@ qnn = SamplerQNN(
     circuit=qc,
     sampler=sampler,
     input_params=[],  # No input parameters for this example
-    weight_params=params
+    weight_params=params,
 )
 
 # Use with PyTorch or TensorFlow for training
@@ -466,17 +445,13 @@ returns = [0.1, 0.15, 0.12]  # Expected returns
 covariances = [[1, 0.5, 0.3], [0.5, 1, 0.4], [0.3, 0.4, 1]]
 budget = 2  # Number of assets to select
 
-portfolio = PortfolioOptimization(
-    expected_returns=returns,
-    covariances=covariances,
-    budget=budget
-)
+portfolio = PortfolioOptimization(expected_returns=returns, covariances=covariances, budget=budget)
 
 # Convert to quadratic program
 qp = portfolio.to_quadratic_program()
 
 # Solve with QAOA
-qaoa = QAOA(sampler=sampler, optimizer='COBYLA', reps=2)
+qaoa = QAOA(sampler=sampler, optimizer="COBYLA", reps=2)
 optimizer = MinimumEigenOptimizer(qaoa)
 
 result = optimizer.solve(qp)
@@ -496,10 +471,7 @@ hamiltonian = SparsePauliOp(["XX", "YY", "ZZ"], coeffs=[1.0, 1.0, 1.0])
 
 # Time evolution
 time = 1.0
-evolution_gate = SuzukiTrotter(order=2, reps=10).synthesize(
-    hamiltonian,
-    time
-)
+evolution_gate = SuzukiTrotter(order=2, reps=10).synthesize(hamiltonian, time)
 
 qc = QuantumCircuit(2)
 qc.append(evolution_gate, range(2))
@@ -555,16 +527,19 @@ sampler_sim = StatevectorSampler()
 ```python
 convergence_data = []
 
+
 def tracked_cost_function(params):
     energy = cost_function(params)
     convergence_data.append(energy)
     return energy
 
+
 # Plot convergence after optimization
 import matplotlib.pyplot as plt
+
 plt.plot(convergence_data)
-plt.xlabel('Iteration')
-plt.ylabel('Energy')
+plt.xlabel("Iteration")
+plt.ylabel("Energy")
 plt.show()
 ```
 
@@ -572,7 +547,7 @@ plt.show()
 ```python
 # Use problem-specific initialization when possible
 # Random initialization
-initial_params = np.random.uniform(0, 2*np.pi, num_params)
+initial_params = np.random.uniform(0, 2 * np.pi, num_params)
 
 # Or use classical preprocessing
 # initial_params = classical_solution_to_params(classical_result)
@@ -583,13 +558,13 @@ initial_params = np.random.uniform(0, 2*np.pi, num_params)
 import json
 
 checkpoint = {
-    'iteration': iteration,
-    'params': params.tolist(),
-    'energy': energy,
-    'timestamp': time.time()
+    "iteration": iteration,
+    "params": params.tolist(),
+    "energy": energy,
+    "timestamp": time.time(),
 }
 
-with open(f'checkpoint_{iteration}.json', 'w') as f:
+with open(f"checkpoint_{iteration}.json", "w") as f:
     json.dump(checkpoint, f)
 ```
 

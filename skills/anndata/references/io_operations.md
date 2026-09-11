@@ -12,23 +12,23 @@ The recommended native format for AnnData objects, providing efficient storage a
 import anndata as ad
 
 # Write to file
-adata.write_h5ad('data.h5ad')
+adata.write_h5ad("data.h5ad")
 
 # Write with compression
-adata.write_h5ad('data.h5ad', compression='gzip')
+adata.write_h5ad("data.h5ad", compression="gzip")
 
 # Write with specific compression level (0-9, higher = more compression)
-adata.write_h5ad('data.h5ad', compression='gzip', compression_opts=9)
+adata.write_h5ad("data.h5ad", compression="gzip", compression_opts=9)
 ```
 
 #### Reading H5AD files
 ```python
 # Read entire file into memory
-adata = ad.read_h5ad('data.h5ad')
+adata = ad.read_h5ad("data.h5ad")
 
 # Read in backed mode (lazy loading for large files)
-adata = ad.read_h5ad('data.h5ad', backed='r')  # Read-only
-adata = ad.read_h5ad('data.h5ad', backed='r+')  # Read-write
+adata = ad.read_h5ad("data.h5ad", backed="r")  # Read-only
+adata = ad.read_h5ad("data.h5ad", backed="r+")  # Read-write
 
 # Backed mode enables working with datasets larger than RAM
 # Only accessed data is loaded into memory
@@ -37,7 +37,7 @@ adata = ad.read_h5ad('data.h5ad', backed='r+')  # Read-write
 #### Backed mode operations
 ```python
 # Open in backed mode
-adata = ad.read_h5ad('large_dataset.h5ad', backed='r')
+adata = ad.read_h5ad("large_dataset.h5ad", backed="r")
 
 # Access metadata without loading X into memory
 print(adata.obs.head())
@@ -59,16 +59,16 @@ Hierarchical array storage format, optimized for cloud storage and parallel I/O.
 #### Writing Zarr
 ```python
 # Write to Zarr store
-adata.write_zarr('data.zarr')
+adata.write_zarr("data.zarr")
 
 # Write with specific chunks (important for performance)
-adata.write_zarr('data.zarr', chunks=(100, 100))
+adata.write_zarr("data.zarr", chunks=(100, 100))
 ```
 
 #### Reading Zarr
 ```python
 # Read Zarr store
-adata = ad.read_zarr('data.zarr')
+adata = ad.read_zarr("data.zarr")
 ```
 
 #### Remote Zarr access
@@ -76,11 +76,11 @@ adata = ad.read_zarr('data.zarr')
 import fsspec
 
 # Access Zarr from S3
-store = fsspec.get_mapper('s3://bucket-name/data.zarr')
+store = fsspec.get_mapper("s3://bucket-name/data.zarr")
 adata = ad.read_zarr(store)
 
 # Access Zarr from URL
-store = fsspec.get_mapper('https://example.com/data.zarr')
+store = fsspec.get_mapper("https://example.com/data.zarr")
 adata = ad.read_zarr(store)
 ```
 
@@ -89,22 +89,22 @@ adata = ad.read_zarr(store)
 ### CSV/TSV
 ```python
 # Read CSV (genes as columns, cells as rows)
-adata = ad.read_csv('data.csv')
+adata = ad.read_csv("data.csv")
 
 # Read with custom delimiter
-adata = ad.read_csv('data.tsv', delimiter='\t')
+adata = ad.read_csv("data.tsv", delimiter="\t")
 
 # Specify that first column is row names
-adata = ad.read_csv('data.csv', first_column_names=True)
+adata = ad.read_csv("data.csv", first_column_names=True)
 ```
 
 ### Excel
 ```python
 # Read Excel file
-adata = ad.read_excel('data.xlsx')
+adata = ad.read_excel("data.xlsx")
 
 # Read specific sheet
-adata = ad.read_excel('data.xlsx', sheet='Sheet1')
+adata = ad.read_excel("data.xlsx", sheet="Sheet1")
 ```
 
 ### Matrix Market (MTX)
@@ -113,14 +113,10 @@ Common format for sparse matrices in genomics.
 ```python
 # Read MTX with associated files
 # Requires: matrix.mtx, genes.tsv, barcodes.tsv
-adata = ad.read_mtx('matrix.mtx')
+adata = ad.read_mtx("matrix.mtx")
 
 # Read with custom gene and barcode files
-adata = ad.read_mtx(
-    'matrix.mtx',
-    var_names='genes.tsv',
-    obs_names='barcodes.tsv'
-)
+adata = ad.read_mtx("matrix.mtx", var_names="genes.tsv", obs_names="barcodes.tsv")
 
 # Transpose if needed (MTX often has genes as rows)
 adata = adata.T
@@ -129,52 +125,43 @@ adata = adata.T
 ### 10X Genomics formats
 ```python
 # Read 10X h5 format
-adata = ad.read_10x_h5('filtered_feature_bc_matrix.h5')
+adata = ad.read_10x_h5("filtered_feature_bc_matrix.h5")
 
 # Read 10X MTX directory
-adata = ad.read_10x_mtx('filtered_feature_bc_matrix/')
+adata = ad.read_10x_mtx("filtered_feature_bc_matrix/")
 
 # Specify genome if multiple present
-adata = ad.read_10x_h5('data.h5', genome='GRCh38')
+adata = ad.read_10x_h5("data.h5", genome="GRCh38")
 ```
 
 ### Loom
 ```python
 # Read Loom file
-adata = ad.read_loom('data.loom')
+adata = ad.read_loom("data.loom")
 
 # Read with specific observation and variable annotations
-adata = ad.read_loom(
-    'data.loom',
-    obs_names='CellID',
-    var_names='Gene'
-)
+adata = ad.read_loom("data.loom", obs_names="CellID", var_names="Gene")
 ```
 
 ### Text files
 ```python
 # Read generic text file
-adata = ad.read_text('data.txt', delimiter='\t')
+adata = ad.read_text("data.txt", delimiter="\t")
 
 # Read with custom parameters
-adata = ad.read_text(
-    'data.txt',
-    delimiter=',',
-    first_column_names=True,
-    dtype='float32'
-)
+adata = ad.read_text("data.txt", delimiter=",", first_column_names=True, dtype="float32")
 ```
 
 ### UMI tools
 ```python
 # Read UMI tools format
-adata = ad.read_umi_tools('counts.tsv')
+adata = ad.read_umi_tools("counts.tsv")
 ```
 
 ### HDF5 (generic)
 ```python
 # Read from HDF5 file (not h5ad format)
-adata = ad.read_hdf('data.h5', key='dataset')
+adata = ad.read_hdf("data.h5", key="dataset")
 ```
 
 ## Alternative Output Formats
@@ -182,7 +169,7 @@ adata = ad.read_hdf('data.h5', key='dataset')
 ### CSV
 ```python
 # Write to CSV files (creates multiple files)
-adata.write_csvs('output_dir/')
+adata.write_csvs("output_dir/")
 
 # This creates:
 # - output_dir/X.csv (expression matrix)
@@ -191,13 +178,13 @@ adata.write_csvs('output_dir/')
 # - output_dir/uns.csv (unstructured annotations, if possible)
 
 # Skip certain components
-adata.write_csvs('output_dir/', skip_data=True)  # Skip X matrix
+adata.write_csvs("output_dir/", skip_data=True)  # Skip X matrix
 ```
 
 ### Loom
 ```python
 # Write to Loom format
-adata.write_loom('output.loom')
+adata.write_loom("output.loom")
 ```
 
 ## Reading Specific Elements
@@ -208,13 +195,13 @@ For fine-grained control, read specific elements from storage:
 from anndata import read_elem
 
 # Read just observation annotations
-obs = read_elem('data.h5ad/obs')
+obs = read_elem("data.h5ad/obs")
 
 # Read specific layer
-layer = read_elem('data.h5ad/layers/normalized')
+layer = read_elem("data.h5ad/layers/normalized")
 
 # Read unstructured data element
-params = read_elem('data.h5ad/uns/pca_params')
+params = read_elem("data.h5ad/uns/pca_params")
 ```
 
 ## Writing Specific Elements
@@ -224,8 +211,8 @@ from anndata import write_elem
 import h5py
 
 # Write element to existing file
-with h5py.File('data.h5ad', 'a') as f:
-    write_elem(f, 'new_layer', adata.X.copy())
+with h5py.File("data.h5ad", "a") as f:
+    write_elem(f, "new_layer", adata.X.copy())
 ```
 
 ## Lazy Operations
@@ -236,7 +223,7 @@ For very large datasets, use lazy reading to avoid loading entire datasets:
 from anndata.experimental import read_elem_lazy
 
 # Lazy read (returns dask array or similar)
-X_lazy = read_elem_lazy('large_data.h5ad/X')
+X_lazy = read_elem_lazy("large_data.h5ad/X")
 
 # Compute only when needed
 subset = X_lazy[:100, :100].compute()
@@ -247,22 +234,22 @@ subset = X_lazy[:100, :100].compute()
 ### Convert between formats
 ```python
 # MTX to H5AD
-adata = ad.read_mtx('matrix.mtx').T
-adata.write_h5ad('data.h5ad')
+adata = ad.read_mtx("matrix.mtx").T
+adata.write_h5ad("data.h5ad")
 
 # CSV to H5AD
-adata = ad.read_csv('data.csv')
-adata.write_h5ad('data.h5ad')
+adata = ad.read_csv("data.csv")
+adata.write_h5ad("data.h5ad")
 
 # H5AD to Zarr
-adata = ad.read_h5ad('data.h5ad')
-adata.write_zarr('data.zarr')
+adata = ad.read_h5ad("data.h5ad")
+adata.write_zarr("data.zarr")
 ```
 
 ### Load metadata without data
 ```python
 # Backed mode allows inspecting metadata without loading X
-adata = ad.read_h5ad('large_file.h5ad', backed='r')
+adata = ad.read_h5ad("large_file.h5ad", backed="r")
 print(f"Dataset contains {adata.n_obs} observations and {adata.n_vars} variables")
 print(adata.obs.columns)
 print(adata.var.columns)
@@ -272,10 +259,10 @@ print(adata.var.columns)
 ### Append to existing file
 ```python
 # Open in read-write mode
-adata = ad.read_h5ad('data.h5ad', backed='r+')
+adata = ad.read_h5ad("data.h5ad", backed="r+")
 
 # Modify metadata
-adata.obs['new_column'] = values
+adata.obs["new_column"] = values
 
 # Changes are written to disk
 ```
@@ -285,13 +272,14 @@ adata.obs['new_column'] = values
 import anndata as ad
 
 # Read directly from URL (for h5ad files)
-url = 'https://example.com/data.h5ad'
-adata = ad.read_h5ad(url, backed='r')  # Streaming access
+url = "https://example.com/data.h5ad"
+adata = ad.read_h5ad(url, backed="r")  # Streaming access
 
 # For other formats, download first
 import urllib.request
-urllib.request.urlretrieve(url, 'local_file.h5ad')
-adata = ad.read_h5ad('local_file.h5ad')
+
+urllib.request.urlretrieve(url, "local_file.h5ad")
+adata = ad.read_h5ad("local_file.h5ad")
 ```
 
 ## Performance Tips
@@ -315,10 +303,11 @@ adata = ad.read_h5ad('local_file.h5ad')
 ```python
 # Convert strings to categoricals (reduces file size and memory)
 adata.strings_to_categoricals()
-adata.write_h5ad('data.h5ad')
+adata.write_h5ad("data.h5ad")
 
 # Use sparse matrices for sparse data
 from scipy.sparse import csr_matrix
+
 if isinstance(adata.X, np.ndarray):
     density = np.count_nonzero(adata.X) / adata.X.size
     if density < 0.5:  # If more than 50% zeros
@@ -330,10 +319,10 @@ if isinstance(adata.X, np.ndarray):
 ### Strategy 1: Backed mode
 ```python
 # Work with dataset larger than RAM
-adata = ad.read_h5ad('100GB_file.h5ad', backed='r')
+adata = ad.read_h5ad("100GB_file.h5ad", backed="r")
 
 # Filter based on metadata (fast, no data loading)
-filtered = adata[adata.obs['quality_score'] > 0.8]
+filtered = adata[adata.obs["quality_score"] > 0.8]
 
 # Load filtered subset into memory
 adata_memory = filtered.to_memory()
@@ -342,13 +331,13 @@ adata_memory = filtered.to_memory()
 ### Strategy 2: Chunked processing
 ```python
 # Process data in chunks
-adata = ad.read_h5ad('large_file.h5ad', backed='r')
+adata = ad.read_h5ad("large_file.h5ad", backed="r")
 
 chunk_size = 1000
 results = []
 
 for i in range(0, adata.n_obs, chunk_size):
-    chunk = adata[i:i+chunk_size, :].to_memory()
+    chunk = adata[i : i + chunk_size, :].to_memory()
     # Process chunk
     result = process(chunk)
     results.append(result)
@@ -359,12 +348,8 @@ for i in range(0, adata.n_obs, chunk_size):
 from anndata.experimental import AnnCollection
 
 # Create collection without loading data
-adatas = [f'dataset_{i}.h5ad' for i in range(10)]
-collection = AnnCollection(
-    adatas,
-    join_obs='inner',
-    join_vars='inner'
-)
+adatas = [f"dataset_{i}.h5ad" for i in range(10)]
+collection = AnnCollection(adatas, join_obs="inner", join_vars="inner")
 
 # Process collection lazily
 # Data is loaded only when accessed
@@ -375,13 +360,13 @@ collection = AnnCollection(
 ### Issue: Out of memory when reading
 **Solution**: Use backed mode or read in chunks
 ```python
-adata = ad.read_h5ad('file.h5ad', backed='r')
+adata = ad.read_h5ad("file.h5ad", backed="r")
 ```
 
 ### Issue: Slow reading from cloud storage
 **Solution**: Use Zarr format with appropriate chunking
 ```python
-adata.write_zarr('data.zarr', chunks=(1000, 1000))
+adata.write_zarr("data.zarr", chunks=(1000, 1000))
 ```
 
 ### Issue: Large file sizes
@@ -389,8 +374,9 @@ adata.write_zarr('data.zarr', chunks=(1000, 1000))
 ```python
 adata.strings_to_categoricals()
 from scipy.sparse import csr_matrix
+
 adata.X = csr_matrix(adata.X)
-adata.write_h5ad('compressed.h5ad', compression='gzip')
+adata.write_h5ad("compressed.h5ad", compression="gzip")
 ```
 
 ### Issue: Cannot modify backed object
@@ -400,5 +386,5 @@ adata.write_h5ad('compressed.h5ad', compression='gzip')
 adata = adata.to_memory()
 
 # Option 2: Open in read-write mode
-adata = ad.read_h5ad('file.h5ad', backed='r+')
+adata = ad.read_h5ad("file.h5ad", backed="r+")
 ```

@@ -20,7 +20,7 @@ Tracks the exact total public debt outstanding each business day.
 # Current national debt
 resp = requests.get(
     "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v2/accounting/od/debt_to_penny",
-    params={"sort": "-record_date", "page[size]": 1}
+    params={"sort": "-record_date", "page[size]": 1},
 )
 latest = resp.json()["data"][0]
 print(f"As of {latest['record_date']}: ${float(latest['tot_pub_debt_out_amt']):,.2f}")
@@ -31,8 +31,8 @@ resp = requests.get(
     params={
         "fields": "record_date,tot_pub_debt_out_amt",
         "filter": "record_date:gte:2024-01-01",
-        "sort": "-record_date"
-    }
+        "sort": "-record_date",
+    },
 )
 df = pd.DataFrame(resp.json()["data"])
 df["tot_pub_debt_out_amt"] = df["tot_pub_debt_out_amt"].astype(float)
@@ -56,7 +56,7 @@ Annual record of U.S. national debt going back to the founding of the republic.
 # Full historical debt series
 resp = requests.get(
     "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v2/accounting/od/historical_debt_outstanding",
-    params={"sort": "-record_date", "page[size]": 10000}
+    params={"sort": "-record_date", "page[size]": 10000},
 )
 df = pd.DataFrame(resp.json()["data"])
 ```
@@ -105,7 +105,7 @@ Federal agency compliance and receivables data. Also includes:
 # TROR data, sorted by funding type
 resp = requests.get(
     "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v2/debt/tror",
-    params={"sort": "funding_type_id"}
+    params={"sort": "funding_type_id"},
 )
 ```
 
@@ -140,8 +140,8 @@ resp = requests.get(
     params={
         "fields": "record_date,expense_net_amt",
         "filter": "record_date:gte:2020-01-01",
-        "sort": "-record_date"
-    }
+        "sort": "-record_date",
+    },
 )
 df = pd.DataFrame(resp.json()["data"])
 df["expense_net_amt"] = df["expense_net_amt"].astype(float)

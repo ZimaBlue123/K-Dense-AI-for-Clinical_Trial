@@ -27,9 +27,16 @@ This document provides a comprehensive reference for all major seaborn functions
 
 **Example:**
 ```python
-sns.scatterplot(data=df, x='height', y='weight',
-                hue='gender', size='age', style='smoker',
-                palette='Set2', sizes=(20, 200))
+sns.scatterplot(
+    data=df,
+    x="height",
+    y="weight",
+    hue="gender",
+    size="age",
+    style="smoker",
+    palette="Set2",
+    sizes=(20, 200),
+)
 ```
 
 ### lineplot()
@@ -57,9 +64,15 @@ sns.scatterplot(data=df, x='height', y='weight',
 
 **Example:**
 ```python
-sns.lineplot(data=timeseries, x='time', y='signal',
-             hue='condition', style='subject',
-             errorbar=('ci', 95), markers=True)
+sns.lineplot(
+    data=timeseries,
+    x="time",
+    y="signal",
+    hue="condition",
+    style="subject",
+    errorbar=("ci", 95),
+    markers=True,
+)
 ```
 
 ### relplot()
@@ -80,10 +93,18 @@ All parameters from `scatterplot()` and `lineplot()`, plus:
 
 **Example:**
 ```python
-sns.relplot(data=df, x='time', y='measurement',
-            hue='treatment', style='batch',
-            col='cell_line', row='timepoint',
-            kind='line', height=3, aspect=1.5)
+sns.relplot(
+    data=df,
+    x="time",
+    y="measurement",
+    hue="treatment",
+    style="batch",
+    col="cell_line",
+    row="timepoint",
+    kind="line",
+    height=3,
+    aspect=1.5,
+)
 ```
 
 ## Distribution Plots
@@ -121,9 +142,16 @@ sns.relplot(data=df, x='time', y='measurement',
 
 **Example:**
 ```python
-sns.histplot(data=df, x='measurement', hue='condition',
-             stat='density', bins=30, kde=True,
-             multiple='layer', alpha=0.5)
+sns.histplot(
+    data=df,
+    x="measurement",
+    hue="condition",
+    stat="density",
+    bins=30,
+    kde=True,
+    multiple="layer",
+    alpha=0.5,
+)
 ```
 
 ### kdeplot()
@@ -157,12 +185,10 @@ sns.histplot(data=df, x='measurement', hue='condition',
 **Example:**
 ```python
 # Univariate
-sns.kdeplot(data=df, x='measurement', hue='condition',
-            fill=True, common_norm=False, bw_adjust=1.5)
+sns.kdeplot(data=df, x="measurement", hue="condition", fill=True, common_norm=False, bw_adjust=1.5)
 
 # Bivariate
-sns.kdeplot(data=df, x='var1', y='var2',
-            fill=True, levels=10, thresh=0.05)
+sns.kdeplot(data=df, x="var1", y="var2", fill=True, levels=10, thresh=0.05)
 ```
 
 ### ecdfplot()
@@ -185,8 +211,7 @@ sns.kdeplot(data=df, x='var1', y='var2',
 
 **Example:**
 ```python
-sns.ecdfplot(data=df, x='response_time', hue='treatment',
-             stat='proportion', complementary=False)
+sns.ecdfplot(data=df, x="response_time", hue="treatment", stat="proportion", complementary=False)
 ```
 
 ### rugplot()
@@ -207,7 +232,7 @@ sns.ecdfplot(data=df, x='response_time', hue='treatment',
 
 **Example:**
 ```python
-sns.rugplot(data=df, x='value', hue='category', height=0.05)
+sns.rugplot(data=df, x="value", hue="category", height=0.05)
 ```
 
 ### displot()
@@ -230,9 +255,17 @@ All parameters from `histplot()`, `kdeplot()`, and `ecdfplot()`, plus:
 
 **Example:**
 ```python
-sns.displot(data=df, x='measurement', hue='treatment',
-            col='timepoint', kind='kde', fill=True,
-            height=3, aspect=1.5, rug=True)
+sns.displot(
+    data=df,
+    x="measurement",
+    hue="treatment",
+    col="timepoint",
+    kind="kde",
+    fill=True,
+    height=3,
+    aspect=1.5,
+    rug=True,
+)
 ```
 
 ### jointplot()
@@ -257,9 +290,16 @@ sns.displot(data=df, x='measurement', hue='treatment',
 
 **Example:**
 ```python
-sns.jointplot(data=df, x='var1', y='var2', hue='group',
-              kind='scatter', height=6, ratio=4,
-              joint_kws={'alpha': 0.5})
+sns.jointplot(
+    data=df,
+    x="var1",
+    y="var2",
+    hue="group",
+    kind="scatter",
+    height=6,
+    ratio=4,
+    joint_kws={"alpha": 0.5},
+)
 ```
 
 ### pairplot()
@@ -286,9 +326,14 @@ sns.jointplot(data=df, x='var1', y='var2', hue='group',
 
 **Example:**
 ```python
-sns.pairplot(data=df, hue='species', palette='Set2',
-             vars=['sepal_length', 'sepal_width', 'petal_length'],
-             corner=True, height=2.5)
+sns.pairplot(
+    data=df,
+    hue="species",
+    palette="Set2",
+    vars=["sepal_length", "sepal_width", "petal_length"],
+    corner=True,
+    height=2.5,
+)
 ```
 
 ## Categorical Plots
@@ -318,8 +363,7 @@ sns.pairplot(data=df, hue='species', palette='Set2',
 
 **Example:**
 ```python
-sns.stripplot(data=df, x='day', y='total_bill',
-              hue='sex', dodge=True, jitter=0.2)
+sns.stripplot(data=df, x="day", y="total_bill", hue="sex", dodge=True, jitter=0.2)
 ```
 
 ### swarmplot()
@@ -336,8 +380,7 @@ Same as `stripplot()`, except:
 
 **Example:**
 ```python
-sns.swarmplot(data=df, x='day', y='total_bill',
-              hue='time', dodge=True, size=5)
+sns.swarmplot(data=df, x="day", y="total_bill", hue="time", dodge=True, size=5)
 ```
 
 ### boxplot()
@@ -375,9 +418,9 @@ sns.swarmplot(data=df, x='day', y='total_bill',
 
 **Example:**
 ```python
-sns.boxplot(data=df, x='day', y='total_bill',
-            hue='smoker', palette='Set3',
-            showmeans=True, notch=True)
+sns.boxplot(
+    data=df, x="day", y="total_bill", hue="smoker", palette="Set3", showmeans=True, notch=True
+)
 ```
 
 ### violinplot()
@@ -398,9 +441,9 @@ Same as `boxplot()`, plus:
 
 **Example:**
 ```python
-sns.violinplot(data=df, x='day', y='total_bill',
-               hue='sex', split=True, inner='quartile',
-               palette='muted')
+sns.violinplot(
+    data=df, x="day", y="total_bill", hue="sex", split=True, inner="quartile", palette="muted"
+)
 ```
 
 ### boxenplot()
@@ -416,8 +459,7 @@ Same as `boxplot()`, plus:
 
 **Example:**
 ```python
-sns.boxenplot(data=df, x='day', y='total_bill',
-              hue='time', palette='Set2')
+sns.boxenplot(data=df, x="day", y="total_bill", hue="time", palette="Set2")
 ```
 
 ### barplot()
@@ -452,9 +494,15 @@ sns.boxenplot(data=df, x='day', y='total_bill',
 
 **Example:**
 ```python
-sns.barplot(data=df, x='day', y='total_bill',
-            hue='sex', estimator='median',
-            errorbar=('ci', 95), capsize=0.1)
+sns.barplot(
+    data=df,
+    x="day",
+    y="total_bill",
+    hue="sex",
+    estimator="median",
+    errorbar=("ci", 95),
+    capsize=0.1,
+)
 ```
 
 ### countplot()
@@ -469,8 +517,7 @@ Same as `barplot()`, but:
 
 **Example:**
 ```python
-sns.countplot(data=df, x='day', hue='time',
-              palette='pastel', dodge=True)
+sns.countplot(data=df, x="day", hue="time", palette="pastel", dodge=True)
 ```
 
 ### pointplot()
@@ -487,9 +534,15 @@ Same as `barplot()`, plus:
 
 **Example:**
 ```python
-sns.pointplot(data=df, x='time', y='total_bill',
-              hue='sex', markers=['o', 's'],
-              linestyles=['-', '--'], capsize=0.1)
+sns.pointplot(
+    data=df,
+    x="time",
+    y="total_bill",
+    hue="sex",
+    markers=["o", "s"],
+    linestyles=["-", "--"],
+    capsize=0.1,
+)
 ```
 
 ### catplot()
@@ -513,10 +566,17 @@ All parameters from categorical plots, plus:
 
 **Example:**
 ```python
-sns.catplot(data=df, x='day', y='total_bill',
-            hue='smoker', col='time',
-            kind='violin', split=True,
-            height=4, aspect=0.8)
+sns.catplot(
+    data=df,
+    x="day",
+    y="total_bill",
+    hue="smoker",
+    col="time",
+    kind="violin",
+    split=True,
+    height=4,
+    aspect=0.8,
+)
 ```
 
 ## Regression Plots
@@ -555,9 +615,9 @@ sns.catplot(data=df, x='day', y='total_bill',
 
 **Example:**
 ```python
-sns.regplot(data=df, x='total_bill', y='tip',
-            order=2, robust=True, ci=95,
-            scatter_kws={'alpha': 0.5})
+sns.regplot(
+    data=df, x="total_bill", y="tip", order=2, robust=True, ci=95, scatter_kws={"alpha": 0.5}
+)
 ```
 
 ### lmplot()
@@ -584,9 +644,17 @@ All parameters from `regplot()`, plus:
 
 **Example:**
 ```python
-sns.lmplot(data=df, x='total_bill', y='tip',
-           hue='smoker', col='time', row='sex',
-           height=3, aspect=1.2, ci=None)
+sns.lmplot(
+    data=df,
+    x="total_bill",
+    y="tip",
+    hue="smoker",
+    col="time",
+    row="sex",
+    height=3,
+    aspect=1.2,
+    ci=None,
+)
 ```
 
 ### residplot()
@@ -601,8 +669,7 @@ Same as `regplot()`, but:
 
 **Example:**
 ```python
-sns.residplot(data=df, x='x', y='y', lowess=True,
-              scatter_kws={'alpha': 0.5})
+sns.residplot(data=df, x="x", y="y", lowess=True, scatter_kws={"alpha": 0.5})
 ```
 
 ## Matrix Plots
@@ -635,9 +702,17 @@ sns.residplot(data=df, x='x', y='y', lowess=True,
 # Correlation matrix
 corr = df.corr()
 mask = np.triu(np.ones_like(corr, dtype=bool))
-sns.heatmap(corr, mask=mask, annot=True, fmt='.2f',
-            cmap='coolwarm', center=0, square=True,
-            linewidths=1, cbar_kws={'shrink': 0.8})
+sns.heatmap(
+    corr,
+    mask=mask,
+    annot=True,
+    fmt=".2f",
+    cmap="coolwarm",
+    center=0,
+    square=True,
+    linewidths=1,
+    cbar_kws={"shrink": 0.8},
+)
 ```
 
 ### clustermap()
@@ -662,10 +737,17 @@ All parameters from `heatmap()`, plus:
 
 **Example:**
 ```python
-sns.clustermap(data, method='average', metric='euclidean',
-               z_score=0, cmap='viridis',
-               row_colors=row_colors, col_colors=col_colors,
-               figsize=(12, 12), dendrogram_ratio=0.1)
+sns.clustermap(
+    data,
+    method="average",
+    metric="euclidean",
+    z_score=0,
+    cmap="viridis",
+    row_colors=row_colors,
+    col_colors=col_colors,
+    figsize=(12, 12),
+    dendrogram_ratio=0.1,
+)
 ```
 
 ## Multi-Plot Grids
@@ -676,14 +758,30 @@ sns.clustermap(data, method='average', metric='euclidean',
 
 **Initialization:**
 ```python
-g = sns.FacetGrid(data, row=None, col=None, hue=None,
-                  col_wrap=None, sharex=True, sharey=True,
-                  height=3, aspect=1, palette=None,
-                  row_order=None, col_order=None, hue_order=None,
-                  hue_kws=None, dropna=False, legend_out=True,
-                  despine=True, margin_titles=False,
-                  xlim=None, ylim=None, subplot_kws=None,
-                  gridspec_kws=None)
+g = sns.FacetGrid(
+    data,
+    row=None,
+    col=None,
+    hue=None,
+    col_wrap=None,
+    sharex=True,
+    sharey=True,
+    height=3,
+    aspect=1,
+    palette=None,
+    row_order=None,
+    col_order=None,
+    hue_order=None,
+    hue_kws=None,
+    dropna=False,
+    legend_out=True,
+    despine=True,
+    margin_titles=False,
+    xlim=None,
+    ylim=None,
+    subplot_kws=None,
+    gridspec_kws=None,
+)
 ```
 
 **Methods:**
@@ -697,12 +795,11 @@ g = sns.FacetGrid(data, row=None, col=None, hue=None,
 
 **Example:**
 ```python
-g = sns.FacetGrid(df, col='time', row='sex', hue='smoker',
-                  height=3, aspect=1.5, margin_titles=True)
-g.map(sns.scatterplot, 'total_bill', 'tip', alpha=0.7)
+g = sns.FacetGrid(df, col="time", row="sex", hue="smoker", height=3, aspect=1.5, margin_titles=True)
+g.map(sns.scatterplot, "total_bill", "tip", alpha=0.7)
 g.add_legend()
-g.set_axis_labels('Total Bill ($)', 'Tip ($)')
-g.set_titles('{col_name} | {row_name}')
+g.set_axis_labels("Total Bill ($)", "Tip ($)")
+g.set_titles("{col_name} | {row_name}")
 ```
 
 ### PairGrid
@@ -711,13 +808,23 @@ g.set_titles('{col_name} | {row_name}')
 
 **Initialization:**
 ```python
-g = sns.PairGrid(data, hue=None, vars=None,
-                 x_vars=None, y_vars=None,
-                 hue_order=None, palette=None,
-                 hue_kws=None, corner=False,
-                 diag_sharey=True, height=2.5,
-                 aspect=1, layout_pad=0.5,
-                 despine=True, dropna=False)
+g = sns.PairGrid(
+    data,
+    hue=None,
+    vars=None,
+    x_vars=None,
+    y_vars=None,
+    hue_order=None,
+    palette=None,
+    hue_kws=None,
+    corner=False,
+    diag_sharey=True,
+    height=2.5,
+    aspect=1,
+    layout_pad=0.5,
+    despine=True,
+    dropna=False,
+)
 ```
 
 **Methods:**
@@ -731,8 +838,7 @@ g = sns.PairGrid(data, hue=None, vars=None,
 
 **Example:**
 ```python
-g = sns.PairGrid(df, hue='species', vars=['a', 'b', 'c', 'd'],
-                 corner=True, height=2.5)
+g = sns.PairGrid(df, hue="species", vars=["a", "b", "c", "d"], corner=True, height=2.5)
 g.map_upper(sns.scatterplot, alpha=0.5)
 g.map_lower(sns.kdeplot)
 g.map_diag(sns.histplot, kde=True)
@@ -745,11 +851,21 @@ g.add_legend()
 
 **Initialization:**
 ```python
-g = sns.JointGrid(data=None, x=None, y=None, hue=None,
-                  height=6, ratio=5, space=0.2,
-                  dropna=False, xlim=None, ylim=None,
-                  marginal_ticks=False, hue_order=None,
-                  palette=None)
+g = sns.JointGrid(
+    data=None,
+    x=None,
+    y=None,
+    hue=None,
+    height=6,
+    ratio=5,
+    space=0.2,
+    dropna=False,
+    xlim=None,
+    ylim=None,
+    marginal_ticks=False,
+    hue_order=None,
+    palette=None,
+)
 ```
 
 **Methods:**
@@ -762,9 +878,8 @@ g = sns.JointGrid(data=None, x=None, y=None, hue=None,
 
 **Example:**
 ```python
-g = sns.JointGrid(data=df, x='x', y='y', hue='group',
-                  height=6, ratio=5, space=0.2)
+g = sns.JointGrid(data=df, x="x", y="y", hue="group", height=6, ratio=5, space=0.2)
 g.plot_joint(sns.scatterplot, alpha=0.5)
 g.plot_marginals(sns.histplot, kde=True)
-g.set_axis_labels('Variable X', 'Variable Y')
+g.set_axis_labels("Variable X", "Variable Y")
 ```

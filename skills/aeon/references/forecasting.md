@@ -89,6 +89,7 @@ fh = [1, 2, 3]
 
 # Absolute horizon (specific time indices)
 from aeon.forecasting.base import ForecastingHorizon
+
 fh = ForecastingHorizon([11, 12, 13], is_relative=False)
 ```
 
@@ -111,7 +112,7 @@ Use standard forecasting metrics:
 from aeon.performance_metrics.forecasting import (
     mean_absolute_error,
     mean_squared_error,
-    mean_absolute_percentage_error
+    mean_absolute_percentage_error,
 )
 
 # Calculate error

@@ -43,8 +43,13 @@ import torch
 from torch_geometric.data import Data
 
 # Create a simple graph with 3 nodes
-edge_index = torch.tensor([[0, 1, 1, 2],  # source nodes
-                           [1, 0, 2, 1]], dtype=torch.long)  # target nodes
+edge_index = torch.tensor(
+    [
+        [0, 1, 1, 2],  # source nodes
+        [1, 0, 2, 1],
+    ],
+    dtype=torch.long,
+)  # target nodes
 x = torch.tensor([[-1], [0], [1]], dtype=torch.float)  # node features
 
 data = Data(x=x, edge_index=edge_index)
@@ -57,7 +62,7 @@ print(f"Nodes: {data.num_nodes}, Edges: {data.num_edges}")
 from torch_geometric.datasets import Planetoid
 
 # Load Cora citation network
-dataset = Planetoid(root='/tmp/Cora', name='Cora')
+dataset = Planetoid(root="/tmp/Cora", name="Cora")
 data = dataset[0]  # Get the first (and only) graph
 
 print(f"Dataset: {dataset}")
@@ -88,8 +93,7 @@ Edges are stored in COO (coordinate) format as a `[2, num_edges]` tensor:
 
 ```python
 # Edge list: (0→1), (1→0), (1→2), (2→1)
-edge_index = torch.tensor([[0, 1, 1, 2],
-                           [1, 0, 2, 1]], dtype=torch.long)
+edge_index = torch.tensor([[0, 1, 1, 2], [1, 0, 2, 1]], dtype=torch.long)
 ```
 
 ### Mini-Batch Processing
@@ -130,6 +134,7 @@ PyG provides 40+ convolutional layers. Common ones include:
 from torch_geometric.nn import GCNConv
 import torch.nn.functional as F
 
+
 class GCN(torch.nn.Module):
     def __init__(self, num_features, num_classes):
         super().__init__()
@@ -149,6 +154,7 @@ class GCN(torch.nn.Module):
 ```python
 from torch_geometric.nn import GATConv
 
+
 class GAT(torch.nn.Module):
     def __init__(self, num_features, num_classes):
         super().__init__()
@@ -167,6 +173,7 @@ class GAT(torch.nn.Module):
 **GraphSAGE**:
 ```python
 from torch_geometric.nn import SAGEConv
+
 
 class GraphSAGE(torch.nn.Module):
     def __init__(self, num_features, num_classes):
@@ -191,9 +198,10 @@ For custom layers, inherit from `MessagePassing`:
 from torch_geometric.nn import MessagePassing
 from torch_geometric.utils import add_self_loops, degree
 
+
 class CustomConv(MessagePassing):
     def __init__(self, in_channels, out_channels):
-        super().__init__(aggr='add')  # "add", "mean", or "max"
+        super().__init__(aggr="add")  # "add", "mean", or "max"
         self.lin = torch.nn.Linear(in_channels, out_channels)
 
     def forward(self, x, edge_index):
@@ -234,19 +242,23 @@ PyG provides extensive benchmark datasets:
 ```python
 # Citation networks (node classification)
 from torch_geometric.datasets import Planetoid
-dataset = Planetoid(root='/tmp/Cora', name='Cora')  # or 'CiteSeer', 'PubMed'
+
+dataset = Planetoid(root="/tmp/Cora", name="Cora")  # or 'CiteSeer', 'PubMed'
 
 # Graph classification
 from torch_geometric.datasets import TUDataset
-dataset = TUDataset(root='/tmp/ENZYMES', name='ENZYMES')
+
+dataset = TUDataset(root="/tmp/ENZYMES", name="ENZYMES")
 
 # Molecular datasets
 from torch_geometric.datasets import QM9
-dataset = QM9(root='/tmp/QM9')
+
+dataset = QM9(root="/tmp/QM9")
 
 # Large-scale datasets
 from torch_geometric.datasets import Reddit
-dataset = Reddit(root='/tmp/Reddit')
+
+dataset = Reddit(root="/tmp/Reddit")
 ```
 
 Check `references/datasets_reference.md` for a comprehensive list.
@@ -259,6 +271,7 @@ For datasets that fit in memory, inherit from `InMemoryDataset`:
 from torch_geometric.data import InMemoryDataset, Data
 import torch
 
+
 class MyOwnDataset(InMemoryDataset):
     def __init__(self, root, transform=None, pre_transform=None):
         super().__init__(root, transform, pre_transform)
@@ -266,11 +279,11 @@ class MyOwnDataset(InMemoryDataset):
 
     @property
     def raw_file_names(self):
-        return ['my_data.csv']  # Files needed in raw_dir
+        return ["my_data.csv"]  # Files needed in raw_dir
 
     @property
     def processed_file_names(self):
-        return ['data.pt']  # Files in processed_dir
+        return ["data.pt"]  # Files in processed_dir
 
     def download(self):
         # Download raw data to self.raw_dir
@@ -309,13 +322,12 @@ import torch
 from torch_geometric.data import HeteroData
 
 # Load nodes
-nodes_df = pd.read_csv('nodes.csv')
-x = torch.tensor(nodes_df[['feat1', 'feat2']].values, dtype=torch.float)
+nodes_df = pd.read_csv("nodes.csv")
+x = torch.tensor(nodes_df[["feat1", "feat2"]].values, dtype=torch.float)
 
 # Load edges
-edges_df = pd.read_csv('edges.csv')
-edge_index = torch.tensor([edges_df['source'].values,
-                           edges_df['target'].values], dtype=torch.long)
+edges_df = pd.read_csv("edges.csv")
+edge_index = torch.tensor([edges_df["source"].values, edges_df["target"].values], dtype=torch.long)
 
 data = Data(x=x, edge_index=edge_index)
 ```
@@ -330,7 +342,7 @@ import torch.nn.functional as F
 from torch_geometric.datasets import Planetoid
 
 # Load dataset
-dataset = Planetoid(root='/tmp/Cora', name='Cora')
+dataset = Planetoid(root="/tmp/Cora", name="Cora")
 data = dataset[0]
 
 # Create model
@@ -347,14 +359,14 @@ for epoch in range(200):
     optimizer.step()
 
     if epoch % 10 == 0:
-        print(f'Epoch {epoch}, Loss: {loss.item():.4f}')
+        print(f"Epoch {epoch}, Loss: {loss.item():.4f}")
 
 # Evaluation
 model.eval()
 pred = model(data).argmax(dim=1)
 correct = (pred[data.test_mask] == data.y[data.test_mask]).sum()
 acc = int(correct) / int(data.test_mask.sum())
-print(f'Test Accuracy: {acc:.4f}')
+print(f"Test Accuracy: {acc:.4f}")
 ```
 
 ### Graph Classification (Multiple Graphs)
@@ -363,6 +375,7 @@ print(f'Test Accuracy: {acc:.4f}')
 from torch_geometric.datasets import TUDataset
 from torch_geometric.loader import DataLoader
 from torch_geometric.nn import global_mean_pool
+
 
 class GraphClassifier(torch.nn.Module):
     def __init__(self, num_features, num_classes):
@@ -385,8 +398,9 @@ class GraphClassifier(torch.nn.Module):
         x = self.lin(x)
         return F.log_softmax(x, dim=1)
 
+
 # Load dataset
-dataset = TUDataset(root='/tmp/ENZYMES', name='ENZYMES')
+dataset = TUDataset(root="/tmp/ENZYMES", name="ENZYMES")
 loader = DataLoader(dataset, batch_size=32, shuffle=True)
 
 model = GraphClassifier(dataset.num_features, dataset.num_classes)
@@ -405,7 +419,7 @@ for epoch in range(100):
         total_loss += loss.item()
 
     if epoch % 10 == 0:
-        print(f'Epoch {epoch}, Loss: {total_loss / len(loader):.4f}')
+        print(f"Epoch {epoch}, Loss: {total_loss / len(loader):.4f}")
 ```
 
 ### Large-Scale Graphs with Neighbor Sampling
@@ -429,7 +443,7 @@ for batch in train_loader:
     optimizer.zero_grad()
     out = model(batch)
     # Only compute loss on seed nodes (first batch_size nodes)
-    loss = F.nll_loss(out[:batch.batch_size], batch.y[:batch.batch_size])
+    loss = F.nll_loss(out[: batch.batch_size], batch.y[: batch.batch_size])
     loss.backward()
     optimizer.step()
 ```
@@ -452,12 +466,12 @@ from torch_geometric.data import HeteroData
 data = HeteroData()
 
 # Add node features for different types
-data['paper'].x = torch.randn(100, 128)  # 100 papers with 128 features
-data['author'].x = torch.randn(200, 64)  # 200 authors with 64 features
+data["paper"].x = torch.randn(100, 128)  # 100 papers with 128 features
+data["author"].x = torch.randn(200, 64)  # 200 authors with 64 features
 
 # Add edges for different types (source_type, edge_type, target_type)
-data['author', 'writes', 'paper'].edge_index = torch.randint(0, 200, (2, 500))
-data['paper', 'cites', 'paper'].edge_index = torch.randint(0, 100, (2, 300))
+data["author", "writes", "paper"].edge_index = torch.randint(0, 200, (2, 500))
+data["paper", "cites", "paper"].edge_index = torch.randint(0, 100, (2, 300))
 
 print(data)
 ```
@@ -471,7 +485,7 @@ from torch_geometric.nn import to_hetero
 model = GNN(...)
 
 # Convert to heterogeneous
-model = to_hetero(model, data.metadata(), aggr='sum')
+model = to_hetero(model, data.metadata(), aggr="sum")
 
 # Use as normal
 out = model(data.x_dict, data.edge_index_dict)
@@ -482,18 +496,25 @@ Or use `HeteroConv` for custom edge-type-specific operations:
 ```python
 from torch_geometric.nn import HeteroConv, GCNConv, SAGEConv
 
+
 class HeteroGNN(torch.nn.Module):
     def __init__(self, metadata):
         super().__init__()
-        self.conv1 = HeteroConv({
-            ('paper', 'cites', 'paper'): GCNConv(-1, 64),
-            ('author', 'writes', 'paper'): SAGEConv((-1, -1), 64),
-        }, aggr='sum')
+        self.conv1 = HeteroConv(
+            {
+                ("paper", "cites", "paper"): GCNConv(-1, 64),
+                ("author", "writes", "paper"): SAGEConv((-1, -1), 64),
+            },
+            aggr="sum",
+        )
 
-        self.conv2 = HeteroConv({
-            ('paper', 'cites', 'paper'): GCNConv(64, 32),
-            ('author', 'writes', 'paper'): SAGEConv((64, 64), 32),
-        }, aggr='sum')
+        self.conv2 = HeteroConv(
+            {
+                ("paper", "cites", "paper"): GCNConv(64, 32),
+                ("author", "writes", "paper"): SAGEConv((64, 64), 32),
+            },
+            aggr="sum",
+        )
 
     def forward(self, x_dict, edge_index_dict):
         x_dict = self.conv1(x_dict, edge_index_dict)
@@ -511,14 +532,16 @@ from torch_geometric.transforms import NormalizeFeatures, AddSelfLoops, Compose
 
 # Single transform
 transform = NormalizeFeatures()
-dataset = Planetoid(root='/tmp/Cora', name='Cora', transform=transform)
+dataset = Planetoid(root="/tmp/Cora", name="Cora", transform=transform)
 
 # Compose multiple transforms
-transform = Compose([
-    AddSelfLoops(),
-    NormalizeFeatures(),
-])
-dataset = Planetoid(root='/tmp/Cora', name='Cora', transform=transform)
+transform = Compose(
+    [
+        AddSelfLoops(),
+        NormalizeFeatures(),
+    ]
+)
+dataset = Planetoid(root="/tmp/Cora", name="Cora", transform=transform)
 ```
 
 Common transforms:
@@ -540,13 +563,13 @@ from torch_geometric.explain import Explainer, GNNExplainer
 explainer = Explainer(
     model=model,
     algorithm=GNNExplainer(epochs=200),
-    explanation_type='model',  # or 'phenomenon'
-    node_mask_type='attributes',
-    edge_mask_type='object',
+    explanation_type="model",  # or 'phenomenon'
+    node_mask_type="attributes",
+    edge_mask_type="object",
     model_config=dict(
-        mode='multiclass_classification',
-        task_level='node',
-        return_type='log_probs',
+        mode="multiclass_classification",
+        task_level="node",
+        return_type="log_probs",
     ),
 )
 
@@ -555,9 +578,9 @@ node_idx = 10
 explanation = explainer(data.x, data.edge_index, index=node_idx)
 
 # Visualize
-print(f'Node {node_idx} explanation:')
-print(f'Important edges: {explanation.edge_mask.topk(5).indices}')
-print(f'Important features: {explanation.node_mask[node_idx].topk(5).indices}')
+print(f"Node {node_idx} explanation:")
+print(f"Important edges: {explanation.edge_mask.topk(5).indices}")
+print(f"Important features: {explanation.node_mask[node_idx].topk(5).indices}")
 ```
 
 ### Pooling Operations
@@ -566,6 +589,7 @@ For hierarchical graph representations:
 
 ```python
 from torch_geometric.nn import TopKPooling, global_mean_pool
+
 
 class HierarchicalGNN(torch.nn.Module):
     def __init__(self, num_features, num_classes):
@@ -597,21 +621,24 @@ class HierarchicalGNN(torch.nn.Module):
 ```python
 # Undirected check
 from torch_geometric.utils import is_undirected
+
 print(f"Is undirected: {is_undirected(data.edge_index)}")
 
 # Connected components
 from torch_geometric.utils import connected_components
+
 print(f"Connected components: {connected_components(data.edge_index)}")
 
 # Contains self-loops
 from torch_geometric.utils import contains_self_loops
+
 print(f"Has self-loops: {contains_self_loops(data.edge_index)}")
 ```
 
 ### GPU Training
 
 ```python
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = model.to(device)
 data = data.to(device)
 
@@ -625,11 +652,11 @@ for batch in loader:
 
 ```python
 # Save
-torch.save(model.state_dict(), 'model.pth')
+torch.save(model.state_dict(), "model.pth")
 
 # Load
 model = GCN(num_features, num_classes)
-model.load_state_dict(torch.load('model.pth'))
+model.load_state_dict(torch.load("model.pth"))
 model.eval()
 ```
 

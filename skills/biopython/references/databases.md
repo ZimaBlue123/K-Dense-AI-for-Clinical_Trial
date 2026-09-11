@@ -76,10 +76,10 @@ print(f"Retrieved IDs: {id_list}")
 handle = Entrez.esearch(
     db="pubmed",
     term="biopython[Title]",
-    retmax=100,           # Return up to 100 IDs
-    sort="relevance",     # Sort by relevance
-    reldate=365,          # Only results from last year
-    datetype="pdat"       # Use publication date
+    retmax=100,  # Return up to 100 IDs
+    sort="relevance",  # Sort by relevance
+    reldate=365,  # Only results from last year
+    datetype="pdat",  # Use publication date
 )
 result = Entrez.read(handle)
 handle.close()
@@ -114,6 +114,7 @@ handle.close()
 
 # Parse with SeqIO
 from Bio import SeqIO
+
 handle = Entrez.efetch(db="nucleotide", id="EU490707", rettype="gb", retmode="text")
 record = SeqIO.read(handle, "genbank")
 handle.close()
@@ -171,11 +172,7 @@ webenv = result["WebEnv"]
 
 # Use in subsequent queries
 handle = Entrez.efetch(
-    db="pubmed",
-    query_key=query_key,
-    WebEnv=webenv,
-    rettype="medline",
-    retmode="text"
+    db="pubmed", query_key=query_key, WebEnv=webenv, rettype="medline", retmode="text"
 )
 ```
 
@@ -216,12 +213,7 @@ result = Entrez.read(handle)
 handle.close()
 
 # Fetch abstracts
-handle = Entrez.efetch(
-    db="pubmed",
-    id=result["IdList"],
-    rettype="medline",
-    retmode="text"
-)
+handle = Entrez.efetch(db="pubmed", id=result["IdList"], rettype="medline", retmode="text")
 records = handle.read()
 handle.close()
 print(records)
@@ -238,10 +230,7 @@ handle.close()
 # Fetch sequences
 if result["IdList"]:
     handle = Entrez.efetch(
-        db="nucleotide",
-        id=result["IdList"][:5],
-        rettype="fasta",
-        retmode="text"
+        db="nucleotide", id=result["IdList"][:5], rettype="fasta", retmode="text"
     )
     sequences = handle.read()
     handle.close()
@@ -257,12 +246,8 @@ handle.close()
 
 # Fetch protein records
 from Bio import SeqIO
-handle = Entrez.efetch(
-    db="protein",
-    id=result["IdList"][:5],
-    rettype="gp",
-    retmode="text"
-)
+
+handle = Entrez.efetch(db="protein", id=result["IdList"][:5], rettype="gp", retmode="text")
 records = SeqIO.parse(handle, "genbank")
 for record in records:
     print(f"{record.id}: {record.description}")
@@ -313,8 +298,8 @@ records = Entrez.read(handle)
 handle.close()
 
 # Access parsed data
-article = records['PubmedArticle'][0]['MedlineCitation']['Article']
-print(article['ArticleTitle'])
+article = records["PubmedArticle"][0]["MedlineCitation"]["Article"]
+print(article["ArticleTitle"])
 ```
 
 ### Handling Large Result Sets
@@ -331,12 +316,7 @@ batch_size = 500
 
 for start in range(0, total_count, batch_size):
     # Fetch batch
-    handle = Entrez.esearch(
-        db="pubmed",
-        term=search_term,
-        retstart=start,
-        retmax=batch_size
-    )
+    handle = Entrez.esearch(db="pubmed", term=search_term, retstart=start, retmax=batch_size)
     result = Entrez.read(handle)
     handle.close()
 
@@ -351,11 +331,7 @@ for start in range(0, total_count, batch_size):
 
 ```python
 # Perform search and store on server
-handle = Entrez.esearch(
-    db="pubmed",
-    term="biopython",
-    usehistory="y"
-)
+handle = Entrez.esearch(db="pubmed", term="biopython", usehistory="y")
 result = Entrez.read(handle)
 handle.close()
 
@@ -373,7 +349,7 @@ for start in range(0, count, batch_size):
         rettype="medline",
         retmode="text",
         webenv=webenv,
-        query_key=query_key
+        query_key=query_key,
     )
     data = handle.read()
     handle.close()
@@ -456,8 +432,8 @@ papers = Entrez.read(handle)
 handle.close()
 
 # Extract information
-for paper in papers['PubmedArticle']:
-    article = paper['MedlineCitation']['Article']
+for paper in papers["PubmedArticle"]:
+    article = paper["MedlineCitation"]["Article"]
     print(f"Title: {article['ArticleTitle']}")
     print(f"Journal: {article['Journal']['Title']}")
     print()

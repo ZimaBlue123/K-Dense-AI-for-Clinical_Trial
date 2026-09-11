@@ -194,10 +194,7 @@ from torchdrug import models
 model = models.ESM(path="esm1b_t33_650M_UR50S.pt")
 
 # Fine-tune on downstream task
-task = tasks.PropertyPrediction(
-    model, task=["stability"],
-    criterion="mse", metric=["mae", "rmse"]
-)
+task = tasks.PropertyPrediction(model, task=["stability"], criterion="mse", metric=["mae", "rmse"])
 ```
 
 ### Multi-Task Learning

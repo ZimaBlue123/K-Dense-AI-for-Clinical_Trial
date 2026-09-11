@@ -11,7 +11,7 @@ Photoplethysmography (PPG) measures blood volume changes in microvascular tissue
 Automated PPG signal processing pipeline.
 
 ```python
-signals, info = nk.ppg_process(ppg_signal, sampling_rate=100, method='elgendi')
+signals, info = nk.ppg_process(ppg_signal, sampling_rate=100, method="elgendi")
 ```
 
 **Pipeline steps:**
@@ -39,7 +39,7 @@ signals, info = nk.ppg_process(ppg_signal, sampling_rate=100, method='elgendi')
 Prepare raw PPG signal for peak detection.
 
 ```python
-cleaned_ppg = nk.ppg_clean(ppg_signal, sampling_rate=100, method='elgendi')
+cleaned_ppg = nk.ppg_clean(ppg_signal, sampling_rate=100, method="elgendi")
 ```
 
 **Methods:**
@@ -63,8 +63,9 @@ cleaned_ppg = nk.ppg_clean(ppg_signal, sampling_rate=100, method='elgendi')
 Detect systolic peaks in PPG signal.
 
 ```python
-peaks, info = nk.ppg_peaks(cleaned_ppg, sampling_rate=100, method='elgendi',
-                           correct_artifacts=False)
+peaks, info = nk.ppg_peaks(
+    cleaned_ppg, sampling_rate=100, method="elgendi", correct_artifacts=False
+)
 ```
 
 **Methods:**
@@ -90,7 +91,7 @@ peaks, info = nk.ppg_peaks(cleaned_ppg, sampling_rate=100, method='elgendi',
 Low-level peak detection with algorithm comparison.
 
 ```python
-peaks_dict = nk.ppg_findpeaks(cleaned_ppg, sampling_rate=100, method='elgendi')
+peaks_dict = nk.ppg_findpeaks(cleaned_ppg, sampling_rate=100, method="elgendi")
 ```
 
 **Use case:**
@@ -160,7 +161,7 @@ results = nk.ppg_intervalrelated(signals, sampling_rate=100)
 Assess signal quality and reliability.
 
 ```python
-quality = nk.ppg_quality(ppg_signal, sampling_rate=100, method='averageQRS')
+quality = nk.ppg_quality(ppg_signal, sampling_rate=100, method="averageQRS")
 ```
 
 **Methods:**
@@ -210,7 +211,7 @@ pulses = nk.ppg_segment(cleaned_ppg, peaks, sampling_rate=100)
 Document preprocessing methods used in analysis.
 
 ```python
-methods_info = nk.ppg_methods(method='elgendi')
+methods_info = nk.ppg_methods(method="elgendi")
 ```
 
 **Returns:**
@@ -224,8 +225,9 @@ methods_info = nk.ppg_methods(method='elgendi')
 Generate synthetic PPG signals for testing.
 
 ```python
-synthetic_ppg = nk.ppg_simulate(duration=60, sampling_rate=100, heart_rate=70,
-                                noise=0.1, random_state=42)
+synthetic_ppg = nk.ppg_simulate(
+    duration=60, sampling_rate=100, heart_rate=70, noise=0.1, random_state=42
+)
 ```
 
 **Parameters:**
@@ -309,7 +311,7 @@ nk.ppg_plot(signals, info, static=True)
 **Standard workflow:**
 ```python
 # 1. Clean signal
-cleaned = nk.ppg_clean(ppg_raw, sampling_rate=100, method='elgendi')
+cleaned = nk.ppg_clean(ppg_raw, sampling_rate=100, method="elgendi")
 
 # 2. Detect peaks with artifact correction
 peaks, info = nk.ppg_peaks(cleaned, sampling_rate=100, correct_artifacts=True)
@@ -330,7 +332,7 @@ analysis = nk.ppg_analyze(signals, sampling_rate=100)
 signals, info = nk.ppg_process(ppg_raw, sampling_rate=100)
 
 # Extract peaks and compute HRV
-hrv_indices = nk.hrv(info['PPG_Peaks'], sampling_rate=100)
+hrv_indices = nk.hrv(info["PPG_Peaks"], sampling_rate=100)
 
 # PPG-derived HRV is valid but may differ slightly from ECG-derived HRV
 # Differences due to pulse arrival time, vascular properties

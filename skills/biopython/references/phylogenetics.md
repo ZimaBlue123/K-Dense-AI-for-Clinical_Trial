@@ -101,9 +101,11 @@ for clade in tree.find_clades(order="level"):
 # Find clade by name
 clade = tree.find_any(name="Species_A")
 
+
 # Find all clades matching criteria
 def is_long_branch(clade):
     return clade.branch_length and clade.branch_length > 0.5
+
 
 long_branches = tree.find_clades(is_long_branch)
 ```
@@ -287,6 +289,7 @@ Phylo.draw(tree, branch_labels=lambda c: c.branch_length)
 # Show branch support values
 Phylo.draw(tree, label_func=lambda n: str(n.confidence) if n.confidence else "")
 
+
 # Color branches
 def color_by_length(clade):
     if clade.branch_length:
@@ -295,6 +298,7 @@ def color_by_length(clade):
         elif clade.branch_length > 0.2:
             return "orange"
     return "black"
+
 
 # Note: Direct branch coloring requires custom matplotlib code
 ```
@@ -308,13 +312,7 @@ from Bio.Phylo.TreeConstruction import DistanceTreeConstructor, DistanceMatrix
 
 # Create distance matrix
 dm = DistanceMatrix(
-    names=["Alpha", "Beta", "Gamma", "Delta"],
-    matrix=[
-        [],
-        [0.23],
-        [0.45, 0.34],
-        [0.67, 0.58, 0.29]
-    ]
+    names=["Alpha", "Beta", "Gamma", "Delta"], matrix=[[], [0.23], [0.45, 0.34], [0.67, 0.58, 0.29]]
 )
 
 # Build tree using UPGMA
@@ -400,6 +398,7 @@ clade.width = 2.0
 
 # Add taxonomy information
 from Bio.Phylo.PhyloXML import Taxonomy
+
 taxonomy = Taxonomy(scientific_name="Homo sapiens", common_name="Human")
 clade.taxonomies.append(taxonomy)
 ```
@@ -414,6 +413,7 @@ def add_bootstrap_support(tree, support_values):
     for node, support in zip(internal_nodes, support_values):
         node.confidence = support
     return tree
+
 
 # Example
 support_values = [95, 87, 76, 92]
@@ -460,6 +460,7 @@ Phylo.write(tree, "tree.nwk", "newick")
 
 # Visualize
 import matplotlib.pyplot as plt
+
 fig = plt.figure(figsize=(10, 8))
 Phylo.draw(tree)
 plt.show()
@@ -483,6 +484,7 @@ def extract_subtree(tree, taxa_list):
 
     return subtree
 
+
 # Use it
 subtree = extract_subtree(tree, ["Species_A", "Species_B", "Species_C"])
 Phylo.write(subtree, "subtree.nwk", "newick")
@@ -504,6 +506,7 @@ def phylogenetic_diversity(tree, taxa_subset=None):
             total += clade.branch_length
 
     return total
+
 
 # Calculate PD for all taxa
 pd_all = phylogenetic_diversity(tree)
@@ -543,6 +546,7 @@ def annotate_tree_from_csv(tree, csv_file):
 ```python
 def robinson_foulds_distance(tree1, tree2):
     """Calculate Robinson-Foulds distance between two trees."""
+
     # Get bipartitions for each tree
     def get_bipartitions(tree):
         bipartitions = set()
@@ -557,6 +561,7 @@ def robinson_foulds_distance(tree1, tree2):
     # Symmetric difference
     diff = len(bp1.symmetric_difference(bp2))
     return diff
+
 
 # Use it
 tree1 = Phylo.read("tree1.nwk", "newick")

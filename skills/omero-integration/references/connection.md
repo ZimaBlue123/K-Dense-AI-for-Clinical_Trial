@@ -47,7 +47,7 @@ from omero.gateway import BlitzGateway
 
 with BlitzGateway(username, password, host=host, port=4064) as conn:
     # Connection automatically established
-    for project in conn.getObjects('Project'):
+    for project in conn.getObjects("Project"):
         print(project.getName())
     # Connection automatically closed on exit
 ```
@@ -131,7 +131,7 @@ Use group ID `-1` to query across all accessible groups:
 
 ```python
 # Set context to query all groups
-conn.SERVICE_OPTS.setOmeroGroup('-1')
+conn.SERVICE_OPTS.setOmeroGroup("-1")
 
 # Now queries span all accessible groups
 image = conn.getObject("Image", image_id)
@@ -193,8 +193,7 @@ admin_conn.close()
 ```python
 # Get all administrators
 for admin in conn.getAdministrators():
-    print(f"ID: {admin.getId()}, Name: {admin.getFullName()}, "
-          f"Username: {admin.getOmeName()}")
+    print(f"ID: {admin.getId()}, Name: {admin.getFullName()}, Username: {admin.getOmeName()}")
 ```
 
 ## Connection Lifecycle
@@ -234,6 +233,7 @@ else:
 from omero.gateway import BlitzGateway
 import traceback
 
+
 def connect_to_omero(username, password, host, port=4064):
     """
     Establish connection to OMERO server with error handling.
@@ -254,6 +254,7 @@ def connect_to_omero(username, password, host, port=4064):
         traceback.print_exc()
         return None
 
+
 # Usage
 conn = connect_to_omero(username, password, host)
 if conn:
@@ -272,10 +273,10 @@ if conn:
 from omero.gateway import BlitzGateway
 
 # Connection parameters
-HOST = 'omero.example.com'
+HOST = "omero.example.com"
 PORT = 4064
-USERNAME = 'user'
-PASSWORD = 'pass'
+USERNAME = "user"
+PASSWORD = "pass"
 
 # Connect
 with BlitzGateway(USERNAME, PASSWORD, host=HOST, port=PORT) as conn:
@@ -290,16 +291,16 @@ import yaml
 from omero.gateway import BlitzGateway
 
 # Load configuration
-with open('omero_config.yaml', 'r') as f:
+with open("omero_config.yaml", "r") as f:
     config = yaml.safe_load(f)
 
 # Connect using config
 with BlitzGateway(
-    config['username'],
-    config['password'],
-    host=config['host'],
-    port=config.get('port', 4064),
-    secure=config.get('secure', True)
+    config["username"],
+    config["password"],
+    host=config["host"],
+    port=config.get("port", 4064),
+    secure=config.get("secure", True),
 ) as conn:
     # Perform operations
     pass
@@ -312,10 +313,10 @@ import os
 from omero.gateway import BlitzGateway
 
 # Get credentials from environment
-USERNAME = os.environ.get('OMERO_USER')
-PASSWORD = os.environ.get('OMERO_PASSWORD')
-HOST = os.environ.get('OMERO_HOST', 'localhost')
-PORT = int(os.environ.get('OMERO_PORT', 4064))
+USERNAME = os.environ.get("OMERO_USER")
+PASSWORD = os.environ.get("OMERO_PASSWORD")
+HOST = os.environ.get("OMERO_HOST", "localhost")
+PORT = int(os.environ.get("OMERO_PORT", 4064))
 
 # Connect
 with BlitzGateway(USERNAME, PASSWORD, host=HOST, port=PORT) as conn:

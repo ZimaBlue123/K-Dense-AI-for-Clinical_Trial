@@ -174,7 +174,9 @@ results = rowan.batch_conformers(mols)
 
 for smi, result in zip(smiles_list, results):
     if result:
-        print(f"{smi}: {len(result.conformers)} conformers, range = {result.energy_range:.2f} kcal/mol")
+        print(
+            f"{smi}: {len(result.conformers)} conformers, range = {result.energy_range:.2f} kcal/mol"
+        )
 ```
 
 **Parameters:**
@@ -329,6 +331,7 @@ for smi, result in zip(smiles_list, results):
 import rowan
 from rdkit import Chem
 
+
 def safe_pka(smiles):
     """Safely calculate pKa with error handling."""
     try:
@@ -343,6 +346,7 @@ def safe_pka(smiles):
         return None, f"API error: {e}"
     except Exception as e:
         return None, f"Error: {e}"
+
 
 # Usage
 result, error = safe_pka("c1ccccc1O")
@@ -363,10 +367,7 @@ from rdkit.Chem import Descriptors, AllChem
 mols = [Chem.MolFromSmiles(smi) for smi in smiles_list]
 
 # Filter by RDKit descriptors first
-filtered_mols = [
-    mol for mol in mols
-    if mol and Descriptors.MolWt(mol) < 500
-]
+filtered_mols = [mol for mol in mols if mol and Descriptors.MolWt(mol) < 500]
 
 # Calculate pKa only for filtered set
 pka_results = rowan.batch_pka(filtered_mols)
@@ -386,6 +387,7 @@ from rdkit import Chem
 from rdkit.Chem import Descriptors
 import pandas as pd
 
+
 def screen_compounds(smiles_list):
     """Screen compounds for drug-likeness and calculate pKa."""
     results = []
@@ -398,20 +400,21 @@ def screen_compounds(smiles_list):
 
     for (smi, mol), pka in zip(valid_mols, pka_results):
         result = {
-            'smiles': smi,
-            'mw': Descriptors.MolWt(mol),
-            'logp': Descriptors.MolLogP(mol),
-            'hbd': Descriptors.NumHDonors(mol),
-            'hba': Descriptors.NumHAcceptors(mol),
-            'pka': pka.strongest_acid if pka else None
+            "smiles": smi,
+            "mw": Descriptors.MolWt(mol),
+            "logp": Descriptors.MolLogP(mol),
+            "hbd": Descriptors.NumHDonors(mol),
+            "hba": Descriptors.NumHAcceptors(mol),
+            "pka": pka.strongest_acid if pka else None,
         }
         results.append(result)
 
     return pd.DataFrame(results)
 
+
 # Usage
 df = screen_compounds(compound_library)
-print(df[df['pka'].notna()].sort_values('pka'))
+print(df[df["pka"].notna()].sort_values("pka"))
 ```
 
 ---

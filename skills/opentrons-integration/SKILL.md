@@ -35,17 +35,18 @@ from opentrons import protocol_api
 
 # Metadata
 metadata = {
-    'protocolName': 'My Protocol',
-    'author': 'Name <email@example.com>',
-    'description': 'Protocol description',
-    'apiLevel': '2.19'  # Use latest available API version
+    "protocolName": "My Protocol",
+    "author": "Name <email@example.com>",
+    "description": "Protocol description",
+    "apiLevel": "2.19",  # Use latest available API version
 }
 
 # Requirements (optional)
 requirements = {
-    'robotType': 'Flex',  # or 'OT-2'
-    'apiLevel': '2.19'
+    "robotType": "Flex",  # or 'OT-2'
+    "apiLevel": "2.19",
 }
+
 
 # Run function
 def run(protocol: protocol_api.ProtocolContext):
@@ -68,9 +69,9 @@ def run(protocol: protocol_api.ProtocolContext):
 def run(protocol: protocol_api.ProtocolContext):
     # Load pipette on specific mount
     left_pipette = protocol.load_instrument(
-        'p1000_single_flex',  # Instrument name
-        'left',               # Mount: 'left' or 'right'
-        tip_racks=[tip_rack]  # List of tip rack labware objects
+        "p1000_single_flex",  # Instrument name
+        "left",  # Mount: 'left' or 'right'
+        tip_racks=[tip_rack],  # List of tip rack labware objects
     )
 ```
 
@@ -83,37 +84,37 @@ Common pipette names:
 ```python
 # Load labware directly on deck
 plate = protocol.load_labware(
-    'corning_96_wellplate_360ul_flat',  # Labware API name
-    'D1',                                # Deck slot (Flex: A1-D3, OT-2: 1-11)
-    label='Sample Plate'                 # Optional display label
+    "corning_96_wellplate_360ul_flat",  # Labware API name
+    "D1",  # Deck slot (Flex: A1-D3, OT-2: 1-11)
+    label="Sample Plate",  # Optional display label
 )
 
 # Load tip rack
-tip_rack = protocol.load_labware('opentrons_flex_96_tiprack_1000ul', 'C1')
+tip_rack = protocol.load_labware("opentrons_flex_96_tiprack_1000ul", "C1")
 
 # Load labware on adapter
-adapter = protocol.load_adapter('opentrons_flex_96_tiprack_adapter', 'B1')
-tips = adapter.load_labware('opentrons_flex_96_tiprack_200ul')
+adapter = protocol.load_adapter("opentrons_flex_96_tiprack_adapter", "B1")
+tips = adapter.load_labware("opentrons_flex_96_tiprack_200ul")
 ```
 
 **Loading Modules:**
 
 ```python
 # Temperature module
-temp_module = protocol.load_module('temperature module gen2', 'D3')
-temp_plate = temp_module.load_labware('corning_96_wellplate_360ul_flat')
+temp_module = protocol.load_module("temperature module gen2", "D3")
+temp_plate = temp_module.load_labware("corning_96_wellplate_360ul_flat")
 
 # Magnetic module
-mag_module = protocol.load_module('magnetic module gen2', 'C2')
-mag_plate = mag_module.load_labware('nest_96_wellplate_100ul_pcr_full_skirt')
+mag_module = protocol.load_module("magnetic module gen2", "C2")
+mag_plate = mag_module.load_labware("nest_96_wellplate_100ul_pcr_full_skirt")
 
 # Heater-Shaker module
-hs_module = protocol.load_module('heaterShakerModuleV1', 'D1')
-hs_plate = hs_module.load_labware('corning_96_wellplate_360ul_flat')
+hs_module = protocol.load_module("heaterShakerModuleV1", "D1")
+hs_plate = hs_module.load_labware("corning_96_wellplate_360ul_flat")
 
 # Thermocycler module (takes up specific slots automatically)
-tc_module = protocol.load_module('thermocyclerModuleV2')
-tc_plate = tc_module.load_labware('nest_96_wellplate_100ul_pcr_full_skirt')
+tc_module = protocol.load_module("thermocyclerModuleV2")
+tc_plate = tc_module.load_labware("nest_96_wellplate_100ul_pcr_full_skirt")
 ```
 
 ### 3. Liquid Handling Operations
@@ -126,15 +127,12 @@ pipette.pick_up_tip()
 
 # Aspirate (draw liquid in)
 pipette.aspirate(
-    volume=100,           # Volume in µL
-    location=source['A1'] # Well or location object
+    volume=100,  # Volume in µL
+    location=source["A1"],  # Well or location object
 )
 
 # Dispense (expel liquid)
-pipette.dispense(
-    volume=100,
-    location=dest['B1']
-)
+pipette.dispense(volume=100, location=dest["B1"])
 
 # Drop tip
 pipette.drop_tip()
@@ -149,25 +147,19 @@ pipette.return_tip()
 # Transfer (combines pick_up, aspirate, dispense, drop_tip)
 pipette.transfer(
     volume=100,
-    source=source_plate['A1'],
-    dest=dest_plate['B1'],
-    new_tip='always'  # 'always', 'once', or 'never'
+    source=source_plate["A1"],
+    dest=dest_plate["B1"],
+    new_tip="always",  # 'always', 'once', or 'never'
 )
 
 # Distribute (one source to multiple destinations)
 pipette.distribute(
-    volume=50,
-    source=reservoir['A1'],
-    dest=[plate['A1'], plate['A2'], plate['A3']],
-    new_tip='once'
+    volume=50, source=reservoir["A1"], dest=[plate["A1"], plate["A2"], plate["A3"]], new_tip="once"
 )
 
 # Consolidate (multiple sources to one destination)
 pipette.consolidate(
-    volume=50,
-    source=[plate['A1'], plate['A2'], plate['A3']],
-    dest=reservoir['A1'],
-    new_tip='once'
+    volume=50, source=[plate["A1"], plate["A2"], plate["A3"]], dest=reservoir["A1"], new_tip="once"
 )
 ```
 
@@ -175,22 +167,18 @@ pipette.consolidate(
 
 ```python
 # Mix (aspirate and dispense in same location)
-pipette.mix(
-    repetitions=3,
-    volume=50,
-    location=plate['A1']
-)
+pipette.mix(repetitions=3, volume=50, location=plate["A1"])
 
 # Air gap (prevent dripping)
-pipette.aspirate(100, source['A1'])
+pipette.aspirate(100, source["A1"])
 pipette.air_gap(20)  # 20µL air gap
-pipette.dispense(120, dest['A1'])
+pipette.dispense(120, dest["A1"])
 
 # Blow out (expel remaining liquid)
-pipette.blow_out(location=dest['A1'].top())
+pipette.blow_out(location=dest["A1"].top())
 
 # Touch tip (remove droplets on tip exterior)
-pipette.touch_tip(location=plate['A1'])
+pipette.touch_tip(location=plate["A1"])
 ```
 
 **Flow Rate Control:**
@@ -208,7 +196,7 @@ pipette.flow_rate.blow_out = 400
 
 ```python
 # By name
-well_a1 = plate['A1']
+well_a1 = plate["A1"]
 
 # By index
 first_well = plate.wells()[0]
@@ -317,20 +305,16 @@ tc_module.set_block_temperature(
     temperature=95,
     hold_time_seconds=30,
     hold_time_minutes=0.5,
-    block_max_volume=50  # µL per well
+    block_max_volume=50,  # µL per well
 )
 
 # Execute profile (PCR cycling)
 profile = [
-    {'temperature': 95, 'hold_time_seconds': 30},
-    {'temperature': 57, 'hold_time_seconds': 30},
-    {'temperature': 72, 'hold_time_seconds': 60}
+    {"temperature": 95, "hold_time_seconds": 30},
+    {"temperature": 57, "hold_time_seconds": 30},
+    {"temperature": 72, "hold_time_seconds": 60},
 ]
-tc_module.execute_profile(
-    steps=profile,
-    repetitions=30,
-    block_max_volume=50
-)
+tc_module.execute_profile(steps=profile, repetitions=30, block_max_volume=50)
 
 # Deactivate
 tc_module.deactivate_lid()
@@ -354,15 +338,13 @@ absorbance_data = result  # Dict with wavelength keys
 ```python
 # Define liquid types
 water = protocol.define_liquid(
-    name='Water',
-    description='Ultrapure water',
-    display_color='#0000FF'  # Hex color code
+    name="Water",
+    description="Ultrapure water",
+    display_color="#0000FF",  # Hex color code
 )
 
 sample = protocol.define_liquid(
-    name='Sample',
-    description='Cell lysate sample',
-    display_color='#FF0000'
+    name="Sample", description="Cell lysate sample", display_color="#FF0000"
 )
 ```
 
@@ -370,11 +352,11 @@ sample = protocol.define_liquid(
 
 ```python
 # Load liquid into specific wells
-reservoir['A1'].load_liquid(liquid=water, volume=50000)  # µL
-plate['A1'].load_liquid(liquid=sample, volume=100)
+reservoir["A1"].load_liquid(liquid=water, volume=50000)  # µL
+plate["A1"].load_liquid(liquid=sample, volume=100)
 
 # Mark wells as empty
-plate['B1'].load_empty()
+plate["B1"].load_empty()
 ```
 
 ### 7. Protocol Control and Utilities
@@ -383,14 +365,14 @@ plate['B1'].load_empty()
 
 ```python
 # Pause protocol
-protocol.pause(msg='Replace tip box and resume')
+protocol.pause(msg="Replace tip box and resume")
 
 # Delay
 protocol.delay(seconds=60)
 protocol.delay(minutes=5)
 
 # Comment (appears in logs)
-protocol.comment('Starting serial dilution')
+protocol.comment("Starting serial dilution")
 
 # Home robot
 protocol.home()
@@ -401,9 +383,9 @@ protocol.home()
 ```python
 # Check if simulating
 if protocol.is_simulating():
-    protocol.comment('Running in simulation mode')
+    protocol.comment("Running in simulation mode")
 else:
-    protocol.comment('Running on actual robot')
+    protocol.comment("Running on actual robot")
 ```
 
 **Rail Lights (Flex only):**
@@ -422,22 +404,18 @@ When using multi-channel pipettes:
 
 ```python
 # Load 8-channel pipette
-multi_pipette = protocol.load_instrument(
-    'p300_multi_gen2',
-    'left',
-    tip_racks=[tips]
-)
+multi_pipette = protocol.load_instrument("p300_multi_gen2", "left", tip_racks=[tips])
 
 # Access entire column with single well reference
 multi_pipette.transfer(
     volume=100,
-    source=source_plate['A1'],  # Accesses entire column 1
-    dest=dest_plate['A1']       # Dispenses to entire column 1
+    source=source_plate["A1"],  # Accesses entire column 1
+    dest=dest_plate["A1"],  # Dispenses to entire column 1
 )
 
 # Use rows() for row-wise operations
 for row in plate.rows():
-    multi_pipette.transfer(100, reservoir['A1'], row[0])
+    multi_pipette.transfer(100, reservoir["A1"], row[0])
 ```
 
 ### 9. Common Protocol Patterns
@@ -447,23 +425,23 @@ for row in plate.rows():
 ```python
 def run(protocol: protocol_api.ProtocolContext):
     # Load labware
-    tips = protocol.load_labware('opentrons_flex_96_tiprack_200ul', 'D1')
-    reservoir = protocol.load_labware('nest_12_reservoir_15ml', 'D2')
-    plate = protocol.load_labware('corning_96_wellplate_360ul_flat', 'D3')
+    tips = protocol.load_labware("opentrons_flex_96_tiprack_200ul", "D1")
+    reservoir = protocol.load_labware("nest_12_reservoir_15ml", "D2")
+    plate = protocol.load_labware("corning_96_wellplate_360ul_flat", "D3")
 
     # Load pipette
-    p300 = protocol.load_instrument('p300_single_flex', 'left', tip_racks=[tips])
+    p300 = protocol.load_instrument("p300_single_flex", "left", tip_racks=[tips])
 
     # Add diluent to all wells except first
-    p300.transfer(100, reservoir['A1'], plate.rows()[0][1:])
+    p300.transfer(100, reservoir["A1"], plate.rows()[0][1:])
 
     # Serial dilution across row
     p300.transfer(
         100,
         plate.rows()[0][:11],  # Source: wells 0-10
-        plate.rows()[0][1:],   # Dest: wells 1-11
-        mix_after=(3, 50),     # Mix 3x with 50µL after dispense
-        new_tip='always'
+        plate.rows()[0][1:],  # Dest: wells 1-11
+        mix_after=(3, 50),  # Mix 3x with 50µL after dispense
+        new_tip="always",
     )
 ```
 
@@ -472,20 +450,15 @@ def run(protocol: protocol_api.ProtocolContext):
 ```python
 def run(protocol: protocol_api.ProtocolContext):
     # Load labware
-    tips = protocol.load_labware('opentrons_flex_96_tiprack_1000ul', 'C1')
-    source = protocol.load_labware('corning_96_wellplate_360ul_flat', 'D1')
-    dest = protocol.load_labware('corning_96_wellplate_360ul_flat', 'D2')
+    tips = protocol.load_labware("opentrons_flex_96_tiprack_1000ul", "C1")
+    source = protocol.load_labware("corning_96_wellplate_360ul_flat", "D1")
+    dest = protocol.load_labware("corning_96_wellplate_360ul_flat", "D2")
 
     # Load pipette
-    p1000 = protocol.load_instrument('p1000_single_flex', 'left', tip_racks=[tips])
+    p1000 = protocol.load_instrument("p1000_single_flex", "left", tip_racks=[tips])
 
     # Transfer from all wells in source to dest
-    p1000.transfer(
-        100,
-        source.wells(),
-        dest.wells(),
-        new_tip='always'
-    )
+    p1000.transfer(100, source.wells(), dest.wells(), new_tip="always")
 ```
 
 **PCR Setup:**
@@ -493,30 +466,25 @@ def run(protocol: protocol_api.ProtocolContext):
 ```python
 def run(protocol: protocol_api.ProtocolContext):
     # Load thermocycler
-    tc_mod = protocol.load_module('thermocyclerModuleV2')
-    tc_plate = tc_mod.load_labware('nest_96_wellplate_100ul_pcr_full_skirt')
+    tc_mod = protocol.load_module("thermocyclerModuleV2")
+    tc_plate = tc_mod.load_labware("nest_96_wellplate_100ul_pcr_full_skirt")
 
     # Load tips and reagents
-    tips = protocol.load_labware('opentrons_flex_96_tiprack_200ul', 'C1')
-    reagents = protocol.load_labware('opentrons_24_tuberack_nest_1.5ml_snapcap', 'D1')
+    tips = protocol.load_labware("opentrons_flex_96_tiprack_200ul", "C1")
+    reagents = protocol.load_labware("opentrons_24_tuberack_nest_1.5ml_snapcap", "D1")
 
     # Load pipette
-    p300 = protocol.load_instrument('p300_single_flex', 'left', tip_racks=[tips])
+    p300 = protocol.load_instrument("p300_single_flex", "left", tip_racks=[tips])
 
     # Open thermocycler lid
     tc_mod.open_lid()
 
     # Distribute master mix
-    p300.distribute(
-        20,
-        reagents['A1'],
-        tc_plate.wells(),
-        new_tip='once'
-    )
+    p300.distribute(20, reagents["A1"], tc_plate.wells(), new_tip="once")
 
     # Add samples (example for first 8 wells)
     for i, well in enumerate(tc_plate.wells()[:8]):
-        p300.transfer(5, reagents.wells()[i+1], well, new_tip='always')
+        p300.transfer(5, reagents.wells()[i + 1], well, new_tip="always")
 
     # Run PCR
     tc_mod.close_lid()
@@ -526,9 +494,9 @@ def run(protocol: protocol_api.ProtocolContext):
     tc_mod.set_block_temperature(95, hold_time_seconds=180)
 
     profile = [
-        {'temperature': 95, 'hold_time_seconds': 15},
-        {'temperature': 60, 'hold_time_seconds': 30},
-        {'temperature': 72, 'hold_time_seconds': 30}
+        {"temperature": 95, "hold_time_seconds": 15},
+        {"temperature": 60, "hold_time_seconds": 30},
+        {"temperature": 72, "hold_time_seconds": 30},
     ]
     tc_mod.execute_profile(steps=profile, repetitions=35, block_max_volume=25)
 

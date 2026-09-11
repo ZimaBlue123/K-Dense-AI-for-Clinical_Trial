@@ -58,11 +58,7 @@ Get metadata for an economic data series.
 ```python
 response = requests.get(
     "https://api.stlouisfed.org/fred/series",
-    params={
-        "api_key": API_KEY,
-        "series_id": "GNPCA",
-        "file_type": "json"
-    }
+    params={"api_key": API_KEY, "series_id": "GNPCA", "file_type": "json"},
 )
 ```
 
@@ -166,8 +162,8 @@ response = requests.get(
         "series_id": "GDP",
         "file_type": "json",
         "observation_start": "2020-01-01",
-        "units": "pch"
-    }
+        "units": "pch",
+    },
 )
 ```
 
@@ -224,11 +220,7 @@ Get the categories for an economic data series.
 ```python
 response = requests.get(
     "https://api.stlouisfed.org/fred/series/categories",
-    params={
-        "api_key": API_KEY,
-        "series_id": "EXJPUS",
-        "file_type": "json"
-    }
+    params={"api_key": API_KEY, "series_id": "EXJPUS", "file_type": "json"},
 )
 ```
 
@@ -263,11 +255,7 @@ Get the release for an economic data series.
 ```python
 response = requests.get(
     "https://api.stlouisfed.org/fred/series/release",
-    params={
-        "api_key": API_KEY,
-        "series_id": "GDP",
-        "file_type": "json"
-    }
+    params={"api_key": API_KEY, "series_id": "GDP", "file_type": "json"},
 )
 ```
 
@@ -344,8 +332,8 @@ response = requests.get(
         "file_type": "json",
         "limit": 10,
         "filter_variable": "frequency",
-        "filter_value": "Monthly"
-    }
+        "filter_value": "Monthly",
+    },
 )
 ```
 
@@ -399,11 +387,7 @@ Get the FRED tags for a series.
 ```python
 response = requests.get(
     "https://api.stlouisfed.org/fred/series/tags",
-    params={
-        "api_key": API_KEY,
-        "series_id": "GDP",
-        "file_type": "json"
-    }
+    params={"api_key": API_KEY, "series_id": "GDP", "file_type": "json"},
 )
 ```
 
@@ -451,12 +435,7 @@ Get economic data series sorted by when observations were updated.
 ```python
 response = requests.get(
     "https://api.stlouisfed.org/fred/series/updates",
-    params={
-        "api_key": API_KEY,
-        "file_type": "json",
-        "filter_value": "macro",
-        "limit": 10
-    }
+    params={"api_key": API_KEY, "file_type": "json", "filter_value": "macro", "limit": 10},
 )
 ```
 
@@ -491,11 +470,7 @@ Get the vintage dates for a series (dates when data was revised).
 ```python
 response = requests.get(
     "https://api.stlouisfed.org/fred/series/vintagedates",
-    params={
-        "api_key": API_KEY,
-        "series_id": "GDP",
-        "file_type": "json"
-    }
+    params={"api_key": API_KEY, "series_id": "GDP", "file_type": "json"},
 )
 ```
 
@@ -578,7 +553,7 @@ response = requests.get(
         "api_key": API_KEY,
         "series_search_text": "mortgage rate",
         "tag_names": "30-year;frb",
-        "file_type": "json"
-    }
+        "file_type": "json",
+    },
 )
 ```

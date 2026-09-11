@@ -94,8 +94,8 @@ Apply adaptive thresholding for local intensity variations.
 from histolab.filters.image_filters import AdaptiveThreshold
 
 adaptive_filter = AdaptiveThreshold(
-    block_size=11,      # Size of local neighborhood
-    offset=2            # Constant subtracted from mean
+    block_size=11,  # Size of local neighborhood
+    offset=2,  # Constant subtracted from mean
 )
 binary_image = adaptive_filter(grayscale_image)
 ```
@@ -269,13 +269,15 @@ from histolab.filters.morphological_filters import BinaryDilation, RemoveSmallOb
 from histolab.filters.compositions import Compose
 
 # Create filter pipeline
-tissue_detection_pipeline = Compose([
-    RgbToGrayscale(),
-    OtsuThreshold(),
-    BinaryDilation(disk_size=5),
-    RemoveSmallHoles(area_threshold=1000),
-    RemoveSmallObjects(area_threshold=500)
-])
+tissue_detection_pipeline = Compose(
+    [
+        RgbToGrayscale(),
+        OtsuThreshold(),
+        BinaryDilation(disk_size=5),
+        RemoveSmallHoles(area_threshold=1000),
+        RemoveSmallObjects(area_threshold=500),
+    ]
+)
 
 # Apply pipeline
 result = tissue_detection_pipeline(rgb_image)
@@ -304,16 +306,20 @@ red_channel_filter = Lambda(lambda img: img[:, :, 0])
 from histolab.filters.compositions import Compose
 from histolab.filters.image_filters import RgbToGrayscale, OtsuThreshold
 from histolab.filters.morphological_filters import (
-    BinaryDilation, RemoveSmallHoles, RemoveSmallObjects
+    BinaryDilation,
+    RemoveSmallHoles,
+    RemoveSmallObjects,
 )
 
-tissue_detection = Compose([
-    RgbToGrayscale(),
-    OtsuThreshold(),
-    BinaryDilation(disk_size=5),
-    RemoveSmallHoles(area_threshold=1000),
-    RemoveSmallObjects(area_threshold=500)
-])
+tissue_detection = Compose(
+    [
+        RgbToGrayscale(),
+        OtsuThreshold(),
+        BinaryDilation(disk_size=5),
+        RemoveSmallHoles(area_threshold=1000),
+        RemoveSmallObjects(area_threshold=500),
+    ]
+)
 ```
 
 ### Pen Mark Removal
@@ -322,19 +328,18 @@ tissue_detection = Compose([
 from histolab.filters.image_filters import RgbToHsv, Lambda
 import numpy as np
 
+
 def remove_pen_marks(hsv_image):
     """Remove blue/green pen markings."""
     h, s, v = hsv_image[:, :, 0], hsv_image[:, :, 1], hsv_image[:, :, 2]
     # Mask for blue/green hues (common pen colors)
-    pen_mask = ((h > 0.45) & (h < 0.7) & (s > 0.3))
+    pen_mask = (h > 0.45) & (h < 0.7) & (s > 0.3)
     # Set pen regions to white
     hsv_image[pen_mask] = [0, 0, 1]
     return hsv_image
 
-pen_removal = Compose([
-    RgbToHsv(),
-    Lambda(remove_pen_marks)
-])
+
+pen_removal = Compose([RgbToHsv(), Lambda(remove_pen_marks)])
 ```
 
 ### Nuclei Enhancement
@@ -343,11 +348,13 @@ pen_removal = Compose([
 from histolab.filters.image_filters import RgbToHed, HistogramEqualization
 from histolab.filters.compositions import Compose
 
-nuclei_enhancement = Compose([
-    RgbToHed(),
-    Lambda(lambda hed: hed[:, :, 0]),  # Extract hematoxylin channel
-    HistogramEqualization()
-])
+nuclei_enhancement = Compose(
+    [
+        RgbToHed(),
+        Lambda(lambda hed: hed[:, :, 0]),  # Extract hematoxylin channel
+        HistogramEqualization(),
+    ]
+)
 ```
 
 ### Contrast Normalization
@@ -355,11 +362,7 @@ nuclei_enhancement = Compose([
 ```python
 from histolab.filters.image_filters import StretchContrast, HistogramEqualization
 
-contrast_normalization = Compose([
-    RgbToGrayscale(),
-    StretchContrast(),
-    HistogramEqualization()
-])
+contrast_normalization = Compose([RgbToGrayscale(), StretchContrast(), HistogramEqualization()])
 ```
 
 ## Applying Filters to Tiles
@@ -381,10 +384,7 @@ filtered_tile = tile.apply_filters(gray_filter)
 from histolab.filters.compositions import Compose
 from histolab.filters.image_filters import StretchContrast
 
-filter_chain = Compose([
-    RgbToGrayscale(),
-    StretchContrast()
-])
+filter_chain = Compose([RgbToGrayscale(), StretchContrast()])
 processed_tile = tile.apply_filters(filter_chain)
 ```
 
@@ -399,12 +399,14 @@ from histolab.filters.image_filters import RgbToGrayscale, OtsuThreshold
 from histolab.filters.morphological_filters import BinaryDilation
 
 # Custom aggressive tissue detection
-aggressive_filters = Compose([
-    RgbToGrayscale(),
-    OtsuThreshold(),
-    BinaryDilation(disk_size=10),  # Larger dilation
-    RemoveSmallObjects(area_threshold=5000)  # Remove only large artifacts
-])
+aggressive_filters = Compose(
+    [
+        RgbToGrayscale(),
+        OtsuThreshold(),
+        BinaryDilation(disk_size=10),  # Larger dilation
+        RemoveSmallObjects(area_threshold=5000),  # Remove only large artifacts
+    ]
+)
 
 # Create mask with custom filters
 custom_mask = TissueMask(filters=aggressive_filters)
@@ -417,6 +419,7 @@ While histolab doesn't have built-in stain normalization, filters can be used fo
 ```python
 from histolab.filters.image_filters import RgbToHed, Lambda
 import numpy as np
+
 
 def normalize_hed(hed_image, target_means=[0.65, 0.70], target_stds=[0.15, 0.13]):
     """Simple H&E normalization."""
@@ -436,11 +439,14 @@ def normalize_hed(hed_image, target_means=[0.65, 0.70], target_stds=[0.15, 0.13]
 
     return hed_image
 
-normalization_pipeline = Compose([
-    RgbToHed(),
-    Lambda(normalize_hed)
-    # Convert back to RGB if needed
-])
+
+normalization_pipeline = Compose(
+    [
+        RgbToHed(),
+        Lambda(normalize_hed),
+        # Convert back to RGB if needed
+    ]
+)
 ```
 
 ## Best Practices
@@ -462,13 +468,13 @@ from histolab.filters.image_filters import Lambda
 import cv2
 import numpy as np
 
+
 def laplacian_blur_score(gray_image):
     """Calculate Laplacian variance (blur metric)."""
     return cv2.Laplacian(np.array(gray_image), cv2.CV_64F).var()
 
-blur_detector = Lambda(lambda img: laplacian_blur_score(
-    RgbToGrayscale()(img)
-))
+
+blur_detector = Lambda(lambda img: laplacian_blur_score(RgbToGrayscale()(img)))
 ```
 
 ### Tissue Coverage
@@ -477,13 +483,12 @@ blur_detector = Lambda(lambda img: laplacian_blur_score(
 from histolab.filters.image_filters import RgbToGrayscale, OtsuThreshold
 from histolab.filters.compositions import Compose
 
+
 def tissue_coverage(image):
     """Calculate percentage of tissue in image."""
-    tissue_mask = Compose([
-        RgbToGrayscale(),
-        OtsuThreshold()
-    ])(image)
+    tissue_mask = Compose([RgbToGrayscale(), OtsuThreshold()])(image)
     return tissue_mask.sum() / tissue_mask.size * 100
+
 
 coverage_filter = Lambda(tissue_coverage)
 ```

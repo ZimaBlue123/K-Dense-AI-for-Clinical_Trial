@@ -18,11 +18,11 @@ Create supercells with arbitrary scaling matrices.
 from pymatgen.transformations.standard_transformations import SupercellTransformation
 
 # Simple 2x2x2 supercell
-trans = SupercellTransformation([[2,0,0], [0,2,0], [0,0,2]])
+trans = SupercellTransformation([[2, 0, 0], [0, 2, 0], [0, 0, 2]])
 new_struct = trans.apply_transformation(struct)
 
 # Non-orthogonal supercell
-trans = SupercellTransformation([[2,1,0], [0,2,0], [0,0,2]])
+trans = SupercellTransformation([[2, 1, 0], [0, 2, 0], [0, 0, 2]])
 new_struct = trans.apply_transformation(struct)
 ```
 
@@ -172,11 +172,7 @@ Generate surface slabs.
 from pymatgen.transformations.advanced_transformations import SlabTransformation
 
 trans = SlabTransformation(
-    miller_index=[1, 0, 0],
-    min_slab_size=10,
-    min_vacuum_size=10,
-    shift=0,
-    lll_reduce=True
+    miller_index=[1, 0, 0], min_slab_size=10, min_vacuum_size=10, shift=0, lll_reduce=True
 )
 slab = trans.apply_transformation(struct)
 ```
@@ -190,7 +186,7 @@ from pymatgen.alchemy.materials import TransformedStructure
 ts = TransformedStructure(struct, [])
 
 # Apply multiple transformations
-ts.append_transformation(SupercellTransformation([[2,0,0],[0,2,0],[0,0,2]]))
+ts.append_transformation(SupercellTransformation([[2, 0, 0], [0, 2, 0], [0, 0, 2]]))
 ts.append_transformation(SubstitutionTransformation({"Fe": "Mn"}))
 ts.append_transformation(PrimitiveCellTransformation())
 
@@ -211,7 +207,7 @@ Generate multiple structures for screening studies.
 from pymatgen.core import Structure
 from pymatgen.transformations.standard_transformations import (
     SubstitutionTransformation,
-    SupercellTransformation
+    SupercellTransformation,
 )
 from pymatgen.io.vasp.sets import MPRelaxSet
 
@@ -279,20 +275,17 @@ bulk = Structure.from_file("bulk_POSCAR")
 
 # Get bulk energy (from previous calculation)
 from pymatgen.io.vasp import Vasprun
+
 bulk_vasprun = Vasprun("bulk/vasprun.xml")
 bulk_energy_per_atom = bulk_vasprun.final_energy / len(bulk)
 
 # Generate slabs
-miller_indices = [(1,0,0), (1,1,0), (1,1,1)]
+miller_indices = [(1, 0, 0), (1, 1, 0), (1, 1, 1)]
 surface_energies = {}
 
 for miller in miller_indices:
     slabgen = SlabGenerator(
-        bulk,
-        miller_index=miller,
-        min_slab_size=10,
-        min_vacuum_size=15,
-        center_slab=True
+        bulk, miller_index=miller, min_slab_size=10, min_vacuum_size=15, center_slab=True
     )
 
     slab = slabgen.get_slabs()[0]
@@ -368,7 +361,8 @@ struct = Structure.from_file("POSCAR")
 
 # Create 2x2x2 supercell for MD
 from pymatgen.transformations.standard_transformations import SupercellTransformation
-trans = SupercellTransformation([[2,0,0],[0,2,0],[0,0,2]])
+
+trans = SupercellTransformation([[2, 0, 0], [0, 2, 0], [0, 0, 2]])
 supercell = trans.apply_transformation(struct)
 
 # Set up VASP input
@@ -376,15 +370,17 @@ md_input = MVLRelaxSet(supercell)
 
 # Modify INCAR for MD
 incar = md_input.incar
-incar.update({
-    "IBRION": 0,      # Molecular dynamics
-    "NSW": 1000,      # Number of steps
-    "POTIM": 2,       # Time step (fs)
-    "TEBEG": 300,     # Initial temperature (K)
-    "TEEND": 300,     # Final temperature (K)
-    "SMASS": 0,       # NVT ensemble
-    "MDALGO": 2,      # Nose-Hoover thermostat
-})
+incar.update(
+    {
+        "IBRION": 0,  # Molecular dynamics
+        "NSW": 1000,  # Number of steps
+        "POTIM": 2,  # Time step (fs)
+        "TEBEG": 300,  # Initial temperature (K)
+        "TEEND": 300,  # Final temperature (K)
+        "SMASS": 0,  # NVT ensemble
+        "MDALGO": 2,  # Nose-Hoover thermostat
+    }
+)
 
 md_input.incar = incar
 md_input.write_input("./md_calc")
@@ -407,8 +403,8 @@ analyzer = DiffusionAnalyzer.from_structures(
     structures,
     specie="Li",
     temperature=300,  # K
-    time_step=2,      # fs
-    step_skip=10      # Skip initial equilibration
+    time_step=2,  # fs
+    step_skip=10,  # Skip initial equilibration
 )
 
 # Get diffusivity
@@ -433,15 +429,16 @@ Predict and enumerate possible structures.
 from pymatgen.core import Structure, Lattice
 from pymatgen.transformations.advanced_transformations import (
     EnumerateStructureTransformation,
-    SubstitutionTransformation
+    SubstitutionTransformation,
 )
 
 # Start with a known structure type (e.g., rocksalt)
 lattice = Lattice.cubic(4.2)
-struct = Structure.from_spacegroup("Fm-3m", lattice, ["Li", "O"], [[0,0,0], [0.5,0.5,0.5]])
+struct = Structure.from_spacegroup("Fm-3m", lattice, ["Li", "O"], [[0, 0, 0], [0.5, 0.5, 0.5]])
 
 # Create disordered structure
 from pymatgen.core import Species
+
 species_on_site = {Species("Li"): 0.5, Species("Na"): 0.5}
 struct[0] = species_on_site  # Mixed occupancy on Li site
 
@@ -453,7 +450,7 @@ print(f"Found {len(ordered_structs)} distinct ordered structures")
 
 # Write all structures
 for i, s_dict in enumerate(ordered_structs[:10]):  # Top 10
-    s_dict['structure'].to(filename=f"ordered_struct_{i}.cif")
+    s_dict["structure"].to(filename=f"ordered_struct_{i}.cif")
 ```
 
 ### Workflow 8: Elastic Constant Calculation
@@ -474,7 +471,7 @@ deformation_sets = []
 
 for strain in strains:
     # Apply strain in different directions
-    trans = DeformStructureTransformation([[1+strain, 0, 0], [0, 1, 0], [0, 0, 1]])
+    trans = DeformStructureTransformation([[1 + strain, 0, 0], [0, 1, 0], [0, 0, 1]])
     deformed = trans.apply_transformation(struct)
 
     # Set up VASP calculation
@@ -499,7 +496,7 @@ from pymatgen.io.vasp.sets import MPRelaxSet
 
 # Generate slab
 bulk = Structure.from_file("bulk_POSCAR")
-slabgen = SlabGenerator(bulk, (1,1,1), 10, 10)
+slabgen = SlabGenerator(bulk, (1, 1, 1), 10, 10)
 slab = slabgen.get_slabs()[0]
 
 # Find adsorption sites
@@ -532,6 +529,7 @@ from mp_api.client import MPRester
 from pymatgen.core import Structure
 import pandas as pd
 
+
 # Define screening criteria
 def screen_material(material):
     """Screen for potential battery cathode materials"""
@@ -539,9 +537,10 @@ def screen_material(material):
         "has_li": "Li" in material.composition.elements,
         "stable": material.energy_above_hull < 0.05,
         "good_voltage": 2.5 < material.formation_energy_per_atom < 4.5,
-        "electronically_conductive": material.band_gap < 0.5
+        "electronically_conductive": material.band_gap < 0.5,
     }
     return all(criteria.values()), criteria
+
 
 # Query Materials Project
 with MPRester() as mpr:
@@ -555,12 +554,14 @@ with MPRester() as mpr:
     for mat in materials:
         passes, criteria = screen_material(mat)
         if passes:
-            results.append({
-                "material_id": mat.material_id,
-                "formula": mat.formula_pretty,
-                "energy_above_hull": mat.energy_above_hull,
-                "band_gap": mat.band_gap,
-            })
+            results.append(
+                {
+                    "material_id": mat.material_id,
+                    "formula": mat.formula_pretty,
+                    "energy_above_hull": mat.energy_above_hull,
+                    "band_gap": mat.band_gap,
+                }
+            )
 
     # Save results
     df = pd.DataFrame(results)

@@ -50,10 +50,7 @@ Save your IBM Quantum credentials:
 from qiskit_ibm_runtime import QiskitRuntimeService
 
 # Save credentials (first time only)
-QiskitRuntimeService.save_account(
-    channel="ibm_quantum",
-    token="YOUR_IBM_QUANTUM_TOKEN"
-)
+QiskitRuntimeService.save_account(channel="ibm_quantum", token="YOUR_IBM_QUANTUM_TOKEN")
 
 # Later sessions - load saved credentials
 service = QiskitRuntimeService()
@@ -91,9 +88,11 @@ Test your installation:
 
 ```python
 import qiskit
+
 print(qiskit.__version__)
 
 from qiskit import QuantumCircuit
+
 qc = QuantumCircuit(2)
 print("Qiskit installed successfully!")
 ```

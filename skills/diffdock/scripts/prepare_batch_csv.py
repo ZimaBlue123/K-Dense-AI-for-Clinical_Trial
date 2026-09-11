@@ -111,12 +111,8 @@ def validate_csv(csv_path, base_dir=None):
             valid = False
 
         # Check that either protein_path or protein_sequence is provided
-        has_protein_path = (
-            not pd.isna(row["protein_path"]) and row["protein_path"] != ""
-        )
-        has_protein_seq = (
-            not pd.isna(row["protein_sequence"]) and row["protein_sequence"] != ""
-        )
+        has_protein_path = not pd.isna(row["protein_path"]) and row["protein_path"] != ""
+        has_protein_seq = not pd.isna(row["protein_sequence"]) and row["protein_sequence"] != ""
 
         if not has_protein_path and not has_protein_seq:
             row_msgs.append("Must provide either protein_path or protein_sequence")
@@ -159,7 +155,7 @@ def validate_csv(csv_path, base_dir=None):
                 messages.append(f"  - {msg}")
 
     # Summary
-    messages.append(f"\n{'='*60}")
+    messages.append(f"\n{'=' * 60}")
     if valid:
         messages.append("✓ CSV validation PASSED - ready for DiffDock")
     else:
@@ -214,9 +210,7 @@ Examples:
 
     parser.add_argument("csv_file", nargs="?", help="CSV file to validate")
     parser.add_argument("--validate", action="store_true", help="Validate the CSV file")
-    parser.add_argument(
-        "--create", action="store_true", help="Create a template CSV file"
-    )
+    parser.add_argument("--create", action="store_true", help="Create a template CSV file")
     parser.add_argument("--output", "-o", help="Output path for template CSV")
     parser.add_argument(
         "--num-examples",

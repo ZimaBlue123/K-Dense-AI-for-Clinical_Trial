@@ -116,32 +116,26 @@ dataset = datasets.USPTO50k("~/retro-datasets/")
 model_center = models.RGCN(
     input_dim=dataset.node_feature_dim,
     num_relation=dataset.num_bond_type,
-    hidden_dims=[256, 256, 256]
+    hidden_dims=[256, 256, 256],
 )
 
 task_center = tasks.CenterIdentification(
     model_center,
-    top_k=3  # Consider top 3 reaction centers
+    top_k=3,  # Consider top 3 reaction centers
 )
 
 # For synthon completion
-model_synthon = models.GIN(
-    input_dim=dataset.node_feature_dim,
-    hidden_dims=[256, 256, 256]
-)
+model_synthon = models.GIN(input_dim=dataset.node_feature_dim, hidden_dims=[256, 256, 256])
 
 task_synthon = tasks.SynthonCompletion(
     model_synthon,
     center_topk=3,  # Use top 3 from center identification
-    num_synthon_beam=5  # Beam search for synthon generation
+    num_synthon_beam=5,  # Beam search for synthon generation
 )
 
 # End-to-end
 task_retro = tasks.Retrosynthesis(
-    model=model_center,
-    synthon_model=model_synthon,
-    center_topk=5,
-    num_synthon_beam=10
+    model=model_center, synthon_model=model_synthon, center_topk=5, num_synthon_beam=10
 )
 ```
 

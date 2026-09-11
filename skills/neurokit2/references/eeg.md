@@ -11,12 +11,18 @@ Analyze electroencephalography (EEG) signals for frequency band power, channel q
 Compute power across standard frequency bands for specified channels.
 
 ```python
-power = nk.eeg_power(eeg_data, sampling_rate=250, channels=['Fz', 'Cz', 'Pz'],
-                     frequency_bands={'Delta': (0.5, 4),
-                                     'Theta': (4, 8),
-                                     'Alpha': (8, 13),
-                                     'Beta': (13, 30),
-                                     'Gamma': (30, 45)})
+power = nk.eeg_power(
+    eeg_data,
+    sampling_rate=250,
+    channels=["Fz", "Cz", "Pz"],
+    frequency_bands={
+        "Delta": (0.5, 4),
+        "Theta": (4, 8),
+        "Alpha": (8, 13),
+        "Beta": (13, 30),
+        "Gamma": (30, 45),
+    },
+)
 ```
 
 **Standard frequency bands:**
@@ -66,7 +72,7 @@ bad_channels = nk.eeg_badchannels(eeg_data, sampling_rate=250, bad_threshold=2)
 Re-express voltage measurements relative to different reference points.
 
 ```python
-rereferenced = nk.eeg_rereference(eeg_data, reference='average', robust=False)
+rereferenced = nk.eeg_rereference(eeg_data, reference="average", robust=False)
 ```
 
 **Reference types:**
@@ -107,7 +113,7 @@ gfp = nk.eeg_gfp(eeg_data)
 Measure topographic dissimilarity between electric field configurations.
 
 ```python
-dissimilarity = nk.eeg_diss(eeg_data1, eeg_data2, method='gfp')
+dissimilarity = nk.eeg_diss(eeg_data1, eeg_data2, method="gfp")
 ```
 
 **Methods:**
@@ -127,7 +133,7 @@ dissimilarity = nk.eeg_diss(eeg_data1, eeg_data2, method='gfp')
 Perform source reconstruction to estimate brain-level activity from scalp recordings.
 
 ```python
-sources = nk.eeg_source(eeg_data, method='sLORETA')
+sources = nk.eeg_source(eeg_data, method="sLORETA")
 ```
 
 **Methods:**
@@ -155,7 +161,7 @@ sources = nk.eeg_source(eeg_data, method='sLORETA')
 Extract activity from specific anatomical brain regions.
 
 ```python
-regional_activity = nk.eeg_source_extract(sources, regions=['PFC', 'MTL', 'Parietal'])
+regional_activity = nk.eeg_source_extract(sources, regions=["PFC", "MTL", "Parietal"])
 ```
 
 **Region options:**
@@ -181,8 +187,9 @@ Microstates are brief (80-120 ms) periods of stable brain topography, representi
 Identify and extract microstates using clustering algorithms.
 
 ```python
-microstates = nk.microstates_segment(eeg_data, n_microstates=4, sampling_rate=250,
-                                      method='kmod', normalize=True)
+microstates = nk.microstates_segment(
+    eeg_data, n_microstates=4, sampling_rate=250, method="kmod", normalize=True
+)
 ```
 
 **Methods:**
@@ -353,7 +360,7 @@ nk.microstates_plot(microstates, eeg_data)
 Access sample datasets from MNE-Python.
 
 ```python
-raw = nk.mne_data(dataset='sample', directory=None)
+raw = nk.mne_data(dataset="sample", directory=None)
 ```
 
 **Available datasets:**
@@ -380,10 +387,10 @@ Manage individual channels in MNE objects.
 
 ```python
 # Extract specific channels
-subset = nk.mne_channel_extract(raw, ['Fz', 'Cz', 'Pz'])
+subset = nk.mne_channel_extract(raw, ["Fz", "Cz", "Pz"])
 
 # Add derived channels
-raw_with_eog = nk.mne_channel_add(raw, new_channel_data, ch_name='EOG')
+raw_with_eog = nk.mne_channel_add(raw, new_channel_data, ch_name="EOG")
 ```
 
 ### mne_crop()
@@ -446,7 +453,7 @@ bad = nk.eeg_badchannels(cleaned, sampling_rate=250)
 # Interpolate bad channels using MNE
 
 # 3. Re-reference
-rereferenced = nk.eeg_rereference(cleaned, reference='average')
+rereferenced = nk.eeg_rereference(cleaned, reference="average")
 
 # 4. Compute power
 power = nk.eeg_power(rereferenced, sampling_rate=250, channels=channel_list)
@@ -461,8 +468,9 @@ cleaned = nk.microstates_clean(eeg_data, sampling_rate=250)
 optimal_k = nk.microstates_findnumber(cleaned, show=True)
 
 # 3. Segment microstates
-microstates = nk.microstates_segment(cleaned, n_microstates=optimal_k,
-                                     sampling_rate=250, method='kmod')
+microstates = nk.microstates_segment(
+    cleaned, n_microstates=optimal_k, sampling_rate=250, method="kmod"
+)
 
 # 4. Classify to standard labels
 microstates = nk.microstates_classify(microstates)

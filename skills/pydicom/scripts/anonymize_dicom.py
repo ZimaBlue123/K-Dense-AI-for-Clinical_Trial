@@ -62,9 +62,7 @@ PHI_TAGS = [
 ]
 
 
-def anonymize_dicom(
-    input_path, output_path, patient_id="ANONYMOUS", patient_name="ANONYMOUS"
-):
+def anonymize_dicom(input_path, output_path, patient_id="ANONYMOUS", patient_name="ANONYMOUS"):
     """
     Anonymize a DICOM file by removing or replacing PHI.
 
@@ -158,9 +156,7 @@ Examples:
 
     # Anonymize the file
     print(f"Anonymizing: {args.input}")
-    success, result = anonymize_dicom(
-        args.input, args.output, args.patient_id, args.patient_name
-    )
+    success, result = anonymize_dicom(args.input, args.output, args.patient_id, args.patient_name)
 
     if success:
         print(f"✓ Successfully anonymized DICOM file: {args.output}")

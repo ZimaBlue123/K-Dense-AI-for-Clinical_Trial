@@ -168,14 +168,13 @@ accuracy = clf.score(X_test_features, y_test)
 from aeon.transformations.collection import (
     MinMaxScaler,
     SimpleImputer,
-    CollectionTransformerPipeline
+    CollectionTransformerPipeline,
 )
 
 # Build preprocessing pipeline
-pipeline = CollectionTransformerPipeline([
-    ('imputer', SimpleImputer(strategy='mean')),
-    ('scaler', MinMaxScaler())
-])
+pipeline = CollectionTransformerPipeline(
+    [("imputer", SimpleImputer(strategy="mean")), ("scaler", MinMaxScaler())]
+)
 
 X_transformed = pipeline.fit_transform(X_train)
 ```
@@ -221,16 +220,15 @@ y_smoothed = smoother.fit_transform(y)
 
 2. **Pipeline composition**: Chain transformers for complex workflows
    ```python
-   pipeline = CollectionTransformerPipeline([
-       ('imputer', SimpleImputer()),
-       ('scaler', Normalizer()),
-       ('features', RocketTransformer())
-   ])
+   pipeline = CollectionTransformerPipeline(
+       [("imputer", SimpleImputer()), ("scaler", Normalizer()), ("features", RocketTransformer())]
+   )
    ```
 
 3. **Feature selection**: TSFresh can generate many features; consider selection
    ```python
    from sklearn.feature_selection import SelectKBest
+
    selector = SelectKBest(k=100)
    X_selected = selector.fit_transform(X_features, y)
    ```

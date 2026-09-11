@@ -26,15 +26,15 @@ Basic GRN inference:
 import pandas as pd
 from arboreto.algo import grnboost2
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Load expression data (genes as columns)
-    expression_matrix = pd.read_csv('expression_data.tsv', sep='\t')
+    expression_matrix = pd.read_csv("expression_data.tsv", sep="\t")
 
     # Infer regulatory network
     network = grnboost2(expression_data=expression_matrix)
 
     # Save results (TF, target, importance)
-    network.to_csv('network.tsv', sep='\t', index=False, header=False)
+    network.to_csv("network.tsv", sep="\t", index=False, header=False)
 ```
 
 **Critical**: Always use `if __name__ == '__main__':` guard because Dask spawns new processes.
@@ -96,7 +96,7 @@ network = grnboost2(expression_data=matrix)
 ```python
 from distributed import LocalCluster, Client
 
-local_cluster = LocalCluster(n_workers=10, memory_limit='8GB')
+local_cluster = LocalCluster(n_workers=10, memory_limit="8GB")
 client = Client(local_cluster)
 
 network = grnboost2(expression_data=matrix, client_or_address=client)
@@ -109,7 +109,7 @@ local_cluster.close()
 ```python
 from distributed import Client
 
-client = Client('tcp://scheduler:8786')
+client = Client("tcp://scheduler:8786")
 network = grnboost2(expression_data=matrix, client_or_address=client)
 ```
 
@@ -130,16 +130,16 @@ uv pip install arboreto
 import pandas as pd
 from arboreto.algo import grnboost2
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Load single-cell expression matrix (cells x genes)
-    sc_data = pd.read_csv('scrna_counts.tsv', sep='\t')
+    sc_data = pd.read_csv("scrna_counts.tsv", sep="\t")
 
     # Infer cell-type-specific regulatory network
     network = grnboost2(expression_data=sc_data, seed=42)
 
     # Filter high-confidence links
-    high_confidence = network[network['importance'] > 0.5]
-    high_confidence.to_csv('grn_high_confidence.tsv', sep='\t', index=False)
+    high_confidence = network[network["importance"] > 0.5]
+    high_confidence.to_csv("grn_high_confidence.tsv", sep="\t", index=False)
 ```
 
 ### Bulk RNA-seq with TF Filtering
@@ -147,33 +147,29 @@ if __name__ == '__main__':
 from arboreto.utils import load_tf_names
 from arboreto.algo import grnboost2
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Load data
-    expression_data = pd.read_csv('rnaseq_tpm.tsv', sep='\t')
-    tf_names = load_tf_names('human_tfs.txt')
+    expression_data = pd.read_csv("rnaseq_tpm.tsv", sep="\t")
+    tf_names = load_tf_names("human_tfs.txt")
 
     # Infer with TF restriction
-    network = grnboost2(
-        expression_data=expression_data,
-        tf_names=tf_names,
-        seed=123
-    )
+    network = grnboost2(expression_data=expression_data, tf_names=tf_names, seed=123)
 
-    network.to_csv('tf_target_network.tsv', sep='\t', index=False)
+    network.to_csv("tf_target_network.tsv", sep="\t", index=False)
 ```
 
 ### Comparative Analysis (Multiple Conditions)
 ```python
 from arboreto.algo import grnboost2
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Infer networks for different conditions
-    conditions = ['control', 'treatment_24h', 'treatment_48h']
+    conditions = ["control", "treatment_24h", "treatment_48h"]
 
     for condition in conditions:
-        data = pd.read_csv(f'{condition}_expression.tsv', sep='\t')
+        data = pd.read_csv(f"{condition}_expression.tsv", sep="\t")
         network = grnboost2(expression_data=data, seed=42)
-        network.to_csv(f'{condition}_network.tsv', sep='\t', index=False)
+        network.to_csv(f"{condition}_network.tsv", sep="\t", index=False)
 ```
 
 ## Output Interpretation
@@ -198,6 +194,7 @@ Arboreto is a core component of the SCENIC pipeline for single-cell regulatory n
 ```python
 # Step 1: Use arboreto for GRN inference
 from arboreto.algo import grnboost2
+
 network = grnboost2(expression_data=sc_data, tf_names=tf_list)
 
 # Step 2: Use pySCENIC for regulon identification and activity scoring
@@ -215,7 +212,7 @@ Run multiple seeds for robustness analysis:
 ```python
 from distributed import LocalCluster, Client
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     client = Client(LocalCluster())
 
     seeds = [42, 123, 777]

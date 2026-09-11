@@ -18,11 +18,11 @@ options = data["data"]
 
 for contract in options[:5]:
     print(
-        contract["contractID"],    # e.g., "AAPL240119C00150000"
-        contract["strike"],        # "150.00"
-        contract["expiration"],    # "2024-01-19"
-        contract["type"],          # "call" or "put"
-        contract["last"],          # last price
+        contract["contractID"],  # e.g., "AAPL240119C00150000"
+        contract["strike"],  # "150.00"
+        contract["expiration"],  # "2024-01-19"
+        contract["type"],  # "call" or "put"
+        contract["last"],  # last price
         contract["bid"],
         contract["ask"],
         contract["volume"],
@@ -32,7 +32,7 @@ for contract in options[:5]:
         contract["gamma"],
         contract["theta"],
         contract["vega"],
-        contract["rho"]
+        contract["rho"],
     )
 
 # Get a specific contract
@@ -59,20 +59,20 @@ for contract in options[:5]:
         contract["contractID"],
         contract["strike"],
         contract["expiration"],
-        contract["type"],           # "call" or "put"
+        contract["type"],  # "call" or "put"
         contract["last"],
-        contract["mark"],           # mark price
+        contract["mark"],  # mark price
         contract["bid"],
         contract["ask"],
         contract["volume"],
         contract["open_interest"],
-        contract["date"],           # the date of this snapshot
+        contract["date"],  # the date of this snapshot
         contract["implied_volatility"],
         contract["delta"],
         contract["gamma"],
         contract["theta"],
         contract["vega"],
-        contract["rho"]
+        contract["rho"],
     )
 ```
 
@@ -87,7 +87,9 @@ df["strike"] = pd.to_numeric(df["strike"])
 df["expiration"] = pd.to_datetime(df["expiration"])
 
 # Filter calls expiring in January 2024
-calls_jan = df[(df["type"] == "call") & (df["expiration"].dt.month == 1) & (df["expiration"].dt.year == 2024)]
+calls_jan = df[
+    (df["type"] == "call") & (df["expiration"].dt.month == 1) & (df["expiration"].dt.year == 2024)
+]
 calls_jan = calls_jan.sort_values("strike")
 print(calls_jan[["contractID", "strike", "bid", "ask", "implied_volatility", "delta"]].head(10))
 ```

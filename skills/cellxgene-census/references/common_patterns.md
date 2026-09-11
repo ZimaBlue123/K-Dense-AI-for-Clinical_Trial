@@ -15,7 +15,7 @@ with cellxgene_census.open_soma() as census:
         census,
         "homo_sapiens",
         value_filter="tissue_general == 'brain' and is_primary_data == True",
-        column_names=["cell_type"]
+        column_names=["cell_type"],
     )
     unique_cell_types = cell_metadata["cell_type"].unique()
     print(f"Found {len(unique_cell_types)} unique cell types")
@@ -27,7 +27,7 @@ cell_metadata = cellxgene_census.get_obs(
     census,
     "homo_sapiens",
     value_filter="disease != 'normal' and is_primary_data == True",
-    column_names=["disease", "tissue_general"]
+    column_names=["disease", "tissue_general"],
 )
 counts = cell_metadata.groupby(["disease", "tissue_general"]).size()
 ```
@@ -61,9 +61,10 @@ marker_genes = ["CD4", "CD8A", "CD19", "FOXP3"]
 
 # First get gene IDs
 gene_metadata = cellxgene_census.get_var(
-    census, "homo_sapiens",
+    census,
+    "homo_sapiens",
     value_filter=f"feature_name in {marker_genes}",
-    column_names=["feature_id", "feature_name"]
+    column_names=["feature_id", "feature_name"],
 )
 gene_ids = gene_metadata["feature_id"].tolist()
 
@@ -106,12 +107,8 @@ import pyarrow as pa
 # Create query
 query = census["census_data"]["homo_sapiens"].axis_query(
     measurement_name="RNA",
-    obs_query=soma.AxisQuery(
-        value_filter="tissue_general == 'brain' and is_primary_data == True"
-    ),
-    var_query=soma.AxisQuery(
-        value_filter="feature_name in ['FOXP2', 'TBR1', 'SATB2']"
-    )
+    obs_query=soma.AxisQuery(value_filter="tissue_general == 'brain' and is_primary_data == True"),
+    var_query=soma.AxisQuery(value_filter="feature_name in ['FOXP2', 'TBR1', 'SATB2']"),
 )
 
 # Iterate through X matrix in chunks
@@ -184,10 +181,7 @@ dataset = ExperimentDataset(
 )
 
 # Split data
-train_dataset, test_dataset = dataset.random_split(
-    split=[0.8, 0.2],
-    seed=42
-)
+train_dataset, test_dataset = dataset.random_split(split=[0.8, 0.2], seed=42)
 
 # Create loaders
 train_loader = experiment_dataloader(train_dataset)
@@ -233,6 +227,7 @@ for dataset_id in datasets_to_integrate:
 
 # Integrate using scanorama, harmony, or other tools
 import scanpy.external as sce
+
 sce.pp.scanorama_integrate(adatas)
 ```
 
@@ -241,7 +236,7 @@ sce.pp.scanorama_integrate(adatas)
 ### 1. Always Filter for Primary Data
 Unless specifically analyzing duplicates, always include `is_primary_data == True`:
 ```python
-obs_value_filter="cell_type == 'B cell' and is_primary_data == True"
+obs_value_filter = "cell_type == 'B cell' and is_primary_data == True"
 ```
 
 ### 2. Specify Census Version
@@ -260,16 +255,14 @@ with cellxgene_census.open_soma() as census:
 ### 4. Select Only Needed Columns
 Minimize data transfer by selecting only required metadata columns:
 ```python
-obs_column_names=["cell_type", "tissue_general", "disease"]  # Not all columns
+obs_column_names = ["cell_type", "tissue_general", "disease"]  # Not all columns
 ```
 
 ### 5. Check Dataset Presence for Gene Queries
 When analyzing specific genes, check which datasets measured them:
 ```python
 presence = cellxgene_census.get_presence_matrix(
-    census,
-    "homo_sapiens",
-    var_value_filter="feature_name in ['CD4', 'CD8A']"
+    census, "homo_sapiens", var_value_filter="feature_name in ['CD4', 'CD8A']"
 )
 ```
 
@@ -277,10 +270,10 @@ presence = cellxgene_census.get_presence_matrix(
 `tissue_general` provides coarser groupings than `tissue`, useful for cross-tissue analyses:
 ```python
 # Better for broad queries
-obs_value_filter="tissue_general == 'immune system'"
+obs_value_filter = "tissue_general == 'immune system'"
 
 # Use specific tissue when needed
-obs_value_filter="tissue == 'peripheral blood mononuclear cell'"
+obs_value_filter = "tissue == 'peripheral blood mononuclear cell'"
 ```
 
 ### 7. Combine Metadata Exploration with Expression Queries
@@ -288,9 +281,10 @@ First explore metadata to understand available data, then query expression:
 ```python
 # Step 1: Explore
 metadata = cellxgene_census.get_obs(
-    census, "homo_sapiens",
+    census,
+    "homo_sapiens",
     value_filter="disease == 'COVID-19'",
-    column_names=["cell_type", "tissue_general"]
+    column_names=["cell_type", "tissue_general"],
 )
 print(metadata.value_counts())
 
@@ -307,9 +301,10 @@ For large queries, check estimated size before loading:
 ```python
 # Get cell count first
 metadata = cellxgene_census.get_obs(
-    census, "homo_sapiens",
+    census,
+    "homo_sapiens",
     value_filter="tissue_general == 'brain' and is_primary_data == True",
-    column_names=["soma_joinid"]
+    column_names=["soma_joinid"],
 )
 n_cells = len(metadata)
 print(f"Query will return {n_cells} cells")
@@ -321,7 +316,7 @@ print(f"Query will return {n_cells} cells")
 When possible, use ontology term IDs instead of free text:
 ```python
 # More reliable than cell_type == 'B cell' across datasets
-obs_value_filter="cell_type_ontology_term_id == 'CL:0000236'"
+obs_value_filter = "cell_type_ontology_term_id == 'CL:0000236'"
 ```
 
 ### 10. Batch Processing Pattern

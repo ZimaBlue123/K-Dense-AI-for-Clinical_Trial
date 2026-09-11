@@ -343,7 +343,7 @@ Access via direct API or WebFetch:
 # stat.ML (Machine Learning Statistics)
 
 # Search format: category AND terms
-search_query = "cat:q-bio.QM AND ti:\"single cell sequencing\""
+search_query = 'cat:q-bio.QM AND ti:"single cell sequencing"'
 ```
 
 ### Semantic Scholar

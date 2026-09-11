@@ -13,6 +13,7 @@ The fundamental class representing tree structures with hierarchical node organi
 **Constructor:**
 ```python
 from ete3 import Tree
+
 t = Tree(newick=None, format=0, dist=None, support=None, name=None)
 ```
 
@@ -37,8 +38,8 @@ Specialized class for phylogenetic analysis, extending TreeNode.
 **Constructor:**
 ```python
 from ete3 import PhyloTree
-t = PhyloTree(newick=None, alignment=None, alg_format='fasta',
-              sp_naming_function=None, format=0)
+
+t = PhyloTree(newick=None, alignment=None, alg_format="fasta", sp_naming_function=None, format=0)
 ```
 
 **Additional Parameters:**
@@ -53,6 +54,7 @@ Class for hierarchical clustering analysis.
 **Constructor:**
 ```python
 from ete3 import ClusterTree
+
 t = ClusterTree(newick, text_array=None)
 ```
 
@@ -66,6 +68,7 @@ Class for NCBI taxonomy database operations.
 **Constructor:**
 ```python
 from ete3 import NCBITaxa
+
 ncbi = NCBITaxa(dbfile=None)
 ```
 
@@ -104,9 +107,9 @@ value = getattr(node, "custom_name", default_value)
 
 ```python
 # Check node type
-node.is_leaf()          # Returns True if terminal node
-node.is_root()          # Returns True if root node
-len(node)               # Number of leaves under node
+node.is_leaf()  # Returns True if terminal node
+node.is_root()  # Returns True if root node
+len(node)  # Number of leaves under node
 
 # Get relatives
 parent = node.up
@@ -118,10 +121,10 @@ root = node.get_tree_root()
 
 ```python
 # Three traversal strategies
-for node in tree.traverse("preorder"):    # Root → Left → Right
+for node in tree.traverse("preorder"):  # Root → Left → Right
     print(node.name)
 
-for node in tree.traverse("postorder"):   # Left → Right → Root
+for node in tree.traverse("postorder"):  # Left → Right → Root
     print(node.name)
 
 for node in tree.traverse("levelorder"):  # Level by level
@@ -262,7 +265,7 @@ tree.unroot()
 ```python
 # Resolve multifurcations to bifurcations
 tree.resolve_polytomy(recursive=False)  # Single node only
-tree.resolve_polytomy(recursive=True)   # Entire tree
+tree.resolve_polytomy(recursive=True)  # Entire tree
 ```
 
 ### Ladderize
@@ -302,17 +305,11 @@ farthest_leaf, distance = node.get_farthest_leaf()
 
 ```python
 # Check if values form monophyletic group
-is_mono, clade_type, base_node = tree.check_monophyly(
-    values=["A", "B", "C"],
-    target_attr="name"
-)
+is_mono, clade_type, base_node = tree.check_monophyly(values=["A", "B", "C"], target_attr="name")
 # Returns: (bool, "monophyletic"|"paraphyletic"|"polyphyletic", node)
 
 # Get all monophyletic clades
-monophyletic_nodes = tree.get_monophyletic(
-    values=["A", "B", "C"],
-    target_attr="name"
-)
+monophyletic_nodes = tree.get_monophyletic(values=["A", "B", "C"], target_attr="name")
 ```
 
 ### Tree Comparison
@@ -355,9 +352,11 @@ newick = tree.write(format=1, features=["support", "custom_feature"])
 tree.write(outfile="output.nw")
 tree.write(format=5, outfile="output.nw", features=["name", "dist"])
 
+
 # Custom leaf function (for collapsing)
 def is_leaf(node):
     return len(node) <= 3  # Treat small clades as leaves
+
 
 newick = tree.write(is_leaf_fn=is_leaf)
 ```
@@ -423,6 +422,7 @@ for leaf in tree:
 def get_species(node_name):
     return node_name.split("_")[0]
 
+
 tree.set_species_naming_function(get_species)
 
 # Manual setting
@@ -464,6 +464,7 @@ tree.collapse_lineage_specific_expansions()
 
 ```python
 from ete3 import NCBITaxa
+
 ncbi = NCBITaxa()
 
 # Update database

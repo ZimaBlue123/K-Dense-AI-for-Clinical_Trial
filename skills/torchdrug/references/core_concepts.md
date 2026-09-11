@@ -63,6 +63,7 @@ Decorator for registering models, tasks, and datasets.
 ```python
 from torchdrug import core as core_td
 
+
 @core_td.register("models.CustomModel")
 class CustomModel(nn.Module, core_td.Configurable):
     def __init__(self, input_dim, hidden_dim):
@@ -164,7 +165,7 @@ protein = data.Protein.from_pdb("1a3x.pdb")
 # Build graph with multiple edge types
 graph = protein.residue_graph(
     node_position="ca",  # Use Cα positions
-    edge_types=["sequential", "radius"]  # Sequential + spatial edges
+    edge_types=["sequential", "radius"],  # Sequential + spatial edges
 )
 ```
 
@@ -208,10 +209,7 @@ def forward(self, graph, input, all_loss=None, metric=None):
     # Model computation
     output = self.layers(graph, input)
 
-    return {
-        "node_feature": output,
-        "graph_feature": graph_pooling(output)
-    }
+    return {"node_feature": output, "graph_feature": graph_pooling(output)}
 ```
 
 **Key Points:**
@@ -302,7 +300,7 @@ task = tasks.PropertyPrediction(
     task=["task1", "task2"],  # Multi-task
     criterion="bce",
     metric=["auroc", "auprc"],
-    num_mlp_layer=2
+    num_mlp_layer=2,
 )
 ```
 
@@ -324,10 +322,10 @@ train_loader = DataLoader(train_set, batch_size=32, shuffle=True)
 valid_loader = DataLoader(valid_set, batch_size=32)
 
 # 3. Define model and task
-model = models.GIN(input_dim=dataset.node_feature_dim,
-                   hidden_dims=[256, 256, 256])
-task = tasks.PropertyPrediction(model, task=dataset.tasks,
-                                 criterion="bce", metric=["auroc", "auprc"])
+model = models.GIN(input_dim=dataset.node_feature_dim, hidden_dims=[256, 256, 256])
+task = tasks.PropertyPrediction(
+    model, task=dataset.tasks, criterion="bce", metric=["auroc", "auprc"]
+)
 
 # 4. Setup optimizer
 optimizer = torch.optim.Adam(task.parameters(), lr=1e-3)
@@ -363,6 +361,7 @@ TorchDrug tasks are compatible with PyTorch Lightning:
 
 ```python
 import pytorch_lightning as pl
+
 
 class LightningWrapper(pl.LightningModule):
     def __init__(self, task):
@@ -516,7 +515,7 @@ task = tasks.PropertyPrediction(
     task=["task1", "task2", "task3"],
     criterion="bce",
     metric=["auroc"],
-    task_weight=[1.0, 1.0, 2.0]  # Weight task 3 more
+    task_weight=[1.0, 1.0, 2.0],  # Weight task 3 more
 )
 ```
 
@@ -538,6 +537,7 @@ Use pre-training tasks:
 Extend TorchDrug with custom GNN layers:
 ```python
 from torchdrug import layers
+
 
 class CustomConv(layers.MessagePassingBase):
     def message(self, graph, input):

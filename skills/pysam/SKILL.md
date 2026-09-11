@@ -163,8 +163,8 @@ Pysam excels at integrating multiple file types for comprehensive genomic analys
 
 **Exception:** Region strings in `fetch()` follow samtools convention (1-based):
 ```python
-samfile.fetch("chr1", 999, 2000)      # 0-based: positions 999-1999
-samfile.fetch("chr1:1000-2000")       # 1-based string: positions 1000-2000
+samfile.fetch("chr1", 999, 2000)  # 0-based: positions 999-1999
+samfile.fetch("chr1:1000-2000")  # 1-based string: positions 1000-2000
 ```
 
 **VCF files:** Use 1-based coordinates in the file format, but `VariantRecord.start` is 0-based.

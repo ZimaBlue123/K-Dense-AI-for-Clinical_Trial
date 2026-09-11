@@ -49,11 +49,7 @@ Get all sources of economic data.
 ```python
 response = requests.get(
     "https://api.stlouisfed.org/fred/sources",
-    params={
-        "api_key": API_KEY,
-        "file_type": "json",
-        "order_by": "name"
-    }
+    params={"api_key": API_KEY, "file_type": "json", "order_by": "name"},
 )
 ```
 
@@ -128,11 +124,7 @@ Get a specific source of economic data.
 # Get Federal Reserve Board info
 response = requests.get(
     "https://api.stlouisfed.org/fred/source",
-    params={
-        "api_key": API_KEY,
-        "source_id": 1,
-        "file_type": "json"
-    }
+    params={"api_key": API_KEY, "source_id": 1, "file_type": "json"},
 )
 ```
 
@@ -187,12 +179,7 @@ Get the releases for a source.
 # Get releases from the Federal Reserve Board
 response = requests.get(
     "https://api.stlouisfed.org/fred/source/releases",
-    params={
-        "api_key": API_KEY,
-        "source_id": 1,
-        "file_type": "json",
-        "order_by": "name"
-    }
+    params={"api_key": API_KEY, "source_id": 1, "file_type": "json", "order_by": "name"},
 )
 ```
 
@@ -275,27 +262,17 @@ def get_agency_data(api_key, source_id):
     # Get source info
     source_info = requests.get(
         "https://api.stlouisfed.org/fred/source",
-        params={
-            "api_key": api_key,
-            "source_id": source_id,
-            "file_type": "json"
-        }
+        params={"api_key": api_key, "source_id": source_id, "file_type": "json"},
     ).json()
 
     # Get all releases from this source
     releases = requests.get(
         "https://api.stlouisfed.org/fred/source/releases",
-        params={
-            "api_key": api_key,
-            "source_id": source_id,
-            "file_type": "json"
-        }
+        params={"api_key": api_key, "source_id": source_id, "file_type": "json"},
     ).json()
 
-    return {
-        "source": source_info.get("sources", [{}])[0],
-        "releases": releases.get("releases", [])
-    }
+    return {"source": source_info.get("sources", [{}])[0], "releases": releases.get("releases", [])}
+
 
 # Get all BLS data
 bls_data = get_agency_data(API_KEY, source_id=22)
@@ -311,32 +288,25 @@ def compare_sources(api_key, source_ids):
     for sid in source_ids:
         response = requests.get(
             "https://api.stlouisfed.org/fred/source/releases",
-            params={
-                "api_key": api_key,
-                "source_id": sid,
-                "file_type": "json"
-            }
+            params={"api_key": api_key, "source_id": sid, "file_type": "json"},
         )
         data = response.json()
 
         # Get source name
         source_resp = requests.get(
             "https://api.stlouisfed.org/fred/source",
-            params={
-                "api_key": api_key,
-                "source_id": sid,
-                "file_type": "json"
-            }
+            params={"api_key": api_key, "source_id": sid, "file_type": "json"},
         )
         source_name = source_resp.json().get("sources", [{}])[0].get("name", "Unknown")
 
         comparison[source_name] = {
             "source_id": sid,
             "release_count": data.get("count", 0),
-            "releases": [r["name"] for r in data.get("releases", [])[:5]]
+            "releases": [r["name"] for r in data.get("releases", [])[:5]],
         }
 
     return comparison
+
 
 # Compare Federal Reserve and BLS
 comparison = compare_sources(API_KEY, [1, 22])
@@ -350,11 +320,7 @@ def build_source_directory(api_key):
 
     response = requests.get(
         "https://api.stlouisfed.org/fred/sources",
-        params={
-            "api_key": api_key,
-            "file_type": "json",
-            "order_by": "name"
-        }
+        params={"api_key": api_key, "file_type": "json", "order_by": "name"},
     )
     sources = response.json().get("sources", [])
 
@@ -363,20 +329,18 @@ def build_source_directory(api_key):
         # Get releases for each source
         releases_resp = requests.get(
             "https://api.stlouisfed.org/fred/source/releases",
-            params={
-                "api_key": api_key,
-                "source_id": source["id"],
-                "file_type": "json"
-            }
+            params={"api_key": api_key, "source_id": source["id"], "file_type": "json"},
         )
         release_count = releases_resp.json().get("count", 0)
 
-        directory.append({
-            "id": source["id"],
-            "name": source["name"],
-            "link": source.get("link", ""),
-            "release_count": release_count
-        })
+        directory.append(
+            {
+                "id": source["id"],
+                "name": source["name"],
+                "link": source.get("link", ""),
+                "release_count": release_count,
+            }
+        )
 
     return directory
 ```

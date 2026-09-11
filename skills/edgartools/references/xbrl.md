@@ -40,7 +40,7 @@ from edgar.xbrl import XBRL
 xbrl = XBRL.from_filing(filing)
 
 # Via filing method
-xbrl = filing.xbrl()   # returns None if no XBRL
+xbrl = filing.xbrl()  # returns None if no XBRL
 
 # From directory
 xbrl = XBRL.from_directory("/path/to/xbrl/files")
@@ -52,8 +52,8 @@ xbrl = XBRL.from_files(["/path/instance.xml", "/path/taxonomy.xsd"])
 ### Core Properties
 
 ```python
-xbrl.statements   # Statements object
-xbrl.facts        # FactsView object
+xbrl.statements  # Statements object
+xbrl.facts  # FactsView object
 
 # Convert all facts to DataFrame
 df = xbrl.to_pandas()
@@ -82,9 +82,9 @@ print(rendered)
 statements = xbrl.statements
 
 balance_sheet = statements.balance_sheet()
-income_stmt   = statements.income_statement()
-cash_flow     = statements.cash_flow_statement()
-equity        = statements.statement_of_equity()
+income_stmt = statements.income_statement()
+cash_flow = statements.cash_flow_statement()
+equity = statements.statement_of_equity()
 comprehensive = statements.comprehensive_income()
 ```
 
@@ -109,11 +109,11 @@ xbrls = XBRLS.from_filings(filings)
 # Access stitched statements
 stitched = xbrls.statements
 
-income_stmt    = stitched.income_statement()
-balance_sheet  = stitched.balance_sheet()
-cashflow       = stitched.cashflow_statement()
-equity_stmt    = stitched.statement_of_equity()
-comprehensive  = stitched.comprehensive_income()
+income_stmt = stitched.income_statement()
+balance_sheet = stitched.balance_sheet()
+cashflow = stitched.cashflow_statement()
+equity_stmt = stitched.statement_of_equity()
+comprehensive = stitched.comprehensive_income()
 ```
 
 ### StitchedStatements Parameters
@@ -166,16 +166,17 @@ period_q = facts.by_period(start_date="2023-01-01", end_date="2023-12-31")
 
 ```python
 # Chain multiple filters
-query = (xbrl.facts
-         .by_concept("Revenue")
-         .by_period(start_date="2023-01-01")
-         .by_value(min_value=1_000_000))
+query = (
+    xbrl.facts.by_concept("Revenue")
+    .by_period(start_date="2023-01-01")
+    .by_value(min_value=1_000_000)
+)
 
 # Execute
-facts_list = query.execute()      # List[Dict]
-facts_df   = query.to_dataframe() # DataFrame
-first_fact = query.first()        # Dict or None
-count      = query.count()        # int
+facts_list = query.execute()  # List[Dict]
+facts_df = query.to_dataframe()  # DataFrame
+first_fact = query.first()  # Dict or None
+count = query.count()  # int
 
 # Filter by statement type
 income_facts = xbrl.facts.by_statement("IncomeStatement")
@@ -211,9 +212,9 @@ df_presentation = statement.to_dataframe(presentation=True)
 
 # Additional options
 df = statement.to_dataframe(
-    include_dimensions=True,   # include segment breakdowns (default: True)
-    include_unit=True,         # include unit column (USD, shares)
-    include_point_in_time=True # include point-in-time column
+    include_dimensions=True,  # include segment breakdowns (default: True)
+    include_unit=True,  # include unit column (USD, shares)
+    include_point_in_time=True,  # include point-in-time column
 )
 ```
 
@@ -295,18 +296,15 @@ filing = company.latest("10-K")
 xbrl = XBRL.from_filing(filing)
 
 # Query with multiple filters
-results = (xbrl.facts
-           .by_concept("Revenue")
-           .by_value(min_value=50_000_000_000)
-           .by_period(start_date="2023-01-01")
-           .to_dataframe())
+results = (
+    xbrl.facts.by_concept("Revenue")
+    .by_value(min_value=50_000_000_000)
+    .by_period(start_date="2023-01-01")
+    .to_dataframe()
+)
 
 # Pivot analysis
-pivot = xbrl.facts.pivot_by_period([
-    "Revenue",
-    "NetIncomeLoss",
-    "OperatingIncomeLoss"
-])
+pivot = xbrl.facts.pivot_by_period(["Revenue", "NetIncomeLoss", "OperatingIncomeLoss"])
 ```
 
 ### Cross-Company Comparison
@@ -322,7 +320,7 @@ for ticker in companies:
     if xbrl and xbrl.statements.income_statement():
         stmt = xbrl.statements.income_statement()
         revenue = stmt.get_concept_value("Revenue")
-        print(f"{ticker}: ${revenue/1e9:.1f}B")
+        print(f"{ticker}: ${revenue / 1e9:.1f}B")
 ```
 
 ---

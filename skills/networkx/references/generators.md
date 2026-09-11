@@ -131,7 +131,7 @@ G.remove_edges_from(nx.selfloop_edges(G))
 G = nx.random_geometric_graph(n=100, radius=0.2, seed=42)
 
 # With positions
-pos = nx.get_node_attributes(G, 'pos')
+pos = nx.get_node_attributes(G, "pos")
 ```
 
 ### Random Regular Graphs
@@ -144,9 +144,11 @@ G = nx.random_regular_graph(d=3, n=100, seed=42)
 ```python
 # Community structure model
 sizes = [50, 50, 50]  # Three communities
-probs = [[0.25, 0.05, 0.02],  # Within and between community probabilities
-         [0.05, 0.35, 0.07],
-         [0.02, 0.07, 0.40]]
+probs = [
+    [0.25, 0.05, 0.02],  # Within and between community probabilities
+    [0.05, 0.35, 0.07],
+    [0.02, 0.07, 0.40],
+]
 G = nx.stochastic_block_model(sizes, probs, seed=42)
 ```
 

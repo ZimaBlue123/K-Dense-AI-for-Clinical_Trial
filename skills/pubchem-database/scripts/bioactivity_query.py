@@ -24,9 +24,7 @@ PUG_VIEW_URL = "https://pubchem.ncbi.nlm.nih.gov/rest/pug_view"
 REQUEST_DELAY = 0.21  # seconds between requests
 
 
-def rate_limited_request(
-    url: str, method: str = "GET", **kwargs
-) -> requests.Response | None:
+def rate_limited_request(url: str, method: str = "GET", **kwargs) -> requests.Response | None:
     """
     Make a rate-limited request to PubChem API.
 
@@ -71,9 +69,7 @@ def get_bioassay_summary(cid: int) -> dict | None:
     return None
 
 
-def get_compound_bioactivities(
-    cid: int, activity_outcome: str | None = None
-) -> list[dict]:
+def get_compound_bioactivities(cid: int, activity_outcome: str | None = None) -> list[dict]:
     """
     Get bioactivity data for a compound.
 

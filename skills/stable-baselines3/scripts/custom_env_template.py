@@ -179,9 +179,7 @@ class CustomEnv(gym.Env):
         return {
             "agent_position": self._agent_position,
             "goal_position": self._goal_position,
-            "distance_to_goal": np.linalg.norm(
-                self._agent_position - self._goal_position
-            ),
+            "distance_to_goal": np.linalg.norm(self._agent_position - self._goal_position),
         }
 
     def render(self):
@@ -206,9 +204,7 @@ class CustomEnv(gym.Env):
         elif self.render_mode == "rgb_array":
             # Return RGB array for video recording
             # This is a placeholder - implement proper rendering as needed
-            canvas = np.zeros(
-                (self.grid_size * 50, self.grid_size * 50, 3), dtype=np.uint8
-            )
+            canvas = np.zeros((self.grid_size * 50, self.grid_size * 50, 3), dtype=np.uint8)
             # Draw agent and goal on canvas
             # ... (implement visual rendering)
             return canvas

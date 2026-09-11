@@ -12,32 +12,33 @@ Constraints are specified in the Problem definition:
 from pymoo.core.problem import ElementwiseProblem
 import numpy as np
 
+
 class ConstrainedProblem(ElementwiseProblem):
     def __init__(self):
         super().__init__(
             n_var=2,
             n_obj=2,
-            n_ieq_constr=2,    # Number of inequality constraints
-            n_eq_constr=1,      # Number of equality constraints
+            n_ieq_constr=2,  # Number of inequality constraints
+            n_eq_constr=1,  # Number of equality constraints
             xl=np.array([0, 0]),
-            xu=np.array([5, 5])
+            xu=np.array([5, 5]),
         )
 
     def _evaluate(self, x, out, *args, **kwargs):
         # Objectives
-        f1 = x[0]**2 + x[1]**2
-        f2 = (x[0]-1)**2 + (x[1]-1)**2
+        f1 = x[0] ** 2 + x[1] ** 2
+        f2 = (x[0] - 1) ** 2 + (x[1] - 1) ** 2
 
         out["F"] = [f1, f2]
 
         # Inequality constraints (formulated as g(x) <= 0)
         g1 = x[0] + x[1] - 5  # x[0] + x[1] >= 5 → -(x[0] + x[1] - 5) <= 0
-        g2 = x[0]**2 + x[1]**2 - 25  # x[0]^2 + x[1]^2 <= 25
+        g2 = x[0] ** 2 + x[1] ** 2 - 25  # x[0]^2 + x[1]^2 <= 25
 
         out["G"] = [g1, g2]
 
         # Equality constraints (formulated as h(x) = 0)
-        h1 = x[0] - 2*x[1]
+        h1 = x[0] - 2 * x[1]
 
         out["H"] = [h1]
 ```
@@ -143,12 +144,14 @@ algorithm = NSGA2(pop_size=100)
 ```python
 from pymoo.core.repair import Repair
 
+
 class MyRepair(Repair):
     def _do(self, problem, X, **kwargs):
         # Project X onto feasible region
         # Example: clip to bounds
         X = np.clip(X, problem.xl, problem.xu)
         return X
+
 
 from pymoo.algorithms.soo.nonconvex.ga import GA
 
@@ -381,19 +384,10 @@ import numpy as np
 problem = MyConstrainedProblem()
 
 # Setup algorithm with feasibility-first constraint handling
-algorithm = NSGA2(
-    pop_size=100,
-    eliminate_duplicates=True
-)
+algorithm = NSGA2(pop_size=100, eliminate_duplicates=True)
 
 # Optimize
-result = minimize(
-    problem,
-    algorithm,
-    ('n_gen', 200),
-    seed=1,
-    verbose=True
-)
+result = minimize(problem, algorithm, ("n_gen", 200), seed=1, verbose=True)
 
 # Filter feasible solutions only
 feasible_mask = result.CV[:, 0] == 0  # Constraint violation = 0

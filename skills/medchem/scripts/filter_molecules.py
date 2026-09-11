@@ -95,9 +95,7 @@ def load_molecules(
     return df, mols
 
 
-def apply_rule_filters(
-    mols: list[Chem.Mol], rules: list[str], n_jobs: int
-) -> pd.DataFrame:
+def apply_rule_filters(mols: list[Chem.Mol], rules: list[str], n_jobs: int) -> pd.DataFrame:
     """Apply medicinal chemistry rule filters."""
     print(f"\nApplying rule filters: {', '.join(rules)}")
 
@@ -113,9 +111,7 @@ def apply_rule_filters(
     return df_results
 
 
-def apply_structural_alerts(
-    mols: list[Chem.Mol], alert_type: str, n_jobs: int
-) -> pd.DataFrame:
+def apply_structural_alerts(mols: list[Chem.Mol], alert_type: str, n_jobs: int) -> pd.DataFrame:
     """Apply structural alert filters."""
     print(f"\nApplying {alert_type} structural alerts...")
 
@@ -128,8 +124,7 @@ def apply_structural_alerts(
                 "has_common_alerts": [r["has_alerts"] for r in results],
                 "num_common_alerts": [r["num_alerts"] for r in results],
                 "common_alert_details": [
-                    ", ".join(r["alert_details"]) if r["alert_details"] else ""
-                    for r in results
+                    ", ".join(r["alert_details"]) if r["alert_details"] else "" for r in results
                 ],
             }
         )
@@ -149,16 +144,13 @@ def apply_structural_alerts(
                 "lilly_demerits": [r["demerits"] for r in results],
                 "passes_lilly": [r["passes"] for r in results],
                 "lilly_patterns": [
-                    ", ".join([p["pattern"] for p in r["matched_patterns"]])
-                    for r in results
+                    ", ".join([p["pattern"] for p in r["matched_patterns"]]) for r in results
                 ],
             }
         )
 
     elif alert_type == "pains":
-        results = [
-            mc.rules.basic_rules.pains_filter(mol) for mol in tqdm(mols, desc="PAINS")
-        ]
+        results = [mc.rules.basic_rules.pains_filter(mol) for mol in tqdm(mols, desc="PAINS")]
 
         df_results = pd.DataFrame({"passes_pains": results})
 
@@ -172,9 +164,7 @@ def apply_complexity_filter(
     mols: list[Chem.Mol], max_complexity: float, method: str = "bertz"
 ) -> pd.DataFrame:
     """Calculate molecular complexity."""
-    print(
-        f"\nCalculating molecular complexity (method={method}, max={max_complexity})..."
-    )
+    print(f"\nCalculating molecular complexity (method={method}, max={max_complexity})...")
 
     complexity_scores = [
         mc.complexity.calculate_complexity(mol, method=method)
@@ -184,18 +174,14 @@ def apply_complexity_filter(
     df_results = pd.DataFrame(
         {
             "complexity_score": complexity_scores,
-            "passes_complexity": [
-                score <= max_complexity for score in complexity_scores
-            ],
+            "passes_complexity": [score <= max_complexity for score in complexity_scores],
         }
     )
 
     return df_results
 
 
-def apply_constraints(
-    mols: list[Chem.Mol], constraints: dict, n_jobs: int
-) -> pd.DataFrame:
+def apply_constraints(mols: list[Chem.Mol], constraints: dict, n_jobs: int) -> pd.DataFrame:
     """Apply custom property constraints."""
     print(f"\nApplying constraints: {constraints}")
 
@@ -241,9 +227,7 @@ def generate_summary(df: pd.DataFrame, output_file: Path):
 
         # Rule results
         rule_cols = [
-            col
-            for col in df.columns
-            if col.startswith("rule_") or col == "passes_all_rules"
+            col for col in df.columns if col.startswith("rule_") or col == "passes_all_rules"
         ]
         if rule_cols:
             f.write("RULE FILTERS:\n")
@@ -332,9 +316,7 @@ def main():
 
     # Input/Output
     parser.add_argument("input", type=Path, help="Input file (CSV, TSV, SDF, or TXT)")
-    parser.add_argument(
-        "--output", "-o", type=Path, required=True, help="Output CSV file"
-    )
+    parser.add_argument("--output", "-o", type=Path, required=True, help="Output CSV file")
     parser.add_argument(
         "--smiles-column",
         default="smiles",
@@ -351,9 +333,7 @@ def main():
         "--common-alerts", action="store_true", help="Apply common structural alerts"
     )
     parser.add_argument("--nibr", action="store_true", help="Apply NIBR filters")
-    parser.add_argument(
-        "--lilly", action="store_true", help="Apply Lilly demerits filter"
-    )
+    parser.add_argument("--lilly", action="store_true", help="Apply Lilly demerits filter")
     parser.add_argument("--pains", action="store_true", help="Apply PAINS filter")
 
     # Complexity
@@ -371,9 +351,7 @@ def main():
     parser.add_argument("--tpsa-max", type=float, help="Maximum TPSA")
     parser.add_argument("--hbd-max", type=int, help="Maximum H-bond donors")
     parser.add_argument("--hba-max", type=int, help="Maximum H-bond acceptors")
-    parser.add_argument(
-        "--rotatable-bonds-max", type=int, help="Maximum rotatable bonds"
-    )
+    parser.add_argument("--rotatable-bonds-max", type=int, help="Maximum rotatable bonds")
 
     # Chemical groups
     parser.add_argument("--groups", help="Comma-separated chemical groups to detect")
@@ -385,9 +363,7 @@ def main():
         default=-1,
         help="Number of parallel jobs (-1 = all cores)",
     )
-    parser.add_argument(
-        "--no-summary", action="store_true", help="Don't generate summary report"
-    )
+    parser.add_argument("--no-summary", action="store_true", help="Don't generate summary report")
     parser.add_argument(
         "--filter-output",
         action="store_true",
@@ -427,9 +403,7 @@ def main():
 
     # Complexity
     if args.complexity:
-        df_complexity = apply_complexity_filter(
-            mols, args.complexity, args.complexity_method
-        )
+        df_complexity = apply_complexity_filter(mols, args.complexity, args.complexity_method)
         result_dfs.append(df_complexity)
 
     # Constraints

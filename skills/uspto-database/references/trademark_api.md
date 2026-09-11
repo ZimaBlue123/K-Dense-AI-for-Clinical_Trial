@@ -108,6 +108,7 @@ Returns JSON with comprehensive trademark information:
 ```python
 import requests
 
+
 def get_trademark_status(serial_number, api_key):
     """Retrieve trademark status by serial number."""
     url = f"https://tsdrapi.uspto.gov/ts/cd/casedocs/sn{serial_number}/info.json"
@@ -119,14 +120,15 @@ def get_trademark_status(serial_number, api_key):
     else:
         raise Exception(f"API error: {response.status_code}")
 
+
 # Usage
 data = get_trademark_status("87654321", "YOUR_API_KEY")
-trademark = data['TradeMarkAppln']
+trademark = data["TradeMarkAppln"]
 
 print(f"Mark: {trademark['MarkVerbalElementText']}")
 print(f"Status: {trademark['MarkCurrentStatusExternalDescriptionText']}")
 print(f"Application Date: {trademark['ApplicationDate']}")
-if 'RegistrationNumber' in trademark:
+if "RegistrationNumber" in trademark:
     print(f"Registration #: {trademark['RegistrationNumber']}")
 ```
 
@@ -225,6 +227,7 @@ Returns XML containing assignment records:
 import requests
 import xml.etree.ElementTree as ET
 
+
 def search_trademark_assignments(registration_number, api_key):
     """Search assignments for a trademark registration."""
     url = f"https://assignment-api.uspto.gov/trademark/v1.4/assignment/application/{registration_number}"
@@ -236,17 +239,18 @@ def search_trademark_assignments(registration_number, api_key):
     else:
         raise Exception(f"API error: {response.status_code}")
 
+
 # Usage
 xml_data = search_trademark_assignments("5678901", "YOUR_API_KEY")
 root = ET.fromstring(xml_data)
 
-for assignment in root.findall('.//assignment'):
-    reel_frame = assignment.find('reelFrame').text
-    recorded_date = assignment.find('recordedDate').text
-    conveyance = assignment.find('conveyanceText').text
+for assignment in root.findall(".//assignment"):
+    reel_frame = assignment.find("reelFrame").text
+    recorded_date = assignment.find("recordedDate").text
+    conveyance = assignment.find("conveyanceText").text
 
-    assignor = assignment.find('.//assignor/name').text
-    assignee = assignment.find('.//assignee/name').text
+    assignor = assignment.find(".//assignor/name").text
+    assignee = assignment.find(".//assignee/name").text
 
     print(f"{recorded_date}: {assignor} -> {assignee}")
     print(f"  Type: {conveyance}")
@@ -263,18 +267,18 @@ Check status of pending applications or registrations:
 def check_trademark_health(serial_number, api_key):
     """Check if trademark needs attention."""
     data = get_trademark_status(serial_number, api_key)
-    tm = data['TradeMarkAppln']
+    tm = data["TradeMarkAppln"]
 
-    status = tm['MarkCurrentStatusExternalDescriptionText']
+    status = tm["MarkCurrentStatusExternalDescriptionText"]
     alerts = []
 
-    if 'ABANDON' in status:
+    if "ABANDON" in status:
         alerts.append("⚠️ ABANDONED")
-    elif 'PUBLISHED' in status:
+    elif "PUBLISHED" in status:
         alerts.append("📢 In opposition period")
-    elif 'SUSPENDED' in status:
+    elif "SUSPENDED" in status:
         alerts.append("⏸️ Examination suspended")
-    elif 'REGISTERED' in status:
+    elif "REGISTERED" in status:
         alerts.append("✅ Active")
 
     return alerts
@@ -291,9 +295,9 @@ def get_current_owner(registration_number, api_key):
     root = ET.fromstring(xml_data)
 
     assignments = []
-    for assignment in root.findall('.//assignment'):
-        date = assignment.find('recordedDate').text
-        assignee = assignment.find('.//assignee/name').text
+    for assignment in root.findall(".//assignment"):
+        date = assignment.find("recordedDate").text
+        assignee = assignment.find(".//assignee/name").text
         assignments.append((date, assignee))
 
     # Most recent assignment
@@ -310,25 +314,20 @@ Analyze trademark portfolio:
 ```python
 def analyze_portfolio(serial_numbers, api_key):
     """Analyze status of multiple trademarks."""
-    results = {
-        'active': 0,
-        'pending': 0,
-        'abandoned': 0,
-        'expired': 0
-    }
+    results = {"active": 0, "pending": 0, "abandoned": 0, "expired": 0}
 
     for sn in serial_numbers:
         data = get_trademark_status(sn, api_key)
-        status = data['TradeMarkAppln']['MarkCurrentStatusExternalDescriptionText']
+        status = data["TradeMarkAppln"]["MarkCurrentStatusExternalDescriptionText"]
 
-        if 'REGISTERED' in status:
-            results['active'] += 1
-        elif 'PENDING' in status or 'PUBLISHED' in status:
-            results['pending'] += 1
-        elif 'ABANDON' in status:
-            results['abandoned'] += 1
-        elif 'EXPIRED' in status or 'CANCELLED' in status:
-            results['expired'] += 1
+        if "REGISTERED" in status:
+            results["active"] += 1
+        elif "PENDING" in status or "PUBLISHED" in status:
+            results["pending"] += 1
+        elif "ABANDON" in status:
+            results["abandoned"] += 1
+        elif "EXPIRED" in status or "CANCELLED" in status:
+            results["expired"] += 1
 
     return results
 ```

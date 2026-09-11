@@ -27,6 +27,7 @@ pip install --upgrade idc-index
 
 ```python
 from idc_index import IDCClient
+
 client = IDCClient()
 
 # Query the primary index (always available)
@@ -34,7 +35,9 @@ results = client.sql_query("SELECT * FROM index WHERE Modality = 'CT' LIMIT 10")
 
 # Fetch and query additional indices
 client.fetch_index("collections_index")
-collections = client.sql_query("SELECT collection_id, CancerTypes, TumorLocations FROM collections_index")
+collections = client.sql_query(
+    "SELECT collection_id, CancerTypes, TumorLocations FROM collections_index"
+)
 
 client.fetch_index("analysis_results_index")
 analysis = client.sql_query("SELECT * FROM analysis_results_index LIMIT 5")
@@ -59,6 +62,7 @@ The `indices_overview` dictionary contains complete schema information for all t
 
 ```python
 from idc_index import IDCClient
+
 client = IDCClient()
 
 # List all available indices with descriptions
@@ -71,13 +75,13 @@ for name, info in client.indices_overview.items():
 schema = client.indices_overview["index"]["schema"]
 print(f"\nTable: {schema['table_description']}")
 print("\nColumns:")
-for col in schema['columns']:
-    desc = col.get('description', 'No description')
+for col in schema["columns"]:
+    desc = col.get("description", "No description")
     # Description indicates if column is from DICOM attribute
     print(f"  {col['name']} ({col['type']}): {desc}")
 
 # Find columns that are DICOM attributes (check description for "DICOM" reference)
-dicom_cols = [c['name'] for c in schema['columns'] if 'DICOM' in c.get('description', '').upper()]
+dicom_cols = [c["name"] for c in schema["columns"] if "DICOM" in c.get("description", "").upper()]
 print(f"\nDICOM-sourced columns: {dicom_cols}")
 ```
 

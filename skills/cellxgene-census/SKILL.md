@@ -89,7 +89,7 @@ cell_metadata = cellxgene_census.get_obs(
     census,
     "homo_sapiens",
     value_filter="tissue_general == 'brain' and is_primary_data == True",
-    column_names=["cell_type"]
+    column_names=["cell_type"],
 )
 unique_cell_types = cell_metadata["cell_type"].unique()
 print(f"Found {len(unique_cell_types)} cell types in brain")
@@ -134,16 +134,18 @@ adata = cellxgene_census.get_anndata(
 ```python
 # Query cell metadata
 cell_metadata = cellxgene_census.get_obs(
-    census, "homo_sapiens",
+    census,
+    "homo_sapiens",
     value_filter="disease == 'COVID-19' and is_primary_data == True",
-    column_names=["cell_type", "tissue_general", "donor_id"]
+    column_names=["cell_type", "tissue_general", "donor_id"],
 )
 
 # Query gene metadata
 gene_metadata = cellxgene_census.get_var(
-    census, "homo_sapiens",
+    census,
+    "homo_sapiens",
     value_filter="feature_name in ['CD4', 'CD8A']",
-    column_names=["feature_id", "feature_name", "feature_length"]
+    column_names=["feature_id", "feature_name", "feature_length"],
 )
 ```
 
@@ -157,12 +159,8 @@ import tiledbsoma as soma
 # Create axis query
 query = census["census_data"]["homo_sapiens"].axis_query(
     measurement_name="RNA",
-    obs_query=soma.AxisQuery(
-        value_filter="tissue_general == 'brain' and is_primary_data == True"
-    ),
-    var_query=soma.AxisQuery(
-        value_filter="feature_name in ['FOXP2', 'TBR1', 'SATB2']"
-    )
+    obs_query=soma.AxisQuery(value_filter="tissue_general == 'brain' and is_primary_data == True"),
+    var_query=soma.AxisQuery(value_filter="feature_name in ['FOXP2', 'TBR1', 'SATB2']"),
 )
 
 # Iterate through expression matrix in chunks
@@ -238,10 +236,7 @@ dataset = ExperimentDataset(
 )
 
 # Split into train and test
-train_dataset, test_dataset = dataset.random_split(
-    split=[0.8, 0.2],
-    seed=42
-)
+train_dataset, test_dataset = dataset.random_split(split=[0.8, 0.2], seed=42)
 ```
 
 ### 6. Integration with Scanpy
@@ -306,7 +301,7 @@ adata = cellxgene_census.get_anndata(
 ### Always Filter for Primary Data
 Unless analyzing duplicates, always include `is_primary_data == True` in queries to avoid counting cells multiple times:
 ```python
-obs_value_filter="cell_type == 'B cell' and is_primary_data == True"
+obs_value_filter = "cell_type == 'B cell' and is_primary_data == True"
 ```
 
 ### Specify Census Version for Reproducibility
@@ -320,9 +315,10 @@ For large queries, first check the number of cells to avoid memory issues:
 ```python
 # Get cell count
 metadata = cellxgene_census.get_obs(
-    census, "homo_sapiens",
+    census,
+    "homo_sapiens",
     value_filter="tissue_general == 'brain' and is_primary_data == True",
-    column_names=["soma_joinid"]
+    column_names=["soma_joinid"],
 )
 n_cells = len(metadata)
 print(f"Query will return {n_cells:,} cells")
@@ -334,25 +330,23 @@ print(f"Query will return {n_cells:,} cells")
 The `tissue_general` field provides coarser categories than `tissue`, useful for cross-tissue analyses:
 ```python
 # Broader grouping
-obs_value_filter="tissue_general == 'immune system'"
+obs_value_filter = "tissue_general == 'immune system'"
 
 # Specific tissue
-obs_value_filter="tissue == 'peripheral blood mononuclear cell'"
+obs_value_filter = "tissue == 'peripheral blood mononuclear cell'"
 ```
 
 ### Select Only Needed Columns
 Minimize data transfer by specifying only required metadata columns:
 ```python
-obs_column_names=["cell_type", "tissue_general", "disease"]  # Not all columns
+obs_column_names = ["cell_type", "tissue_general", "disease"]  # Not all columns
 ```
 
 ### Check Dataset Presence for Gene-Specific Queries
 When analyzing specific genes, verify which datasets measured them:
 ```python
 presence = cellxgene_census.get_presence_matrix(
-    census,
-    "homo_sapiens",
-    var_value_filter="feature_name in ['CD4', 'CD8A']"
+    census, "homo_sapiens", var_value_filter="feature_name in ['CD4', 'CD8A']"
 )
 ```
 
@@ -361,9 +355,10 @@ First explore metadata to understand available data, then query expression:
 ```python
 # Step 1: Explore what's available
 metadata = cellxgene_census.get_obs(
-    census, "homo_sapiens",
+    census,
+    "homo_sapiens",
     value_filter="disease == 'COVID-19' and is_primary_data == True",
-    column_names=["cell_type", "tissue_general"]
+    column_names=["cell_type", "tissue_general"],
 )
 print(metadata.value_counts())
 
@@ -425,9 +420,10 @@ Examples and patterns for:
 ```python
 with cellxgene_census.open_soma() as census:
     cells = cellxgene_census.get_obs(
-        census, "homo_sapiens",
+        census,
+        "homo_sapiens",
         value_filter="tissue_general == 'lung' and is_primary_data == True",
-        column_names=["cell_type"]
+        column_names=["cell_type"],
     )
     print(cells["cell_type"].value_counts())
 ```

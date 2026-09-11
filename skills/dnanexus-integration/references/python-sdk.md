@@ -31,10 +31,7 @@ dx login
 import dxpy
 
 # Set authentication token
-dxpy.set_security_context({
-    "auth_token_type": "Bearer",
-    "auth_token": "YOUR_API_TOKEN"
-})
+dxpy.set_security_context({"auth_token_type": "Bearer", "auth_token": "YOUR_API_TOKEN"})
 ```
 
 ### Environment Variables
@@ -88,7 +85,7 @@ record = dxpy.new_dxrecord(
     types=["Metadata"],
     details={"key": "value"},
     project="project-xxxx",
-    close=True
+    close=True,
 )
 
 # Get record handler
@@ -116,10 +113,7 @@ print(f"Name: {desc['name']}")
 print(f"Version: {desc.get('version', 'N/A')}")
 
 # Run applet
-job = applet.run({
-    "input1": {"$dnanexus_link": "file-yyyy"},
-    "param1": "value"
-})
+job = applet.run({"input1": {"$dnanexus_link": "file-yyyy"}, "param1": "value"})
 ```
 
 ### DXApp
@@ -134,9 +128,7 @@ app = dxpy.DXApp(name="my-app")
 app = dxpy.DXApp("app-xxxx")
 
 # Run app
-job = app.run({
-    "input": {"$dnanexus_link": "file-yyyy"}
-})
+job = app.run({"input": {"$dnanexus_link": "file-yyyy"}})
 ```
 
 ### DXWorkflow
@@ -145,16 +137,10 @@ Handler for workflow objects.
 
 ```python
 # Create workflow
-workflow = dxpy.new_dxworkflow(
-    name="My Pipeline",
-    project="project-xxxx"
-)
+workflow = dxpy.new_dxworkflow(name="My Pipeline", project="project-xxxx")
 
 # Add stage
-stage = workflow.add_stage(
-    dxpy.DXApplet("applet-xxxx"),
-    name="Step 1"
-)
+stage = workflow.add_stage(dxpy.DXApplet("applet-xxxx"), name="Step 1")
 
 # Set stage input
 stage.set_input("input1", {"$dnanexus_link": "file-yyyy"})
@@ -215,10 +201,7 @@ print(f"Folders: {contents['folders']}")
 ```python
 # Upload file
 file_obj = dxpy.upload_local_file(
-    "local_file.txt",
-    project="project-xxxx",
-    folder="/data",
-    name="uploaded_file.txt"
+    "local_file.txt", project="project-xxxx", folder="/data", name="uploaded_file.txt"
 )
 
 # Download file
@@ -232,19 +215,12 @@ file_obj = dxpy.upload_string("Hello World", project="project-xxxx")
 
 ```python
 # New file
-file_obj = dxpy.new_dxfile(
-    project="project-xxxx",
-    name="output.txt"
-)
+file_obj = dxpy.new_dxfile(project="project-xxxx", name="output.txt")
 file_obj.write("content")
 file_obj.close()
 
 # New record
-record = dxpy.new_dxrecord(
-    name="metadata",
-    details={"key": "value"},
-    project="project-xxxx"
-)
+record = dxpy.new_dxrecord(name="metadata", details={"key": "value"}, project="project-xxxx")
 ```
 
 ### Search Functions
@@ -252,33 +228,20 @@ record = dxpy.new_dxrecord(
 ```python
 # Find data objects
 results = dxpy.find_data_objects(
-    classname="file",
-    name="*.fastq",
-    project="project-xxxx",
-    folder="/raw_data",
-    describe=True
+    classname="file", name="*.fastq", project="project-xxxx", folder="/raw_data", describe=True
 )
 
 for result in results:
     print(f"{result['describe']['name']}: {result['id']}")
 
 # Find projects
-projects = dxpy.find_projects(
-    name="*analysis*",
-    describe=True
-)
+projects = dxpy.find_projects(name="*analysis*", describe=True)
 
 # Find jobs
-jobs = dxpy.find_jobs(
-    project="project-xxxx",
-    created_after="2025-01-01",
-    state="failed"
-)
+jobs = dxpy.find_jobs(project="project-xxxx", created_after="2025-01-01", state="failed")
 
 # Find apps
-apps = dxpy.find_apps(
-    category="Read Mapping"
-)
+apps = dxpy.find_apps(category="Read Mapping")
 ```
 
 ### Links and References
@@ -303,10 +266,7 @@ For operations not covered by high-level functions:
 
 ```python
 # Call API method directly
-result = dxpy.api.project_new({
-    "name": "New Project",
-    "description": "Created via API"
-})
+result = dxpy.api.project_new({"name": "New Project", "description": "Created via API"})
 
 project_id = result["id"]
 
@@ -314,11 +274,9 @@ project_id = result["id"]
 file_desc = dxpy.api.file_describe("file-xxxx")
 
 # System find data objects
-results = dxpy.api.system_find_data_objects({
-    "class": "file",
-    "project": "project-xxxx",
-    "name": {"regexp": ".*\\.bam$"}
-})
+results = dxpy.api.system_find_data_objects(
+    {"class": "file", "project": "project-xxxx", "name": {"regexp": ".*\\.bam$"}}
+)
 ```
 
 ### Common API Methods
@@ -344,16 +302,16 @@ dxpy.api.job_get_log("job-xxxx")
 ```python
 import dxpy
 
-@dxpy.entry_point('main')
+
+@dxpy.entry_point("main")
 def main(input1, input2):
     """Main entry point for app"""
     # Process inputs
     result = process(input1, input2)
 
     # Return outputs
-    return {
-        "output1": result
-    }
+    return {"output1": result}
+
 
 # Required at end of app code
 dxpy.run()
@@ -363,15 +321,13 @@ dxpy.run()
 
 ```python
 # Spawn subjob within app
-subjob = dxpy.new_dxjob(
-    fn_input={"input": value},
-    fn_name="helper_function"
-)
+subjob = dxpy.new_dxjob(fn_input={"input": value}, fn_name="helper_function")
 
 # Get output reference
 output_ref = subjob.get_output_ref("result")
 
-@dxpy.entry_point('helper_function')
+
+@dxpy.entry_point("helper_function")
 def helper_function(input):
     # Process
     return {"result": output}
@@ -468,9 +424,7 @@ dxpy.set_api_server_info(host="api.dnanexus.com", port=443)
 input_file = dxpy.upload_local_file("data.txt", project="project-xxxx")
 
 # Run analysis
-job = dxpy.DXApplet("applet-xxxx").run({
-    "input": dxpy.dxlink(input_file.get_id())
-})
+job = dxpy.DXApplet("applet-xxxx").run({"input": dxpy.dxlink(input_file.get_id())})
 
 # Wait and download result
 job.wait_on_done()
@@ -482,18 +436,12 @@ dxpy.download_dxfile(output_id, "result.txt")
 
 ```python
 # Find all FASTQ files
-files = dxpy.find_data_objects(
-    classname="file",
-    name="*.fastq",
-    project="project-xxxx"
-)
+files = dxpy.find_data_objects(classname="file", name="*.fastq", project="project-xxxx")
 
 # Process each file
 jobs = []
 for file_result in files:
-    job = dxpy.DXApplet("applet-xxxx").run({
-        "input": dxpy.dxlink(file_result["id"])
-    })
+    job = dxpy.DXApplet("applet-xxxx").run({"input": dxpy.dxlink(file_result["id"])})
     jobs.append(job)
 
 # Wait for all jobs
@@ -509,14 +457,10 @@ for job in jobs:
 job1 = applet1.run({"input": data})
 
 # Job 2 depends on job1 output
-job2 = applet2.run({
-    "input": job1.get_output_ref("result")
-})
+job2 = applet2.run({"input": job1.get_output_ref("result")})
 
 # Job 3 depends on job2
-job3 = applet3.run({
-    "input": job2.get_output_ref("processed")
-})
+job3 = applet3.run({"input": job2.get_output_ref("processed")})
 
 # Wait for final result
 job3.wait_on_done()

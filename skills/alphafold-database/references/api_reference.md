@@ -98,10 +98,7 @@ response = requests.get(url)
 data = response.json()
 
 # Filter for AlphaFold structures
-alphafold_structures = [
-    s for s in data['structures']
-    if s['provider'] == 'AlphaFold DB'
-]
+alphafold_structures = [s for s in data["structures"] if s["provider"] == "AlphaFold DB"]
 ```
 
 ---

@@ -70,9 +70,7 @@ def run(protocol: protocol_api.ProtocolContext):
     protocol.comment("Thermocycler lid opened")
 
     # Step 1: Distribute master mix
-    protocol.comment(
-        f"Distributing {master_mix_volume}µL master mix to {num_samples} wells..."
-    )
+    protocol.comment(f"Distributing {master_mix_volume}µL master mix to {num_samples} wells...")
     p300.distribute(
         master_mix_volume,
         reagent_rack["A1"],

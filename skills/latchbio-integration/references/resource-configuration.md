@@ -14,6 +14,7 @@ Default configuration for lightweight tasks:
 ```python
 from latch import small_task
 
+
 @small_task
 def lightweight_processing():
     """Minimal resource requirements"""
@@ -30,6 +31,7 @@ def lightweight_processing():
 Increased CPU and memory for intensive computations:
 ```python
 from latch import large_task
+
 
 @large_task
 def intensive_computation():
@@ -48,6 +50,7 @@ GPU-enabled with minimal resources:
 ```python
 from latch import small_gpu_task
 
+
 @small_gpu_task
 def gpu_inference():
     """GPU-enabled task with basic resources"""
@@ -63,6 +66,7 @@ def gpu_inference():
 GPU-enabled with maximum resources:
 ```python
 from latch import large_gpu_task
+
 
 @large_gpu_task
 def gpu_training():
@@ -82,6 +86,7 @@ For precise control, use the `@custom_task` decorator:
 ```python
 from latch import custom_task
 from latch.resources.tasks import TaskResources
+
 
 @custom_task(
     cpu=8,
@@ -108,14 +113,8 @@ def custom_processing():
 ```python
 from latch.resources.tasks import TaskResources
 
-@custom_task(
-    cpu=16,
-    memory=64,
-    storage_gib=500,
-    timeout=7200,
-    gpu=1,
-    gpu_type="nvidia-tesla-a100"
-)
+
+@custom_task(cpu=16, memory=64, storage_gib=500, timeout=7200, gpu=1, gpu_type="nvidia-tesla-a100")
 def alphafold_prediction():
     """AlphaFold with A100 GPU and high memory"""
     pass
@@ -135,12 +134,8 @@ Available GPU options:
 ```python
 from latch import custom_task
 
-@custom_task(
-    cpu=32,
-    memory=128,
-    gpu=4,
-    gpu_type="nvidia-tesla-v100"
-)
+
+@custom_task(cpu=32, memory=128, gpu=4, gpu_type="nvidia-tesla-v100")
 def multi_gpu_training():
     """Distributed training across multiple GPUs"""
     pass
@@ -205,25 +200,30 @@ def aggregate_results():
 from latch import workflow, small_task, large_task, large_gpu_task
 from latch.types import LatchFile
 
+
 @small_task
 def quality_control(fastq: LatchFile) -> LatchFile:
     """QC doesn't need much resources"""
     return qc_output
+
 
 @large_task
 def alignment(fastq: LatchFile) -> LatchFile:
     """Alignment benefits from more CPU"""
     return bam_output
 
+
 @large_gpu_task
 def variant_calling(bam: LatchFile) -> LatchFile:
     """GPU-accelerated variant caller"""
     return vcf_output
 
+
 @small_task
 def generate_report(vcf: LatchFile) -> LatchFile:
     """Simple report generation"""
     return report
+
 
 @workflow
 def genomics_pipeline(input_fastq: LatchFile) -> LatchFile:
@@ -241,10 +241,11 @@ def genomics_pipeline(input_fastq: LatchFile) -> LatchFile:
 ```python
 from latch import custom_task
 
+
 @custom_task(
     cpu=8,
     memory=32,
-    timeout=10800  # 3 hours in seconds
+    timeout=10800,  # 3 hours in seconds
 )
 def long_running_analysis():
     """Analysis with extended timeout"""
@@ -268,7 +269,7 @@ Configure temporary storage for intermediate files:
 @custom_task(
     cpu=8,
     memory=32,
-    storage_gib=500  # 500 GB temporary storage
+    storage_gib=500,  # 500 GB temporary storage
 )
 def process_large_dataset():
     """Task with large intermediate files"""
@@ -302,18 +303,22 @@ def process_large_dataset():
 def validate_input():  # Over-provisioned
     pass
 
+
 @large_task
 def simple_transformation():  # Over-provisioned
     pass
+
 
 # EFFICIENT: Right-sized resources
 @small_task
 def validate_input():  # Appropriate
     pass
 
+
 @small_task
 def simple_transformation():  # Appropriate
     pass
+
 
 @large_task
 def intensive_analysis():  # Appropriate
@@ -365,6 +370,7 @@ Dynamically allocate resources based on input:
 from latch import workflow, custom_task
 from latch.types import LatchFile
 
+
 def get_resource_config(file_size_gb: float):
     """Determine resources based on file size"""
     if file_size_gb < 10:
@@ -374,15 +380,18 @@ def get_resource_config(file_size_gb: float):
     else:
         return {"cpu": 32, "memory": 128}
 
+
 # Note: Resource decorators must be static
 # Use multiple task variants for different sizes
 @custom_task(cpu=4, memory=16)
 def process_small(file: LatchFile) -> LatchFile:
     pass
 
+
 @custom_task(cpu=16, memory=64)
 def process_medium(file: LatchFile) -> LatchFile:
     pass
+
 
 @custom_task(cpu=32, memory=128)
 def process_large(file: LatchFile) -> LatchFile:

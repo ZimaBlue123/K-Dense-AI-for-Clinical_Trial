@@ -207,7 +207,7 @@ for substrate in specificity:
 from scripts.brenda_queries import compare_substrate_affinity
 
 comparison = compare_substrate_affinity("1.1.1.1")
-sorted_by_km = sorted(comparison, key=lambda x: x['km'])
+sorted_by_km = sorted(comparison, key=lambda x: x["km"])
 
 for substrate in sorted_by_km[:5]:  # Top 5 lowest Km
     print(f"{substrate['name']}: Km = {substrate['km']}")
@@ -457,7 +457,7 @@ for enzyme in enzymes:
 
 # Get kinetic data for best candidates
 if enzymes:
-    best_ec = enzymes[0]['ec_number']
+    best_ec = enzymes[0]["ec_number"]
     km_data = get_km_values(best_ec, substrate=substrate)
 
     if km_data:
@@ -478,7 +478,7 @@ organisms = [
     "Escherichia coli",
     "Saccharomyces cerevisiae",
     "Bacillus subtilis",
-    "Thermus thermophilus"
+    "Thermus thermophilus",
 ]
 
 # Compare alcohol dehydrogenase
@@ -504,7 +504,7 @@ Find engineering opportunities for enzyme improvement:
 from scripts.brenda_queries import (
     find_thermophilic_homologs,
     find_ph_stable_variants,
-    compare_substrate_affinity
+    compare_substrate_affinity,
 )
 
 # Find thermophilic variants for heat stability
@@ -519,7 +519,7 @@ print(f"Found {len(alkaline)} alkaline-stable variants")
 specificity = compare_substrate_affinity("1.1.1.1")
 print("Substrate affinity ranking:")
 for i, sub in enumerate(specificity[:5]):
-    print(f"  {i+1}. {sub['name']}: Km = {sub['km']}")
+    print(f"  {i + 1}. {sub['name']}: Km = {sub['km']}")
 ```
 
 ### Workflow 4: Enzymatic Pathway Construction
@@ -530,7 +530,7 @@ Build enzymatic synthesis pathways:
 from scripts.enzyme_pathway_builder import (
     find_pathway_for_product,
     build_retrosynthetic_tree,
-    calculate_pathway_feasibility
+    calculate_pathway_feasibility,
 )
 
 # Find pathway to target product
@@ -539,8 +539,8 @@ pathway = find_pathway_for_product(target, max_steps=3)
 
 if pathway:
     print(f"Found pathway to {target}:")
-    for i, step in enumerate(pathway['steps']):
-        print(f"  Step {i+1}: {step['reaction']}")
+    for i, step in enumerate(pathway["steps"]):
+        print(f"  Step {i + 1}: {step['reaction']}")
         print(f"    Enzyme: EC {step['ec_number']}")
         print(f"    Organism: {step['organism']}")
 
@@ -567,20 +567,20 @@ km_data = get_km_values(ec_number)
 all_entries = []
 for entry in km_data:
     parsed = parse_km_entry(entry)
-    if parsed['km_value']:
+    if parsed["km_value"]:
         all_entries.append(parsed)
 
 print(f"Analyzed {len(all_entries)} kinetic entries")
 
 # Find best kinetic performer
-best_km = min(all_entries, key=lambda x: x['km_value'])
+best_km = min(all_entries, key=lambda x: x["km_value"])
 print(f"\nBest kinetic performer:")
 print(f"  Organism: {best_km['organism']}")
 print(f"  Substrate: {best_km['substrate']}")
 print(f"  Km: {best_km['km_value']}")
 
 # Get modeling parameters
-model_data = get_modeling_parameters(ec_number, substrate=best_km['substrate'])
+model_data = get_modeling_parameters(ec_number, substrate=best_km["substrate"])
 print(f"\nModeling parameters:")
 print(f"  Km: {model_data['km']}")
 print(f"  kcat: {model_data['kcat']}")
@@ -598,7 +598,7 @@ Select enzymes for industrial applications:
 from scripts.brenda_queries import (
     find_thermophilic_homologs,
     get_environmental_parameters,
-    get_inhibitors
+    get_inhibitors,
 )
 
 # Industrial criteria: high temperature tolerance, organic solvent resistance
@@ -611,9 +611,9 @@ print(f"Thermophilic candidates: {len(thermophilic)}")
 # Check solvent tolerance (inhibitor data)
 inhibitors = get_inhibitors(target_enzyme)
 solvent_tolerant = [
-    inv for inv in inhibitors
-    if 'ethanol' not in inv['name'].lower() and
-       'methanol' not in inv['name'].lower()
+    inv
+    for inv in inhibitors
+    if "ethanol" not in inv["name"].lower() and "methanol" not in inv["name"].lower()
 ]
 
 print(f"Solvent tolerant candidates: {len(solvent_tolerant)}")
@@ -647,11 +647,13 @@ ecNumber*1.1.1.1#organism*Saccharomyces cerevisiae#reaction*ethanol + NAD+ <=> a
 ```python
 import re
 
+
 def parse_brenda_field(data, field_name):
     """Extract specific field from BRENDA data entry"""
     pattern = f"{field_name}\\*([^#]*)"
     match = re.search(pattern, data)
     return match.group(1) if match else None
+
 
 def extract_multiple_values(data, field_name):
     """Extract multiple values for a field"""

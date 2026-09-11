@@ -18,11 +18,7 @@ q1 = cirq.GridQubit(0, 1)
 q2 = cirq.LineQubit(0)
 
 # Add gates to circuit
-circuit.append([
-    cirq.H(q0),
-    cirq.CNOT(q0, q1),
-    cirq.measure(q0, q1, key='result')
-])
+circuit.append([cirq.H(q0), cirq.CNOT(q0, q1), cirq.measure(q0, q1, key="result")])
 ```
 
 ### Qubit Types
@@ -41,7 +37,7 @@ qubit = cirq.LineQubit(3)
 
 **NamedQubit**: Custom-named qubits
 ```python
-qubit = cirq.NamedQubit('my_qubit')
+qubit = cirq.NamedQubit("my_qubit")
 ```
 
 ## Common Gates and Operations
@@ -91,13 +87,13 @@ cirq.CZPowGate(exponent=0.5)(q0, q1)
 
 ```python
 # Measure single qubit
-cirq.measure(qubit, key='m')
+cirq.measure(qubit, key="m")
 
 # Measure multiple qubits
-cirq.measure(q0, q1, q2, key='result')
+cirq.measure(q0, q1, q2, key="result")
 
 # Measure all qubits in circuit
-circuit.append(cirq.measure(*qubits, key='final'))
+circuit.append(cirq.measure(*qubits, key="final"))
 ```
 
 ## Advanced Circuit Construction
@@ -108,18 +104,14 @@ circuit.append(cirq.measure(*qubits, key='final'))
 import sympy
 
 # Create symbolic parameters
-theta = sympy.Symbol('theta')
-phi = sympy.Symbol('phi')
+theta = sympy.Symbol("theta")
+phi = sympy.Symbol("phi")
 
 # Use in gates
-circuit = cirq.Circuit(
-    cirq.rx(theta)(q0),
-    cirq.ry(phi)(q1),
-    cirq.CNOT(q0, q1)
-)
+circuit = cirq.Circuit(cirq.rx(theta)(q0), cirq.ry(phi)(q1), cirq.CNOT(q0, q1))
 
 # Resolve parameters later
-resolved = cirq.resolve_parameters(circuit, {'theta': 0.5, 'phi': 1.2})
+resolved = cirq.resolve_parameters(circuit, {"theta": 0.5, "phi": 1.2})
 ```
 
 ### Custom Gates via Unitaries
@@ -128,12 +120,7 @@ resolved = cirq.resolve_parameters(circuit, {'theta': 0.5, 'phi': 1.2})
 import numpy as np
 
 # Define unitary matrix
-unitary = np.array([
-    [1, 0, 0, 0],
-    [0, 1, 0, 0],
-    [0, 0, 0, 1],
-    [0, 0, 1, 0]
-]) / np.sqrt(2)
+unitary = np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, 1], [0, 0, 1, 0]]) / np.sqrt(2)
 
 # Create gate from unitary
 gate = cirq.MatrixGate(unitary)
@@ -153,7 +140,8 @@ class MyGate(cirq.Gate):
         return [cirq.H(q), cirq.T(q), cirq.H(q)]
 
     def _circuit_diagram_info_(self, args):
-        return 'MyGate'
+        return "MyGate"
+
 
 # Use the custom gate
 my_gate = MyGate()
@@ -171,7 +159,7 @@ Circuits are organized into moments (parallel operations):
 circuit = cirq.Circuit(
     cirq.Moment([cirq.H(q0), cirq.H(q1)]),
     cirq.Moment([cirq.CNOT(q0, q1)]),
-    cirq.Moment([cirq.measure(q0, key='m0'), cirq.measure(q1, key='m1')])
+    cirq.Moment([cirq.measure(q0, key="m0"), cirq.measure(q1, key="m1")]),
 )
 
 # Access moments
@@ -199,10 +187,7 @@ circuit.append(operations, strategy=cirq.InsertStrategy.NEW_THEN_INLINE)
 ```python
 def bell_state_circuit():
     q0, q1 = cirq.LineQubit.range(2)
-    return cirq.Circuit(
-        cirq.H(q0),
-        cirq.CNOT(q0, q1)
-    )
+    return cirq.Circuit(cirq.H(q0), cirq.CNOT(q0, q1))
 ```
 
 ### GHZ State
@@ -212,7 +197,7 @@ def ghz_circuit(qubits):
     circuit = cirq.Circuit()
     circuit.append(cirq.H(qubits[0]))
     for i in range(len(qubits) - 1):
-        circuit.append(cirq.CNOT(qubits[i], qubits[i+1]))
+        circuit.append(cirq.CNOT(qubits[i], qubits[i + 1]))
     return circuit
 ```
 
@@ -224,7 +209,7 @@ def qft_circuit(qubits):
     for i, q in enumerate(qubits):
         circuit.append(cirq.H(q))
         for j in range(i + 1, len(qubits)):
-            circuit.append(cirq.CZPowGate(exponent=1/2**(j-i))(qubits[j], q))
+            circuit.append(cirq.CZPowGate(exponent=1 / 2 ** (j - i))(qubits[j], q))
 
     # Reverse qubit order
     for i in range(len(qubits) // 2):
@@ -243,6 +228,7 @@ qasm_str = circuit.to_qasm()
 
 # Import from QASM
 from cirq.contrib.qasm_import import circuit_from_qasm
+
 circuit = circuit_from_qasm(qasm_str)
 ```
 
@@ -266,17 +252,15 @@ Qudits are higher-dimensional quantum systems (qutrits, ququarts, etc.):
 # Create qutrit (3-level system)
 qutrit = cirq.LineQid(0, dimension=3)
 
+
 # Custom qutrit gate
 class QutritXGate(cirq.Gate):
     def _qid_shape_(self):
         return (3,)
 
     def _unitary_(self):
-        return np.array([
-            [0, 0, 1],
-            [1, 0, 0],
-            [0, 1, 0]
-        ])
+        return np.array([[0, 0, 1], [1, 0, 0], [0, 1, 0]])
+
 
 gate = QutritXGate()
 circuit = cirq.Circuit(gate(qutrit))
@@ -295,6 +279,7 @@ obs = cirq.X(q0) * cirq.Y(q1) * cirq.Z(q2)
 
 # Linear combination
 from cirq import PauliSum
+
 obs = 0.5 * cirq.X(q0) + 0.3 * cirq.Z(q1)
 ```
 

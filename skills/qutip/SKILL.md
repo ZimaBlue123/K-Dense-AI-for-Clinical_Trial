@@ -47,8 +47,8 @@ result = sesolve(H, psi, tlist, e_ops=[sigmaz()])
 
 # Plot results
 plt.plot(tlist, result.expect[0])
-plt.xlabel('Time')
-plt.ylabel('⟨σz⟩')
+plt.xlabel("Time")
+plt.ylabel("⟨σz⟩")
 plt.show()
 ```
 
@@ -139,7 +139,7 @@ b.show()
 # Wigner function (phase space)
 xvec = np.linspace(-5, 5, 200)
 W = wigner(psi, xvec, xvec)
-plt.contourf(xvec, xvec, W, 100, cmap='RdBu')
+plt.contourf(xvec, xvec, W, 100, cmap="RdBu")
 
 # Fock distribution
 plot_fock_distribution(psi)
@@ -163,13 +163,14 @@ result = fmmesolve(H, psi0, tlist, c_ops, T=T, args=args)
 
 # HEOM (non-Markovian, strong coupling)
 from qutip.nonmarkov.heom import HEOMSolver, BosonicBath
+
 bath = BosonicBath(Q, ck_real, vk_real)
 hsolver = HEOMSolver(H_sys, [bath], max_depth=5)
 result = hsolver.run(rho0, tlist)
 
 # Permutational invariance (identical particles)
 psi = dicke(N, j, m)  # Dicke states
-Jz = jspin(N, 'z')  # Collective operators
+Jz = jspin(N, "z")  # Collective operators
 ```
 
 **See** `references/advanced.md` for Floquet theory, HEOM, permutational invariance, stochastic solvers, superoperators, and performance optimization.
@@ -197,9 +198,9 @@ result = mesolve(H, psi0, tlist, c_ops, e_ops=[num(N)])
 
 # Visualize
 plt.plot(tlist, result.expect[0])
-plt.xlabel('Time')
-plt.ylabel('⟨n⟩')
-plt.title('Photon Number Decay')
+plt.xlabel("Time")
+plt.ylabel("⟨n⟩")
+plt.title("Photon Number Decay")
 plt.show()
 ```
 
@@ -207,19 +208,18 @@ plt.show()
 
 ```python
 # Create Bell state
-psi0 = bell_state('00')
+psi0 = bell_state("00")
 
 # Local dephasing on each qubit
 gamma = 0.1
-c_ops = [
-    np.sqrt(gamma) * tensor(sigmaz(), qeye(2)),
-    np.sqrt(gamma) * tensor(qeye(2), sigmaz())
-]
+c_ops = [np.sqrt(gamma) * tensor(sigmaz(), qeye(2)), np.sqrt(gamma) * tensor(qeye(2), sigmaz())]
+
 
 # Track entanglement
 def compute_concurrence(t, psi):
     rho = ket2dm(psi) if psi.isket else psi
     return concurrence(rho)
+
 
 tlist = np.linspace(0, 10, 100)
 result = mesolve(qeye([2, 2]), psi0, tlist, c_ops)
@@ -228,9 +228,9 @@ result = mesolve(qeye([2, 2]), psi0, tlist, c_ops)
 C_t = [concurrence(state.proj()) for state in result.states]
 
 plt.plot(tlist, C_t)
-plt.xlabel('Time')
-plt.ylabel('Concurrence')
-plt.title('Entanglement Decay')
+plt.xlabel("Time")
+plt.ylabel("Concurrence")
+plt.title("Entanglement Decay")
 plt.show()
 ```
 
@@ -269,10 +269,10 @@ result = mesolve(H, psi0, tlist, c_ops, e_ops=[n_cav, n_atom])
 # Plot
 fig, axes = plt.subplots(2, 1, figsize=(8, 6), sharex=True)
 axes[0].plot(tlist, result.expect[0])
-axes[0].set_ylabel('⟨n_cavity⟩')
+axes[0].set_ylabel("⟨n_cavity⟩")
 axes[1].plot(tlist, result.expect[1])
-axes[1].set_ylabel('⟨n_atom⟩')
-axes[1].set_xlabel('Time')
+axes[1].set_ylabel("⟨n_atom⟩")
+axes[1].set_xlabel("Time")
 plt.tight_layout()
 plt.show()
 ```

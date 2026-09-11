@@ -60,8 +60,7 @@ docker pull tiledb/tiledbvcf-cli    # Command-line interface
 import tiledbvcf
 
 # Create a new dataset
-ds = tiledbvcf.Dataset(uri="my_dataset", mode="w",
-                      cfg=tiledbvcf.ReadConfig(memory_budget=1024))
+ds = tiledbvcf.Dataset(uri="my_dataset", mode="w", cfg=tiledbvcf.ReadConfig(memory_budget=1024))
 
 # Ingest VCF files (must be single-sample with indexes)
 # Requirements:
@@ -79,7 +78,7 @@ ds = tiledbvcf.Dataset(uri="my_dataset", mode="r")
 df = ds.read(
     attrs=["sample_name", "pos_start", "pos_end", "alleles", "fmt_GT"],
     regions=["chr1:1000000-2000000", "chr2:500000-1500000"],
-    samples=["sample1", "sample2", "sample3"]
+    samples=["sample1", "sample2", "sample3"],
 )
 print(df.head())
 ```
@@ -175,7 +174,7 @@ TileDB-VCF excels at large-scale population genomics analyses requiring efficien
 config = tiledbvcf.ReadConfig(
     memory_budget=2048,  # MB
     region_partition=(0, 3095677412),  # Full genome
-    sample_partition=(0, 10000)  # Up to 10k samples
+    sample_partition=(0, 10000),  # Up to 10k samples
 )
 ```
 
@@ -273,19 +272,14 @@ tiledbvcf stat --uri my_dataset
 ```python
 # Calculate allele frequencies
 af_df = tiledbvcf.read_allele_frequency(
-    uri="my_dataset",
-    regions=["chr1:1000000-2000000"],
-    samples=["sample1", "sample2", "sample3"]
+    uri="my_dataset", regions=["chr1:1000000-2000000"], samples=["sample1", "sample2", "sample3"]
 )
 ```
 
 ### Sample Quality Control
 ```python
 # Perform sample QC
-qc_results = tiledbvcf.sample_qc(
-    uri="my_dataset",
-    samples=["sample1", "sample2"]
-)
+qc_results = tiledbvcf.sample_qc(uri="my_dataset", samples=["sample1", "sample2"])
 ```
 
 ### Custom Configurations
@@ -293,10 +287,7 @@ qc_results = tiledbvcf.sample_qc(
 # Advanced configuration
 config = tiledbvcf.ReadConfig(
     memory_budget=4096,
-    tiledb_config={
-        "sm.tile_cache_size": "1000000000",
-        "vfs.s3.region": "us-east-1"
-    }
+    tiledb_config={"sm.tile_cache_size": "1000000000", "vfs.s3.region": "us-east-1"},
 )
 ```
 
@@ -373,7 +364,7 @@ tiledb.cloud.vcf.ingestion.ingest_vcf_dataset(
     output="tiledb://my-namespace/large-dataset",
     namespace="my-namespace",
     acn="my-s3-credentials",
-    ingest_resources={"cpu": "16", "memory": "64Gi"}
+    ingest_resources={"cpu": "16", "memory": "64Gi"},
 )
 ```
 

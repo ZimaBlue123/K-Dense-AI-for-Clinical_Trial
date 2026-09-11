@@ -246,9 +246,7 @@ class PatentSearchClient:
 
         # Assignee filter
         if assignee:
-            conditions.append(
-                {"assignee_organization": {"_text_any": assignee.split()}}
-            )
+            conditions.append({"assignee_organization": {"_text_any": assignee.split()}})
 
         # Date range
         if start_date and end_date:

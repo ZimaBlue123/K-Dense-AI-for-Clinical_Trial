@@ -172,9 +172,7 @@ def save_mapping_csv(mapping, output_file, from_db, to_db):
         writer = csv.writer(f)
 
         # Header
-        writer.writerow(
-            ["Source_ID", "Source_DB", "Target_IDs", "Target_DB", "Mapping_Status"]
-        )
+        writer.writerow(["Source_ID", "Source_DB", "Target_IDs", "Target_DB", "Mapping_Status"])
 
         # Data
         for source_id, target_ids in sorted(mapping.items()):
@@ -206,9 +204,9 @@ def save_failed_ids(failed_ids, output_file):
 
 def print_mapping_summary(mapping, from_db, to_db):
     """Print summary of mapping results."""
-    print(f"\n{'='*70}")
+    print(f"\n{'=' * 70}")
     print("MAPPING SUMMARY")
-    print(f"{'='*70}")
+    print(f"{'=' * 70}")
 
     total = len(mapping)
     mapped = len([v for v in mapping.values() if v])
@@ -217,8 +215,8 @@ def print_mapping_summary(mapping, from_db, to_db):
     print(f"\nSource database: {from_db}")
     print(f"Target database: {to_db}")
     print(f"\nTotal identifiers: {total}")
-    print(f"Successfully mapped: {mapped} ({mapped/total*100:.1f}%)")
-    print(f"Failed to map: {failed} ({failed/total*100:.1f}%)")
+    print(f"Successfully mapped: {mapped} ({mapped / total * 100:.1f}%)")
+    print(f"Failed to map: {failed} ({failed / total * 100:.1f}%)")
 
     # Show some examples
     if mapped > 0:
@@ -228,7 +226,7 @@ def print_mapping_summary(mapping, from_db, to_db):
             if target_ids:
                 target_str = ", ".join(target_ids[:3])
                 if len(target_ids) > 3:
-                    target_str += f" ... +{len(target_ids)-3} more"
+                    target_str += f" ... +{len(target_ids) - 3} more"
                 print(f"  {source_id} → {target_str}")
                 count += 1
                 if count >= 5:
@@ -240,7 +238,7 @@ def print_mapping_summary(mapping, from_db, to_db):
         print(f"\nMultiple target mappings: {len(multiple_mappings)} ID(s)")
         print("  (These source IDs map to multiple target IDs)")
 
-    print(f"{'='*70}")
+    print(f"{'=' * 70}")
 
 
 def list_common_databases():
@@ -278,12 +276,8 @@ Use --list-databases to see all supported aliases.
         """,
     )
     parser.add_argument("input_file", help="Input file with IDs (one per line)")
-    parser.add_argument(
-        "--from", dest="from_db", required=True, help="Source database code"
-    )
-    parser.add_argument(
-        "--to", dest="to_db", required=True, help="Target database code"
-    )
+    parser.add_argument("--from", dest="from_db", required=True, help="Source database code")
+    parser.add_argument("--to", dest="to_db", required=True, help="Target database code")
     parser.add_argument(
         "-o",
         "--output",

@@ -24,10 +24,9 @@ Spawned by parent jobs for parallel processing or sub-workflows.
 import dxpy
 
 # Run an applet
-job = dxpy.DXApplet("applet-xxxx").run({
-    "input1": {"$dnanexus_link": "file-yyyy"},
-    "input2": "parameter_value"
-})
+job = dxpy.DXApplet("applet-xxxx").run(
+    {"input1": {"$dnanexus_link": "file-yyyy"}, "input2": "parameter_value"}
+)
 
 print(f"Job ID: {job.get_id()}")
 ```
@@ -41,24 +40,21 @@ dx run applet-xxxx -i input1=file-yyyy -i input2="value"
 
 ```python
 # Run an app by name
-job = dxpy.DXApp(name="my-app").run({
-    "reads": {"$dnanexus_link": "file-xxxx"},
-    "quality_threshold": 30
-})
+job = dxpy.DXApp(name="my-app").run(
+    {"reads": {"$dnanexus_link": "file-xxxx"}, "quality_threshold": 30}
+)
 ```
 
 ### Specifying Execution Parameters
 
 ```python
 job = dxpy.DXApplet("applet-xxxx").run(
-    applet_input={
-        "input_file": {"$dnanexus_link": "file-yyyy"}
-    },
+    applet_input={"input_file": {"$dnanexus_link": "file-yyyy"}},
     project="project-zzzz",  # Output project
-    folder="/results",        # Output folder
-    name="My Analysis Job",   # Job name
+    folder="/results",  # Output folder
+    name="My Analysis Job",  # Job name
     instance_type="mem2_hdd2_x4",  # Override instance type
-    priority="high"           # Job priority
+    priority="high",  # Job priority
 )
 ```
 
@@ -118,9 +114,7 @@ Create references to job outputs before they complete:
 job1 = dxpy.DXApplet("applet-1").run({"input": "..."})
 
 # Launch second job using output reference
-job2 = dxpy.DXApplet("applet-2").run({
-    "input": dxpy.dxlink(job1.get_output_ref("output_name"))
-})
+job2 = dxpy.DXApplet("applet-2").run({"input": dxpy.dxlink(job1.get_output_ref("output_name"))})
 ```
 
 ## Job Logs
@@ -149,16 +143,13 @@ for log_entry in log["loglines"]:
 ### Creating Subjobs
 
 ```python
-@dxpy.entry_point('main')
+@dxpy.entry_point("main")
 def main(input_files):
     # Create subjobs for parallel processing
     subjobs = []
 
     for input_file in input_files:
-        subjob = dxpy.new_dxjob(
-            fn_input={"file": input_file},
-            fn_name="process_file"
-        )
+        subjob = dxpy.new_dxjob(fn_input={"file": input_file}, fn_name="process_file")
         subjobs.append(subjob)
 
     # Collect results
@@ -169,7 +160,8 @@ def main(input_files):
 
     return {"all_results": results}
 
-@dxpy.entry_point('process_file')
+
+@dxpy.entry_point("process_file")
 def process_file(file):
     # Process single file
     # ...
@@ -182,18 +174,13 @@ def process_file(file):
 # Scatter: Process items in parallel
 scatter_jobs = []
 for item in items:
-    job = dxpy.new_dxjob(
-        fn_input={"item": item},
-        fn_name="process_item"
-    )
+    job = dxpy.new_dxjob(fn_input={"item": item}, fn_name="process_item")
     scatter_jobs.append(job)
 
 # Gather: Combine results
 gather_job = dxpy.new_dxjob(
-    fn_input={
-        "results": [job.get_output_ref("result") for job in scatter_jobs]
-    },
-    fn_name="combine_results"
+    fn_input={"results": [job.get_output_ref("result") for job in scatter_jobs]},
+    fn_name="combine_results",
 )
 ```
 
@@ -205,23 +192,12 @@ Workflows combine multiple apps/applets into multi-step pipelines.
 
 ```python
 # Create workflow
-workflow = dxpy.new_dxworkflow(
-    name="My Analysis Pipeline",
-    project="project-xxxx"
-)
+workflow = dxpy.new_dxworkflow(name="My Analysis Pipeline", project="project-xxxx")
 
 # Add stages
-stage1 = workflow.add_stage(
-    dxpy.DXApplet("applet-1"),
-    name="Quality Control",
-    folder="/qc"
-)
+stage1 = workflow.add_stage(dxpy.DXApplet("applet-1"), name="Quality Control", folder="/qc")
 
-stage2 = workflow.add_stage(
-    dxpy.DXApplet("applet-2"),
-    name="Alignment",
-    folder="/alignment"
-)
+stage2 = workflow.add_stage(dxpy.DXApplet("applet-2"), name="Alignment", folder="/alignment")
 
 # Connect stages
 stage2.set_input("reads", stage1.get_output_ref("filtered_reads"))
@@ -234,9 +210,7 @@ workflow.close()
 
 ```python
 # Run workflow
-analysis = workflow.run({
-    "stage-xxxx.input1": {"$dnanexus_link": "file-yyyy"}
-})
+analysis = workflow.run({"stage-xxxx.input1": {"$dnanexus_link": "file-yyyy"}})
 
 # Monitor analysis (collection of jobs)
 analysis.wait_on_done()
@@ -301,10 +275,7 @@ if desc["state"] == "failed":
 
 ```python
 # Rerun failed job
-new_job = dxpy.DXApplet(desc["applet"]).run(
-    desc["originalInput"],
-    project=desc["project"]
-)
+new_job = dxpy.DXApplet(desc["applet"]).run(desc["originalInput"], project=desc["project"])
 ```
 
 ### Terminating Jobs
@@ -330,7 +301,7 @@ Specify computational resources:
 # Run with specific instance type
 job = dxpy.DXApplet("applet-xxxx").run(
     {"input": "..."},
-    instance_type="mem3_ssd1_v2_x8"  # 8 cores, high memory, SSD
+    instance_type="mem3_ssd1_v2_x8",  # 8 cores, high memory, SSD
 )
 ```
 
@@ -347,7 +318,7 @@ Set maximum execution time:
 ```python
 job = dxpy.DXApplet("applet-xxxx").run(
     {"input": "..."},
-    timeout="24h"  # Maximum runtime
+    timeout="24h",  # Maximum runtime
 )
 ```
 
@@ -357,8 +328,7 @@ job = dxpy.DXApplet("applet-xxxx").run(
 
 ```python
 job = dxpy.DXApplet("applet-xxxx").run(
-    {"input": "..."},
-    tags=["experiment1", "batch2", "production"]
+    {"input": "..."}, tags=["experiment1", "batch2", "production"]
 )
 ```
 
@@ -366,12 +336,7 @@ job = dxpy.DXApplet("applet-xxxx").run(
 
 ```python
 job = dxpy.DXApplet("applet-xxxx").run(
-    {"input": "..."},
-    properties={
-        "experiment": "exp001",
-        "sample": "sample1",
-        "batch": "batch2"
-    }
+    {"input": "..."}, properties={"experiment": "exp001", "sample": "sample1", "batch": "batch2"}
 )
 ```
 
@@ -379,11 +344,7 @@ job = dxpy.DXApplet("applet-xxxx").run(
 
 ```python
 # Find jobs by tag
-jobs = dxpy.find_jobs(
-    project="project-xxxx",
-    tags=["experiment1"],
-    describe=True
-)
+jobs = dxpy.find_jobs(project="project-xxxx", tags=["experiment1"], describe=True)
 
 for job in jobs:
     print(f"{job['describe']['name']}: {job['id']}")

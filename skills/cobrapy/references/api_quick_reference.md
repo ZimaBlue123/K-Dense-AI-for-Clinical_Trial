@@ -7,12 +7,18 @@ This document provides quick reference for common COBRApy functions, signatures,
 ### Loading Models
 
 ```python
-from cobra.io import load_model, read_sbml_model, load_json_model, load_yaml_model, load_matlab_model
+from cobra.io import (
+    load_model,
+    read_sbml_model,
+    load_json_model,
+    load_yaml_model,
+    load_matlab_model,
+)
 
 # Bundled test models
-model = load_model("textbook")   # E. coli core metabolism
-model = load_model("ecoli")      # Full E. coli iJO1366
-model = load_model("salmonella") # Salmonella LT2
+model = load_model("textbook")  # E. coli core metabolism
+model = load_model("ecoli")  # Full E. coli iJO1366
+model = load_model("salmonella")  # Salmonella LT2
 
 # From files
 model = read_sbml_model(filename, f_replace={}, **kwargs)
@@ -43,22 +49,10 @@ from cobra import Model, Reaction, Metabolite, Gene
 model = Model(id_or_model=None, name=None)
 
 # Create metabolite
-metabolite = Metabolite(
-    id=None,
-    formula=None,
-    name="",
-    charge=None,
-    compartment=None
-)
+metabolite = Metabolite(id=None, formula=None, name="", charge=None, compartment=None)
 
 # Create reaction
-reaction = Reaction(
-    id=None,
-    name="",
-    subsystem="",
-    lower_bound=0.0,
-    upper_bound=None
-)
+reaction = Reaction(id=None, name="", subsystem="", lower_bound=0.0, upper_bound=None)
 
 # Create gene
 gene = Gene(id=None, name="", functional=True)
@@ -68,21 +62,21 @@ gene = Gene(id=None, name="", functional=True)
 
 ```python
 # Component access (DictList objects)
-model.reactions       # DictList of Reaction objects
-model.metabolites     # DictList of Metabolite objects
-model.genes          # DictList of Gene objects
+model.reactions  # DictList of Reaction objects
+model.metabolites  # DictList of Metabolite objects
+model.genes  # DictList of Gene objects
 
 # Special reaction lists
-model.exchanges      # Exchange reactions (external transport)
-model.demands        # Demand reactions (metabolite sinks)
-model.sinks          # Sink reactions
-model.boundary       # All boundary reactions
+model.exchanges  # Exchange reactions (external transport)
+model.demands  # Demand reactions (metabolite sinks)
+model.sinks  # Sink reactions
+model.boundary  # All boundary reactions
 
 # Model properties
-model.objective      # Current objective (read/write)
+model.objective  # Current objective (read/write)
 model.objective_direction  # "max" or "min"
-model.medium         # Growth medium (dict of exchange: bound)
-model.solver         # Optimization solver
+model.medium  # Growth medium (dict of exchange: bound)
+model.solver  # Optimization solver
 ```
 
 ### DictList Methods
@@ -95,7 +89,7 @@ item = model.reactions[0]
 item = model.reactions.get_by_id("PFK")
 
 # Query by string (substring match)
-items = model.reactions.query("atp")      # Case-insensitive search
+items = model.reactions.query("atp")  # Case-insensitive search
 items = model.reactions.query(lambda x: x.subsystem == "Glycolysis")
 
 # List comprehension
@@ -114,11 +108,11 @@ items = [r for r in model.reactions if r.lower_bound < 0]
 solution = model.optimize()
 
 # Attributes of Solution
-solution.objective_value   # Objective function value
-solution.status           # Optimization status ("optimal", "infeasible", etc.)
-solution.fluxes          # Pandas Series of reaction fluxes
-solution.shadow_prices   # Pandas Series of metabolite shadow prices
-solution.reduced_costs   # Pandas Series of reduced costs
+solution.objective_value  # Objective function value
+solution.status  # Optimization status ("optimal", "infeasible", etc.)
+solution.fluxes  # Pandas Series of reaction fluxes
+solution.shadow_prices  # Pandas Series of metabolite shadow prices
+solution.reduced_costs  # Pandas Series of reduced costs
 
 # Fast optimization (returns float only)
 objective_value = model.slim_optimize()
@@ -137,6 +131,7 @@ model.objective_direction = "max"  # or "min"
 ```python
 # Check available solvers
 from cobra.util.solver import solvers
+
 print(solvers)
 
 # Change solver
@@ -169,11 +164,11 @@ from cobra.flux_analysis import flux_variability_analysis
 
 fva_result = flux_variability_analysis(
     model,
-    reaction_list=None,        # List of reaction IDs or None for all
-    loopless=False,            # Eliminate thermodynamically infeasible loops
-    fraction_of_optimum=1.0,   # Optimality fraction (0.0-1.0)
-    pfba_factor=None,          # Optional pFBA constraint
-    processes=1                # Number of parallel processes
+    reaction_list=None,  # List of reaction IDs or None for all
+    loopless=False,  # Eliminate thermodynamically infeasible loops
+    fraction_of_optimum=1.0,  # Optimality fraction (0.0-1.0)
+    pfba_factor=None,  # Optional pFBA constraint
+    processes=1,  # Number of parallel processes
 )
 
 # Returns DataFrame with columns: minimum, maximum
@@ -186,39 +181,29 @@ from cobra.flux_analysis import (
     single_gene_deletion,
     single_reaction_deletion,
     double_gene_deletion,
-    double_reaction_deletion
+    double_reaction_deletion,
 )
 
 # Single deletions
 results = single_gene_deletion(
     model,
-    gene_list=None,     # None for all genes
+    gene_list=None,  # None for all genes
     processes=1,
-    **kwargs
+    **kwargs,
 )
 
 results = single_reaction_deletion(
     model,
     reaction_list=None,  # None for all reactions
     processes=1,
-    **kwargs
+    **kwargs,
 )
 
 # Double deletions
-results = double_gene_deletion(
-    model,
-    gene_list1=None,
-    gene_list2=None,
-    processes=1,
-    **kwargs
-)
+results = double_gene_deletion(model, gene_list1=None, gene_list2=None, processes=1, **kwargs)
 
 results = double_reaction_deletion(
-    model,
-    reaction_list1=None,
-    reaction_list2=None,
-    processes=1,
-    **kwargs
+    model, reaction_list1=None, reaction_list2=None, processes=1, **kwargs
 )
 
 # Returns DataFrame with columns: ids, growth, status
@@ -233,11 +218,11 @@ from cobra.sampling import sample, OptGPSampler, ACHRSampler
 # Simple interface
 samples = sample(
     model,
-    n,                  # Number of samples
-    method="optgp",     # or "achr"
-    thinning=100,       # Thinning factor (sample every n iterations)
-    processes=1,        # Parallel processes (OptGP only)
-    seed=None          # Random seed
+    n,  # Number of samples
+    method="optgp",  # or "achr"
+    thinning=100,  # Thinning factor (sample every n iterations)
+    processes=1,  # Parallel processes (OptGP only)
+    seed=None,  # Random seed
 )
 
 # Advanced interface with sampler objects
@@ -263,11 +248,11 @@ from cobra.flux_analysis import production_envelope
 
 envelope = production_envelope(
     model,
-    reactions,              # List of 1-2 reaction IDs
-    objective=None,         # Objective reaction ID (None uses model objective)
-    carbon_sources=None,    # Carbon source for yield calculation
-    points=20,              # Number of points to calculate
-    threshold=0.01          # Minimum objective value threshold
+    reactions,  # List of 1-2 reaction IDs
+    objective=None,  # Objective reaction ID (None uses model objective)
+    carbon_sources=None,  # Carbon source for yield calculation
+    points=20,  # Number of points to calculate
+    threshold=0.01,  # Minimum objective value threshold
 )
 
 # Returns DataFrame with columns:
@@ -286,12 +271,12 @@ from cobra.flux_analysis import gapfill
 # Basic gapfilling
 solution = gapfill(
     model,
-    universal=None,         # Universal model with candidate reactions
-    lower_bound=0.05,       # Minimum objective flux
-    penalties=None,         # Dict of reaction: penalty
+    universal=None,  # Universal model with candidate reactions
+    lower_bound=0.05,  # Minimum objective flux
+    penalties=None,  # Dict of reaction: penalty
     demand_reactions=True,  # Add demand reactions if needed
     exchange_reactions=False,
-    iterations=1
+    iterations=1,
 )
 
 # Returns list of Reaction objects to add
@@ -310,16 +295,11 @@ for i in range(5):
 from cobra.flux_analysis import (
     find_blocked_reactions,
     find_essential_genes,
-    find_essential_reactions
+    find_essential_reactions,
 )
 
 # Blocked reactions (cannot carry flux)
-blocked = find_blocked_reactions(
-    model,
-    reaction_list=None,
-    zero_cutoff=1e-9,
-    open_exchanges=False
-)
+blocked = find_blocked_reactions(model, reaction_list=None, zero_cutoff=1e-9, open_exchanges=False)
 
 # Essential genes/reactions
 essential_genes = find_essential_genes(model, threshold=0.01)
@@ -353,10 +333,10 @@ from cobra.medium import minimal_medium
 min_medium = minimal_medium(
     model,
     min_objective_value=0.1,  # Minimum growth rate
-    minimize_components=False, # If True, uses MILP (slower)
-    open_exchanges=False,      # Open all exchanges before optimization
-    exports=False,             # Allow metabolite export
-    penalties=None             # Dict of exchange: penalty
+    minimize_components=False,  # If True, uses MILP (slower)
+    open_exchanges=False,  # Open all exchanges before optimization
+    exports=False,  # Allow metabolite export
+    penalties=None,  # Dict of exchange: penalty
 )
 
 # Returns Series of exchange reactions with fluxes
@@ -368,18 +348,18 @@ min_medium = minimal_medium(
 # Add boundary reaction
 model.add_boundary(
     metabolite,
-    type="exchange",    # or "demand", "sink"
-    reaction_id=None,   # Auto-generated if None
+    type="exchange",  # or "demand", "sink"
+    reaction_id=None,  # Auto-generated if None
     lb=None,
     ub=None,
-    sbo_term=None
+    sbo_term=None,
 )
 
 # Access boundary reactions
-exchanges = model.exchanges     # System boundary
-demands = model.demands         # Intracellular removal
-sinks = model.sinks            # Intracellular exchange
-boundaries = model.boundary    # All boundary reactions
+exchanges = model.exchanges  # System boundary
+demands = model.demands  # Intracellular removal
+sinks = model.sinks  # Intracellular exchange
+boundaries = model.boundary  # All boundary reactions
 ```
 
 ## Model Manipulation
@@ -392,10 +372,12 @@ model.add_reactions([reaction1, reaction2, ...])
 model.add_reaction(reaction)
 
 # Add metabolites
-reaction.add_metabolites({
-    metabolite1: -1.0,  # Consumed (negative stoichiometry)
-    metabolite2: 1.0    # Produced (positive stoichiometry)
-})
+reaction.add_metabolites(
+    {
+        metabolite1: -1.0,  # Consumed (negative stoichiometry)
+        metabolite2: 1.0,  # Produced (positive stoichiometry)
+    }
+)
 
 # Add metabolites to model
 model.add_metabolites([metabolite1, metabolite2, ...])
@@ -483,21 +465,21 @@ with model:
 ### Reaction Attributes
 
 ```python
-reaction.id                      # Unique identifier
-reaction.name                    # Human-readable name
-reaction.subsystem               # Pathway/subsystem
-reaction.bounds                  # (lower_bound, upper_bound)
+reaction.id  # Unique identifier
+reaction.name  # Human-readable name
+reaction.subsystem  # Pathway/subsystem
+reaction.bounds  # (lower_bound, upper_bound)
 reaction.lower_bound
 reaction.upper_bound
-reaction.reversibility          # Boolean (lower_bound < 0)
-reaction.gene_reaction_rule     # GPR string
-reaction.genes                  # Set of associated Gene objects
-reaction.metabolites            # Dict of {metabolite: stoichiometry}
+reaction.reversibility  # Boolean (lower_bound < 0)
+reaction.gene_reaction_rule  # GPR string
+reaction.genes  # Set of associated Gene objects
+reaction.metabolites  # Dict of {metabolite: stoichiometry}
 
 # Methods
-reaction.reaction               # Stoichiometric equation string
-reaction.build_reaction_string() # Same as above
-reaction.check_mass_balance()   # Returns imbalances or empty dict
+reaction.reaction  # Stoichiometric equation string
+reaction.build_reaction_string()  # Same as above
+reaction.check_mass_balance()  # Returns imbalances or empty dict
 reaction.get_coefficient(metabolite_id)
 reaction.add_metabolites({metabolite: coeff})
 reaction.subtract_metabolites({metabolite: coeff})
@@ -507,25 +489,25 @@ reaction.knock_out()
 ### Metabolite Attributes
 
 ```python
-metabolite.id                   # Unique identifier
-metabolite.name                 # Human-readable name
-metabolite.formula              # Chemical formula
-metabolite.charge               # Charge
-metabolite.compartment          # Compartment ID
-metabolite.reactions            # FrozenSet of associated reactions
+metabolite.id  # Unique identifier
+metabolite.name  # Human-readable name
+metabolite.formula  # Chemical formula
+metabolite.charge  # Charge
+metabolite.compartment  # Compartment ID
+metabolite.reactions  # FrozenSet of associated reactions
 
 # Methods
-metabolite.summary()            # Print production/consumption
+metabolite.summary()  # Print production/consumption
 metabolite.copy()
 ```
 
 ### Gene Attributes
 
 ```python
-gene.id                         # Unique identifier
-gene.name                       # Human-readable name
-gene.functional                 # Boolean activity status
-gene.reactions                  # FrozenSet of associated reactions
+gene.id  # Unique identifier
+gene.name  # Human-readable name
+gene.functional  # Boolean activity status
+gene.reactions  # FrozenSet of associated reactions
 
 # Methods
 gene.knock_out()
@@ -563,11 +545,13 @@ print(f"Demands: {len(model.demands)}")
 
 # Blocked reactions
 from cobra.flux_analysis import find_blocked_reactions
+
 blocked = find_blocked_reactions(model)
 print(f"Blocked reactions: {len(blocked)}")
 
 # Essential genes
 from cobra.flux_analysis import find_essential_genes
+
 essential = find_essential_genes(model)
 print(f"Essential genes: {len(essential)}")
 ```
@@ -576,7 +560,7 @@ print(f"Essential genes: {len(essential)}")
 
 ```python
 # Model summary
-model.summary()                  # Overall model info
+model.summary()  # Overall model info
 
 # Metabolite summary
 model.metabolites.atp_c.summary()
@@ -585,7 +569,7 @@ model.metabolites.atp_c.summary()
 model.reactions.PFK.summary()
 
 # Summary with FVA
-model.summary(fva=0.95)         # Include FVA at 95% optimality
+model.summary(fva=0.95)  # Include FVA at 95% optimality
 ```
 
 ## Common Patterns
@@ -603,11 +587,9 @@ for condition in conditions:
         solution = model.optimize()
 
         # Store result
-        results.append({
-            "condition": condition,
-            "growth": solution.objective_value,
-            "status": solution.status
-        })
+        results.append(
+            {"condition": condition, "growth": solution.objective_value, "status": solution.status}
+        )
 
 df = pd.DataFrame(results)
 ```
@@ -622,11 +604,13 @@ for gene in model.genes:
 
         solution = model.optimize()
 
-        knockout_results.append({
-            "gene": gene.id,
-            "growth": solution.objective_value if solution.status == "optimal" else 0,
-            "status": solution.status
-        })
+        knockout_results.append(
+            {
+                "gene": gene.id,
+                "growth": solution.objective_value if solution.status == "optimal" else 0,
+                "status": solution.status,
+            }
+        )
 
 df = pd.DataFrame(knockout_results)
 ```
@@ -643,11 +627,13 @@ for value in parameter_values:
 
         solution = model.optimize()
 
-        results.append({
-            "glucose_uptake": value,
-            "growth": solution.objective_value,
-            "acetate_secretion": solution.fluxes["EX_ac_e"]
-        })
+        results.append(
+            {
+                "glucose_uptake": value,
+                "growth": solution.objective_value,
+                "acetate_secretion": solution.fluxes["EX_ac_e"],
+            }
+        )
 
 df = pd.DataFrame(results)
 ```

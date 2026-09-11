@@ -37,7 +37,7 @@ if len(lines) > 1:
     header = lines[0]
     data = lines[1].split("\t")
     uniprot_id = data[0]  # e.g., P43403
-    gene_names = data[1]   # e.g., ZAP70
+    gene_names = data[1]  # e.g., ZAP70
 
 print(f"UniProt ID: {uniprot_id}")
 print(f"Gene names: {gene_names}")
@@ -75,7 +75,7 @@ jobid = s.run(
     sequence=sequence_only,
     stype="protein",
     database="uniprotkb",
-    email="your.email@example.com"
+    email="your.email@example.com",
 )
 
 print(f"BLAST Job ID: {jobid}")
@@ -117,7 +117,7 @@ if kegg_mapping:
     if kegg_gene_id:
         # Find pathways containing this gene
         organism = kegg_gene_id.split(":")[0]  # e.g., "hsa"
-        gene_id = kegg_gene_id.split(":")[1]   # e.g., "7535"
+        gene_id = kegg_gene_id.split(":")[1]  # e.g., "7535"
 
         pathways = k.get_pathway_by_gene(gene_id, organism)
         print(f"Found {len(pathways)} pathways:")
@@ -179,7 +179,7 @@ annotations = g.Annotation(protein=uniprot_id, format="tsv")
 if annotations:
     # Parse TSV results
     lines = annotations.strip().split("\n")
-    print(f"Found {len(lines)-1} GO annotations")
+    print(f"Found {len(lines) - 1} GO annotations")
 
     # Display first few annotations
     for line in lines[1:6]:  # Skip header
@@ -243,17 +243,17 @@ pathway_id = "hsa04660"  # T cell receptor signaling
 kgml_data = k.parse_kgml_pathway(pathway_id)
 
 # Extract entries (genes/proteins)
-entries = kgml_data['entries']
+entries = kgml_data["entries"]
 print(f"Pathway contains {len(entries)} entries")
 
 # Extract relations (interactions)
-relations = kgml_data['relations']
+relations = kgml_data["relations"]
 print(f"Found {len(relations)} relations")
 
 # Analyze relation types
 relation_types = {}
 for rel in relations:
-    rel_type = rel.get('name', 'unknown')
+    rel_type = rel.get("name", "unknown")
     relation_types[rel_type] = relation_types.get(rel_type, 0) + 1
 
 print("\nRelation type distribution:")
@@ -271,17 +271,18 @@ for rel_type, count in sorted(relation_types.items()):
 ```python
 # Filter for specific interaction types
 pprel_interactions = [
-    rel for rel in relations
-    if rel.get('link') == 'PPrel'  # Protein-protein relation
+    rel
+    for rel in relations
+    if rel.get("link") == "PPrel"  # Protein-protein relation
 ]
 
 print(f"Found {len(pprel_interactions)} protein-protein interactions")
 
 # Extract interaction details
 for rel in pprel_interactions[:10]:
-    entry1 = rel['entry1']
-    entry2 = rel['entry2']
-    interaction_type = rel.get('name', 'unknown')
+    entry1 = rel["entry1"]
+    entry2 = rel["entry2"]
+    interaction_type = rel.get("name", "unknown")
 
     print(f"  {entry1} -> {entry2}: {interaction_type}")
 ```
@@ -315,9 +316,9 @@ for pathway_id in pathway_ids[:50]:  # Limit for example
         kgml = k.parse_kgml_pathway(pathway_id)
 
         result = {
-            'pathway_id': pathway_id,
-            'num_entries': len(kgml.get('entries', [])),
-            'num_relations': len(kgml.get('relations', []))
+            "pathway_id": pathway_id,
+            "num_entries": len(kgml.get("entries", [])),
+            "num_relations": len(kgml.get("relations", [])),
         }
 
         all_results.append(result)
@@ -331,7 +332,7 @@ print(df.describe())
 
 # Find largest pathways
 print("\nLargest pathways:")
-print(df.nlargest(10, 'num_entries')[['pathway_id', 'num_entries', 'num_relations']])
+print(df.nlargest(10, "num_entries")[["pathway_id", "num_entries", "num_relations"]])
 ```
 
 **Output:** Statistical summary of pathway sizes and interaction densities
@@ -419,6 +420,7 @@ except Exception as e:
 # Get ChEBI information
 if chebi_id:
     from bioservices import ChEBI
+
     c = ChEBI()
 
     try:
@@ -431,6 +433,7 @@ if chebi_id:
 # Get ChEMBL information
 if chembl_id:
     from bioservices import ChEMBL
+
     chembl = ChEMBL()
 
     try:
@@ -489,11 +492,13 @@ for uniprot_id, kegg_ids in results.items():
 ```python
 import csv
 
+
 # Read identifiers from file
 def read_ids_from_file(filename):
-    with open(filename, 'r') as f:
+    with open(filename, "r") as f:
         ids = [line.strip() for line in f if line.strip()]
     return ids
+
 
 # Process in chunks (API limits)
 def batch_convert(ids, from_db, to_db, chunk_size=100):
@@ -501,27 +506,29 @@ def batch_convert(ids, from_db, to_db, chunk_size=100):
     all_results = {}
 
     for i in range(0, len(ids), chunk_size):
-        chunk = ids[i:i+chunk_size]
+        chunk = ids[i : i + chunk_size]
         query = ",".join(chunk)
 
         try:
             results = u.mapping(fr=from_db, to=to_db, query=query)
             all_results.update(results)
-            print(f"Processed {min(i+chunk_size, len(ids))}/{len(ids)}")
+            print(f"Processed {min(i + chunk_size, len(ids))}/{len(ids)}")
         except Exception as e:
             print(f"Error processing chunk {i}: {e}")
 
     return all_results
 
+
 # Write results to CSV
 def write_mapping_to_csv(mapping, output_file):
-    with open(output_file, 'w', newline='') as f:
+    with open(output_file, "w", newline="") as f:
         writer = csv.writer(f)
-        writer.writerow(['Source_ID', 'Target_IDs'])
+        writer.writerow(["Source_ID", "Target_IDs"])
 
         for source_id, target_ids in mapping.items():
             target_str = ";".join(target_ids) if target_ids else "No mapping"
             writer.writerow([source_id, target_str])
+
 
 # Example usage
 input_ids = read_ids_from_file("uniprot_ids.txt")
@@ -547,9 +554,9 @@ gene_symbol = "TP53"
 
 # 1. Find UniProt entry
 u = UniProt()
-search_results = u.search(f"gene:{gene_symbol} AND organism:9606",
-                          frmt="tab",
-                          columns="id,genes,protein names")
+search_results = u.search(
+    f"gene:{gene_symbol} AND organism:9606", frmt="tab", columns="id,genes,protein names"
+)
 
 # Extract UniProt ID
 lines = search_results.strip().split("\n")
@@ -578,7 +585,7 @@ go_annotations = g.Annotation(protein=uniprot_id, format="tsv")
 
 if go_annotations:
     lines = go_annotations.strip().split("\n")
-    print(f"\nGO Annotations ({len(lines)-1} total):")
+    print(f"\nGO Annotations ({len(lines) - 1} total):")
 
     # Group by aspect
     aspects = {"P": [], "F": [], "C": []}
@@ -675,12 +682,7 @@ k = KEGG()
 
 # Organisms to compare
 organisms = ["hsa", "mmu", "dme", "sce"]  # Human, mouse, fly, yeast
-organism_names = {
-    "hsa": "Human",
-    "mmu": "Mouse",
-    "dme": "Fly",
-    "sce": "Yeast"
-}
+organism_names = {"hsa": "Human", "mmu": "Mouse", "dme": "Fly", "sce": "Yeast"}
 
 # Pathway of interest
 pathway_name = "cell cycle"
@@ -751,7 +753,7 @@ total = len(items)
 for i, item in enumerate(items):
     # Process item
     if (i + 1) % 10 == 0:
-        print(f"Processed {i+1}/{total}")
+        print(f"Processed {i + 1}/{total}")
 ```
 
 ### 5. Data Export

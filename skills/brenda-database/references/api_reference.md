@@ -271,17 +271,17 @@ Reactions use standard biochemical notation:
 **Parsed Km Entry Dictionary:**
 ```python
 {
-    'ecNumber': '1.1.1.1',
-    'organism': 'Escherichia coli',
-    'substrate': 'ethanol',
-    'kmValue': '0.12',
-    'km_value_numeric': 0.12,  # Extracted numeric value
-    'kmValueMaximum': '',
-    'commentary': 'pH 7.4, 25°C',
-    'ph': 7.4,               # Extracted from commentary
-    'temperature': 25.0,      # Extracted from commentary
-    'ligandStructureId': '',
-    'literature': ''
+    "ecNumber": "1.1.1.1",
+    "organism": "Escherichia coli",
+    "substrate": "ethanol",
+    "kmValue": "0.12",
+    "km_value_numeric": 0.12,  # Extracted numeric value
+    "kmValueMaximum": "",
+    "commentary": "pH 7.4, 25°C",
+    "ph": 7.4,  # Extracted from commentary
+    "temperature": 25.0,  # Extracted from commentary
+    "ligandStructureId": "",
+    "literature": "",
 }
 ```
 
@@ -290,13 +290,13 @@ Reactions use standard biochemical notation:
 **Parsed Reaction Entry Dictionary:**
 ```python
 {
-    'ecNumber': '1.1.1.1',
-    'organism': 'Saccharomyces cerevisiae',
-    'reaction': 'ethanol + NAD+ <=> acetaldehyde + NADH + H+',
-    'reactants': ['ethanol', 'NAD+'],
-    'products': ['acetaldehyde', 'NADH', 'H+'],
-    'commentary': '',
-    'literature': ''
+    "ecNumber": "1.1.1.1",
+    "organism": "Saccharomyces cerevisiae",
+    "reaction": "ethanol + NAD+ <=> acetaldehyde + NADH + H+",
+    "reactants": ["ethanol", "NAD+"],
+    "products": ["acetaldehyde", "NADH", "H+"],
+    "commentary": "",
+    "literature": "",
 }
 ```
 
@@ -349,9 +349,7 @@ bacillus_enzymes = get_km_values("*", organism="Bacillus*")
 **Specific enzyme-substrate combination:**
 ```python
 # Get Km values for glucose oxidation in yeast
-glucose_km = get_km_values("1.1.1.1",
-                          organism="Saccharomyces cerevisiae",
-                          substrate="glucose")
+glucose_km = get_km_values("1.1.1.1", organism="Saccharomyces cerevisiae", substrate="glucose")
 ```
 
 ### Reaction Queries
@@ -382,11 +380,11 @@ numeric_kms = []
 
 for entry in km_data:
     parsed = parse_km_entry(entry)
-    if 'km_value_numeric' in parsed:
-        numeric_kms.append(parsed['km_value_numeric'])
+    if "km_value_numeric" in parsed:
+        numeric_kms.append(parsed["km_value_numeric"])
 
 if numeric_kms:
-    print(f"Average Km: {sum(numeric_kms)/len(numeric_kms):.3f}")
+    print(f"Average Km: {sum(numeric_kms) / len(numeric_kms):.3f}")
     print(f"Range: {min(numeric_kms):.3f} - {max(numeric_kms):.3f}")
 ```
 
@@ -400,7 +398,7 @@ organisms = ["Escherichia coli", "Saccharomyces cerevisiae", "Homo sapiens"]
 comparison = compare_across_organisms("1.1.1.1", organisms)
 
 for org_data in comparison:
-    if org_data.get('data_points', 0) > 0:
+    if org_data.get("data_points", 0) > 0:
         print(f"{org_data['organism']}: {org_data['average_km']:.3f}")
 ```
 
@@ -427,7 +425,7 @@ from scripts.enzyme_pathway_builder import find_pathway_for_product
 # Find pathway for lactate production
 pathway = find_pathway_for_product("lactate", max_steps=3)
 
-for step in pathway['steps']:
+for step in pathway["steps"]:
     print(f"Step {step['step_number']}: {step['substrate']} -> {step['product']}")
     print(f"Enzymes available: {len(step['enzymes'])}")
 ```

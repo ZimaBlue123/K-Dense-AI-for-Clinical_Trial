@@ -85,15 +85,9 @@ class DrugBankHelper:
             "drugbank_id": drugbank_id,
             "name": self._get_text_safe(drug.find("db:name", self.NAMESPACE)),
             "type": drug.get("type"),
-            "description": self._get_text_safe(
-                drug.find("db:description", self.NAMESPACE)
-            ),
-            "cas_number": self._get_text_safe(
-                drug.find("db:cas-number", self.NAMESPACE)
-            ),
-            "indication": self._get_text_safe(
-                drug.find("db:indication", self.NAMESPACE)
-            ),
+            "description": self._get_text_safe(drug.find("db:description", self.NAMESPACE)),
+            "cas_number": self._get_text_safe(drug.find("db:cas-number", self.NAMESPACE)),
+            "indication": self._get_text_safe(drug.find("db:indication", self.NAMESPACE)),
             "pharmacodynamics": self._get_text_safe(
                 drug.find("db:pharmacodynamics", self.NAMESPACE)
             ),
@@ -161,9 +155,7 @@ class DrugBankHelper:
                 target_data = {
                     "id": self._get_text_safe(target.find("db:id", self.NAMESPACE)),
                     "name": self._get_text_safe(target.find("db:name", self.NAMESPACE)),
-                    "organism": self._get_text_safe(
-                        target.find("db:organism", self.NAMESPACE)
-                    ),
+                    "organism": self._get_text_safe(target.find("db:organism", self.NAMESPACE)),
                     "known_action": self._get_text_safe(
                         target.find("db:known-action", self.NAMESPACE)
                     ),
@@ -173,8 +165,7 @@ class DrugBankHelper:
                 actions_elem = target.find("db:actions", self.NAMESPACE)
                 if actions_elem is not None:
                     target_data["actions"] = [
-                        action.text
-                        for action in actions_elem.findall("db:action", self.NAMESPACE)
+                        action.text for action in actions_elem.findall("db:action", self.NAMESPACE)
                     ]
 
                 # Extract polypeptide info

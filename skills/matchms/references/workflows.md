@@ -45,9 +45,11 @@ for spectrum in queries:
 
 # Calculate similarities
 print("Calculating similarities...")
-scores = calculate_scores(references=processed_library,
-                         queries=processed_queries,
-                         similarity_function=CosineGreedy(tolerance=0.1))
+scores = calculate_scores(
+    references=processed_library,
+    queries=processed_queries,
+    similarity_function=CosineGreedy(tolerance=0.1),
+)
 
 # Get top matches for each query
 print("\nTop matches:")
@@ -72,10 +74,15 @@ Filter and clean spectral data before analysis.
 ```python
 from matchms.importing import load_from_mgf
 from matchms.exporting import save_as_mgf
-from matchms.filtering import (default_filters, normalize_intensities,
-                               require_precursor_mz, require_minimum_number_of_peaks,
-                               require_minimum_number_of_high_peaks,
-                               select_by_relative_intensity, remove_peaks_around_precursor_mz)
+from matchms.filtering import (
+    default_filters,
+    normalize_intensities,
+    require_precursor_mz,
+    require_minimum_number_of_peaks,
+    require_minimum_number_of_high_peaks,
+    select_by_relative_intensity,
+    remove_peaks_around_precursor_mz,
+)
 
 # Load spectra
 spectra = list(load_from_mgf("raw_data.mgf"))
@@ -102,9 +109,9 @@ for spectrum in spectra:
     spectrum = select_by_relative_intensity(spectrum, intensity_from=0.01)
 
     # Require high-quality peaks
-    spectrum = require_minimum_number_of_high_peaks(spectrum,
-                                                     n_required=5,
-                                                     intensity_threshold=0.05)
+    spectrum = require_minimum_number_of_high_peaks(
+        spectrum, n_required=5, intensity_threshold=0.05
+    )
     if spectrum is None:
         continue
 
@@ -125,16 +132,26 @@ Combine multiple similarity metrics for robust compound identification.
 
 ```python
 from matchms.importing import load_from_mgf
-from matchms.filtering import (default_filters, normalize_intensities,
-                               derive_inchi_from_smiles, add_fingerprint, add_losses)
+from matchms.filtering import (
+    default_filters,
+    normalize_intensities,
+    derive_inchi_from_smiles,
+    add_fingerprint,
+    add_losses,
+)
 from matchms import calculate_scores
-from matchms.similarity import (CosineGreedy, ModifiedCosine,
-                                NeutralLossesCosine, FingerprintSimilarity)
+from matchms.similarity import (
+    CosineGreedy,
+    ModifiedCosine,
+    NeutralLossesCosine,
+    FingerprintSimilarity,
+)
 import numpy as np
 
 # Load spectra
 library = list(load_from_mgf("library.mgf"))
 queries = list(load_from_mgf("queries.mgf"))
+
 
 # Process with multiple features
 def process_for_multimetric(spectrum):
@@ -150,33 +167,31 @@ def process_for_multimetric(spectrum):
 
     return spectrum
 
+
 processed_library = [process_for_multimetric(s) for s in library if s is not None]
 processed_queries = [process_for_multimetric(s) for s in queries if s is not None]
 
 # Calculate multiple similarity scores
 print("Calculating Cosine similarity...")
-cosine_scores = calculate_scores(processed_library, processed_queries,
-                                 CosineGreedy(tolerance=0.1))
+cosine_scores = calculate_scores(processed_library, processed_queries, CosineGreedy(tolerance=0.1))
 
 print("Calculating Modified Cosine similarity...")
-modified_cosine_scores = calculate_scores(processed_library, processed_queries,
-                                         ModifiedCosine(tolerance=0.1))
+modified_cosine_scores = calculate_scores(
+    processed_library, processed_queries, ModifiedCosine(tolerance=0.1)
+)
 
 print("Calculating Neutral Losses similarity...")
-neutral_losses_scores = calculate_scores(processed_library, processed_queries,
-                                        NeutralLossesCosine(tolerance=0.1))
+neutral_losses_scores = calculate_scores(
+    processed_library, processed_queries, NeutralLossesCosine(tolerance=0.1)
+)
 
 print("Calculating Fingerprint similarity...")
-fingerprint_scores = calculate_scores(processed_library, processed_queries,
-                                      FingerprintSimilarity(similarity_measure="jaccard"))
+fingerprint_scores = calculate_scores(
+    processed_library, processed_queries, FingerprintSimilarity(similarity_measure="jaccard")
+)
 
 # Combine scores with weights
-weights = {
-    'cosine': 0.4,
-    'modified_cosine': 0.3,
-    'neutral_losses': 0.2,
-    'fingerprint': 0.1
-}
+weights = {"cosine": 0.4, "modified_cosine": 0.3, "neutral_losses": 0.2, "fingerprint": 0.1}
 
 # Get combined scores for each query
 for i, query in enumerate(processed_queries):
@@ -184,10 +199,12 @@ for i, query in enumerate(processed_queries):
 
     combined_scores = []
     for j, ref in enumerate(processed_library):
-        combined = (weights['cosine'] * cosine_scores.scores[j, i] +
-                   weights['modified_cosine'] * modified_cosine_scores.scores[j, i] +
-                   weights['neutral_losses'] * neutral_losses_scores.scores[j, i] +
-                   weights['fingerprint'] * fingerprint_scores.scores[j, i])
+        combined = (
+            weights["cosine"] * cosine_scores.scores[j, i]
+            + weights["modified_cosine"] * modified_cosine_scores.scores[j, i]
+            + weights["neutral_losses"] * neutral_losses_scores.scores[j, i]
+            + weights["fingerprint"] * fingerprint_scores.scores[j, i]
+        )
         combined_scores.append((j, combined))
 
     # Sort by combined score
@@ -222,13 +239,13 @@ processed_queries = [normalize_intensities(default_filters(s)) for s in queries]
 
 # Step 1: Fast precursor mass filtering
 print("Filtering by precursor mass...")
-mass_filter = calculate_scores(processed_library, processed_queries,
-                               PrecursorMzMatch(tolerance=0.1, tolerance_type="Dalton"))
+mass_filter = calculate_scores(
+    processed_library, processed_queries, PrecursorMzMatch(tolerance=0.1, tolerance_type="Dalton")
+)
 
 # Step 2: Calculate cosine only for matching precursors
 print("Calculating cosine similarity for filtered candidates...")
-cosine_scores = calculate_scores(processed_library, processed_queries,
-                                CosineGreedy(tolerance=0.1))
+cosine_scores = calculate_scores(processed_library, processed_queries, CosineGreedy(tolerance=0.1))
 
 # Step 3: Apply mass filter to cosine scores
 for i, query in enumerate(processed_queries):
@@ -260,26 +277,34 @@ Create a standardized pipeline for consistent processing.
 
 ```python
 from matchms import SpectrumProcessor
-from matchms.filtering import (default_filters, normalize_intensities,
-                               select_by_relative_intensity,
-                               remove_peaks_around_precursor_mz,
-                               require_minimum_number_of_peaks,
-                               derive_inchi_from_smiles, add_fingerprint)
+from matchms.filtering import (
+    default_filters,
+    normalize_intensities,
+    select_by_relative_intensity,
+    remove_peaks_around_precursor_mz,
+    require_minimum_number_of_peaks,
+    derive_inchi_from_smiles,
+    add_fingerprint,
+)
 from matchms.importing import load_from_mgf
 from matchms.exporting import save_as_pickle
+
 
 # Define custom processing pipeline
 def create_standard_pipeline():
     """Create a reusable processing pipeline"""
-    return SpectrumProcessor([
-        default_filters,
-        normalize_intensities,
-        lambda s: remove_peaks_around_precursor_mz(s, mz_tolerance=17),
-        lambda s: select_by_relative_intensity(s, intensity_from=0.01),
-        lambda s: require_minimum_number_of_peaks(s, n_required=5),
-        derive_inchi_from_smiles,
-        lambda s: add_fingerprint(s, fingerprint_type="morgan2")
-    ])
+    return SpectrumProcessor(
+        [
+            default_filters,
+            normalize_intensities,
+            lambda s: remove_peaks_around_precursor_mz(s, mz_tolerance=17),
+            lambda s: select_by_relative_intensity(s, intensity_from=0.01),
+            lambda s: require_minimum_number_of_peaks(s, n_required=5),
+            derive_inchi_from_smiles,
+            lambda s: add_fingerprint(s, fingerprint_type="morgan2"),
+        ]
+    )
+
 
 # Create pipeline instance
 pipeline = create_standard_pipeline()
@@ -320,6 +345,7 @@ from matchms.importing import load_from_mzml, load_from_mgf
 from matchms.exporting import save_as_mgf, save_as_msp, save_as_json
 from matchms.filtering import default_filters, normalize_intensities
 
+
 def convert_and_standardize(input_file, output_format="mgf"):
     """
     Load, standardize, and convert mass spectrometry data
@@ -332,10 +358,11 @@ def convert_and_standardize(input_file, output_format="mgf"):
         Output format ('mgf', 'msp', or 'json')
     """
     # Determine input format and load
-    if input_file.endswith('.mzML') or input_file.endswith('.mzXML'):
+    if input_file.endswith(".mzML") or input_file.endswith(".mzXML"):
         from matchms.importing import load_from_mzml
+
         spectra = list(load_from_mzml(input_file, ms_level=2))
-    elif input_file.endswith('.mgf'):
+    elif input_file.endswith(".mgf"):
         spectra = list(load_from_mgf(input_file))
     else:
         raise ValueError(f"Unsupported format: {input_file}")
@@ -353,19 +380,20 @@ def convert_and_standardize(input_file, output_format="mgf"):
     print(f"Standardized {len(processed)} spectra")
 
     # Export
-    output_file = input_file.rsplit('.', 1)[0] + f'_standardized.{output_format}'
+    output_file = input_file.rsplit(".", 1)[0] + f"_standardized.{output_format}"
 
-    if output_format == 'mgf':
+    if output_format == "mgf":
         save_as_mgf(processed, output_file)
-    elif output_format == 'msp':
+    elif output_format == "msp":
         save_as_msp(processed, output_file)
-    elif output_format == 'json':
+    elif output_format == "json":
         save_as_json(processed, output_file)
     else:
         raise ValueError(f"Unsupported output format: {output_format}")
 
     print(f"Saved to {output_file}")
     return processed
+
 
 # Convert mzML to MGF
 convert_and_standardize("raw_data.mzML", output_format="mgf")
@@ -383,10 +411,15 @@ Enrich spectra with chemical structure information and validate annotations.
 ```python
 from matchms.importing import load_from_mgf
 from matchms.exporting import save_as_mgf
-from matchms.filtering import (default_filters, derive_inchi_from_smiles,
-                               derive_inchikey_from_inchi, derive_smiles_from_inchi,
-                               add_fingerprint, repair_not_matching_annotation,
-                               require_valid_annotation)
+from matchms.filtering import (
+    default_filters,
+    derive_inchi_from_smiles,
+    derive_inchikey_from_inchi,
+    derive_smiles_from_inchi,
+    add_fingerprint,
+    repair_not_matching_annotation,
+    require_valid_annotation,
+)
 
 # Load spectra
 spectra = list(load_from_mgf("spectra.mgf"))
@@ -457,8 +490,7 @@ processed_lib2 = [normalize_intensities(default_filters(s)) for s in library2]
 
 # Calculate all-vs-all similarities
 print("Calculating similarities...")
-scores = calculate_scores(processed_lib1, processed_lib2,
-                         CosineGreedy(tolerance=0.1))
+scores = calculate_scores(processed_lib1, processed_lib2, CosineGreedy(tolerance=0.1))
 
 # Find high-similarity pairs (potential duplicates or similar compounds)
 threshold = 0.8
@@ -468,16 +500,18 @@ for i, spec1 in enumerate(processed_lib1):
     for j, spec2 in enumerate(processed_lib2):
         score = scores.scores[i, j]
         if score >= threshold:
-            similar_pairs.append({
-                'lib1_idx': i,
-                'lib2_idx': j,
-                'lib1_name': spec1.get("compound_name", f"L1_{i}"),
-                'lib2_name': spec2.get("compound_name", f"L2_{j}"),
-                'similarity': score
-            })
+            similar_pairs.append(
+                {
+                    "lib1_idx": i,
+                    "lib2_idx": j,
+                    "lib1_name": spec1.get("compound_name", f"L1_{i}"),
+                    "lib2_name": spec2.get("compound_name", f"L2_{j}"),
+                    "similarity": score,
+                }
+            )
 
 # Sort by similarity
-similar_pairs.sort(key=lambda x: x['similarity'], reverse=True)
+similar_pairs.sort(key=lambda x: x["similarity"], reverse=True)
 
 print(f"\nFound {len(similar_pairs)} pairs with similarity >= {threshold}")
 print("\nTop 10 most similar pairs:")
@@ -486,6 +520,7 @@ for pair in similar_pairs[:10]:
 
 # Export to CSV
 import pandas as pd
+
 df = pd.DataFrame(similar_pairs)
 df.to_csv("library_comparison.csv", index=False)
 print("\nFull results saved to library_comparison.csv")
@@ -499,8 +534,12 @@ Process positive and negative mode spectra separately.
 
 ```python
 from matchms.importing import load_from_mgf
-from matchms.filtering import (default_filters, normalize_intensities,
-                               require_correct_ionmode, derive_ionmode)
+from matchms.filtering import (
+    default_filters,
+    normalize_intensities,
+    require_correct_ionmode,
+    derive_ionmode,
+)
 from matchms.exporting import save_as_mgf
 
 # Load mixed mode spectra
@@ -542,13 +581,11 @@ from matchms.similarity import CosineGreedy
 
 if len(positive_spectra) > 1:
     print("\nCalculating positive mode similarities...")
-    pos_scores = calculate_scores(positive_spectra, positive_spectra,
-                                  CosineGreedy(tolerance=0.1))
+    pos_scores = calculate_scores(positive_spectra, positive_spectra, CosineGreedy(tolerance=0.1))
 
 if len(negative_spectra) > 1:
     print("Calculating negative mode similarities...")
-    neg_scores = calculate_scores(negative_spectra, negative_spectra,
-                                  CosineGreedy(tolerance=0.1))
+    neg_scores = calculate_scores(negative_spectra, negative_spectra, CosineGreedy(tolerance=0.1))
 ```
 
 ---
@@ -563,6 +600,7 @@ from matchms.filtering import default_filters, normalize_intensities
 from matchms import calculate_scores
 from matchms.similarity import CosineGreedy, ModifiedCosine
 import pandas as pd
+
 
 def identify_compounds(query_file, library_file, output_csv="identification_report.csv"):
     """
@@ -595,16 +633,18 @@ def identify_compounds(query_file, library_file, output_csv="identification_repo
             ref = proc_library[lib_idx]
             mod_score = modified_scores.scores[lib_idx, i]
 
-            results.append({
-                'Query': query_name,
-                'Query_mz': query_mz,
-                'Rank': rank,
-                'Match': ref.get("compound_name", f"Ref_{lib_idx}"),
-                'Match_mz': ref.get("precursor_mz", "N/A"),
-                'Cosine_Score': cos_score,
-                'Modified_Cosine': mod_score,
-                'InChIKey': ref.get("inchikey", "N/A")
-            })
+            results.append(
+                {
+                    "Query": query_name,
+                    "Query_mz": query_mz,
+                    "Rank": rank,
+                    "Match": ref.get("compound_name", f"Ref_{lib_idx}"),
+                    "Match_mz": ref.get("precursor_mz", "N/A"),
+                    "Cosine_Score": cos_score,
+                    "Modified_Cosine": mod_score,
+                    "InChIKey": ref.get("inchikey", "N/A"),
+                }
+            )
 
     # Create DataFrame and save
     df = pd.DataFrame(results)
@@ -613,15 +653,16 @@ def identify_compounds(query_file, library_file, output_csv="identification_repo
 
     # Summary statistics
     print("\nSummary:")
-    high_confidence = len(df[df['Cosine_Score'] >= 0.8])
-    medium_confidence = len(df[(df['Cosine_Score'] >= 0.6) & (df['Cosine_Score'] < 0.8)])
-    low_confidence = len(df[df['Cosine_Score'] < 0.6])
+    high_confidence = len(df[df["Cosine_Score"] >= 0.8])
+    medium_confidence = len(df[(df["Cosine_Score"] >= 0.6) & (df["Cosine_Score"] < 0.8)])
+    low_confidence = len(df[df["Cosine_Score"] < 0.6])
 
     print(f"  High confidence (≥0.8): {high_confidence}")
     print(f"  Medium confidence (0.6-0.8): {medium_confidence}")
     print(f"  Low confidence (<0.6): {low_confidence}")
 
     return df
+
 
 # Run identification
 report = identify_compounds("unknowns.mgf", "reference_library.mgf")

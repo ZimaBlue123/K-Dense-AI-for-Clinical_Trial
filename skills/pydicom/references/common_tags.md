@@ -207,7 +207,7 @@ modality = ds[0x0008, 0x0060].value
 
 ### Checking if Tag Exists
 ```python
-if hasattr(ds, 'PatientName'):
+if hasattr(ds, "PatientName"):
     print(ds.PatientName)
 
 # Or using 'in' operator
@@ -217,8 +217,8 @@ if (0x0010, 0x0010) in ds:
 
 ### Safe Access with Default Value
 ```python
-patient_name = getattr(ds, 'PatientName', 'Unknown')
-study_desc = ds.get('StudyDescription', 'No description')
+patient_name = getattr(ds, "PatientName", "Unknown")
+study_desc = ds.get("StudyDescription", "No description")
 ```
 
 ## References

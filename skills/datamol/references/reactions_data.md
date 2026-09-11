@@ -23,7 +23,7 @@ Apply a chemical reaction to reactant molecules.
 
   # Define reaction: alcohol + carboxylic acid → ester
   rxn = Chem.rdChemReactions.ReactionFromSmarts(
-      '[C:1][OH:2].[C:3](=[O:4])[OH:5]>>[C:1][O:2][C:3](=[O:4])'
+      "[C:1][OH:2].[C:3](=[O:4])[OH:5]>>[C:1][O:2][C:3](=[O:4])"
   )
 
   # Apply to reactants
@@ -39,9 +39,7 @@ Reactions are typically created from SMARTS patterns using RDKit:
 from rdkit.Chem import rdChemReactions
 
 # Reaction pattern: [reactant1].[reactant2]>>[product]
-rxn = rdChemReactions.ReactionFromSmarts(
-    '[1*][*:1].[1*][*:2]>>[*:1][*:2]'
-)
+rxn = rdChemReactions.ReactionFromSmarts("[1*][*:1].[1*][*:2]>>[*:1][*:2]")
 ```
 
 ### Validation Functions
@@ -56,24 +54,20 @@ The module includes functions to:
 **Amide formation**:
 ```python
 # Amine + carboxylic acid → amide
-amide_rxn = rdChemReactions.ReactionFromSmarts(
-    '[N:1].[C:2](=[O:3])[OH]>>[N:1][C:2](=[O:3])'
-)
+amide_rxn = rdChemReactions.ReactionFromSmarts("[N:1].[C:2](=[O:3])[OH]>>[N:1][C:2](=[O:3])")
 ```
 
 **Suzuki coupling**:
 ```python
 # Aryl halide + boronic acid → biaryl
-suzuki_rxn = rdChemReactions.ReactionFromSmarts(
-    '[c:1][Br].[c:2][B]([OH])[OH]>>[c:1][c:2]'
-)
+suzuki_rxn = rdChemReactions.ReactionFromSmarts("[c:1][Br].[c:2][B]([OH])[OH]>>[c:1][c:2]")
 ```
 
 **Functional group transformations**:
 ```python
 # Alcohol → ester
 esterification = rdChemReactions.ReactionFromSmarts(
-    '[C:1][OH:2].[C:3](=[O:4])[Cl]>>[C:1][O:2][C:3](=[O:4])'
+    "[C:1][OH:2].[C:3](=[O:4])[Cl]>>[C:1][O:2][C:3](=[O:4])"
 )
 ```
 
@@ -84,7 +78,7 @@ import datamol as dm
 from rdkit.Chem import rdChemReactions
 
 # 1. Define reaction
-rxn_smarts = '[C:1](=[O:2])[OH:3]>>[C:1](=[O:2])[Cl:3]'  # Acid → acid chloride
+rxn_smarts = "[C:1](=[O:2])[OH:3]>>[C:1](=[O:2])[Cl:3]"  # Acid → acid chloride
 rxn = rdChemReactions.ReactionFromSmarts(rxn_smarts)
 
 # 2. Apply to molecule library
@@ -96,7 +90,7 @@ for acid in acids:
         product = dm.reactions.apply_reaction(
             rxn,
             (acid,),  # Single reactant as tuple
-            sanitize=True
+            sanitize=True,
         )
         acid_chlorides.append(product)
     except Exception as e:
@@ -160,12 +154,12 @@ RDKit solubility dataset with train/test splits.
   sol_df = dm.data.solubility(as_df=True)
 
   # Split into train/test
-  train_df = sol_df[sol_df['split'] == 'train']
-  test_df = sol_df[sol_df['split'] == 'test']
+  train_df = sol_df[sol_df["split"] == "train"]
+  test_df = sol_df[sol_df["split"] == "test"]
 
   # Use for model development
   X_train = dm.to_fp(train_df[mol_column])
-  y_train = train_df['solubility']
+  y_train = train_df["solubility"]
   ```
 
 ### Usage Guidelines
@@ -174,7 +168,7 @@ RDKit solubility dataset with train/test splits.
 ```python
 # Quick dataset for testing code
 df = dm.data.cdk2()
-mols = df['mol'].tolist()
+mols = df["mol"].tolist()
 
 # Test descriptor calculation
 descriptors_df = dm.descriptors.batch_compute_many_descriptors(mols)
@@ -189,17 +183,18 @@ clusters = dm.cluster_mols(mols, cutoff=0.3)
 sol_df = dm.data.solubility()
 
 # Preprocessing
-train = sol_df[sol_df['split'] == 'train']
-test = sol_df[sol_df['split'] == 'test']
+train = sol_df[sol_df["split"] == "train"]
+test = sol_df[sol_df["split"] == "test"]
 
 # Featurization
-X_train = dm.to_fp(train['mol'])
-X_test = dm.to_fp(test['mol'])
+X_train = dm.to_fp(train["mol"])
+X_test = dm.to_fp(test["mol"])
 
 # Model training (example)
 from sklearn.ensemble import RandomForestRegressor
+
 model = RandomForestRegressor()
-model.fit(X_train, train['solubility'])
+model.fit(X_train, train["solubility"])
 predictions = model.predict(X_test)
 ```
 

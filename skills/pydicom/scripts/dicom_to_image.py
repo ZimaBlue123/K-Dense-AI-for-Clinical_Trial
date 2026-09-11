@@ -73,7 +73,7 @@ def convert_dicom_to_image(
         # Handle multi-frame DICOM
         if len(pixel_array.shape) == 3 and pixel_array.shape[0] > 1:
             if frame >= pixel_array.shape[0]:
-                return False, f"Frame {frame} out of range (0-{pixel_array.shape[0]-1})"
+                return False, f"Frame {frame} out of range (0-{pixel_array.shape[0] - 1})"
             pixel_array = pixel_array[frame]
             print(f"Extracting frame {frame} of {ds.NumberOfFrames}")
 
@@ -107,9 +107,7 @@ def convert_dicom_to_image(
         return True, {
             "shape": ds.pixel_array.shape,
             "modality": ds.Modality if hasattr(ds, "Modality") else "Unknown",
-            "bits_allocated": (
-                ds.BitsAllocated if hasattr(ds, "BitsAllocated") else "Unknown"
-            ),
+            "bits_allocated": (ds.BitsAllocated if hasattr(ds, "BitsAllocated") else "Unknown"),
         }
 
     except Exception as e:

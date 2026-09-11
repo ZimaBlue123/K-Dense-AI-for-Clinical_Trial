@@ -44,13 +44,13 @@ import pufferlib
 from pufferlib import PuffeRL
 
 # Initialize environment
-env = pufferlib.make('environment_name', num_envs=256)
+env = pufferlib.make("environment_name", num_envs=256)
 
 # Create trainer
 trainer = PuffeRL(
     env=env,
     policy=my_policy,
-    device='cuda',
+    device="cuda",
     learning_rate=3e-4,
     batch_size=32768,
     n_epochs=4,
@@ -59,7 +59,7 @@ trainer = PuffeRL(
     clip_coef=0.2,
     ent_coef=0.01,
     vf_coef=0.5,
-    max_grad_norm=0.5
+    max_grad_norm=0.5,
 )
 
 # Training loop
@@ -145,10 +145,7 @@ PufferLib supports multiple logging backends:
 from pufferlib import WandbLogger
 
 logger = WandbLogger(
-    project='my_project',
-    entity='my_team',
-    name='experiment_name',
-    config=trainer_config
+    project="my_project", entity="my_team", name="experiment_name", config=trainer_config
 )
 
 trainer = PuffeRL(env, policy, logger=logger)
@@ -159,11 +156,7 @@ trainer = PuffeRL(env, policy, logger=logger)
 ```python
 from pufferlib import NeptuneLogger
 
-logger = NeptuneLogger(
-    project='my_team/my_project',
-    name='experiment_name',
-    api_token='YOUR_TOKEN'
-)
+logger = NeptuneLogger(project="my_team/my_project", name="experiment_name", api_token="YOUR_TOKEN")
 
 trainer = PuffeRL(env, policy, logger=logger)
 ```
@@ -214,12 +207,11 @@ PufferLib provides a real-time terminal dashboard showing:
 
 ```python
 # Save checkpoint
-trainer.save_checkpoint('checkpoint.pt')
+trainer.save_checkpoint("checkpoint.pt")
 
 # Save with additional metadata
 trainer.save_checkpoint(
-    'checkpoint.pt',
-    metadata={'iteration': iteration, 'best_reward': best_reward}
+    "checkpoint.pt", metadata={"iteration": iteration, "best_reward": best_reward}
 )
 ```
 
@@ -227,7 +219,7 @@ trainer.save_checkpoint(
 
 ```python
 # Load checkpoint
-trainer.load_checkpoint('checkpoint.pt')
+trainer.load_checkpoint("checkpoint.pt")
 
 # Resume training
 for iteration in range(resume_iteration, num_iterations):
@@ -245,18 +237,15 @@ from pufferlib import Protein
 
 # Define search space
 search_space = {
-    'learning_rate': [1e-4, 3e-4, 1e-3],
-    'batch_size': [16384, 32768, 65536],
-    'ent_coef': [0.001, 0.01, 0.1],
-    'clip_coef': [0.1, 0.2, 0.3]
+    "learning_rate": [1e-4, 3e-4, 1e-3],
+    "batch_size": [16384, 32768, 65536],
+    "ent_coef": [0.001, 0.01, 0.1],
+    "clip_coef": [0.1, 0.2, 0.3],
 }
 
 # Run hyperparameter search
 protein = Protein(
-    env_name='environment_name',
-    search_space=search_space,
-    num_trials=100,
-    metric='mean_reward'
+    env_name="environment_name", search_space=search_space, num_trials=100, metric="mean_reward"
 )
 
 best_config = protein.optimize()
@@ -293,7 +282,7 @@ best_config = protein.optimize()
 difficulty_levels = [0.1, 0.3, 0.5, 0.7, 1.0]
 
 for difficulty in difficulty_levels:
-    env = pufferlib.make('environment_name', difficulty=difficulty)
+    env = pufferlib.make("environment_name", difficulty=difficulty)
     trainer = PuffeRL(env, policy)
 
     for iteration in range(iterations_per_level):
@@ -321,14 +310,14 @@ class RewardShapedEnv(pufferlib.PufferEnv):
 ```python
 # Train in multiple stages with different configurations
 stages = [
-    {'learning_rate': 1e-3, 'iterations': 1000},   # Exploration
-    {'learning_rate': 3e-4, 'iterations': 5000},   # Main training
-    {'learning_rate': 1e-4, 'iterations': 2000}    # Fine-tuning
+    {"learning_rate": 1e-3, "iterations": 1000},  # Exploration
+    {"learning_rate": 3e-4, "iterations": 5000},  # Main training
+    {"learning_rate": 1e-4, "iterations": 2000},  # Fine-tuning
 ]
 
 for stage in stages:
-    trainer.learning_rate = stage['learning_rate']
-    for iteration in range(stage['iterations']):
+    trainer.learning_rate = stage["learning_rate"]
+    for iteration in range(stage["iterations"]):
         trainer.evaluate()
         trainer.train()
         trainer.mean_and_log()

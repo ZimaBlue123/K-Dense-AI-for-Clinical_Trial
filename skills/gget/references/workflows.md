@@ -23,9 +23,7 @@ import pandas as pd
 
 # Step 1: Search for genes of interest
 print("Step 1: Searching for GABA receptor genes...")
-search_results = gget.search(["GABA", "receptor", "alpha"],
-                             species="homo_sapiens",
-                             andor="and")
+search_results = gget.search(["GABA", "receptor", "alpha"], species="homo_sapiens", andor="and")
 print(f"Found {len(search_results)} genes")
 
 # Step 2: Get detailed information
@@ -175,10 +173,7 @@ print("=" * 50)
 
 # Step 1: Search for cancer-related genes
 print("\n1. Searching for breast cancer genes...")
-genes = gget.search(["breast", "cancer", "BRCA"],
-                    species="homo_sapiens",
-                    andor="or",
-                    limit=20)
+genes = gget.search(["breast", "cancer", "BRCA"], species="homo_sapiens", andor="or", limit=20)
 print(f"Found {len(genes)} genes")
 
 # Focus on specific genes
@@ -228,7 +223,7 @@ if len(studies) > 0:
         target_genes,
         stratification="cancer_type",
         variation_type="mutation_occurrences",
-        show=False
+        show=False,
     )
     print("Heatmap saved to ./gget_cbio_figures/")
 
@@ -282,10 +277,7 @@ print(f"Cell types: {', '.join(cell_types)}")
 # Step 2: Get metadata first
 print("\n1. Retrieving metadata...")
 metadata = gget.cellxgene(
-    gene=genes_of_interest,
-    tissue=tissue,
-    species="homo_sapiens",
-    meta_only=True
+    gene=genes_of_interest, tissue=tissue, species="homo_sapiens", meta_only=True
 )
 print(f"Found {len(metadata)} datasets")
 print(metadata.head())
@@ -294,10 +286,7 @@ print(metadata.head())
 print("\n2. Downloading single-cell data...")
 # Note: This can be a large download
 adata = gget.cellxgene(
-    gene=genes_of_interest,
-    tissue=tissue,
-    species="homo_sapiens",
-    census_version="stable"
+    gene=genes_of_interest, tissue=tissue, species="homo_sapiens", census_version="stable"
 )
 print(f"AnnData shape: {adata.shape}")
 print(f"Genes: {adata.n_vars}")
@@ -516,10 +505,9 @@ for mut in mutations:
 # Step 3: Generate mutated sequences
 print("\n3. Generating mutated sequences...")
 # Create mutation dataframe for gget mutate
-mut_df = pd.DataFrame({
-    "seq_ID": [m["gene"] for m in mutations],
-    "mutation": [m["mutation"] for m in mutations]
-})
+mut_df = pd.DataFrame(
+    {"seq_ID": [m["gene"] for m in mutations], "mutation": [m["mutation"] for m in mutations]}
+)
 
 # For each mutation
 for mut in mutations:
@@ -528,10 +516,7 @@ for mut in mutations:
     seq = "".join(lines[1:])
 
     # Create single mutation df
-    single_mut = pd.DataFrame({
-        "seq_ID": [mut["gene"]],
-        "mutation": [mut["mutation"]]
-    })
+    single_mut = pd.DataFrame({"seq_ID": [mut["gene"]], "mutation": [mut["mutation"]]})
 
     # Generate mutated sequence
     mutated = gget.mutate([seq], mutations=single_mut)
@@ -584,11 +569,7 @@ print("(ELM analysis skipped - uncomment to run)")
 # Step 7: Get disease associations
 print("\n7. Getting disease associations...")
 for mut in mutations:
-    diseases = gget.opentargets(
-        mut["ensembl_id"],
-        resource="diseases",
-        limit=5
-    )
+    diseases = gget.opentargets(mut["ensembl_id"], resource="diseases", limit=5)
     print(f"\n{mut['gene']} ({mut['description']}) disease associations:")
     print(diseases[["disease_name", "overall_score"]])
 
@@ -643,11 +624,13 @@ for gene_id, gene_name in zip(gene_info["ensembl_id"], gene_info["gene_name"]):
     alzheimer = diseases[diseases["disease_name"].str.contains("Alzheimer", case=False, na=False)]
 
     if len(alzheimer) > 0:
-        disease_scores.append({
-            "ensembl_id": gene_id,
-            "gene_name": gene_name,
-            "disease_score": alzheimer["overall_score"].max()
-        })
+        disease_scores.append(
+            {
+                "ensembl_id": gene_id,
+                "gene_name": gene_name,
+                "disease_score": alzheimer["overall_score"].max(),
+            }
+        )
 
 disease_df = pd.DataFrame(disease_scores).sort_values("disease_score", ascending=False)
 print("\nTop disease-associated genes:")
@@ -657,10 +640,7 @@ print(disease_df.head(10))
 print("\n4. Assessing target tractability...")
 top_targets = disease_df.head(5)
 for _, row in top_targets.iterrows():
-    tractability = gget.opentargets(
-        row["ensembl_id"],
-        resource="tractability"
-    )
+    tractability = gget.opentargets(row["ensembl_id"], resource="tractability")
     print(f"\n{row['gene_name']} tractability:")
     print(tractability)
 
@@ -668,11 +648,7 @@ for _, row in top_targets.iterrows():
 print("\n5. Getting tissue expression data...")
 for _, row in top_targets.iterrows():
     # Brain expression from OpenTargets
-    expression = gget.opentargets(
-        row["ensembl_id"],
-        resource="expression",
-        filter_tissue="brain"
-    )
+    expression = gget.opentargets(row["ensembl_id"], resource="expression", filter_tissue="brain")
     print(f"\n{row['gene_name']} brain expression:")
     print(expression)
 
@@ -695,11 +671,7 @@ for _, row in top_targets.iterrows():
 # Step 7: Get protein-protein interactions
 print("\n7. Getting protein-protein interactions...")
 for _, row in top_targets.iterrows():
-    interactions = gget.opentargets(
-        row["ensembl_id"],
-        resource="interactions",
-        limit=10
-    )
+    interactions = gget.opentargets(row["ensembl_id"], resource="interactions", limit=10)
     print(f"\n{row['gene_name']} interacts with:")
     if len(interactions) > 0:
         print(interactions[["gene_b_symbol", "interaction_score"]])
@@ -728,12 +700,14 @@ for _, row in top_targets.iterrows():
 print("\n10. Generating target summary report...")
 report = []
 for _, row in top_targets.iterrows():
-    report.append({
-        "Gene": row["gene_name"],
-        "Ensembl ID": row["ensembl_id"],
-        "Disease Score": row["disease_score"],
-        "Target Status": "High Priority"
-    })
+    report.append(
+        {
+            "Gene": row["gene_name"],
+            "Ensembl ID": row["ensembl_id"],
+            "Disease Score": row["disease_score"],
+            "Target Status": "High Priority",
+        }
+    )
 
 report_df = pd.DataFrame(report)
 report_df.to_csv("drug_targets_report.csv", index=False)
@@ -750,6 +724,7 @@ print("\nDrug target discovery workflow completed!")
 ```python
 import gget
 
+
 def safe_gget_call(func, *args, **kwargs):
     """Wrapper for gget calls with error handling"""
     try:
@@ -758,6 +733,7 @@ def safe_gget_call(func, *args, **kwargs):
     except Exception as e:
         print(f"Error in {func.__name__}: {str(e)}")
         return None
+
 
 # Usage
 result = safe_gget_call(gget.search, ["ACE2"], species="homo_sapiens")
@@ -770,11 +746,12 @@ if result is not None:
 import time
 import gget
 
+
 def rate_limited_queries(gene_ids, delay=1):
     """Query multiple genes with rate limiting"""
     results = []
     for i, gene_id in enumerate(gene_ids):
-        print(f"Querying {i+1}/{len(gene_ids)}: {gene_id}")
+        print(f"Querying {i + 1}/{len(gene_ids)}: {gene_id}")
         result = gget.info([gene_id])
         results.append(result)
 
@@ -790,6 +767,7 @@ import os
 import pickle
 import gget
 
+
 def cached_gget(cache_file, func, *args, **kwargs):
     """Cache gget results to avoid repeated queries"""
     if os.path.exists(cache_file):
@@ -804,6 +782,7 @@ def cached_gget(cache_file, func, *args, **kwargs):
     print(f"Saved to cache: {cache_file}")
 
     return result
+
 
 # Usage
 result = cached_gget("ace2_info.pkl", gget.info, ["ENSG00000130234"])

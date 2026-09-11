@@ -52,21 +52,13 @@ Get a category.
 # Get root category
 response = requests.get(
     "https://api.stlouisfed.org/fred/category",
-    params={
-        "api_key": API_KEY,
-        "category_id": 0,
-        "file_type": "json"
-    }
+    params={"api_key": API_KEY, "category_id": 0, "file_type": "json"},
 )
 
 # Get Trade Balance category
 response = requests.get(
     "https://api.stlouisfed.org/fred/category",
-    params={
-        "api_key": API_KEY,
-        "category_id": 125,
-        "file_type": "json"
-    }
+    params={"api_key": API_KEY, "category_id": 125, "file_type": "json"},
 )
 ```
 
@@ -113,11 +105,7 @@ Get child categories for a category.
 # Get children of International Trade category (13)
 response = requests.get(
     "https://api.stlouisfed.org/fred/category/children",
-    params={
-        "api_key": API_KEY,
-        "category_id": 13,
-        "file_type": "json"
-    }
+    params={"api_key": API_KEY, "category_id": 13, "file_type": "json"},
 )
 ```
 
@@ -165,11 +153,7 @@ Get related categories for a category.
 ```python
 response = requests.get(
     "https://api.stlouisfed.org/fred/category/related",
-    params={
-        "api_key": API_KEY,
-        "category_id": 32073,
-        "file_type": "json"
-    }
+    params={"api_key": API_KEY, "category_id": 32073, "file_type": "json"},
 )
 ```
 
@@ -244,8 +228,8 @@ response = requests.get(
         "filter_value": "Monthly",
         "order_by": "popularity",
         "sort_order": "desc",
-        "limit": 10
-    }
+        "limit": 10,
+    },
 )
 ```
 
@@ -319,12 +303,7 @@ Get the tags for a category.
 # Get frequency tags for Trade Balance category
 response = requests.get(
     "https://api.stlouisfed.org/fred/category/tags",
-    params={
-        "api_key": API_KEY,
-        "category_id": 125,
-        "file_type": "json",
-        "tag_group_id": "freq"
-    }
+    params={"api_key": API_KEY, "category_id": 125, "file_type": "json", "tag_group_id": "freq"},
 )
 ```
 
@@ -381,8 +360,8 @@ response = requests.get(
         "api_key": API_KEY,
         "category_id": 125,
         "tag_names": "services;quarterly",
-        "file_type": "json"
-    }
+        "file_type": "json",
+    },
 )
 ```
 
@@ -418,11 +397,7 @@ def get_category_tree(api_key, category_id=0, depth=0, max_depth=2):
     # Get children
     response = requests.get(
         "https://api.stlouisfed.org/fred/category/children",
-        params={
-            "api_key": api_key,
-            "category_id": category_id,
-            "file_type": "json"
-        }
+        params={"api_key": api_key, "category_id": category_id, "file_type": "json"},
     )
     data = response.json()
 
@@ -431,11 +406,12 @@ def get_category_tree(api_key, category_id=0, depth=0, max_depth=2):
         node = {
             "id": cat["id"],
             "name": cat["name"],
-            "children": get_category_tree(api_key, cat["id"], depth + 1, max_depth)
+            "children": get_category_tree(api_key, cat["id"], depth + 1, max_depth),
         }
         tree.append(node)
 
     return tree
+
 
 # Get first 2 levels of category tree
 tree = get_category_tree(API_KEY, depth=0, max_depth=1)

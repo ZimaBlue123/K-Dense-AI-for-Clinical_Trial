@@ -30,12 +30,7 @@ from histolab.tiler import RandomTiler
 slide = Slide("slide.svs", processed_path="output/")
 
 # Configure tiler
-tiler = RandomTiler(
-    tile_size=(512, 512),
-    n_tiles=100,
-    level=0,
-    seed=42
-)
+tiler = RandomTiler(tile_size=(512, 512), n_tiles=100, level=0, seed=42)
 
 # Preview tile locations
 tiler.locate_tiles(slide, n_tiles=20)
@@ -172,31 +167,16 @@ from histolab.scorer import NucleiScorer
 
 # Random sampling (fast, diverse)
 random_tiler = RandomTiler(
-    tile_size=(512, 512),
-    n_tiles=100,
-    level=0,
-    seed=42,
-    check_tissue=True,
-    tissue_percent=80.0
+    tile_size=(512, 512), n_tiles=100, level=0, seed=42, check_tissue=True, tissue_percent=80.0
 )
 random_tiler.extract(slide)
 
 # Grid coverage (comprehensive)
-grid_tiler = GridTiler(
-    tile_size=(512, 512),
-    level=0,
-    pixel_overlap=0,
-    check_tissue=True
-)
+grid_tiler = GridTiler(tile_size=(512, 512), level=0, pixel_overlap=0, check_tissue=True)
 grid_tiler.extract(slide)
 
 # Score-based selection (most informative)
-score_tiler = ScoreTiler(
-    tile_size=(512, 512),
-    n_tiles=50,
-    scorer=NucleiScorer(),
-    level=0
-)
+score_tiler = ScoreTiler(tile_size=(512, 512), n_tiles=50, scorer=NucleiScorer(), level=0)
 score_tiler.extract(slide, report_path="tiles_report.csv")
 ```
 
@@ -240,24 +220,30 @@ Apply image processing filters for tissue detection, quality control, and prepro
 from histolab.filters.compositions import Compose
 from histolab.filters.image_filters import RgbToGrayscale, OtsuThreshold
 from histolab.filters.morphological_filters import (
-    BinaryDilation, RemoveSmallHoles, RemoveSmallObjects
+    BinaryDilation,
+    RemoveSmallHoles,
+    RemoveSmallObjects,
 )
 
 # Standard tissue detection pipeline
-tissue_detection = Compose([
-    RgbToGrayscale(),
-    OtsuThreshold(),
-    BinaryDilation(disk_size=5),
-    RemoveSmallHoles(area_threshold=1000),
-    RemoveSmallObjects(area_threshold=500)
-])
+tissue_detection = Compose(
+    [
+        RgbToGrayscale(),
+        OtsuThreshold(),
+        BinaryDilation(disk_size=5),
+        RemoveSmallHoles(area_threshold=1000),
+        RemoveSmallObjects(area_threshold=500),
+    ]
+)
 
 # Use with custom mask
 from histolab.masks import TissueMask
+
 custom_mask = TissueMask(filters=tissue_detection)
 
 # Apply filters to tile
 from histolab.tile import Tile
+
 filtered_tile = tile.apply_filters(tissue_detection)
 ```
 
@@ -293,7 +279,7 @@ from histolab.masks import TissueMask
 plt.figure(figsize=(10, 10))
 plt.imshow(slide.thumbnail)
 plt.title(f"Slide: {slide.name}")
-plt.axis('off')
+plt.axis("off")
 plt.show()
 
 # Visualize tissue mask
@@ -316,7 +302,7 @@ for idx, tile_path in enumerate(tile_paths):
     tile_img = Image.open(tile_path)
     axes[idx].imshow(tile_img)
     axes[idx].set_title(tile_path.stem, fontsize=8)
-    axes[idx].axis('off')
+    axes[idx].axis("off")
 
 plt.tight_layout()
 plt.show()
@@ -346,12 +332,7 @@ slide.save_thumbnail()
 
 # Configure random tiler
 random_tiler = RandomTiler(
-    tile_size=(512, 512),
-    n_tiles=100,
-    level=0,
-    seed=42,
-    check_tissue=True,
-    tissue_percent=80.0
+    tile_size=(512, 512), n_tiles=100, level=0, seed=42, check_tissue=True, tissue_percent=80.0
 )
 
 # Preview locations
@@ -383,7 +364,7 @@ grid_tiler = GridTiler(
     level=1,  # Use level 1 for faster extraction
     pixel_overlap=0,
     check_tissue=True,
-    tissue_percent=70.0
+    tissue_percent=70.0,
 )
 
 # Preview grid
@@ -409,11 +390,7 @@ slide = Slide("slide.svs", processed_path="output/scored_tiles/")
 
 # Configure score tiler
 score_tiler = ScoreTiler(
-    tile_size=(512, 512),
-    n_tiles=50,
-    level=0,
-    scorer=NucleiScorer(),
-    check_tissue=True
+    tile_size=(512, 512), n_tiles=50, level=0, scorer=NucleiScorer(), check_tissue=True
 )
 
 # Preview top tiles
@@ -424,10 +401,10 @@ score_tiler.extract(slide, report_path="tiles_report.csv")
 
 # Analyze scores
 report_df = pd.read_csv("tiles_report.csv")
-plt.hist(report_df['score'], bins=20, edgecolor='black')
-plt.xlabel('Tile Score')
-plt.ylabel('Frequency')
-plt.title('Distribution of Tile Scores')
+plt.hist(report_df["score"], bins=20, edgecolor="black")
+plt.xlabel("Tile Score")
+plt.ylabel("Frequency")
+plt.title("Distribution of Tile Scores")
 plt.show()
 ```
 
@@ -444,13 +421,7 @@ import logging
 logging.basicConfig(level=logging.INFO)
 
 # Configure tiler once
-tiler = RandomTiler(
-    tile_size=(512, 512),
-    n_tiles=50,
-    level=0,
-    seed=42,
-    check_tissue=True
-)
+tiler = RandomTiler(tile_size=(512, 512), n_tiles=50, level=0, seed=42, check_tissue=True)
 
 # Process all slides
 slide_dir = Path("slides/")
@@ -486,17 +457,21 @@ from histolab.tiler import RandomTiler
 from histolab.filters.compositions import Compose
 from histolab.filters.image_filters import RgbToGrayscale, OtsuThreshold
 from histolab.filters.morphological_filters import (
-    BinaryDilation, RemoveSmallObjects, RemoveSmallHoles
+    BinaryDilation,
+    RemoveSmallObjects,
+    RemoveSmallHoles,
 )
 
 # Define custom filter pipeline for aggressive artifact removal
-aggressive_filters = Compose([
-    RgbToGrayscale(),
-    OtsuThreshold(),
-    BinaryDilation(disk_size=10),
-    RemoveSmallHoles(area_threshold=5000),
-    RemoveSmallObjects(area_threshold=3000)  # Remove larger artifacts
-])
+aggressive_filters = Compose(
+    [
+        RgbToGrayscale(),
+        OtsuThreshold(),
+        BinaryDilation(disk_size=10),
+        RemoveSmallHoles(area_threshold=5000),
+        RemoveSmallObjects(area_threshold=3000),  # Remove larger artifacts
+    ]
+)
 
 # Create custom mask
 custom_mask = TissueMask(filters=aggressive_filters)

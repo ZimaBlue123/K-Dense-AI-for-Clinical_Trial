@@ -37,19 +37,17 @@ import deepchem as dc
 # Load CSV with SMILES
 featurizer = dc.feat.CircularFingerprint(radius=2, size=2048)
 loader = dc.data.CSVLoader(
-    tasks=['solubility', 'toxicity'],
-    feature_field='smiles',
-    featurizer=featurizer
+    tasks=["solubility", "toxicity"], feature_field="smiles", featurizer=featurizer
 )
-dataset = loader.create_dataset('molecules.csv')
+dataset = loader.create_dataset("molecules.csv")
 
 # Load SDF files
-loader = dc.data.SDFLoader(tasks=['activity'], featurizer=featurizer)
-dataset = loader.create_dataset('compounds.sdf')
+loader = dc.data.SDFLoader(tasks=["activity"], featurizer=featurizer)
+dataset = loader.create_dataset("compounds.sdf")
 
 # Load protein sequences
 loader = dc.data.FASTALoader()
-dataset = loader.create_dataset('proteins.fasta')
+dataset = loader.create_dataset("proteins.fasta")
 ```
 
 **Key Loaders**:
@@ -102,7 +100,7 @@ desc = dc.feat.RDKitDescriptors()
 graph_feat = dc.feat.MolGraphConvFeaturizer()
 
 # Apply featurization
-features = fp.featurize(['CCO', 'c1ccccc1'])
+features = fp.featurize(["CCO", "c1ccccc1"])
 ```
 
 **Selection Guide**:
@@ -121,10 +119,7 @@ See `references/api_reference.md` for complete featurizer documentation.
 # Scaffold splitting (recommended for molecules)
 splitter = dc.splits.ScaffoldSplitter()
 train, valid, test = splitter.train_valid_test_split(
-    dataset,
-    frac_train=0.8,
-    frac_valid=0.1,
-    frac_test=0.1
+    dataset, frac_train=0.8, frac_valid=0.1, frac_test=0.1
 )
 
 # Random splitting (for non-molecular data)
@@ -170,11 +165,7 @@ model.fit(train)
 ```python
 # Multitask regressor (for fingerprints)
 model = dc.models.MultitaskRegressor(
-    n_tasks=2,
-    n_features=2048,
-    layer_sizes=[1000, 500],
-    dropouts=0.25,
-    learning_rate=0.001
+    n_tasks=2, n_features=2048, layer_sizes=[1000, 500], dropouts=0.25, learning_rate=0.001
 )
 model.fit(train, nb_epoch=50)
 ```
@@ -182,20 +173,15 @@ model.fit(train, nb_epoch=50)
 #### Example: Graph Neural Networks
 ```python
 # Graph Convolutional Network
-model = dc.models.GCNModel(
-    n_tasks=1,
-    mode='regression',
-    batch_size=128,
-    learning_rate=0.001
-)
+model = dc.models.GCNModel(n_tasks=1, mode="regression", batch_size=128, learning_rate=0.001)
 model.fit(train, nb_epoch=50)
 
 # Graph Attention Network
-model = dc.models.GATModel(n_tasks=1, mode='classification')
+model = dc.models.GATModel(n_tasks=1, mode="classification")
 model.fit(train, nb_epoch=50)
 
 # Attentive Fingerprint
-model = dc.models.AttentiveFPModel(n_tasks=1, mode='regression')
+model = dc.models.AttentiveFPModel(n_tasks=1, mode="regression")
 model.fit(train, nb_epoch=50)
 ```
 
@@ -206,14 +192,14 @@ Quick access to 30+ curated benchmark datasets with standardized train/valid/tes
 ```python
 # Load benchmark dataset
 tasks, datasets, transformers = dc.molnet.load_tox21(
-    featurizer='GraphConv',  # or 'ECFP', 'Weave', 'Raw'
-    splitter='scaffold',     # or 'random', 'stratified'
-    reload=False
+    featurizer="GraphConv",  # or 'ECFP', 'Weave', 'Raw'
+    splitter="scaffold",  # or 'random', 'stratified'
+    reload=False,
 )
 train, valid, test = datasets
 
 # Train and evaluate
-model = dc.models.GCNModel(n_tasks=len(tasks), mode='classification')
+model = dc.models.GCNModel(n_tasks=len(tasks), mode="classification")
 model.fit(train, nb_epoch=50)
 
 metric = dc.metrics.Metric(dc.metrics.roc_auc_score)
@@ -235,18 +221,15 @@ Leverage pretrained models for improved performance, especially on small dataset
 ```python
 # ChemBERTa (BERT pretrained on 77M molecules)
 model = dc.models.HuggingFaceModel(
-    model='seyonec/ChemBERTa-zinc-base-v1',
-    task='classification',
+    model="seyonec/ChemBERTa-zinc-base-v1",
+    task="classification",
     n_tasks=1,
-    learning_rate=2e-5  # Lower LR for fine-tuning
+    learning_rate=2e-5,  # Lower LR for fine-tuning
 )
 model.fit(train, nb_epoch=10)
 
 # GROVER (graph transformer pretrained on 10M molecules)
-model = dc.models.GroverModel(
-    task='regression',
-    n_tasks=1
-)
+model = dc.models.GroverModel(task="regression", n_tasks=1)
 model.fit(train, nb_epoch=20)
 ```
 
@@ -263,15 +246,15 @@ Use the `scripts/transfer_learning.py` script for guided transfer learning workf
 ```python
 # Define metrics
 classification_metrics = [
-    dc.metrics.Metric(dc.metrics.roc_auc_score, name='ROC-AUC'),
-    dc.metrics.Metric(dc.metrics.accuracy_score, name='Accuracy'),
-    dc.metrics.Metric(dc.metrics.f1_score, name='F1')
+    dc.metrics.Metric(dc.metrics.roc_auc_score, name="ROC-AUC"),
+    dc.metrics.Metric(dc.metrics.accuracy_score, name="Accuracy"),
+    dc.metrics.Metric(dc.metrics.f1_score, name="F1"),
 ]
 
 regression_metrics = [
-    dc.metrics.Metric(dc.metrics.r2_score, name='R²'),
-    dc.metrics.Metric(dc.metrics.mean_absolute_error, name='MAE'),
-    dc.metrics.Metric(dc.metrics.root_mean_squared_error, name='RMSE')
+    dc.metrics.Metric(dc.metrics.r2_score, name="R²"),
+    dc.metrics.Metric(dc.metrics.mean_absolute_error, name="MAE"),
+    dc.metrics.Metric(dc.metrics.root_mean_squared_error, name="RMSE"),
 ]
 
 # Evaluate
@@ -286,7 +269,7 @@ test_scores = model.evaluate(test, classification_metrics)
 predictions = model.predict(test)
 
 # Predict on new molecules
-new_smiles = ['CCO', 'c1ccccc1', 'CC(C)O']
+new_smiles = ["CCO", "c1ccccc1", "CC(C)O"]
 new_features = featurizer.featurize(new_smiles)
 new_dataset = dc.data.NumpyDataset(X=new_features)
 
@@ -307,14 +290,11 @@ For evaluating a model on standard benchmarks:
 import deepchem as dc
 
 # 1. Load benchmark
-tasks, datasets, _ = dc.molnet.load_bbbp(
-    featurizer='GraphConv',
-    splitter='scaffold'
-)
+tasks, datasets, _ = dc.molnet.load_bbbp(featurizer="GraphConv", splitter="scaffold")
 train, valid, test = datasets
 
 # 2. Train model
-model = dc.models.GCNModel(n_tasks=len(tasks), mode='classification')
+model = dc.models.GCNModel(n_tasks=len(tasks), mode="classification")
 model.fit(train, nb_epoch=50)
 
 # 3. Evaluate
@@ -332,21 +312,15 @@ import deepchem as dc
 
 # 1. Load and featurize data
 featurizer = dc.feat.CircularFingerprint(radius=2, size=2048)
-loader = dc.data.CSVLoader(
-    tasks=['activity'],
-    feature_field='smiles',
-    featurizer=featurizer
-)
-dataset = loader.create_dataset('my_molecules.csv')
+loader = dc.data.CSVLoader(tasks=["activity"], feature_field="smiles", featurizer=featurizer)
+dataset = loader.create_dataset("my_molecules.csv")
 
 # 2. Split data (use ScaffoldSplitter for molecules!)
 splitter = dc.splits.ScaffoldSplitter()
 train, valid, test = splitter.train_valid_test_split(dataset)
 
 # 3. Normalize (optional but recommended)
-transformers = [dc.trans.NormalizationTransformer(
-    transform_y=True, dataset=train
-)]
+transformers = [dc.trans.NormalizationTransformer(transform_y=True, dataset=train)]
 for transformer in transformers:
     train = transformer.transform(train)
     valid = transformer.transform(valid)
@@ -354,10 +328,7 @@ for transformer in transformers:
 
 # 4. Train model
 model = dc.models.MultitaskRegressor(
-    n_tasks=1,
-    n_features=2048,
-    layer_sizes=[1000, 500],
-    dropouts=0.25
+    n_tasks=1, n_features=2048, layer_sizes=[1000, 500], dropouts=0.25
 )
 model.fit(train, nb_epoch=50)
 
@@ -375,11 +346,11 @@ import deepchem as dc
 
 # 1. Load data (pretrained models often need raw SMILES)
 loader = dc.data.CSVLoader(
-    tasks=['activity'],
-    feature_field='smiles',
-    featurizer=dc.feat.DummyFeaturizer()  # Model handles featurization
+    tasks=["activity"],
+    feature_field="smiles",
+    featurizer=dc.feat.DummyFeaturizer(),  # Model handles featurization
 )
-dataset = loader.create_dataset('small_dataset.csv')
+dataset = loader.create_dataset("small_dataset.csv")
 
 # 2. Split data
 splitter = dc.splits.ScaffoldSplitter()
@@ -387,10 +358,7 @@ train, test = splitter.train_test_split(dataset)
 
 # 3. Load pretrained model
 model = dc.models.HuggingFaceModel(
-    model='seyonec/ChemBERTa-zinc-base-v1',
-    task='classification',
-    n_tasks=1,
-    learning_rate=2e-5
+    model="seyonec/ChemBERTa-zinc-base-v1", task="classification", n_tasks=1, learning_rate=2e-5
 )
 
 # 4. Fine-tune
@@ -471,7 +439,7 @@ train, test = splitter.train_test_split(dataset)
 transformers = [
     dc.trans.NormalizationTransformer(
         transform_y=True,  # Also normalize target values
-        dataset=train
+        dataset=train,
     )
 ]
 for transformer in transformers:

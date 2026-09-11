@@ -78,7 +78,7 @@ qc_transpiled = transpile(qc, coupling_map=coupling)
 
 ```python
 # Specify basis gates
-basis_gates = ['cx', 'id', 'rz', 'sx', 'x']
+basis_gates = ["cx", "id", "rz", "sx", "x"]
 qc_transpiled = transpile(qc, basis_gates=basis_gates)
 ```
 
@@ -142,7 +142,7 @@ qc_transpiled = transpile(qc, backend=backend, seed_transpiler=42)
 qc_transpiled = transpile(
     qc,
     backend=backend,
-    scheduling_method='alap'  # As Late As Possible
+    scheduling_method="alap",  # As Late As Possible
 )
 ```
 
@@ -183,7 +183,7 @@ print(f"Gate count: {qc_transpiled.size()}")
 print(f"Operations: {qc_transpiled.count_ops()}")
 
 # Check two-qubit gate count (major error source)
-two_qubit_gates = qc_transpiled.count_ops().get('cx', 0)
+two_qubit_gates = qc_transpiled.count_ops().get("cx", 0)
 print(f"Two-qubit gates: {two_qubit_gates}")
 ```
 
@@ -195,11 +195,7 @@ Transpile multiple circuits efficiently:
 
 ```python
 circuits = [qc1, qc2, qc3]
-transpiled_circuits = transpile(
-    circuits,
-    backend=backend,
-    optimization_level=3
-)
+transpiled_circuits = transpile(circuits, backend=backend, optimization_level=3)
 ```
 
 ## Pre-transpilation Best Practices
@@ -256,7 +252,7 @@ qc_transpiled = transpile(qc, backend=backend)
 
 ```python
 # IonQ has all-to-all connectivity, different basis gates
-basis_gates = ['gpi', 'gpi2', 'ms']
+basis_gates = ["gpi", "gpi2", "ms"]
 qc_transpiled = transpile(qc, basis_gates=basis_gates)
 ```
 

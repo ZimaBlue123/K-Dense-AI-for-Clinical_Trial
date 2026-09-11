@@ -139,16 +139,11 @@ Options:
 from scripts.generate_schematic_ai import ScientificSchematicGenerator
 
 # Initialize
-generator = ScientificSchematicGenerator(
-    api_key="your_key",
-    verbose=True
-)
+generator = ScientificSchematicGenerator(api_key="your_key", verbose=True)
 
 # Generate with iterative refinement
 results = generator.generate_iterative(
-    user_prompt="CONSORT flowchart",
-    output_path="figures/consort.png",
-    iterations=2
+    user_prompt="CONSORT flowchart", output_path="figures/consort.png", iterations=2
 )
 
 # Access results
@@ -156,7 +151,7 @@ print(f"Final score: {results['final_score']}/10")
 print(f"Final image: {results['final_image']}")
 
 # Review iterations
-for iteration in results['iterations']:
+for iteration in results["iterations"]:
     print(f"Iteration {iteration['iteration']}: {iteration['score']}/10")
     print(f"Critique: {iteration['critique']}")
 ```

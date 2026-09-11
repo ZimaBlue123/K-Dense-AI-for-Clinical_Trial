@@ -392,9 +392,7 @@ def parse_style(raw: object) -> tuple[int, dict[str, object]]:
         if text.isdigit():
             index = int(text)
         else:
-            names = {
-                profile["name"].lower(): key for key, profile in STYLE_PROFILES.items()
-            }
+            names = {profile["name"].lower(): key for key, profile in STYLE_PROFILES.items()}
             index = names.get(text, 1)
     if index not in STYLE_PROFILES:
         raise ValueError(f"Unsupported style: {raw}")
@@ -425,13 +423,9 @@ def render_defs(style_index: int, style: dict[str, object]) -> str:
             f'refX="{ref_x}" refY="{ref_y}" orient="auto">'
         )
         if style_index == 4:
-            marker_lines.append(
-                f'      <polygon points="0 0, 8 3, 0 6" fill="{color}"/>'
-            )
+            marker_lines.append(f'      <polygon points="0 0, 8 3, 0 6" fill="{color}"/>')
         else:
-            marker_lines.append(
-                f'      <polygon points="0 0, 10 3.5, 0 7" fill="{color}"/>'
-            )
+            marker_lines.append(f'      <polygon points="0 0, 10 3.5, 0 7" fill="{color}"/>')
         marker_lines.append("    </marker>")
 
     filters = []
@@ -500,14 +494,10 @@ def render_defs(style_index: int, style: dict[str, object]) -> str:
     )
 
 
-def render_canvas(
-    style_index: int, style: dict[str, object], width: float, height: float
-) -> str:
+def render_canvas(style_index: int, style: dict[str, object], width: float, height: float) -> str:
     background = str(style_value(style, "background"))
     if style_index == 2:
-        parts = [
-            f'  <rect width="{width}" height="{height}" fill="url(#terminalGradient)"/>'
-        ]
+        parts = [f'  <rect width="{width}" height="{height}" fill="url(#terminalGradient)"/>']
     else:
         parts = [f'  <rect width="{width}" height="{height}" fill="{background}"/>']
 
@@ -527,9 +517,7 @@ def render_title_block(
     subtitle = normalize_text(data.get("subtitle", ""))
     x, anchor = title_position(style, width)
     if anchor == "middle":
-        parts = [
-            f'  <text x="{x}" y="56" text-anchor="{anchor}" class="title">{title}</text>'
-        ]
+        parts = [f'  <text x="{x}" y="56" text-anchor="{anchor}" class="title">{title}</text>']
         cursor_y = 82
         if subtitle:
             parts.append(
@@ -538,9 +526,7 @@ def render_title_block(
             cursor_y += 24
         return "\n".join(parts), cursor_y + 10
 
-    parts = [
-        f'  <text x="{x}" y="48" text-anchor="{anchor}" class="title">{title}</text>'
-    ]
+    parts = [f'  <text x="{x}" y="48" text-anchor="{anchor}" class="title">{title}</text>']
     cursor_y = 72
     if subtitle:
         parts.append(
@@ -556,9 +542,7 @@ def render_title_block(
     return "\n".join(parts), cursor_y + 8
 
 
-def render_window_controls(
-    data: dict[str, object], style_index: int, width: float
-) -> str:
+def render_window_controls(data: dict[str, object], style_index: int, width: float) -> str:
     controls = data.get("window_controls")
     if not controls:
         return ""
@@ -574,9 +558,7 @@ def render_window_controls(
     return "\n".join(lines)
 
 
-def render_header_meta(
-    data: dict[str, object], style: dict[str, object], width: float
-) -> str:
+def render_header_meta(data: dict[str, object], style: dict[str, object], width: float) -> str:
     meta_left = normalize_text(data.get("meta_left", ""))
     meta_center = normalize_text(data.get("meta_center", ""))
     meta_right = normalize_text(data.get("meta_right", ""))
@@ -636,9 +618,7 @@ def render_blueprint_title_block(
         f'  <text x="{x + block_width / 2}" y="{y + 75}" text-anchor="middle" font-size="9.5" font-weight="600" fill="{sub_fill}">{center_caption}</text>',
         f'  <text x="{x + block_width - 12}" y="{y + 75}" text-anchor="end" font-size="9.5" font-weight="600" fill="{muted_fill}">{right_caption}</text>',
     ]
-    return "\n".join(lines), rectangle_bounds(
-        x - 6, y - 6, block_width + 12, block_height + 12
-    )
+    return "\n".join(lines), rectangle_bounds(x - 6, y - 6, block_width + 12, block_height + 12)
 
 
 def infer_shape(kind: str) -> str:
@@ -804,9 +784,7 @@ def offset_point(point: Point, port: str | None, distance: float) -> Point:
 
 
 def route_length(points: Sequence[Point]) -> float:
-    return sum(
-        abs(x1 - x2) + abs(y1 - y2) for (x1, y1), (x2, y2) in zip(points, points[1:])
-    )
+    return sum(abs(x1 - x2) + abs(y1 - y2) for (x1, y1), (x2, y2) in zip(points, points[1:]))
 
 
 def route_uses_lane(
@@ -881,16 +859,12 @@ def build_orthogonal_route(
 ) -> list[Point]:
     if arrow_data.get("route_points"):
         raw_points = [tuple(point) for point in arrow_data["route_points"]]
-        return simplify_points(
-            [start] + [(float(x), float(y)) for x, y in raw_points] + [end]
-        )
+        return simplify_points([start] + [(float(x), float(y)) for x, y in raw_points] + [end])
 
     sx, sy = start
     ex, ey = end
     routing_padding = to_float(arrow_data.get("routing_padding", 24))
-    port_clearance = to_float(
-        arrow_data.get("port_clearance", max(18, routing_padding * 0.85))
-    )
+    port_clearance = to_float(arrow_data.get("port_clearance", max(18, routing_padding * 0.85)))
     source_port = str(arrow_data.get("source_port", "")).strip().lower() or None
     target_port = str(arrow_data.get("target_port", "")).strip().lower() or None
     inner_start = offset_point(start, source_port, port_clearance)
@@ -962,9 +936,7 @@ def build_orthogonal_route(
         candidates.append([start, inner_start, (ssx, y), (eex, y), inner_end, end])
     for x in hint_x:
         for y in hint_y:
-            candidates.append(
-                [start, inner_start, (x, ssy), (x, y), (eex, y), inner_end, end]
-            )
+            candidates.append([start, inner_start, (x, ssy), (x, y), (eex, y), inner_end, end])
 
     best_route: list[Point] | None = None
     best_score = float("inf")
@@ -1000,9 +972,7 @@ def color_for_flow(style: dict[str, object], arrow_data: dict[str, object]) -> s
     return str(style_value(style, "arrow_colors")[flow])
 
 
-def marker_for_color(
-    style: dict[str, object], color: str, arrow_data: dict[str, object]
-) -> str:
+def marker_for_color(style: dict[str, object], color: str, arrow_data: dict[str, object]) -> str:
     if arrow_data.get("marker"):
         return f"url(#{arrow_data['marker']})"
     colors = style_value(style, "arrow_colors")
@@ -1032,10 +1002,7 @@ def bounds_intersect(a: Bounds, b: Bounds, padding: float = 0.0) -> bool:
     ax1, ay1, ax2, ay2 = a
     bx1, by1, bx2, by2 = b
     return not (
-        ax2 + padding <= bx1
-        or bx2 + padding <= ax1
-        or ay2 + padding <= by1
-        or by2 + padding <= ay1
+        ax2 + padding <= bx1 or bx2 + padding <= ax1 or ay2 + padding <= by1 or by2 + padding <= ay1
     )
 
 
@@ -1062,18 +1029,14 @@ def render_section(container: dict[str, object], style: dict[str, object]) -> st
     y = to_float(container["y"])
     width = to_float(container["width"])
     height = to_float(container["height"])
-    rx = to_float(
-        container.get("rx", 16 if style_value(style, "name") != "Notion Clean" else 4)
-    )
+    rx = to_float(container.get("rx", 16 if style_value(style, "name") != "Notion Clean" else 4))
     fill = str(container.get("fill", style_value(style, "section_fill")))
     stroke = str(container.get("stroke", style_value(style, "section_stroke")))
     dash = str(container.get("stroke_dasharray", style_value(style, "section_dash")))
     label = section_header_text(container, style)
     subtitle = str(container.get("subtitle", ""))
     side_label = str(container.get("side_label", "")).strip()
-    side_label_fill = str(
-        container.get("side_label_fill", style_value(style, "text_secondary"))
-    )
+    side_label_fill = str(container.get("side_label_fill", style_value(style, "text_secondary")))
     side_label_size = to_float(container.get("side_label_size", 14))
     side_label_weight = str(container.get("side_label_weight", "600"))
     side_label_anchor = str(container.get("side_label_anchor", "end"))
@@ -1192,9 +1155,7 @@ def footer_layout(
     return (x, y, rectangle_bounds(x, y - 12, footer_width, 16))
 
 
-def render_tags(
-    node: dict[str, object], x: float, y: float, style: dict[str, object]
-) -> list[str]:
+def render_tags(node: dict[str, object], x: float, y: float, style: dict[str, object]) -> list[str]:
     tags = node.get("tags", [])
     if not tags:
         return []
@@ -1216,9 +1177,7 @@ def render_tags(
     return lines
 
 
-def render_rect_node(
-    node: dict[str, object], style: dict[str, object], kind: str
-) -> str:
+def render_rect_node(node: dict[str, object], style: dict[str, object], kind: str) -> str:
     x = to_float(node["x"])
     y = to_float(node["y"])
     width = to_float(node.get("width", 180))
@@ -1266,9 +1225,7 @@ def render_rect_node(
         )
         header_colors = node.get("header_dots", ["#ef4444", "#f59e0b", "#10b981"])
         for idx, color in enumerate(header_colors):
-            lines.append(
-                f'  <circle cx="{x + 16 + idx * 14}" cy="{y + 9}" r="4" fill="{color}"/>'
-            )
+            lines.append(f'  <circle cx="{x + 16 + idx * 14}" cy="{y + 9}" r="4" fill="{color}"/>')
         lines.append(
             f'  <text x="{x + 18}" y="{y + 44}" font-size="28" font-weight="700" fill="{node.get("prompt_fill", "#10b981")}">$</text>'
         )
@@ -1385,9 +1342,7 @@ def render_rect_node(
             )
 
     type_offset = y + 18 if kind not in {"terminal", "bot"} else y + 18
-    title_y = (
-        y + height / 2 - (4 if type_label and kind not in {"terminal", "bot"} else 0)
-    )
+    title_y = y + height / 2 - (4 if type_label and kind not in {"terminal", "bot"} else 0)
     if kind in {"document", "folder"}:
         title_y = y + height + 26
     elif kind == "circle_cluster":
@@ -1401,9 +1356,7 @@ def render_rect_node(
         lines.append(
             f'  <text x="{x + (54 if kind == "user_avatar" else width / 2)}" y="{type_offset}" text-anchor="middle" class="node-type">{type_label}</text>'
         )
-        title_y += (
-            10 if kind not in {"document", "folder", "circle_cluster", "bot"} else 0
-        )
+        title_y += 10 if kind not in {"document", "folder", "circle_cluster", "bot"} else 0
 
     title_x = x + width / 2
     text_anchor = "middle"
@@ -1489,28 +1442,20 @@ def render_arrow(
 ) -> tuple[str, str, Bounds | None]:
     start_hint = (to_float(arrow.get("x1")), to_float(arrow.get("y1")))
     end_hint = (to_float(arrow.get("x2")), to_float(arrow.get("y2")))
-    source_node = (
-        node_map.get(str(arrow.get("source"))) if arrow.get("source") else None
-    )
-    target_node = (
-        node_map.get(str(arrow.get("target"))) if arrow.get("target") else None
-    )
+    source_node = node_map.get(str(arrow.get("source"))) if arrow.get("source") else None
+    target_node = node_map.get(str(arrow.get("target"))) if arrow.get("target") else None
     source_port = arrow.get("source_port")
     target_port = arrow.get("target_port")
 
     if source_node is not None:
         toward = end_hint if target_node is None else (target_node.cx, target_node.cy)
-        start = anchor_point(
-            source_node, toward, str(source_port) if source_port else None
-        )
+        start = anchor_point(source_node, toward, str(source_port) if source_port else None)
     else:
         start = start_hint
 
     if target_node is not None:
         toward = start_hint if source_node is None else (source_node.cx, source_node.cy)
-        end = anchor_point(
-            target_node, toward, str(target_port) if target_port else None
-        )
+        end = anchor_point(target_node, toward, str(target_port) if target_port else None)
     else:
         end = end_hint
 
@@ -1566,9 +1511,7 @@ def render_legend(
             color = style_value(style, "arrow_colors")[
                 FLOW_ALIASES.get(str(item.get("flow", "control")).lower(), "control")
             ]
-        marker = marker_for_color(
-            style, str(color), {"flow": item.get("flow", "control")}
-        )
+        marker = marker_for_color(style, str(color), {"flow": item.get("flow", "control")})
         lines.append(
             f'  <line x1="{legend_x}" y1="{y}" x2="{legend_x + 30}" y2="{y}" stroke="{color}" stroke-width="{style_value(style, "arrow_width")}" marker-end="{marker}"/>'
         )
@@ -1576,9 +1519,7 @@ def render_legend(
             f'  <text x="{legend_x + 40}" y="{y + 4}" class="legend">{normalize_text(item.get("label", ""))}</text>'
         )
     if data.get("legend_box"):
-        max_label = max(
-            (len(str(item.get("label", ""))) for item in legend), default=12
-        )
+        max_label = max((len(str(item.get("label", ""))) for item in legend), default=12)
         block_width = 40 + max_label * 7 + 12
         block_height = len(legend) * 22 + 6
         bg = data.get("legend_box_fill", style_value(style, "arrow_label_bg"))
@@ -1619,9 +1560,7 @@ def build_svg(template_type: str, data: dict[str, object]) -> str:
     arrows_data = data.get("arrows", [])
     legend = data.get("legend", [])
 
-    normalized_nodes = [
-        normalize_node(node, f"node-{idx}") for idx, node in enumerate(nodes_data)
-    ]
+    normalized_nodes = [normalize_node(node, f"node-{idx}") for idx, node in enumerate(nodes_data)]
     node_map = {node.node_id: node for node in normalized_nodes}
 
     defs = render_defs(style_index, style)
@@ -1704,9 +1643,7 @@ def build_svg(template_type: str, data: dict[str, object]) -> str:
 
 def main() -> None:
     if len(sys.argv) < 3:
-        print(
-            "Usage: python3 generate-from-template.py <template-type> <output-path> [data-json]"
-        )
+        print("Usage: python3 generate-from-template.py <template-type> <output-path> [data-json]")
         sys.exit(1)
 
     template_type = sys.argv[1]

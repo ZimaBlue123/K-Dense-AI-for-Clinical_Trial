@@ -17,9 +17,7 @@ import requests
 BASE_URL = "https://api.platform.opentargets.org/api/v4/graphql"
 
 
-def execute_query(
-    query: str, variables: dict[str, Any] | None = None
-) -> dict[str, Any]:
+def execute_query(query: str, variables: dict[str, Any] | None = None) -> dict[str, Any]:
     """
     Execute a GraphQL query against the Open Targets Platform API.
 
@@ -339,9 +337,7 @@ def get_drug_info(chembl_id: str) -> dict[str, Any]:
     return result.get("drug", {})
 
 
-def get_target_associations(
-    ensembl_id: str, min_score: float = 0.0
-) -> list[dict[str, Any]]:
+def get_target_associations(ensembl_id: str, min_score: float = 0.0) -> list[dict[str, Any]]:
     """
     Get all disease associations for a target, filtered by minimum score.
 
@@ -374,9 +370,7 @@ def get_target_associations(
     """
 
     result = execute_query(query, {"ensemblId": ensembl_id})
-    associations = (
-        result.get("target", {}).get("associatedDiseases", {}).get("rows", [])
-    )
+    associations = result.get("target", {}).get("associatedDiseases", {}).get("rows", [])
 
     # Filter by minimum score
     return [assoc for assoc in associations if assoc.get("score", 0) >= min_score]
@@ -403,9 +397,7 @@ if __name__ == "__main__":
         if diseases:
             print("\n  Top associated diseases:")
             for disease in diseases[:3]:
-                print(
-                    f"    - {disease['disease']['name']} (score: {disease['score']:.2f})"
-                )
+                print(f"    - {disease['disease']['name']} (score: {disease['score']:.2f})")
 
     # Example 3: Search for a disease
     print("\n\nSearching for Alzheimer's disease...")

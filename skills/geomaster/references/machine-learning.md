@@ -15,6 +15,7 @@ from rasterio.features import rasterize
 import geopandas as gpd
 import numpy as np
 
+
 def train_random_forest_classifier(raster_path, training_gdf):
     """Train Random Forest for image classification."""
 
@@ -30,14 +31,14 @@ def train_random_forest_classifier(raster_path, training_gdf):
     for _, row in training_gdf.iterrows():
         mask = rasterize(
             [(row.geometry, 1)],
-            out_shape=(profile['height'], profile['width']),
+            out_shape=(profile["height"], profile["width"]),
             transform=transform,
             fill=0,
-            dtype=np.uint8
+            dtype=np.uint8,
         )
         pixels = image[:, mask > 0].T
         X.extend(pixels)
-        y.extend([row['class_id']] * len(pixels))
+        y.extend([row["class_id"]] * len(pixels))
 
     X = np.array(X)
     y = np.array(y)
@@ -53,9 +54,9 @@ def train_random_forest_classifier(raster_path, training_gdf):
         max_depth=20,
         min_samples_split=10,
         min_samples_leaf=4,
-        class_weight='balanced',
+        class_weight="balanced",
         n_jobs=-1,
-        random_state=42
+        random_state=42,
     )
     rf.fit(X_train, y_train)
 
@@ -65,16 +66,16 @@ def train_random_forest_classifier(raster_path, training_gdf):
     print(classification_report(y_val, y_pred))
 
     # Feature importance
-    feature_names = [f'Band_{i}' for i in range(X.shape[1])]
-    importances = pd.DataFrame({
-        'feature': feature_names,
-        'importance': rf.feature_importances_
-    }).sort_values('importance', ascending=False)
+    feature_names = [f"Band_{i}" for i in range(X.shape[1])]
+    importances = pd.DataFrame(
+        {"feature": feature_names, "importance": rf.feature_importances_}
+    ).sort_values("importance", ascending=False)
 
     print("\nFeature Importance:")
     print(importances)
 
     return rf
+
 
 # Classify full image
 def classify_image(model, image_path, output_path):
@@ -87,7 +88,7 @@ def classify_image(model, image_path, output_path):
     prediction = prediction.reshape(image.shape[1], image.shape[2])
 
     profile.update(dtype=rasterio.uint8, count=1)
-    with rasterio.open(output_path, 'w', **profile) as dst:
+    with rasterio.open(output_path, "w", **profile) as dst:
         dst.write(prediction.astype(rasterio.uint8), 1)
 ```
 
@@ -97,6 +98,7 @@ def classify_image(model, image_path, output_path):
 from sklearn.svm import SVC
 from sklearn.preprocessing import StandardScaler
 
+
 def svm_classifier(X_train, y_train):
     """SVM classifier for remote sensing."""
 
@@ -105,16 +107,11 @@ def svm_classifier(X_train, y_train):
     X_train_scaled = scaler.fit_transform(X_train)
 
     # Train SVM
-    svm = SVC(
-        kernel='rbf',
-        C=100,
-        gamma='scale',
-        class_weight='balanced',
-        probability=True
-    )
+    svm = SVC(kernel="rbf", C=100, gamma="scale", class_weight="balanced", probability=True)
     svm.fit(X_train_scaled, y_train)
 
     return svm, scaler
+
 
 # Multi-class classification
 def multiclass_svm(X_train, y_train):
@@ -123,10 +120,7 @@ def multiclass_svm(X_train, y_train):
     scaler = StandardScaler()
     X_train_scaled = scaler.fit_transform(X_train)
 
-    svm_ovr = OneVsRestClassifier(
-        SVC(kernel='rbf', C=10, probability=True),
-        n_jobs=-1
-    )
+    svm_ovr = OneVsRestClassifier(SVC(kernel="rbf", C=10, probability=True), n_jobs=-1)
     svm_ovr.fit(X_train_scaled, y_train)
 
     return svm_ovr, scaler
@@ -143,6 +137,7 @@ import torchgeo.datasets as datasets
 import torchgeo.models as models
 from torch.utils.data import DataLoader
 
+
 # Define CNN
 class LandCoverCNN(nn.Module):
     def __init__(self, in_channels=12, num_classes=10):
@@ -152,12 +147,10 @@ class LandCoverCNN(nn.Module):
             nn.BatchNorm2d(64),
             nn.ReLU(),
             nn.MaxPool2d(2),
-
             nn.Conv2d(64, 128, 3, padding=1),
             nn.BatchNorm2d(128),
             nn.ReLU(),
             nn.MaxPool2d(2),
-
             nn.Conv2d(128, 256, 3, padding=1),
             nn.BatchNorm2d(256),
             nn.ReLU(),
@@ -168,11 +161,9 @@ class LandCoverCNN(nn.Module):
             nn.ConvTranspose2d(256, 128, 2, stride=2),
             nn.BatchNorm2d(128),
             nn.ReLU(),
-
             nn.ConvTranspose2d(128, 64, 2, stride=2),
             nn.BatchNorm2d(64),
             nn.ReLU(),
-
             nn.ConvTranspose2d(64, num_classes, 2, stride=2),
         )
 
@@ -181,9 +172,10 @@ class LandCoverCNN(nn.Module):
         x = self.decoder(x)
         return x
 
+
 # Training
 def train_model(train_loader, val_loader, num_epochs=50):
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = LandCoverCNN().to(device)
 
     criterion = nn.CrossEntropyLoss()
@@ -214,7 +206,9 @@ def train_model(train_loader, val_loader, num_epochs=50):
                 loss = criterion(outputs, labels)
                 val_loss += loss.item()
 
-        print(f'Epoch {epoch+1}/{num_epochs}, Train Loss: {train_loss:.4f}, Val Loss: {val_loss:.4f}')
+        print(
+            f"Epoch {epoch + 1}/{num_epochs}, Train Loss: {train_loss:.4f}, Val Loss: {val_loss:.4f}"
+        )
 
     return model
 ```
@@ -258,7 +252,7 @@ class UNet(nn.Module):
             nn.ReLU(inplace=True),
             nn.Conv2d(out_ch, out_ch, 3, padding=1),
             nn.BatchNorm2d(out_ch),
-            nn.ReLU(inplace=True)
+            nn.ReLU(inplace=True),
         )
 
     def forward(self, x):
@@ -293,12 +287,10 @@ class SiameseNetwork(nn.Module):
             nn.BatchNorm2d(32),
             nn.ReLU(),
             nn.MaxPool2d(2),
-
             nn.Conv2d(32, 64, 3, padding=1),
             nn.BatchNorm2d(64),
             nn.ReLU(),
             nn.MaxPool2d(2),
-
             nn.Conv2d(64, 128, 3, padding=1),
             nn.BatchNorm2d(128),
             nn.ReLU(),
@@ -332,6 +324,7 @@ import torch
 from torch_geometric.data import Data
 from torch_geometric.nn import GCNConv
 
+
 # Create spatial graph
 def create_spatial_graph(points_gdf, k_neighbors=5):
     """Create graph from point data using k-NN."""
@@ -353,10 +346,11 @@ def create_spatial_graph(points_gdf, k_neighbors=5):
     edge_index = torch.tensor(edge_index, dtype=torch.long).t().contiguous()
 
     # Node features
-    features = points_gdf.drop('geometry', axis=1).values
+    features = points_gdf.drop("geometry", axis=1).values
     x = torch.tensor(features, dtype=torch.float)
 
     return Data(x=x, edge_index=edge_index)
+
 
 # GCN for spatial prediction
 class SpatialGCN(torch.nn.Module):
@@ -383,6 +377,7 @@ class SpatialGCN(torch.nn.Module):
 import shap
 import numpy as np
 
+
 def explain_model(model, X, feature_names):
     """Explain model predictions using SHAP."""
 
@@ -400,6 +395,7 @@ def explain_model(model, X, feature_names):
         shap.dependence_plot(i, shap_values, X, feature_names=feature_names)
 
     return shap_values
+
 
 # Spatial SHAP (accounting for spatial autocorrelation)
 def spatial_shap(model, X, coordinates):
@@ -429,6 +425,7 @@ import cv2
 import torch
 import torch.nn.functional as F
 
+
 def generate_attention_map(model, image_tensor, target_layer):
     """Generate attention map using Grad-CAM."""
 
@@ -452,8 +449,9 @@ def generate_attention_map(model, image_tensor, target_layer):
 
     # ReLU and normalize
     attention = F.relu(attention)
-    attention = F.interpolate(attention, size=image_tensor.shape[2:],
-                              mode='bilinear', align_corners=False)
+    attention = F.interpolate(
+        attention, size=image_tensor.shape[2:], mode="bilinear", align_corners=False
+    )
     attention = (attention - attention.min()) / (attention.max() - attention.min())
 
     return attention.squeeze().cpu().numpy()

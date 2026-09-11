@@ -69,14 +69,14 @@ counts2 = results[1].data.meas.get_counts()
 ```python
 from qiskit.circuit import Parameter
 
-theta = Parameter('θ')
+theta = Parameter("θ")
 qc = QuantumCircuit(1)
 qc.ry(theta, 0)
 qc.measure_all()
 
 # Run with parameter values
 sampler = StatevectorSampler()
-param_values = [[0], [np.pi/4], [np.pi/2]]
+param_values = [[0], [np.pi / 4], [np.pi / 2]]
 result = sampler.run([(qc, param_values)], shots=1024).result()
 ```
 
@@ -130,7 +130,7 @@ ev2 = result[1].data.evs
 from qiskit.circuit import Parameter
 import numpy as np
 
-theta = Parameter('θ')
+theta = Parameter("θ")
 qc = QuantumCircuit(1)
 qc.ry(theta, 0)
 
@@ -138,7 +138,7 @@ observable = SparsePauliOp(["Z"])
 
 # Run with multiple parameter values
 estimator = StatevectorEstimator()
-param_values = [[0], [np.pi/4], [np.pi/2], [np.pi]]
+param_values = [[0], [np.pi / 4], [np.pi / 2], [np.pi]]
 result = estimator.run([(qc, observable, param_values)]).result()
 ```
 
@@ -242,7 +242,7 @@ result = sampler.run([qc], shots=1024).result()
 counts = result[0].data.meas.get_counts()
 
 # Get probabilities
-probs = {k: v/1024 for k, v in counts.items()}
+probs = {k: v / 1024 for k, v in counts.items()}
 
 # Get metadata
 metadata = result[0].metadata

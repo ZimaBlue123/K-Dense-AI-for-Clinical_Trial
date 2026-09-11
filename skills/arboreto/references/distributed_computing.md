@@ -30,12 +30,12 @@ For fine-grained control over local resources, create a custom Dask client:
 from distributed import LocalCluster, Client
 from arboreto.algo import grnboost2
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Configure local cluster
     local_cluster = LocalCluster(
-        n_workers=10,              # Number of worker processes
-        threads_per_worker=1,       # Threads per worker
-        memory_limit='8GB'          # Memory limit per worker
+        n_workers=10,  # Number of worker processes
+        threads_per_worker=1,  # Threads per worker
+        memory_limit="8GB",  # Memory limit per worker
     )
 
     # Create client
@@ -43,9 +43,7 @@ if __name__ == '__main__':
 
     # Run inference with custom client
     network = grnboost2(
-        expression_data=expression_matrix,
-        tf_names=tf_names,
-        client_or_address=custom_client
+        expression_data=expression_matrix, tf_names=tf_names, client_or_address=custom_client
     )
 
     # Clean up
@@ -66,32 +64,25 @@ Reuse a single Dask client for multiple inference runs with different parameters
 from distributed import LocalCluster, Client
 from arboreto.algo import grnboost2
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Initialize client once
     local_cluster = LocalCluster(n_workers=8, threads_per_worker=1)
     client = Client(local_cluster)
 
     # Run multiple inferences
     network_seed1 = grnboost2(
-        expression_data=expression_matrix,
-        tf_names=tf_names,
-        client_or_address=client,
-        seed=666
+        expression_data=expression_matrix, tf_names=tf_names, client_or_address=client, seed=666
     )
 
     network_seed2 = grnboost2(
-        expression_data=expression_matrix,
-        tf_names=tf_names,
-        client_or_address=client,
-        seed=777
+        expression_data=expression_matrix, tf_names=tf_names, client_or_address=client, seed=777
     )
 
     # Different algorithms with same client
     from arboreto.algo import genie3
+
     network_genie3 = genie3(
-        expression_data=expression_matrix,
-        tf_names=tf_names,
-        client_or_address=client
+        expression_data=expression_matrix, tf_names=tf_names, client_or_address=client
     )
 
     # Clean up once
@@ -119,16 +110,14 @@ dask-worker tcp://10.118.224.134:8786
 from distributed import Client
 from arboreto.algo import grnboost2
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Connect to remote scheduler
-    scheduler_address = 'tcp://10.118.224.134:8786'
+    scheduler_address = "tcp://10.118.224.134:8786"
     cluster_client = Client(scheduler_address)
 
     # Run inference on cluster
     network = grnboost2(
-        expression_data=expression_matrix,
-        tf_names=tf_names,
-        client_or_address=cluster_client
+        expression_data=expression_matrix, tf_names=tf_names, client_or_address=cluster_client
     )
 
     cluster_client.close()
@@ -173,11 +162,7 @@ The dashboard shows:
 Enable verbose logging to track inference progress:
 
 ```python
-network = grnboost2(
-    expression_data=expression_matrix,
-    tf_names=tf_names,
-    verbose=True
-)
+network = grnboost2(expression_data=expression_matrix, tf_names=tf_names, verbose=True)
 ```
 
 ## Performance Optimization Tips
@@ -214,15 +199,15 @@ from distributed import Client
 from arboreto.algo import grnboost2
 import pandas as pd
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Connect to cluster
-    client = Client('tcp://cluster-scheduler:8786')
+    client = Client("tcp://cluster-scheduler:8786")
 
     # Load large single-cell dataset (50,000 cells x 20,000 genes)
-    expression_data = pd.read_csv('scrnaseq_data.tsv', sep='\t')
+    expression_data = pd.read_csv("scrnaseq_data.tsv", sep="\t")
 
     # Load cell-type-specific TFs
-    tf_names = pd.read_csv('tf_list.txt', header=None)[0].tolist()
+    tf_names = pd.read_csv("tf_list.txt", header=None)[0].tolist()
 
     # Run distributed inference
     network = grnboost2(
@@ -230,11 +215,11 @@ if __name__ == '__main__':
         tf_names=tf_names,
         client_or_address=client,
         verbose=True,
-        seed=42
+        seed=42,
     )
 
     # Save results
-    network.to_csv('grn_results.tsv', sep='\t', index=False)
+    network.to_csv("grn_results.tsv", sep="\t", index=False)
 
     client.close()
 ```

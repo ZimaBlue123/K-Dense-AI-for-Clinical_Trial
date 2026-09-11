@@ -16,7 +16,8 @@
 import pennylane as qml
 from pennylane import numpy as np
 
-dev = qml.device('default.qubit', wires=2)
+dev = qml.device("default.qubit", wires=2)
+
 
 @qml.qnode(dev)
 def cost_function(params):
@@ -24,6 +25,7 @@ def cost_function(params):
     qml.RY(params[1], wires=1)
     qml.CNOT(wires=[0, 1])
     return qml.expval(qml.PauliZ(0) @ qml.PauliZ(1))
+
 
 # Initialize optimizer
 opt = qml.GradientDescentOptimizer(stepsize=0.1)
@@ -108,11 +110,12 @@ for i in range(100):
 
 ```python
 # Backpropagation (for simulators)
-@qml.qnode(dev, diff_method='backprop')
+@qml.qnode(dev, diff_method="backprop")
 def circuit_backprop(params):
     qml.RX(params[0], wires=0)
     qml.RY(params[1], wires=1)
     return qml.expval(qml.PauliZ(0))
+
 
 # Compute gradient
 grad_fn = qml.grad(circuit_backprop)
@@ -124,12 +127,13 @@ gradients = grad_fn(params)
 
 ```python
 # Hardware-compatible gradient method
-@qml.qnode(dev, diff_method='parameter-shift')
+@qml.qnode(dev, diff_method="parameter-shift")
 def circuit_param_shift(params):
     qml.RX(params[0], wires=0)
     qml.RY(params[1], wires=1)
     qml.CNOT(wires=[0, 1])
     return qml.expval(qml.PauliZ(0))
+
 
 # Works on quantum hardware
 grad_fn = qml.grad(circuit_param_shift)
@@ -140,10 +144,11 @@ gradients = grad_fn(params)
 
 ```python
 # Numerical gradient approximation
-@qml.qnode(dev, diff_method='finite-diff')
+@qml.qnode(dev, diff_method="finite-diff")
 def circuit_finite_diff(params):
     qml.RX(params[0], wires=0)
     return qml.expval(qml.PauliZ(0))
+
 
 grad_fn = qml.grad(circuit_finite_diff)
 gradients = grad_fn(params)
@@ -153,11 +158,12 @@ gradients = grad_fn(params)
 
 ```python
 # Efficient gradient for state vector simulators
-@qml.qnode(dev, diff_method='adjoint')
+@qml.qnode(dev, diff_method="adjoint")
 def circuit_adjoint(params):
     qml.RX(params[0], wires=0)
     qml.RY(params[1], wires=1)
     return qml.expval(qml.PauliZ(0))
+
 
 grad_fn = qml.grad(circuit_adjoint)
 gradients = grad_fn(params)
@@ -166,11 +172,12 @@ gradients = grad_fn(params)
 ### Custom Gradients
 
 ```python
-@qml.qnode(dev, diff_method='parameter-shift')
+@qml.qnode(dev, diff_method="parameter-shift")
 def circuit(params):
     qml.RX(params[0], wires=0)
     qml.RY(params[1], wires=1)
     return qml.expval(qml.PauliZ(0))
+
 
 # Compute Hessian
 hessian_fn = qml.jacobian(qml.grad(circuit))
@@ -181,11 +188,12 @@ hessian = hessian_fn(params)
 
 ```python
 # For circuits with many parameters
-@qml.qnode(dev, diff_method='spsa')  # Simultaneous Perturbation Stochastic Approximation
+@qml.qnode(dev, diff_method="spsa")  # Simultaneous Perturbation Stochastic Approximation
 def large_circuit(params):
     for i, param in enumerate(params):
         qml.RY(param, wires=i % 4)
     return qml.expval(qml.PauliZ(0))
+
 
 # Efficient for high-dimensional parameter spaces
 opt = qml.SPSAOptimizer(maxiter=100)
@@ -202,7 +210,7 @@ params = opt.minimize(large_circuit, params)
 def vqe(hamiltonian, ansatz, n_qubits):
     """VQE implementation."""
 
-    dev = qml.device('default.qubit', wires=n_qubits)
+    dev = qml.device("default.qubit", wires=n_qubits)
 
     @qml.qnode(dev)
     def cost_fn(params):
@@ -226,19 +234,22 @@ def vqe(hamiltonian, ansatz, n_qubits):
 
     return params, energy, energies
 
+
 # Example usage
 from pennylane import qchem
 
-symbols = ['H', 'H']
+symbols = ["H", "H"]
 coords = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.74])
 H, n_qubits = qchem.molecular_hamiltonian(symbols, coords)
+
 
 def simple_ansatz(params, wires):
     qml.BasisState(qchem.hf_state(2, n_qubits), wires=wires)
     for i, param in enumerate(params):
         qml.RY(param, wires=i % len(wires))
-    for i in range(len(wires)-1):
-        qml.CNOT(wires=[i, i+1])
+    for i in range(len(wires) - 1):
+        qml.CNOT(wires=[i, i + 1])
+
 
 params, energy, history = vqe(H, simple_ansatz, n_qubits)
 ```
@@ -252,6 +263,7 @@ def circuit(params):
     for i, param in enumerate(params):
         qml.RY(param, wires=i)
     return qml.expval(qml.PauliZ(0))
+
 
 # Use quantum natural gradient
 opt = qml.QNGOptimizer(stepsize=0.01)
@@ -267,11 +279,13 @@ for i in range(100):
 # Analytical parameter update
 opt = qml.RotosolveOptimizer()
 
+
 @qml.qnode(dev)
 def cost_fn(params):
     qml.RX(params[0], wires=0)
     qml.RY(params[1], wires=1)
     return qml.expval(qml.PauliZ(0))
+
 
 params = np.array([0.1, 0.2], requires_grad=True)
 
@@ -308,11 +322,13 @@ cost_h = qaoa.maxcut(graph)
 # Mixer Hamiltonian
 mixer_h = qaoa.x_mixer(range(3))
 
+
 # QAOA circuit
 def qaoa_layer(gamma, alpha):
     """Single QAOA layer."""
     qaoa.cost_layer(gamma, cost_h)
     qaoa.mixer_layer(alpha, mixer_h)
+
 
 @qml.qnode(dev)
 def qaoa_circuit(params, depth):
@@ -330,9 +346,10 @@ def qaoa_circuit(params, depth):
     # Measure in computational basis
     return qml.expval(cost_h)
 
+
 # Optimize
 depth = 3
-params = np.random.uniform(0, 2*np.pi, 2*depth, requires_grad=True)
+params = np.random.uniform(0, 2 * np.pi, 2 * depth, requires_grad=True)
 
 opt = qml.AdamOptimizer(stepsize=0.1)
 
@@ -355,7 +372,8 @@ G = nx.cycle_graph(4)
 cost_h, mixer_h = qaoa.maxcut(G, constrained=False)
 
 n_wires = len(G.nodes)
-dev = qml.device('default.qubit', wires=n_wires)
+dev = qml.device("default.qubit", wires=n_wires)
+
 
 def qaoa_maxcut(params, depth):
     """QAOA for MaxCut problem."""
@@ -385,9 +403,10 @@ def qaoa_maxcut(params, depth):
     betas = params[depth:]
     return circuit(gammas, betas)
 
+
 # Optimize
 depth = 3
-params = np.random.uniform(0, 2*np.pi, 2*depth, requires_grad=True)
+params = np.random.uniform(0, 2 * np.pi, 2 * depth, requires_grad=True)
 
 opt = qml.AdamOptimizer(0.1)
 for i in range(100):
@@ -401,7 +420,7 @@ def qaoa_qubo(Q, depth):
     """QAOA for Quadratic Unconstrained Binary Optimization."""
 
     n = len(Q)
-    dev = qml.device('default.qubit', wires=n)
+    dev = qml.device("default.qubit", wires=n)
 
     # Build cost Hamiltonian from QUBO matrix
     coeffs = []
@@ -441,6 +460,7 @@ def qaoa_qubo(Q, depth):
         return qml.expval(cost_h)
 
     return circuit
+
 
 # Example QUBO
 Q = np.array([[1, -2], [-2, 1]])
@@ -499,8 +519,8 @@ def minibatch_train(circuit, X, y, batch_size=32, n_epochs=100):
 
         # Mini-batch updates
         for i in range(0, n_samples, batch_size):
-            X_batch = X_shuffled[i:i+batch_size]
-            y_batch = y_shuffled[i:i+batch_size]
+            X_batch = X_shuffled[i : i + batch_size]
+            y_batch = y_shuffled[i : i + batch_size]
 
             # Compute batch cost
             def batch_cost(p):
@@ -524,7 +544,7 @@ def train_with_early_stopping(circuit, params, X_train, X_val, patience=10):
 
     opt = qml.AdamOptimizer(stepsize=0.01)
 
-    best_val_loss = float('inf')
+    best_val_loss = float("inf")
     patience_counter = 0
     best_params = params.copy()
 
@@ -608,24 +628,24 @@ def detect_barren_plateau(circuit, params, n_samples=100):
 ### Parameter Initialization
 
 ```python
-def initialize_params_smart(n_params, strategy='small_random'):
+def initialize_params_smart(n_params, strategy="small_random"):
     """Smart parameter initialization strategies."""
 
-    if strategy == 'small_random':
+    if strategy == "small_random":
         # Small random values
         return np.random.uniform(-0.1, 0.1, n_params, requires_grad=True)
 
-    elif strategy == 'xavier':
+    elif strategy == "xavier":
         # Xavier initialization
-        return np.random.normal(0, 1/np.sqrt(n_params), n_params, requires_grad=True)
+        return np.random.normal(0, 1 / np.sqrt(n_params), n_params, requires_grad=True)
 
-    elif strategy == 'identity':
+    elif strategy == "identity":
         # Start near identity (zeros for rotations)
         return np.zeros(n_params, requires_grad=True)
 
-    elif strategy == 'layerwise':
+    elif strategy == "layerwise":
         # Layer-dependent initialization
-        return np.array([0.1 / (i+1) for i in range(n_params)], requires_grad=True)
+        return np.array([0.1 / (i + 1) for i in range(n_params)], requires_grad=True)
 ```
 
 ### Local Minima Escape
@@ -634,7 +654,7 @@ def initialize_params_smart(n_params, strategy='small_random'):
 def train_with_restarts(circuit, n_restarts=5):
     """Multiple random restarts to escape local minima."""
 
-    best_cost = float('inf')
+    best_cost = float("inf")
     best_params = None
 
     for restart in range(n_restarts):

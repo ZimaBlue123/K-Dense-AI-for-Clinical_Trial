@@ -39,10 +39,10 @@ Retrieve metadata and statistics about KEGG databases.
 from scripts.kegg_api import kegg_info
 
 # Get pathway database info
-info = kegg_info('pathway')
+info = kegg_info("pathway")
 
 # Get organism-specific info
-hsa_info = kegg_info('hsa')  # Human genome
+hsa_info = kegg_info("hsa")  # Human genome
 ```
 
 **Common databases**: `kegg`, `pathway`, `module`, `brite`, `genes`, `genome`, `compound`, `glycan`, `reaction`, `enzyme`, `disease`, `drug`
@@ -58,13 +58,13 @@ List entry identifiers and names from KEGG databases.
 from scripts.kegg_api import kegg_list
 
 # List all reference pathways
-pathways = kegg_list('pathway')
+pathways = kegg_list("pathway")
 
 # List human-specific pathways
-hsa_pathways = kegg_list('pathway', 'hsa')
+hsa_pathways = kegg_list("pathway", "hsa")
 
 # List specific genes (max 10)
-genes = kegg_list('hsa:10458+hsa:10459')
+genes = kegg_list("hsa:10458+hsa:10459")
 ```
 
 **Common organism codes**: `hsa` (human), `mmu` (mouse), `dme` (fruit fly), `sce` (yeast), `eco` (E. coli)
@@ -80,14 +80,14 @@ Search KEGG databases by keywords or molecular properties.
 from scripts.kegg_api import kegg_find
 
 # Keyword search
-results = kegg_find('genes', 'p53')
-shiga_toxin = kegg_find('genes', 'shiga toxin')
+results = kegg_find("genes", "p53")
+shiga_toxin = kegg_find("genes", "shiga toxin")
 
 # Chemical formula search (exact match)
-compounds = kegg_find('compound', 'C7H10N4O2', 'formula')
+compounds = kegg_find("compound", "C7H10N4O2", "formula")
 
 # Molecular weight range search
-drugs = kegg_find('drug', '300-310', 'exact_mass')
+drugs = kegg_find("drug", "300-310", "exact_mass")
 ```
 
 **Search options**: `formula` (exact match), `exact_mass` (range), `mol_weight` (range)
@@ -103,25 +103,25 @@ Get complete database entries or specific data formats.
 from scripts.kegg_api import kegg_get
 
 # Get pathway entry
-pathway = kegg_get('hsa00010')  # Glycolysis pathway
+pathway = kegg_get("hsa00010")  # Glycolysis pathway
 
 # Get multiple entries (max 10)
-genes = kegg_get(['hsa:10458', 'hsa:10459'])
+genes = kegg_get(["hsa:10458", "hsa:10459"])
 
 # Get protein sequence (FASTA)
-sequence = kegg_get('hsa:10458', 'aaseq')
+sequence = kegg_get("hsa:10458", "aaseq")
 
 # Get nucleotide sequence
-nt_seq = kegg_get('hsa:10458', 'ntseq')
+nt_seq = kegg_get("hsa:10458", "ntseq")
 
 # Get compound structure
-mol_file = kegg_get('cpd:C00002', 'mol')  # ATP in MOL format
+mol_file = kegg_get("cpd:C00002", "mol")  # ATP in MOL format
 
 # Get pathway as JSON (single entry only)
-pathway_json = kegg_get('hsa05130', 'json')
+pathway_json = kegg_get("hsa05130", "json")
 
 # Get pathway image (single entry only)
-pathway_img = kegg_get('hsa05130', 'image')
+pathway_img = kegg_get("hsa05130", "image")
 ```
 
 **Output formats**: `aaseq` (protein FASTA), `ntseq` (nucleotide FASTA), `mol` (MOL format), `kcf` (KCF format), `image` (PNG), `kgml` (XML), `json` (pathway JSON)
@@ -139,19 +139,19 @@ Convert identifiers between KEGG and external databases.
 from scripts.kegg_api import kegg_conv
 
 # Convert all human genes to NCBI Gene IDs
-conversions = kegg_conv('ncbi-geneid', 'hsa')
+conversions = kegg_conv("ncbi-geneid", "hsa")
 
 # Convert specific gene
-gene_id = kegg_conv('ncbi-geneid', 'hsa:10458')
+gene_id = kegg_conv("ncbi-geneid", "hsa:10458")
 
 # Convert to UniProt
-uniprot_id = kegg_conv('uniprot', 'hsa:10458')
+uniprot_id = kegg_conv("uniprot", "hsa:10458")
 
 # Convert compounds to PubChem
-pubchem_ids = kegg_conv('pubchem', 'compound')
+pubchem_ids = kegg_conv("pubchem", "compound")
 
 # Reverse conversion (NCBI Gene ID to KEGG)
-kegg_id = kegg_conv('hsa', 'ncbi-geneid')
+kegg_id = kegg_conv("hsa", "ncbi-geneid")
 ```
 
 **Supported conversions**: `ncbi-geneid`, `ncbi-proteinid`, `uniprot`, `pubchem`, `chebi`
@@ -167,19 +167,19 @@ Find related entries within and between KEGG databases.
 from scripts.kegg_api import kegg_link
 
 # Find pathways linked to human genes
-pathways = kegg_link('pathway', 'hsa')
+pathways = kegg_link("pathway", "hsa")
 
 # Get genes in a specific pathway
-genes = kegg_link('genes', 'hsa00010')  # Glycolysis genes
+genes = kegg_link("genes", "hsa00010")  # Glycolysis genes
 
 # Find pathways containing a specific gene
-gene_pathways = kegg_link('pathway', 'hsa:10458')
+gene_pathways = kegg_link("pathway", "hsa:10458")
 
 # Find compounds in a pathway
-compounds = kegg_link('compound', 'hsa00010')
+compounds = kegg_link("compound", "hsa00010")
 
 # Map genes to KO (orthology) groups
-ko_groups = kegg_link('ko', 'hsa:10458')
+ko_groups = kegg_link("ko", "hsa:10458")
 ```
 
 **Common links**: genes ↔ pathway, pathway ↔ compound, pathway ↔ enzyme, genes ↔ ko (orthology)
@@ -195,10 +195,10 @@ Check for drug-drug interactions.
 from scripts.kegg_api import kegg_ddi
 
 # Check single drug
-interactions = kegg_ddi('D00001')
+interactions = kegg_ddi("D00001")
 
 # Check multiple drugs (max 10)
-interactions = kegg_ddi(['D00001', 'D00002', 'D00003'])
+interactions = kegg_ddi(["D00001", "D00002", "D00003"])
 ```
 
 ## Common Analysis Workflows
@@ -211,15 +211,15 @@ interactions = kegg_ddi(['D00001', 'D00002', 'D00003'])
 from scripts.kegg_api import kegg_find, kegg_link, kegg_get
 
 # Step 1: Find gene ID by name
-gene_results = kegg_find('genes', 'p53')
+gene_results = kegg_find("genes", "p53")
 
 # Step 2: Link gene to pathways
-pathways = kegg_link('pathway', 'hsa:7157')  # TP53 gene
+pathways = kegg_link("pathway", "hsa:7157")  # TP53 gene
 
 # Step 3: Get detailed pathway information
-for pathway_line in pathways.split('\n'):
+for pathway_line in pathways.split("\n"):
     if pathway_line:
-        pathway_id = pathway_line.split('\t')[1].replace('path:', '')
+        pathway_id = pathway_line.split("\t")[1].replace("path:", "")
         pathway_info = kegg_get(pathway_id)
         # Process pathway information
 ```
@@ -232,13 +232,13 @@ for pathway_line in pathways.split('\n'):
 from scripts.kegg_api import kegg_list, kegg_link
 
 # Step 1: List all human pathways
-pathways = kegg_list('pathway', 'hsa')
+pathways = kegg_list("pathway", "hsa")
 
 # Step 2: For each pathway, get associated genes
-for pathway_line in pathways.split('\n'):
+for pathway_line in pathways.split("\n"):
     if pathway_line:
-        pathway_id = pathway_line.split('\t')[0]
-        genes = kegg_link('genes', pathway_id)
+        pathway_id = pathway_line.split("\t")[0]
+        genes = kegg_link("genes", pathway_id)
         # Process genes for enrichment analysis
 ```
 
@@ -250,16 +250,16 @@ for pathway_line in pathways.split('\n'):
 from scripts.kegg_api import kegg_find, kegg_link, kegg_get
 
 # Step 1: Search for compound
-compound_results = kegg_find('compound', 'glucose')
+compound_results = kegg_find("compound", "glucose")
 
 # Step 2: Link compound to reactions
-reactions = kegg_link('reaction', 'cpd:C00031')  # Glucose
+reactions = kegg_link("reaction", "cpd:C00031")  # Glucose
 
 # Step 3: Link reactions to pathways
-pathways = kegg_link('pathway', 'rn:R00299')  # Specific reaction
+pathways = kegg_link("pathway", "rn:R00299")  # Specific reaction
 
 # Step 4: Get pathway details
-pathway_info = kegg_get('map00010')  # Glycolysis
+pathway_info = kegg_get("map00010")  # Glycolysis
 ```
 
 ### Workflow 4: Cross-Database Integration
@@ -270,17 +270,17 @@ pathway_info = kegg_get('map00010')  # Glycolysis
 from scripts.kegg_api import kegg_conv, kegg_get
 
 # Step 1: Convert KEGG gene IDs to external database IDs
-uniprot_map = kegg_conv('uniprot', 'hsa')
-ncbi_map = kegg_conv('ncbi-geneid', 'hsa')
+uniprot_map = kegg_conv("uniprot", "hsa")
+ncbi_map = kegg_conv("ncbi-geneid", "hsa")
 
 # Step 2: Parse conversion results
-for line in uniprot_map.split('\n'):
+for line in uniprot_map.split("\n"):
     if line:
-        kegg_id, uniprot_id = line.split('\t')
+        kegg_id, uniprot_id = line.split("\t")
         # Use external IDs for integration
 
 # Step 3: Get sequences using KEGG
-sequence = kegg_get('hsa:10458', 'aaseq')
+sequence = kegg_get("hsa:10458", "aaseq")
 ```
 
 ### Workflow 5: Organism-Specific Pathway Analysis
@@ -291,16 +291,16 @@ sequence = kegg_get('hsa:10458', 'aaseq')
 from scripts.kegg_api import kegg_list, kegg_get
 
 # Step 1: List pathways for multiple organisms
-human_pathways = kegg_list('pathway', 'hsa')
-mouse_pathways = kegg_list('pathway', 'mmu')
-yeast_pathways = kegg_list('pathway', 'sce')
+human_pathways = kegg_list("pathway", "hsa")
+mouse_pathways = kegg_list("pathway", "mmu")
+yeast_pathways = kegg_list("pathway", "sce")
 
 # Step 2: Get reference pathway for comparison
-ref_pathway = kegg_get('map00010')  # Reference glycolysis
+ref_pathway = kegg_get("map00010")  # Reference glycolysis
 
 # Step 3: Get organism-specific versions
-hsa_glycolysis = kegg_get('hsa00010')
-mmu_glycolysis = kegg_get('mmu00010')
+hsa_glycolysis = kegg_get("hsa00010")
+mmu_glycolysis = kegg_get("mmu00010")
 ```
 
 ## Pathway Categories

@@ -14,10 +14,10 @@ all_items = zot.everything(zot.items())
 all_top = zot.everything(zot.top())
 
 # All items in a collection
-all_col = zot.everything(zot.collection_items('COLKEY'))
+all_col = zot.everything(zot.collection_items("COLKEY"))
 
 # All items matching a search
-all_results = zot.everything(zot.items(q='machine learning', itemType='journalArticle'))
+all_results = zot.everything(zot.items(q="machine learning", itemType="journalArticle"))
 ```
 
 `everything()` works with all Read API calls that can return multiple items.
@@ -27,8 +27,8 @@ all_results = zot.everything(zot.items(q='machine learning', itemType='journalAr
 ```python
 # Retrieve items in batches, manually advancing the page
 first_batch = zot.top(limit=25)
-second_batch = zot.follow()   # next 25 items
-third_batch = zot.follow()    # next 25 items
+second_batch = zot.follow()  # next 25 items
+third_batch = zot.follow()  # next 25 items
 ```
 
 **Warning**: `follow()` raises `StopIteration` when no more items are available. Not valid after single-item calls like `zot.item()`.

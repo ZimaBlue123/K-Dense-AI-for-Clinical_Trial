@@ -40,13 +40,15 @@ from aeon.similarity_search import StompMotif
 import numpy as np
 
 # Create time series with repeated patterns
-pattern = np.sin(np.linspace(0, 2*np.pi, 50))
-y = np.concatenate([
-    pattern + np.random.normal(0, 0.1, 50),
-    np.random.normal(0, 1, 100),
-    pattern + np.random.normal(0, 0.1, 50),
-    np.random.normal(0, 1, 100)
-])
+pattern = np.sin(np.linspace(0, 2 * np.pi, 50))
+y = np.concatenate(
+    [
+        pattern + np.random.normal(0, 0.1, 50),
+        np.random.normal(0, 1, 100),
+        pattern + np.random.normal(0, 0.1, 50),
+        np.random.normal(0, 1, 100),
+    ]
+)
 
 # Find top-3 motifs
 motif_finder = StompMotif(window_size=50, k=3)
@@ -54,7 +56,7 @@ motifs = motif_finder.fit_predict(y)
 
 # motifs contains indices of motif occurrences
 for i, (idx1, idx2) in enumerate(motifs):
-    print(f"Motif {i+1} at positions {idx1} and {idx2}")
+    print(f"Motif {i + 1} at positions {idx1} and {idx2}")
 ```
 
 ## Quick Start: Subsequence Search

@@ -17,31 +17,33 @@ DrugBank provides extensive chemical property data including molecular structure
 ```python
 from drugbank_downloader import get_drugbank_root
 
+
 def get_drug_structures(drugbank_id):
     """Extract chemical structure representations"""
     root = get_drugbank_root()
-    ns = {'db': 'http://www.drugbank.ca'}
+    ns = {"db": "http://www.drugbank.ca"}
 
-    for drug in root.findall('db:drug', ns):
+    for drug in root.findall("db:drug", ns):
         primary_id = drug.find('db:drugbank-id[@primary="true"]', ns)
         if primary_id is not None and primary_id.text == drugbank_id:
             structures = {}
 
             # Get calculated properties
-            calc_props = drug.find('db:calculated-properties', ns)
+            calc_props = drug.find("db:calculated-properties", ns)
             if calc_props is not None:
-                for prop in calc_props.findall('db:property', ns):
-                    kind = prop.find('db:kind', ns).text
-                    value = prop.find('db:value', ns).text
+                for prop in calc_props.findall("db:property", ns):
+                    kind = prop.find("db:kind", ns).text
+                    value = prop.find("db:value", ns).text
 
-                    if kind in ['SMILES', 'InChI', 'InChIKey', 'Molecular Formula', 'IUPAC Name']:
+                    if kind in ["SMILES", "InChI", "InChIKey", "Molecular Formula", "IUPAC Name"]:
                         structures[kind] = value
 
             return structures
     return {}
 
+
 # Usage
-structures = get_drug_structures('DB00001')
+structures = get_drug_structures("DB00001")
 print(f"SMILES: {structures.get('SMILES')}")
 print(f"InChI: {structures.get('InChI')}")
 ```
@@ -72,41 +74,39 @@ Measured properties from literature:
 def get_all_properties(drugbank_id):
     """Extract all calculated and experimental properties"""
     root = get_drugbank_root()
-    ns = {'db': 'http://www.drugbank.ca'}
+    ns = {"db": "http://www.drugbank.ca"}
 
-    for drug in root.findall('db:drug', ns):
+    for drug in root.findall("db:drug", ns):
         primary_id = drug.find('db:drugbank-id[@primary="true"]', ns)
         if primary_id is not None and primary_id.text == drugbank_id:
-            properties = {
-                'calculated': {},
-                'experimental': {}
-            }
+            properties = {"calculated": {}, "experimental": {}}
 
             # Calculated properties
-            calc_props = drug.find('db:calculated-properties', ns)
+            calc_props = drug.find("db:calculated-properties", ns)
             if calc_props is not None:
-                for prop in calc_props.findall('db:property', ns):
-                    kind = prop.find('db:kind', ns).text
-                    value = prop.find('db:value', ns).text
-                    source = prop.find('db:source', ns)
-                    properties['calculated'][kind] = {
-                        'value': value,
-                        'source': source.text if source is not None else None
+                for prop in calc_props.findall("db:property", ns):
+                    kind = prop.find("db:kind", ns).text
+                    value = prop.find("db:value", ns).text
+                    source = prop.find("db:source", ns)
+                    properties["calculated"][kind] = {
+                        "value": value,
+                        "source": source.text if source is not None else None,
                     }
 
             # Experimental properties
-            exp_props = drug.find('db:experimental-properties', ns)
+            exp_props = drug.find("db:experimental-properties", ns)
             if exp_props is not None:
-                for prop in exp_props.findall('db:property', ns):
-                    kind = prop.find('db:kind', ns).text
-                    value = prop.find('db:value', ns).text
-                    properties['experimental'][kind] = value
+                for prop in exp_props.findall("db:property", ns):
+                    kind = prop.find("db:kind", ns).text
+                    value = prop.find("db:value", ns).text
+                    properties["experimental"][kind] = value
 
             return properties
     return {}
 
+
 # Usage
-props = get_all_properties('DB00001')
+props = get_all_properties("DB00001")
 print(f"Molecular Weight: {props['calculated'].get('Molecular Weight', {}).get('value')}")
 print(f"logP: {props['calculated'].get('logP', {}).get('value')}")
 ```
@@ -118,38 +118,39 @@ print(f"logP: {props['calculated'].get('logP', {}).get('value')}")
 def check_lipinski_rule_of_five(drugbank_id):
     """Check if drug satisfies Lipinski's Rule of Five"""
     props = get_all_properties(drugbank_id)
-    calc_props = props.get('calculated', {})
+    calc_props = props.get("calculated", {})
 
     # Extract values
-    mw = float(calc_props.get('Molecular Weight', {}).get('value', 0))
-    logp = float(calc_props.get('logP', {}).get('value', 0))
-    h_donors = int(calc_props.get('H Bond Donor Count', {}).get('value', 0))
-    h_acceptors = int(calc_props.get('H Bond Acceptor Count', {}).get('value', 0))
+    mw = float(calc_props.get("Molecular Weight", {}).get("value", 0))
+    logp = float(calc_props.get("logP", {}).get("value", 0))
+    h_donors = int(calc_props.get("H Bond Donor Count", {}).get("value", 0))
+    h_acceptors = int(calc_props.get("H Bond Acceptor Count", {}).get("value", 0))
 
     # Check rules
     rules = {
-        'molecular_weight': mw <= 500,
-        'logP': logp <= 5,
-        'h_bond_donors': h_donors <= 5,
-        'h_bond_acceptors': h_acceptors <= 10
+        "molecular_weight": mw <= 500,
+        "logP": logp <= 5,
+        "h_bond_donors": h_donors <= 5,
+        "h_bond_acceptors": h_acceptors <= 10,
     }
 
     violations = sum(1 for passes in rules.values() if not passes)
 
     return {
-        'passes': violations <= 1,  # Allow 1 violation
-        'violations': violations,
-        'rules': rules,
-        'values': {
-            'molecular_weight': mw,
-            'logP': logp,
-            'h_bond_donors': h_donors,
-            'h_bond_acceptors': h_acceptors
-        }
+        "passes": violations <= 1,  # Allow 1 violation
+        "violations": violations,
+        "rules": rules,
+        "values": {
+            "molecular_weight": mw,
+            "logP": logp,
+            "h_bond_donors": h_donors,
+            "h_bond_acceptors": h_acceptors,
+        },
     }
 
+
 # Usage
-ro5 = check_lipinski_rule_of_five('DB00001')
+ro5 = check_lipinski_rule_of_five("DB00001")
 print(f"Passes Ro5: {ro5['passes']} (Violations: {ro5['violations']})")
 ```
 
@@ -158,23 +159,17 @@ print(f"Passes Ro5: {ro5['passes']} (Violations: {ro5['violations']})")
 def check_veber_rules(drugbank_id):
     """Check Veber's rules for oral bioavailability"""
     props = get_all_properties(drugbank_id)
-    calc_props = props.get('calculated', {})
+    calc_props = props.get("calculated", {})
 
-    psa = float(calc_props.get('Polar Surface Area (PSA)', {}).get('value', 0))
-    rotatable = int(calc_props.get('Rotatable Bond Count', {}).get('value', 0))
+    psa = float(calc_props.get("Polar Surface Area (PSA)", {}).get("value", 0))
+    rotatable = int(calc_props.get("Rotatable Bond Count", {}).get("value", 0))
 
-    rules = {
-        'polar_surface_area': psa <= 140,
-        'rotatable_bonds': rotatable <= 10
-    }
+    rules = {"polar_surface_area": psa <= 140, "rotatable_bonds": rotatable <= 10}
 
     return {
-        'passes': all(rules.values()),
-        'rules': rules,
-        'values': {
-            'psa': psa,
-            'rotatable_bonds': rotatable
-        }
+        "passes": all(rules.values()),
+        "rules": rules,
+        "values": {"psa": psa, "rotatable_bonds": rotatable},
     }
 ```
 
@@ -184,6 +179,7 @@ def check_veber_rules(drugbank_id):
 ```python
 from rdkit import Chem
 from rdkit.Chem import AllChem, DataStructs
+
 
 def calculate_tanimoto_similarity(smiles1, smiles2):
     """Calculate Tanimoto similarity between two molecules"""
@@ -201,14 +197,12 @@ def calculate_tanimoto_similarity(smiles1, smiles2):
     similarity = DataStructs.TanimotoSimilarity(fp1, fp2)
     return similarity
 
-# Usage
-struct1 = get_drug_structures('DB00001')
-struct2 = get_drug_structures('DB00002')
 
-similarity = calculate_tanimoto_similarity(
-    struct1.get('SMILES'),
-    struct2.get('SMILES')
-)
+# Usage
+struct1 = get_drug_structures("DB00001")
+struct2 = get_drug_structures("DB00002")
+
+similarity = calculate_tanimoto_similarity(struct1.get("SMILES"), struct2.get("SMILES"))
 print(f"Tanimoto similarity: {similarity:.3f}")
 ```
 
@@ -217,18 +211,18 @@ print(f"Tanimoto similarity: {similarity:.3f}")
 def find_similar_drugs(reference_drugbank_id, similarity_threshold=0.7):
     """Find structurally similar drugs in DrugBank"""
     root = get_drugbank_root()
-    ns = {'db': 'http://www.drugbank.ca'}
+    ns = {"db": "http://www.drugbank.ca"}
 
     # Get reference structure
     ref_structures = get_drug_structures(reference_drugbank_id)
-    ref_smiles = ref_structures.get('SMILES')
+    ref_smiles = ref_structures.get("SMILES")
 
     if not ref_smiles:
         return []
 
     similar_drugs = []
 
-    for drug in root.findall('db:drug', ns):
+    for drug in root.findall("db:drug", ns):
         drug_id = drug.find('db:drugbank-id[@primary="true"]', ns).text
 
         if drug_id == reference_drugbank_id:
@@ -236,29 +230,32 @@ def find_similar_drugs(reference_drugbank_id, similarity_threshold=0.7):
 
         # Get SMILES
         drug_structures = get_drug_structures(drug_id)
-        drug_smiles = drug_structures.get('SMILES')
+        drug_smiles = drug_structures.get("SMILES")
 
         if drug_smiles:
             similarity = calculate_tanimoto_similarity(ref_smiles, drug_smiles)
 
             if similarity and similarity >= similarity_threshold:
-                drug_name = drug.find('db:name', ns).text
-                indication = drug.find('db:indication', ns)
+                drug_name = drug.find("db:name", ns).text
+                indication = drug.find("db:indication", ns)
                 indication_text = indication.text if indication is not None else None
 
-                similar_drugs.append({
-                    'drug_id': drug_id,
-                    'drug_name': drug_name,
-                    'similarity': similarity,
-                    'indication': indication_text
-                })
+                similar_drugs.append(
+                    {
+                        "drug_id": drug_id,
+                        "drug_name": drug_name,
+                        "similarity": similarity,
+                        "indication": indication_text,
+                    }
+                )
 
     # Sort by similarity
-    similar_drugs.sort(key=lambda x: x['similarity'], reverse=True)
+    similar_drugs.sort(key=lambda x: x["similarity"], reverse=True)
     return similar_drugs
 
+
 # Find similar drugs
-similar = find_similar_drugs('DB00001', similarity_threshold=0.7)
+similar = find_similar_drugs("DB00001", similarity_threshold=0.7)
 for drug in similar[:10]:
     print(f"{drug['drug_name']}: {drug['similarity']:.3f}")
 ```
@@ -267,6 +264,7 @@ for drug in similar[:10]:
 ```python
 import numpy as np
 import pandas as pd
+
 
 def create_similarity_matrix(drug_ids):
     """Create pairwise similarity matrix for a list of drugs"""
@@ -277,7 +275,7 @@ def create_similarity_matrix(drug_ids):
     smiles_dict = {}
     for drug_id in drug_ids:
         structures = get_drug_structures(drug_id)
-        smiles_dict[drug_id] = structures.get('SMILES')
+        smiles_dict[drug_id] = structures.get("SMILES")
 
     # Calculate similarities
     for i, drug1_id in enumerate(drug_ids):
@@ -296,8 +294,9 @@ def create_similarity_matrix(drug_ids):
     df = pd.DataFrame(matrix, index=drug_ids, columns=drug_ids)
     return df
 
+
 # Create similarity matrix for a set of drugs
-drug_list = ['DB00001', 'DB00002', 'DB00003', 'DB00005']
+drug_list = ["DB00001", "DB00002", "DB00003", "DB00005"]
 sim_matrix = create_similarity_matrix(drug_list)
 ```
 
@@ -309,6 +308,7 @@ from rdkit.Chem import MACCSkeys
 from rdkit.Chem.AtomPairs import Pairs
 from rdkit.Chem.Fingerprints import FingerprintMols
 
+
 def generate_fingerprints(smiles):
     """Generate multiple types of molecular fingerprints"""
     mol = Chem.MolFromSmiles(smiles)
@@ -316,27 +316,29 @@ def generate_fingerprints(smiles):
         return None
 
     fingerprints = {
-        'morgan_fp': AllChem.GetMorganFingerprintAsBitVect(mol, 2, nBits=2048),
-        'maccs_keys': MACCSkeys.GenMACCSKeys(mol),
-        'topological_fp': FingerprintMols.FingerprintMol(mol),
-        'atom_pairs': Pairs.GetAtomPairFingerprint(mol)
+        "morgan_fp": AllChem.GetMorganFingerprintAsBitVect(mol, 2, nBits=2048),
+        "maccs_keys": MACCSkeys.GenMACCSKeys(mol),
+        "topological_fp": FingerprintMols.FingerprintMol(mol),
+        "atom_pairs": Pairs.GetAtomPairFingerprint(mol),
     }
 
     return fingerprints
 
+
 # Generate fingerprints for a drug
-structures = get_drug_structures('DB00001')
-fps = generate_fingerprints(structures.get('SMILES'))
+structures = get_drug_structures("DB00001")
+fps = generate_fingerprints(structures.get("SMILES"))
 ```
 
 ### Substructure Search
 ```python
 from rdkit.Chem import Fragments
 
+
 def search_substructure(substructure_smarts):
     """Find drugs containing a specific substructure"""
     root = get_drugbank_root()
-    ns = {'db': 'http://www.drugbank.ca'}
+    ns = {"db": "http://www.drugbank.ca"}
 
     pattern = Chem.MolFromSmarts(substructure_smarts)
     if pattern is None:
@@ -345,24 +347,22 @@ def search_substructure(substructure_smarts):
 
     matching_drugs = []
 
-    for drug in root.findall('db:drug', ns):
+    for drug in root.findall("db:drug", ns):
         drug_id = drug.find('db:drugbank-id[@primary="true"]', ns).text
         structures = get_drug_structures(drug_id)
-        smiles = structures.get('SMILES')
+        smiles = structures.get("SMILES")
 
         if smiles:
             mol = Chem.MolFromSmiles(smiles)
             if mol and mol.HasSubstructMatch(pattern):
-                drug_name = drug.find('db:name', ns).text
-                matching_drugs.append({
-                    'drug_id': drug_id,
-                    'drug_name': drug_name
-                })
+                drug_name = drug.find("db:name", ns).text
+                matching_drugs.append({"drug_id": drug_id, "drug_name": drug_name})
 
     return matching_drugs
 
+
 # Example: Find drugs with benzene ring
-benzene_drugs = search_substructure('c1ccccc1')
+benzene_drugs = search_substructure("c1ccccc1")
 print(f"Found {len(benzene_drugs)} drugs with benzene ring")
 ```
 
@@ -373,20 +373,15 @@ print(f"Found {len(benzene_drugs)} drugs with benzene ring")
 def predict_oral_absorption(drugbank_id):
     """Predict oral absorption based on physicochemical properties"""
     props = get_all_properties(drugbank_id)
-    calc_props = props.get('calculated', {})
+    calc_props = props.get("calculated", {})
 
-    mw = float(calc_props.get('Molecular Weight', {}).get('value', 0))
-    logp = float(calc_props.get('logP', {}).get('value', 0))
-    psa = float(calc_props.get('Polar Surface Area (PSA)', {}).get('value', 0))
-    h_donors = int(calc_props.get('H Bond Donor Count', {}).get('value', 0))
+    mw = float(calc_props.get("Molecular Weight", {}).get("value", 0))
+    logp = float(calc_props.get("logP", {}).get("value", 0))
+    psa = float(calc_props.get("Polar Surface Area (PSA)", {}).get("value", 0))
+    h_donors = int(calc_props.get("H Bond Donor Count", {}).get("value", 0))
 
     # Simple absorption prediction
-    good_absorption = (
-        mw <= 500 and
-        -0.5 <= logp <= 5.0 and
-        psa <= 140 and
-        h_donors <= 5
-    )
+    good_absorption = mw <= 500 and -0.5 <= logp <= 5.0 and psa <= 140 and h_donors <= 5
 
     absorption_score = 0
     if mw <= 500:
@@ -399,14 +394,9 @@ def predict_oral_absorption(drugbank_id):
         absorption_score += 25
 
     return {
-        'predicted_absorption': 'good' if good_absorption else 'poor',
-        'absorption_score': absorption_score,
-        'properties': {
-            'molecular_weight': mw,
-            'logP': logp,
-            'psa': psa,
-            'h_donors': h_donors
-        }
+        "predicted_absorption": "good" if good_absorption else "poor",
+        "absorption_score": absorption_score,
+        "properties": {"molecular_weight": mw, "logP": logp, "psa": psa, "h_donors": h_donors},
     }
 ```
 
@@ -415,29 +405,19 @@ def predict_oral_absorption(drugbank_id):
 def predict_bbb_permeability(drugbank_id):
     """Predict blood-brain barrier permeability"""
     props = get_all_properties(drugbank_id)
-    calc_props = props.get('calculated', {})
+    calc_props = props.get("calculated", {})
 
-    mw = float(calc_props.get('Molecular Weight', {}).get('value', 0))
-    logp = float(calc_props.get('logP', {}).get('value', 0))
-    psa = float(calc_props.get('Polar Surface Area (PSA)', {}).get('value', 0))
-    h_donors = int(calc_props.get('H Bond Donor Count', {}).get('value', 0))
+    mw = float(calc_props.get("Molecular Weight", {}).get("value", 0))
+    logp = float(calc_props.get("logP", {}).get("value", 0))
+    psa = float(calc_props.get("Polar Surface Area (PSA)", {}).get("value", 0))
+    h_donors = int(calc_props.get("H Bond Donor Count", {}).get("value", 0))
 
     # BBB permeability criteria (simplified)
-    bbb_permeable = (
-        mw <= 450 and
-        logp <= 5.0 and
-        psa <= 90 and
-        h_donors <= 3
-    )
+    bbb_permeable = mw <= 450 and logp <= 5.0 and psa <= 90 and h_donors <= 3
 
     return {
-        'bbb_permeable': bbb_permeable,
-        'properties': {
-            'molecular_weight': mw,
-            'logP': logp,
-            'psa': psa,
-            'h_donors': h_donors
-        }
+        "bbb_permeable": bbb_permeable,
+        "properties": {"molecular_weight": mw, "logP": logp, "psa": psa, "h_donors": h_donors},
     }
 ```
 
@@ -448,6 +428,7 @@ def predict_bbb_permeability(drugbank_id):
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 
+
 def perform_chemical_space_pca(drug_ids):
     """Perform PCA on chemical descriptor space"""
     # Extract properties for all drugs
@@ -456,16 +437,16 @@ def perform_chemical_space_pca(drug_ids):
 
     for drug_id in drug_ids:
         props = get_all_properties(drug_id)
-        calc_props = props.get('calculated', {})
+        calc_props = props.get("calculated", {})
 
         try:
             prop_vector = [
-                float(calc_props.get('Molecular Weight', {}).get('value', 0)),
-                float(calc_props.get('logP', {}).get('value', 0)),
-                float(calc_props.get('Polar Surface Area (PSA)', {}).get('value', 0)),
-                int(calc_props.get('H Bond Donor Count', {}).get('value', 0)),
-                int(calc_props.get('H Bond Acceptor Count', {}).get('value', 0)),
-                int(calc_props.get('Rotatable Bond Count', {}).get('value', 0)),
+                float(calc_props.get("Molecular Weight", {}).get("value", 0)),
+                float(calc_props.get("logP", {}).get("value", 0)),
+                float(calc_props.get("Polar Surface Area (PSA)", {}).get("value", 0)),
+                int(calc_props.get("H Bond Donor Count", {}).get("value", 0)),
+                int(calc_props.get("H Bond Acceptor Count", {}).get("value", 0)),
+                int(calc_props.get("Rotatable Bond Count", {}).get("value", 0)),
             ]
             properties_list.append(prop_vector)
             valid_ids.append(drug_id)
@@ -481,13 +462,10 @@ def perform_chemical_space_pca(drug_ids):
     X_pca = pca.fit_transform(X_scaled)
 
     # Create DataFrame
-    df = pd.DataFrame({
-        'drug_id': valid_ids,
-        'PC1': X_pca[:, 0],
-        'PC2': X_pca[:, 1]
-    })
+    df = pd.DataFrame({"drug_id": valid_ids, "PC1": X_pca[:, 0], "PC2": X_pca[:, 1]})
 
     return df, pca
+
 
 # Visualize chemical space
 # drug_list = [all approved drugs]
@@ -498,6 +476,7 @@ def perform_chemical_space_pca(drug_ids):
 ```python
 from sklearn.cluster import KMeans
 
+
 def cluster_drugs_by_properties(drug_ids, n_clusters=10):
     """Cluster drugs based on chemical properties"""
     properties_list = []
@@ -505,15 +484,15 @@ def cluster_drugs_by_properties(drug_ids, n_clusters=10):
 
     for drug_id in drug_ids:
         props = get_all_properties(drug_id)
-        calc_props = props.get('calculated', {})
+        calc_props = props.get("calculated", {})
 
         try:
             prop_vector = [
-                float(calc_props.get('Molecular Weight', {}).get('value', 0)),
-                float(calc_props.get('logP', {}).get('value', 0)),
-                float(calc_props.get('Polar Surface Area (PSA)', {}).get('value', 0)),
-                int(calc_props.get('H Bond Donor Count', {}).get('value', 0)),
-                int(calc_props.get('H Bond Acceptor Count', {}).get('value', 0)),
+                float(calc_props.get("Molecular Weight", {}).get("value", 0)),
+                float(calc_props.get("logP", {}).get("value", 0)),
+                float(calc_props.get("Polar Surface Area (PSA)", {}).get("value", 0)),
+                int(calc_props.get("H Bond Donor Count", {}).get("value", 0)),
+                int(calc_props.get("H Bond Acceptor Count", {}).get("value", 0)),
             ]
             properties_list.append(prop_vector)
             valid_ids.append(drug_id)
@@ -528,10 +507,7 @@ def cluster_drugs_by_properties(drug_ids, n_clusters=10):
     kmeans = KMeans(n_clusters=n_clusters, random_state=42)
     clusters = kmeans.fit_predict(X_scaled)
 
-    df = pd.DataFrame({
-        'drug_id': valid_ids,
-        'cluster': clusters
-    })
+    df = pd.DataFrame({"drug_id": valid_ids, "cluster": clusters})
 
     return df, kmeans
 ```
@@ -540,32 +516,32 @@ def cluster_drugs_by_properties(drug_ids, n_clusters=10):
 
 ### Create Chemical Property Database
 ```python
-def export_chemical_properties(output_file='drugbank_chemical_properties.csv'):
+def export_chemical_properties(output_file="drugbank_chemical_properties.csv"):
     """Export all chemical properties to CSV"""
     root = get_drugbank_root()
-    ns = {'db': 'http://www.drugbank.ca'}
+    ns = {"db": "http://www.drugbank.ca"}
 
     all_properties = []
 
-    for drug in root.findall('db:drug', ns):
+    for drug in root.findall("db:drug", ns):
         drug_id = drug.find('db:drugbank-id[@primary="true"]', ns).text
-        drug_name = drug.find('db:name', ns).text
+        drug_name = drug.find("db:name", ns).text
 
         props = get_all_properties(drug_id)
-        calc_props = props.get('calculated', {})
+        calc_props = props.get("calculated", {})
 
         property_dict = {
-            'drug_id': drug_id,
-            'drug_name': drug_name,
-            'smiles': calc_props.get('SMILES', {}).get('value'),
-            'inchi': calc_props.get('InChI', {}).get('value'),
-            'inchikey': calc_props.get('InChIKey', {}).get('value'),
-            'molecular_weight': calc_props.get('Molecular Weight', {}).get('value'),
-            'logP': calc_props.get('logP', {}).get('value'),
-            'psa': calc_props.get('Polar Surface Area (PSA)', {}).get('value'),
-            'h_donors': calc_props.get('H Bond Donor Count', {}).get('value'),
-            'h_acceptors': calc_props.get('H Bond Acceptor Count', {}).get('value'),
-            'rotatable_bonds': calc_props.get('Rotatable Bond Count', {}).get('value'),
+            "drug_id": drug_id,
+            "drug_name": drug_name,
+            "smiles": calc_props.get("SMILES", {}).get("value"),
+            "inchi": calc_props.get("InChI", {}).get("value"),
+            "inchikey": calc_props.get("InChIKey", {}).get("value"),
+            "molecular_weight": calc_props.get("Molecular Weight", {}).get("value"),
+            "logP": calc_props.get("logP", {}).get("value"),
+            "psa": calc_props.get("Polar Surface Area (PSA)", {}).get("value"),
+            "h_donors": calc_props.get("H Bond Donor Count", {}).get("value"),
+            "h_acceptors": calc_props.get("H Bond Acceptor Count", {}).get("value"),
+            "rotatable_bonds": calc_props.get("Rotatable Bond Count", {}).get("value"),
         }
 
         all_properties.append(property_dict)
@@ -573,6 +549,7 @@ def export_chemical_properties(output_file='drugbank_chemical_properties.csv'):
     df = pd.DataFrame(all_properties)
     df.to_csv(output_file, index=False)
     print(f"Exported {len(all_properties)} drug properties to {output_file}")
+
 
 # Usage
 export_chemical_properties()

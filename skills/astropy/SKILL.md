@@ -39,19 +39,19 @@ distance = 100 * u.pc
 distance_km = distance.to(u.km)
 
 # Coordinates
-coord = SkyCoord(ra=10.5*u.degree, dec=41.2*u.degree, frame='icrs')
+coord = SkyCoord(ra=10.5 * u.degree, dec=41.2 * u.degree, frame="icrs")
 coord_galactic = coord.galactic
 
 # Time
-t = Time('2023-01-15 12:30:00')
+t = Time("2023-01-15 12:30:00")
 jd = t.jd  # Julian Date
 
 # FITS files
-data = fits.getdata('image.fits')
-header = fits.getheader('image.fits')
+data = fits.getdata("image.fits")
+header = fits.getheader("image.fits")
 
 # Tables
-table = Table.read('catalog.fits')
+table = Table.read("catalog.fits")
 
 # Cosmology
 d_L = Planck18.luminosity_distance(z=1.0)
@@ -203,7 +203,7 @@ from astropy.coordinates import SkyCoord
 import astropy.units as u
 
 # Create coordinate
-c = SkyCoord(ra='05h23m34.5s', dec='-69d45m22s', frame='icrs')
+c = SkyCoord(ra="05h23m34.5s", dec="-69d45m22s", frame="icrs")
 
 # Transform to galactic
 c_gal = c.galactic
@@ -213,8 +213,8 @@ print(f"l={c_gal.l.deg}, b={c_gal.b.deg}")
 from astropy.time import Time
 from astropy.coordinates import EarthLocation, AltAz
 
-observing_time = Time('2023-06-15 23:00:00')
-observing_location = EarthLocation(lat=40*u.deg, lon=-120*u.deg)
+observing_time = Time("2023-06-15 23:00:00")
+observing_location = EarthLocation(lat=40 * u.deg, lon=-120 * u.deg)
 aa_frame = AltAz(obstime=observing_time, location=observing_location)
 c_altaz = c.transform_to(aa_frame)
 print(f"Alt={c_altaz.alt.deg}, Az={c_altaz.az.deg}")
@@ -227,7 +227,7 @@ from astropy.io import fits
 import numpy as np
 
 # Open FITS file
-with fits.open('observation.fits') as hdul:
+with fits.open("observation.fits") as hdul:
     # Display structure
     hdul.info()
 
@@ -236,8 +236,8 @@ with fits.open('observation.fits') as hdul:
     header = hdul[1].header
 
     # Access header values
-    exptime = header['EXPTIME']
-    filter_name = header['FILTER']
+    exptime = header["EXPTIME"]
+    filter_name = header["FILTER"]
 
     # Analyze data
     mean = np.mean(data)
@@ -277,12 +277,12 @@ from astropy.coordinates import SkyCoord, match_coordinates_sky
 import astropy.units as u
 
 # Read catalogs
-cat1 = Table.read('catalog1.fits')
-cat2 = Table.read('catalog2.fits')
+cat1 = Table.read("catalog1.fits")
+cat2 = Table.read("catalog2.fits")
 
 # Create coordinate objects
-coords1 = SkyCoord(ra=cat1['RA']*u.degree, dec=cat1['DEC']*u.degree)
-coords2 = SkyCoord(ra=cat2['RA']*u.degree, dec=cat2['DEC']*u.degree)
+coords1 = SkyCoord(ra=cat1["RA"] * u.degree, dec=cat1["DEC"] * u.degree)
+coords2 = SkyCoord(ra=cat2["RA"] * u.degree, dec=cat2["DEC"] * u.degree)
 
 # Find matches
 idx, sep, _ = coords1.match_to_catalog_sky(coords2)

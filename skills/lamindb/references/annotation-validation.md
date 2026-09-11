@@ -24,7 +24,7 @@ import lamindb as ln
 # Create flexible schema
 schema = ln.Schema(
     name="valid_features",
-    itype=ln.Feature  # Validates against Feature registry
+    itype=ln.Feature,  # Validates against Feature registry
 ).save()
 
 # Any column matching a Feature name will be validated
@@ -40,14 +40,14 @@ Specifies essential columns while permitting extra metadata:
 required_features = [
     ln.Feature.get(name="cell_type"),
     ln.Feature.get(name="tissue"),
-    ln.Feature.get(name="donor_id")
+    ln.Feature.get(name="donor_id"),
 ]
 
 # Create schema with required features
 schema = ln.Schema(
     name="minimal_immune_schema",
     features=required_features,
-    flexible=True  # Allows additional columns
+    flexible=True,  # Allows additional columns
 ).save()
 ```
 
@@ -61,14 +61,14 @@ all_features = [
     ln.Feature.get(name="cell_type"),
     ln.Feature.get(name="tissue"),
     ln.Feature.get(name="donor_id"),
-    ln.Feature.get(name="disease")
+    ln.Feature.get(name="disease"),
 ]
 
 # Create strict schema
 schema = ln.Schema(
     name="strict_immune_schema",
     features=all_features,
-    flexible=False  # No additional columns allowed
+    flexible=False,  # No additional columns allowed
 ).save()
 ```
 
@@ -93,6 +93,7 @@ ln.Feature(name="experiment_date", dtype="date").save()
 
 # Populate valid values (if using controlled vocabulary)
 import bionty as bt
+
 bt.CellType.import_source()
 bt.Tissue.import_source()
 ```
@@ -105,14 +106,10 @@ features = [
     ln.Feature.get(name="cell_type"),
     ln.Feature.get(name="tissue"),
     ln.Feature.get(name="gene_count"),
-    ln.Feature.get(name="experiment_date")
+    ln.Feature.get(name="experiment_date"),
 ]
 
-schema = ln.Schema(
-    name="experiment_schema",
-    features=features,
-    flexible=True
-).save()
+schema = ln.Schema(name="experiment_schema", features=features, flexible=True).save()
 ```
 
 ### Step 4: Initialize Curator and Validate
@@ -181,8 +178,7 @@ curator = ln.curators.DataFrameCurator(df, schema)
 ```python
 # Save with schema linkage
 artifact = curator.save_artifact(
-    key="experiments/curated_data.parquet",
-    description="Validated and annotated experimental data"
+    key="experiments/curated_data.parquet", description="Validated and annotated experimental data"
 )
 
 # Verify artifact has schema
@@ -203,14 +199,11 @@ obs_schema = ln.Schema(
     features=[
         ln.Feature.get(name="cell_type"),
         ln.Feature.get(name="tissue"),
-        ln.Feature.get(name="donor_id")
-    ]
+        ln.Feature.get(name="donor_id"),
+    ],
 ).save()
 
-var_schema = ln.Schema(
-    name="gene_ids",
-    features=[ln.Feature.get(name="ensembl_gene_id")]
-).save()
+var_schema = ln.Schema(name="gene_ids", features=[ln.Feature.get(name="ensembl_gene_id")]).save()
 
 # Create composite AnnData schema
 anndata_schema = ln.Schema(
@@ -218,8 +211,8 @@ anndata_schema = ln.Schema(
     otype="AnnData",
     slots={
         "obs": obs_schema,
-        "var.T": var_schema  # .T indicates transposition
-    }
+        "var.T": var_schema,  # .T indicates transposition
+    },
 ).save()
 ```
 
@@ -244,8 +237,7 @@ curator.cat.standardize("var.T", "ensembl_gene_id")
 
 # Save curated artifact
 artifact = curator.save_artifact(
-    key="scrna/validated_data.h5ad",
-    description="Curated single-cell RNA-seq data"
+    key="scrna/validated_data.h5ad", description="Curated single-cell RNA-seq data"
 )
 ```
 
@@ -262,10 +254,7 @@ protein_obs_schema = ln.Schema(name="protein_obs_schema", features=[...]).save()
 mudata_schema = ln.Schema(
     name="multimodal_schema",
     otype="MuData",
-    slots={
-        "rna:obs": rna_obs_schema,
-        "protein:obs": protein_obs_schema
-    }
+    slots={"rna:obs": rna_obs_schema, "protein:obs": protein_obs_schema},
 ).save()
 
 # Curate
@@ -282,10 +271,7 @@ For spatial transcriptomics data:
 spatial_schema = ln.Schema(
     name="spatial_schema",
     otype="SpatialData",
-    slots={
-        "tables:cell_metadata.obs": cell_schema,
-        "attrs:bio": bio_metadata_schema
-    }
+    slots={"tables:cell_metadata.obs": cell_schema, "attrs:bio": bio_metadata_schema},
 ).save()
 
 # Curate
@@ -304,8 +290,8 @@ soma_schema = ln.Schema(
     otype="tiledbsoma",
     slots={
         "obs": obs_schema,
-        "ms:RNA.T": var_schema  # measurement:modality.T
-    }
+        "ms:RNA.T": var_schema,  # measurement:modality.T
+    },
 ).save()
 
 # Curate
@@ -372,11 +358,7 @@ curator.cat.standardize("cell_type")
 
 ```python
 # Manual mapping
-mapping = {
-    "TCell": "T cell",
-    "t cell": "T cell",
-    "T-cells": "T cell"
-}
+mapping = {"TCell": "T cell", "t cell": "T cell", "T-cells": "T cell"}
 
 # Apply mapping
 df["cell_type"] = df["cell_type"].map(lambda x: mapping.get(x, x))
@@ -431,7 +413,7 @@ schema_v1 = ln.Schema(name="experiment_schema", features=[...]).save()
 schema_v2 = ln.Schema(
     name="experiment_schema",
     features=[...],  # Updated list
-    version="2"
+    version="2",
 ).save()
 
 # Link artifacts to specific schema versions
@@ -486,6 +468,7 @@ def validate_gene_expression(df):
         return False, "Unreasonably high expression values"
 
     return True, "Valid"
+
 
 # Apply during curation
 is_valid, message = validate_gene_expression(df)

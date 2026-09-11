@@ -19,9 +19,9 @@ qc = QuantumCircuit(3, 3)
 ### Pauli Gates
 
 ```python
-qc.x(0)   # NOT/Pauli-X gate on qubit 0
-qc.y(1)   # Pauli-Y gate on qubit 1
-qc.z(2)   # Pauli-Z gate on qubit 2
+qc.x(0)  # NOT/Pauli-X gate on qubit 0
+qc.y(1)  # Pauli-Y gate on qubit 1
+qc.z(2)  # Pauli-Z gate on qubit 2
 ```
 
 ### Hadamard Gate
@@ -29,15 +29,15 @@ qc.z(2)   # Pauli-Z gate on qubit 2
 Creates superposition:
 
 ```python
-qc.h(0)   # Hadamard gate on qubit 0
+qc.h(0)  # Hadamard gate on qubit 0
 ```
 
 ### Phase Gates
 
 ```python
-qc.s(0)   # S gate (√Z)
-qc.t(0)   # T gate (√S)
-qc.p(π/4, 0)   # Phase gate with custom angle
+qc.s(0)  # S gate (√Z)
+qc.t(0)  # T gate (√S)
+qc.p(π / 4, 0)  # Phase gate with custom angle
 ```
 
 ### Rotation Gates
@@ -45,9 +45,9 @@ qc.p(π/4, 0)   # Phase gate with custom angle
 ```python
 from math import pi
 
-qc.rx(pi/2, 0)   # Rotation around X-axis
-qc.ry(pi/4, 1)   # Rotation around Y-axis
-qc.rz(pi/3, 2)   # Rotation around Z-axis
+qc.rx(pi / 2, 0)  # Rotation around X-axis
+qc.ry(pi / 4, 1)  # Rotation around Y-axis
+qc.rz(pi / 3, 2)  # Rotation around Z-axis
 ```
 
 ## Multi-Qubit Gates
@@ -55,27 +55,27 @@ qc.rz(pi/3, 2)   # Rotation around Z-axis
 ### CNOT (Controlled-NOT)
 
 ```python
-qc.cx(0, 1)   # CNOT with control=0, target=1
+qc.cx(0, 1)  # CNOT with control=0, target=1
 ```
 
 ### Controlled Gates
 
 ```python
-qc.cy(0, 1)   # Controlled-Y
-qc.cz(0, 1)   # Controlled-Z
-qc.ch(0, 1)   # Controlled-Hadamard
+qc.cy(0, 1)  # Controlled-Y
+qc.cz(0, 1)  # Controlled-Z
+qc.ch(0, 1)  # Controlled-Hadamard
 ```
 
 ### SWAP Gate
 
 ```python
-qc.swap(0, 1)   # Swap qubits 0 and 1
+qc.swap(0, 1)  # Swap qubits 0 and 1
 ```
 
 ### Toffoli (CCX) Gate
 
 ```python
-qc.ccx(0, 1, 2)   # Toffoli with controls=0,1 and target=2
+qc.ccx(0, 1, 2)  # Toffoli with controls=0,1 and target=2
 ```
 
 ## Measurements
@@ -87,8 +87,8 @@ Add measurements to read qubit states:
 qc.measure_all()
 
 # Measure specific qubits to specific classical bits
-qc.measure(0, 0)   # Measure qubit 0 to classical bit 0
-qc.measure([0, 1], [0, 1])   # Measure qubits 0,1 to bits 0,1
+qc.measure(0, 0)  # Measure qubit 0 to classical bit 0
+qc.measure([0, 1], [0, 1])  # Measure qubits 0,1 to bits 0,1
 ```
 
 ## Circuit Composition
@@ -116,14 +116,14 @@ qc2 = QuantumCircuit(1)
 qc2.x(0)
 
 # Create larger circuit from smaller ones
-qc_tensor = qc1.tensor(qc2)   # Results in 2-qubit circuit
+qc_tensor = qc1.tensor(qc2)  # Results in 2-qubit circuit
 ```
 
 ## Barriers and Labels
 
 ```python
-qc.barrier()   # Add visual barrier in circuit
-qc.barrier([0, 1])   # Barrier on specific qubits
+qc.barrier()  # Add visual barrier in circuit
+qc.barrier([0, 1])  # Barrier on specific qubits
 
 # Add labels for clarity
 qc.barrier(label="Initialization")
@@ -132,10 +132,10 @@ qc.barrier(label="Initialization")
 ## Circuit Properties
 
 ```python
-print(qc.num_qubits)   # Number of qubits
-print(qc.num_clbits)   # Number of classical bits
-print(qc.depth())      # Circuit depth
-print(qc.size())       # Total gate count
+print(qc.num_qubits)  # Number of qubits
+print(qc.num_clbits)  # Number of classical bits
+print(qc.depth())  # Circuit depth
+print(qc.size())  # Total gate count
 print(qc.count_ops())  # Dictionary of gate counts
 ```
 
@@ -145,8 +145,8 @@ Create entanglement between two qubits:
 
 ```python
 qc = QuantumCircuit(2)
-qc.h(0)           # Superposition on qubit 0
-qc.cx(0, 1)       # Entangle qubit 0 and 1
+qc.h(0)  # Superposition on qubit 0
+qc.cx(0, 1)  # Entangle qubit 0 and 1
 qc.measure_all()  # Measure both qubits
 ```
 
@@ -155,13 +155,15 @@ qc.measure_all()  # Measure both qubits
 ```python
 from math import pi
 
+
 def qft(n):
     qc = QuantumCircuit(n)
     for j in range(n):
         qc.h(j)
-        for k in range(j+1, n):
-            qc.cp(pi/2**(k-j), k, j)
+        for k in range(j + 1, n):
+            qc.cp(pi / 2 ** (k - j), k, j)
     return qc
+
 
 # Create 3-qubit QFT
 qc_qft = qft(3)
@@ -174,12 +176,12 @@ Create circuits with parameters for variational algorithms:
 ```python
 from qiskit.circuit import Parameter
 
-theta = Parameter('θ')
+theta = Parameter("θ")
 qc = QuantumCircuit(1)
 qc.ry(theta, 0)
 
 # Bind parameter value
-qc_bound = qc.assign_parameters({theta: pi/4})
+qc_bound = qc.assign_parameters({theta: pi / 4})
 ```
 
 ## Circuit Operations
@@ -193,5 +195,5 @@ qc_decomposed = qc.decompose()
 
 # Draw circuit (returns string or diagram)
 print(qc.draw())
-print(qc.draw('mpl'))   # Matplotlib figure
+print(qc.draw("mpl"))  # Matplotlib figure
 ```

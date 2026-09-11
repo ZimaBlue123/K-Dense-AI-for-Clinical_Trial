@@ -426,15 +426,14 @@ AI-generated diagrams are exported as PNG images and can be included in LaTeX do
 import matplotlib.pyplot as plt
 
 # Set publication quality
-plt.rcParams['font.family'] = 'sans-serif'
-plt.rcParams['font.sans-serif'] = ['Arial']
-plt.rcParams['font.size'] = 8
-plt.rcParams['pdf.fonttype'] = 42  # TrueType fonts in PDF
+plt.rcParams["font.family"] = "sans-serif"
+plt.rcParams["font.sans-serif"] = ["Arial"]
+plt.rcParams["font.size"] = 8
+plt.rcParams["pdf.fonttype"] = 42  # TrueType fonts in PDF
 
 # Save with proper DPI and cropping
-fig.savefig('diagram.pdf', dpi=300, bbox_inches='tight', 
-            pad_inches=0.1, transparent=False)
-fig.savefig('diagram.png', dpi=300, bbox_inches='tight')
+fig.savefig("diagram.pdf", dpi=300, bbox_inches="tight", pad_inches=0.1, transparent=False)
+fig.savefig("diagram.png", dpi=300, bbox_inches="tight")
 ```
 
 ### Schemdraw Export
@@ -446,9 +445,9 @@ d = schemdraw.Drawing()
 # ... build circuit ...
 
 # Export
-d.save('circuit.svg')  # Vector
-d.save('circuit.pdf')  # Vector
-d.save('circuit.png', dpi=300)  # Raster
+d.save("circuit.svg")  # Vector
+d.save("circuit.pdf")  # Vector
+d.save("circuit.png", dpi=300)  # Raster
 ```
 
 ### Inkscape Command Line

@@ -38,9 +38,11 @@ if modal.is_local():
 else:
     local_secret = modal.Secret.from_dict({})
 
+
 @app.function(secrets=[local_secret])
 def some_function():
     import os
+
     print(os.environ["FOO"])
 ```
 
@@ -50,6 +52,7 @@ From .env file:
 @app.function(secrets=[modal.Secret.from_dotenv()])
 def some_function():
     import os
+
     print(os.environ["USERNAME"])
 ```
 
@@ -61,6 +64,7 @@ Inject secrets into functions:
 @app.function(secrets=[modal.Secret.from_name("my-secret")])
 def some_function():
     import os
+
     secret_key = os.environ["MY_PASSWORD"]
     # Use secret
     ...
@@ -69,10 +73,12 @@ def some_function():
 ### Multiple Secrets
 
 ```python
-@app.function(secrets=[
-    modal.Secret.from_name("database-creds"),
-    modal.Secret.from_name("api-keys"),
-])
+@app.function(
+    secrets=[
+        modal.Secret.from_name("database-creds"),
+        modal.Secret.from_name("api-keys"),
+    ]
+)
 def other_function():
     # All keys from both secrets available
     ...
@@ -105,9 +111,11 @@ Via Image:
 ```python
 image = modal.Image.debian_slim().env({"PORT": "6443"})
 
+
 @app.function(image=image)
 def my_function():
     import os
+
     port = os.environ["PORT"]
 ```
 
@@ -116,9 +124,11 @@ Via Secrets:
 ```python
 secret = modal.Secret.from_dict({"API_KEY": "secret-value"})
 
+
 @app.function(secrets=[secret])
 def my_function():
     import os
+
     api_key = os.environ["API_KEY"]
 ```
 
@@ -129,10 +139,12 @@ def my_function():
 ```python
 aws_secret = modal.Secret.from_name("my-aws-secret")
 
+
 @app.function(secrets=[aws_secret])
 def use_aws():
     import boto3
-    s3 = boto3.client('s3')
+
+    s3 = boto3.client("s3")
     # AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY automatically used
 ```
 
@@ -141,9 +153,11 @@ def use_aws():
 ```python
 hf_secret = modal.Secret.from_name("huggingface")
 
+
 @app.function(secrets=[hf_secret])
 def download_model():
     from transformers import AutoModel
+
     # HF_TOKEN automatically used for authentication
     model = AutoModel.from_pretrained("private-model")
 ```
@@ -153,9 +167,11 @@ def download_model():
 ```python
 db_secret = modal.Secret.from_name("postgres-creds")
 
+
 @app.function(secrets=[db_secret])
 def query_db():
     import psycopg2
+
     conn = psycopg2.connect(
         host=os.environ["PGHOST"],
         port=os.environ["PGPORT"],

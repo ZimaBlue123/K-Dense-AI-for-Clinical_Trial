@@ -6,6 +6,7 @@ Complete list of databases supported by the UniProt ID Mapping service. Use thes
 
 ```python
 import requests
+
 response = requests.get("https://rest.uniprot.org/configure/idmapping/fields")
 databases = response.json()
 ```

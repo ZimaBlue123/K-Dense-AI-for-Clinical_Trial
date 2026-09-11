@@ -359,9 +359,7 @@ def constraint_satisfaction_example():
             satisfies = min_val <= score <= max_val
 
             status = "✓" if satisfies else "✗"
-            print(
-                f"  {prop:10s}: {score:7.2f} [{min_val:5.1f}, {max_val:5.1f}] {status}"
-            )
+            print(f"  {prop:10s}: {score:7.2f} [{min_val:5.1f}, {max_val:5.1f}] {status}")
 
             satisfies_all = satisfies_all and satisfies
 

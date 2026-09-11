@@ -28,8 +28,8 @@ fig = px.chart_type(
     x="column_x",
     y="column_y",
     color="category_column",  # Auto-color by category
-    size="size_column",        # Size by values
-    title="Chart Title"
+    size="size_column",  # Size by values
+    title="Chart Title",
 )
 fig.show()
 ```
@@ -75,25 +75,23 @@ All Plotly Express functions support these styling parameters:
 
 ```python
 fig = px.scatter(
-    df, x="x", y="y",
+    df,
+    x="x",
+    y="y",
     # Dimensions
     width=800,
     height=600,
-
     # Labels
     title="Figure Title",
     labels={"x": "X Axis", "y": "Y Axis"},
-
     # Colors
     color="category",
     color_discrete_map={"A": "red", "B": "blue"},
     color_continuous_scale="Viridis",
-
     # Ordering
     category_orders={"category": ["A", "B", "C"]},
-
     # Theming
-    template="plotly_dark"  # or "simple_white", "seaborn", "ggplot2"
+    template="plotly_dark",  # or "simple_white", "seaborn", "ggplot2"
 )
 ```
 
@@ -105,20 +103,18 @@ Plotly Express works with:
 
 ```python
 # Long-form (preferred)
-df_long = pd.DataFrame({
-    'fruit': ['apple', 'orange', 'apple', 'orange'],
-    'contestant': ['A', 'A', 'B', 'B'],
-    'count': [1, 3, 2, 4]
-})
-fig = px.bar(df_long, x='fruit', y='count', color='contestant')
+df_long = pd.DataFrame(
+    {
+        "fruit": ["apple", "orange", "apple", "orange"],
+        "contestant": ["A", "A", "B", "B"],
+        "count": [1, 3, 2, 4],
+    }
+)
+fig = px.bar(df_long, x="fruit", y="count", color="contestant")
 
 # Wide-form
-df_wide = pd.DataFrame({
-    'fruit': ['apple', 'orange'],
-    'A': [1, 3],
-    'B': [2, 4]
-})
-fig = px.bar(df_wide, x='fruit', y=['A', 'B'])
+df_wide = pd.DataFrame({"fruit": ["apple", "orange"], "A": [1, 3], "B": [2, 4]})
+fig = px.bar(df_wide, x="fruit", y=["A", "B"])
 ```
 
 ## Trendlines
@@ -127,9 +123,11 @@ Add statistical trendlines to scatter plots:
 
 ```python
 fig = px.scatter(
-    df, x="x", y="y",
+    df,
+    x="x",
+    y="y",
     trendline="ols",  # "ols", "lowess", "rolling", "ewm", "expanding"
-    trendline_options=dict(log_x=True)  # Additional options
+    trendline_options=dict(log_x=True),  # Additional options
 )
 ```
 
@@ -139,10 +137,12 @@ Create faceted plots automatically:
 
 ```python
 fig = px.scatter(
-    df, x="x", y="y",
-    facet_row="category_1",    # Separate rows
-    facet_col="category_2",    # Separate columns
-    facet_col_wrap=3           # Wrap columns
+    df,
+    x="x",
+    y="y",
+    facet_row="category_1",  # Separate rows
+    facet_col="category_2",  # Separate columns
+    facet_col_wrap=3,  # Wrap columns
 )
 ```
 
@@ -152,12 +152,14 @@ Create animated visualizations:
 
 ```python
 fig = px.scatter(
-    df, x="gdp", y="life_exp",
-    animation_frame="year",     # Animate over this column
+    df,
+    x="gdp",
+    y="life_exp",
+    animation_frame="year",  # Animate over this column
     animation_group="country",  # Group animated elements
     size="population",
     color="continent",
-    hover_name="country"
+    hover_name="country",
 )
 ```
 
@@ -167,13 +169,15 @@ Customize hover tooltips:
 
 ```python
 fig = px.scatter(
-    df, x="x", y="y",
+    df,
+    x="x",
+    y="y",
     hover_data={
-        "extra_col": True,      # Add column
-        "x": ":.2f",            # Format existing
-        "hidden_col": False     # Hide column
+        "extra_col": True,  # Add column
+        "x": ":.2f",  # Format existing
+        "hidden_col": False,  # Hide column
     },
-    hover_name="name_column"    # Bold title in hover
+    hover_name="name_column",  # Bold title in hover
 )
 ```
 
@@ -185,15 +189,9 @@ Plotly Express returns a `graph_objects.Figure` that can be further customized:
 fig = px.scatter(df, x="x", y="y")
 
 # Use graph_objects methods
-fig.update_layout(
-    title="Custom Title",
-    xaxis_title="X Axis",
-    font=dict(size=14)
-)
+fig.update_layout(title="Custom Title", xaxis_title="X Axis", font=dict(size=14))
 
-fig.update_traces(
-    marker=dict(size=10, opacity=0.7)
-)
+fig.update_traces(marker=dict(size=10, opacity=0.7))
 
 fig.add_hline(y=0, line_dash="dash")
 ```

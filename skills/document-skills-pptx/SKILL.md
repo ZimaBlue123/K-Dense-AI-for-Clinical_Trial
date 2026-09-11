@@ -1,6 +1,6 @@
 ---
-name: pptx
-description: Presentation toolkit (.pptx). Create/edit slides, layouts, content, speaker notes, comments, for programmatic presentation creation and modification.
+name: document-skills-pptx
+description: Read, edit, and restructure PowerPoint (PPTX) presentations
 license: Proprietary. LICENSE.txt has complete terms
 ---
 

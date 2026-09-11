@@ -40,15 +40,15 @@ uv add "pyzotero[cli]"
 ```python
 from pyzotero import Zotero
 
-zot = Zotero(library_id='123456', library_type='user', api_key='ABC1234XYZ')
+zot = Zotero(library_id="123456", library_type="user", api_key="ABC1234XYZ")
 
 # Retrieve top-level items (returns 100 by default)
 items = zot.top(limit=10)
 for item in items:
-    print(item['data']['title'], item['data']['itemType'])
+    print(item["data"]["title"], item["data"]["itemType"])
 
 # Search by keyword
-results = zot.items(q='machine learning', limit=20)
+results = zot.items(q="machine learning", limit=20)
 
 # Retrieve all items (use everything() for complete results)
 all_items = zot.everything(zot.items())
@@ -83,22 +83,22 @@ all_items = zot.everything(zot.items())
 
 ### Fetch and modify an item
 ```python
-item = zot.item('ITEMKEY')
-item['data']['title'] = 'New Title'
+item = zot.item("ITEMKEY")
+item["data"]["title"] = "New Title"
 zot.update_item(item)
 ```
 
 ### Create an item from a template
 ```python
-template = zot.item_template('journalArticle')
-template['title'] = 'My Paper'
-template['creators'][0] = {'creatorType': 'author', 'firstName': 'Jane', 'lastName': 'Doe'}
+template = zot.item_template("journalArticle")
+template["title"] = "My Paper"
+template["creators"][0] = {"creatorType": "author", "firstName": "Jane", "lastName": "Doe"}
 zot.create_items([template])
 ```
 
 ### Export as BibTeX
 ```python
-zot.add_parameters(format='bibtex')
+zot.add_parameters(format="bibtex")
 bibtex = zot.top(limit=50)
 # bibtex is a bibtexparser BibDatabase object
 print(bibtex.entries)
@@ -106,6 +106,6 @@ print(bibtex.entries)
 
 ### Local mode (read-only, no API key needed)
 ```python
-zot = Zotero(library_id='123456', library_type='user', local=True)
+zot = Zotero(library_id="123456", library_type="user", local=True)
 items = zot.items()
 ```

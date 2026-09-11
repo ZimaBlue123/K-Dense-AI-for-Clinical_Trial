@@ -221,20 +221,8 @@ plot.show()
 Pass matplotlib kwargs directly:
 
 ```python
-plot = Scatter(
-    title="My Results",
-    figsize=(10, 8),
-    tight_layout=True
-)
-plot.add(
-    result.F,
-    color="red",
-    marker="o",
-    s=50,
-    alpha=0.7,
-    edgecolors="black",
-    linewidth=0.5
-)
+plot = Scatter(title="My Results", figsize=(10, 8), tight_layout=True)
+plot.add(result.F, color="red", marker="o", s=50, alpha=0.7, edgecolors="black", linewidth=0.5)
 ```
 
 ### Normalization
@@ -294,7 +282,7 @@ from pymoo.visualization.pcp import PCP
 plot = PCP(
     title="5-objective DTLZ2 Results",
     labels=["f1", "f2", "f3", "f4", "f5"],
-    normalize_each_axis=True
+    normalize_each_axis=True,
 )
 plot.add(result.F, alpha=0.3)
 plot.show()
@@ -310,10 +298,10 @@ candidates = result.F[:3]
 plot = Petal(
     title="Top 3 Solutions",
     bounds=[result.F.min(axis=0), result.F.max(axis=0)],
-    labels=["Cost", "Weight", "Efficiency", "Safety"]
+    labels=["Cost", "Weight", "Efficiency", "Safety"],
 )
 for i, sol in enumerate(candidates):
-    plot.add(sol, label=f"Solution {i+1}")
+    plot.add(sol, label=f"Solution {i + 1}")
 plot.show()
 ```
 
@@ -322,14 +310,7 @@ plot.show()
 from pymoo.optimize import minimize
 
 # Enable history
-result = minimize(
-    problem,
-    algorithm,
-    ('n_gen', 200),
-    seed=1,
-    save_history=True,
-    verbose=False
-)
+result = minimize(problem, algorithm, ("n_gen", 200), seed=1, save_history=True, verbose=False)
 
 # Create convergence plot
 from pymoo.visualization.scatter import Scatter

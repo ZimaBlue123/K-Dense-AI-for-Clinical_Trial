@@ -62,9 +62,7 @@ print("=" * 80)
 adata.var["mt"] = adata.var_names.str.startswith("MT-")
 
 # Calculate QC metrics
-sc.pp.calculate_qc_metrics(
-    adata, qc_vars=["mt"], percent_top=None, log1p=False, inplace=True
-)
+sc.pp.calculate_qc_metrics(adata, qc_vars=["mt"], percent_top=None, log1p=False, inplace=True)
 
 # Visualize QC metrics before filtering
 sc.pl.violin(
@@ -218,7 +216,7 @@ for cell_type, genes in marker_genes.items():
             adata,
             color=available_genes,
             use_raw=True,
-            save=f'_{cell_type.replace(" ", "_")}',
+            save=f"_{cell_type.replace(' ', '_')}",
         )
 
 # Manual annotation based on marker expression (customize this mapping)

@@ -24,16 +24,16 @@ Read molecular structures from various formats:
 from rdkit import Chem
 
 # From SMILES strings
-mol = Chem.MolFromSmiles('Cc1ccccc1')  # Returns Mol object or None
+mol = Chem.MolFromSmiles("Cc1ccccc1")  # Returns Mol object or None
 
 # From MOL files
-mol = Chem.MolFromMolFile('path/to/file.mol')
+mol = Chem.MolFromMolFile("path/to/file.mol")
 
 # From MOL blocks (string data)
 mol = Chem.MolFromMolBlock(mol_block_string)
 
 # From InChI
-mol = Chem.MolFromInchi('InChI=1S/C6H6/c1-2-4-6-5-3-1/h1-6H')
+mol = Chem.MolFromInchi("InChI=1S/C6H6/c1-2-4-6-5-3-1/h1-6H")
 ```
 
 **Writing Molecules:**
@@ -57,27 +57,27 @@ For processing multiple molecules, use Supplier/Writer objects:
 
 ```python
 # Read SDF files
-suppl = Chem.SDMolSupplier('molecules.sdf')
+suppl = Chem.SDMolSupplier("molecules.sdf")
 for mol in suppl:
     if mol is not None:  # Check for parsing errors
         # Process molecule
         pass
 
 # Read SMILES files
-suppl = Chem.SmilesMolSupplier('molecules.smi', titleLine=False)
+suppl = Chem.SmilesMolSupplier("molecules.smi", titleLine=False)
 
 # For large files or compressed data
-with gzip.open('molecules.sdf.gz') as f:
+with gzip.open("molecules.sdf.gz") as f:
     suppl = Chem.ForwardSDMolSupplier(f)
     for mol in suppl:
         # Process molecule
         pass
 
 # Multithreaded processing for large datasets
-suppl = Chem.MultithreadedSDMolSupplier('molecules.sdf')
+suppl = Chem.MultithreadedSDMolSupplier("molecules.sdf")
 
 # Write molecules to SDF
-writer = Chem.SDWriter('output.sdf')
+writer = Chem.SDWriter("output.sdf")
 for mol in molecules:
     writer.write(mol)
 writer.close()
@@ -96,7 +96,7 @@ RDKit automatically sanitizes molecules during parsing, executing 13 steps inclu
 
 ```python
 # Disable automatic sanitization
-mol = Chem.MolFromSmiles('C1=CC=CC=C1', sanitize=False)
+mol = Chem.MolFromSmiles("C1=CC=CC=C1", sanitize=False)
 
 # Manual sanitization
 Chem.SanitizeMol(mol)
@@ -108,6 +108,7 @@ for problem in problems:
 
 # Partial sanitization (skip specific steps)
 from rdkit.Chem import rdMolStandardize
+
 Chem.SanitizeMol(mol, sanitizeOps=Chem.SANITIZE_ALL ^ Chem.SANITIZE_PROPERTIES)
 ```
 
@@ -140,6 +141,7 @@ atom.IsInRingSize(6)  # Check for 6-membered rings
 
 # Find smallest set of smallest rings (SSSR)
 from rdkit.Chem import GetSymmSSSR
+
 rings = GetSymmSSSR(mol)
 ```
 
@@ -148,11 +150,13 @@ rings = GetSymmSSSR(mol)
 ```python
 # Find chiral centers
 from rdkit.Chem import FindMolChiralCenters
+
 chiral_centers = FindMolChiralCenters(mol, includeUnassigned=True)
 # Returns list of (atom_idx, chirality) tuples
 
 # Assign stereochemistry from 3D coordinates
 from rdkit.Chem import AssignStereochemistryFrom3D
+
 AssignStereochemistryFrom3D(mol)
 
 # Check bond stereochemistry
@@ -168,10 +172,12 @@ frags = Chem.GetMolFrags(mol, asMols=True)
 
 # Fragment on specific bonds
 from rdkit.Chem import FragmentOnBonds
+
 frag_mol = FragmentOnBonds(mol, [bond_idx1, bond_idx2])
 
 # Count ring systems
 from rdkit.Chem.Scaffolds import MurckoScaffold
+
 scaffold = MurckoScaffold.GetScaffoldForMol(mol)
 ```
 
@@ -258,6 +264,7 @@ fp = tt_gen.GetFingerprint(mol)
 
 # Avalon fingerprints (if available)
 from rdkit.Avalon import pyAvalonTools
+
 fp = pyAvalonTools.GetAvalonFP(mol)
 ```
 
@@ -296,7 +303,7 @@ mfpgen = rdFingerprintGenerator.GetMorganGenerator(radius=2, fpSize=2048)
 fps = [mfpgen.GetFingerprint(mol) for mol in mols]
 for i in range(len(fps)):
     sims = DataStructs.BulkTanimotoSimilarity(fps[i], fps[:i])
-    dists.extend([1-sim for sim in sims])
+    dists.extend([1 - sim for sim in sims])
 
 # Cluster with distance cutoff
 clusters = Butina.ClusterData(dists, len(fps), distThresh=0.3, isDistData=True)
@@ -308,7 +315,7 @@ clusters = Butina.ClusterData(dists, len(fps), distThresh=0.3, isDistData=True)
 
 ```python
 # Define query using SMARTS
-query = Chem.MolFromSmarts('[#6]1:[#6]:[#6]:[#6]:[#6]:[#6]:1')  # Benzene ring
+query = Chem.MolFromSmarts("[#6]1:[#6]:[#6]:[#6]:[#6]:[#6]:1")  # Benzene ring
 
 # Check if molecule contains substructure
 has_match = mol.HasSubstructMatch(query)
@@ -324,19 +331,19 @@ match = mol.GetSubstructMatch(query)
 
 ```python
 # Primary alcohols
-primary_alcohol = Chem.MolFromSmarts('[CH2][OH1]')
+primary_alcohol = Chem.MolFromSmarts("[CH2][OH1]")
 
 # Carboxylic acids
-carboxylic_acid = Chem.MolFromSmarts('C(=O)[OH]')
+carboxylic_acid = Chem.MolFromSmarts("C(=O)[OH]")
 
 # Amides
-amide = Chem.MolFromSmarts('C(=O)N')
+amide = Chem.MolFromSmarts("C(=O)N")
 
 # Aromatic heterocycles
-aromatic_n = Chem.MolFromSmarts('[nR]')  # Aromatic nitrogen in ring
+aromatic_n = Chem.MolFromSmarts("[nR]")  # Aromatic nitrogen in ring
 
 # Macrocycles (rings > 12 atoms)
-macrocycle = Chem.MolFromSmarts('[r{12-}]')
+macrocycle = Chem.MolFromSmarts("[r{12-}]")
 ```
 
 **Matching Rules:**
@@ -353,7 +360,7 @@ macrocycle = Chem.MolFromSmarts('[r{12-}]')
 from rdkit.Chem import AllChem
 
 # Define reaction using SMARTS: reactants >> products
-rxn = AllChem.ReactionFromSmarts('[C:1]=[O:2]>>[C:1][O:2]')  # Ketone reduction
+rxn = AllChem.ReactionFromSmarts("[C:1]=[O:2]>>[C:1][O:2]")  # Ketone reduction
 
 # Apply reaction to molecules
 reactants = (mol1,)
@@ -393,7 +400,7 @@ from rdkit.Chem import AllChem
 AllChem.Compute2DCoords(mol)
 
 # Align molecule to template structure
-template = Chem.MolFromSmiles('c1ccccc1')
+template = Chem.MolFromSmiles("c1ccccc1")
 AllChem.Compute2DCoords(template)
 AllChem.GenerateDepictionMatching2DStructure(mol, template)
 ```
@@ -417,6 +424,7 @@ for conf_id in conf_ids:
 
 # Calculate RMSD between conformers
 from rdkit.Chem import AllChem
+
 rms = AllChem.GetConformerRMS(mol, conf_id1, conf_id2)
 
 # Align molecules
@@ -439,10 +447,10 @@ from rdkit.Chem import Draw
 
 # Draw single molecule to PIL image
 img = Draw.MolToImage(mol, size=(300, 300))
-img.save('molecule.png')
+img.save("molecule.png")
 
 # Draw to file directly
-Draw.MolToFile(mol, 'molecule.png')
+Draw.MolToFile(mol, "molecule.png")
 
 # Draw multiple molecules in grid
 mols = [mol1, mol2, mol3, mol4]
@@ -453,15 +461,14 @@ img = Draw.MolsToGridImage(mols, molsPerRow=2, subImgSize=(200, 200))
 
 ```python
 # Highlight substructure match
-query = Chem.MolFromSmarts('c1ccccc1')
+query = Chem.MolFromSmarts("c1ccccc1")
 match = mol.GetSubstructMatch(query)
 
 img = Draw.MolToImage(mol, highlightAtoms=match)
 
 # Custom highlight colors
 highlight_colors = {atom_idx: (1, 0, 0) for atom_idx in match}  # Red
-img = Draw.MolToImage(mol, highlightAtoms=match,
-                      highlightAtomColors=highlight_colors)
+img = Draw.MolToImage(mol, highlightAtoms=match, highlightAtomColors=highlight_colors)
 ```
 
 **Customizing Visualization:**
@@ -483,7 +490,7 @@ drawer.DrawMolecule(mol)
 drawer.FinishDrawing()
 
 # Save to file
-with open('molecule.png', 'wb') as f:
+with open("molecule.png", "wb") as f:
     f.write(drawer.GetDrawingText())
 ```
 
@@ -495,7 +502,7 @@ from rdkit.Chem.Draw import IPythonConsole
 
 # Customize default display
 IPythonConsole.ipython_useSVG = True  # Use SVG instead of PNG
-IPythonConsole.molSize = (300, 300)   # Default size
+IPythonConsole.molSize = (300, 300)  # Default size
 
 # Molecules now display automatically
 mol  # Shows molecule image
@@ -541,8 +548,8 @@ Chem.SetAromaticity(mol)
 
 ```python
 # Replace substructure with another structure
-query = Chem.MolFromSmarts('c1ccccc1')  # Benzene
-replacement = Chem.MolFromSmiles('C1CCCCC1')  # Cyclohexane
+query = Chem.MolFromSmarts("c1ccccc1")  # Benzene
+replacement = Chem.MolFromSmiles("C1CCCCC1")  # Cyclohexane
 
 new_mol = Chem.ReplaceSubstructs(mol, query, replacement)[0]
 ```
@@ -594,7 +601,7 @@ from rdkit import RDConfig
 import os
 
 # Load feature factory
-fdef_path = os.path.join(RDConfig.RDDataDir, 'BaseFeatures.fdef')
+fdef_path = os.path.join(RDConfig.RDDataDir, "BaseFeatures.fdef")
 factory = ChemicalFeatures.BuildFeatureFactory(fdef_path)
 
 # Get pharmacophore features
@@ -612,6 +619,7 @@ for feat in features:
 from rdkit import Chem
 from rdkit.Chem import Descriptors
 
+
 def analyze_druglikeness(smiles):
     mol = Chem.MolFromSmiles(smiles)
     if mol is None:
@@ -619,20 +627,20 @@ def analyze_druglikeness(smiles):
 
     # Calculate Lipinski descriptors
     results = {
-        'MW': Descriptors.MolWt(mol),
-        'LogP': Descriptors.MolLogP(mol),
-        'HBD': Descriptors.NumHDonors(mol),
-        'HBA': Descriptors.NumHAcceptors(mol),
-        'TPSA': Descriptors.TPSA(mol),
-        'RotBonds': Descriptors.NumRotatableBonds(mol)
+        "MW": Descriptors.MolWt(mol),
+        "LogP": Descriptors.MolLogP(mol),
+        "HBD": Descriptors.NumHDonors(mol),
+        "HBA": Descriptors.NumHAcceptors(mol),
+        "TPSA": Descriptors.TPSA(mol),
+        "RotBonds": Descriptors.NumRotatableBonds(mol),
     }
 
     # Check Lipinski's Rule of Five
-    results['Lipinski'] = (
-        results['MW'] <= 500 and
-        results['LogP'] <= 5 and
-        results['HBD'] <= 5 and
-        results['HBA'] <= 10
+    results["Lipinski"] = (
+        results["MW"] <= 500
+        and results["LogP"] <= 5
+        and results["HBD"] <= 5
+        and results["HBA"] <= 10
     )
 
     return results
@@ -644,6 +652,7 @@ def analyze_druglikeness(smiles):
 from rdkit import Chem
 from rdkit.Chem import AllChem
 from rdkit import DataStructs
+
 
 def similarity_screen(query_smiles, database_smiles, threshold=0.7):
     query_mol = Chem.MolFromSmiles(query_smiles)
@@ -665,6 +674,7 @@ def similarity_screen(query_smiles, database_smiles, threshold=0.7):
 
 ```python
 from rdkit import Chem
+
 
 def filter_by_substructure(smiles_list, pattern_smarts):
     query = Chem.MolFromSmarts(pattern_smarts)
@@ -699,11 +709,11 @@ if mol is None:
 import pickle
 
 # Pickle molecules for fast loading
-with open('molecules.pkl', 'wb') as f:
+with open("molecules.pkl", "wb") as f:
     pickle.dump(mols, f)
 
 # Load pickled molecules (much faster than reparsing)
-with open('molecules.pkl', 'rb') as f:
+with open("molecules.pkl", "rb") as f:
     mols = pickle.load(f)
 ```
 
@@ -735,14 +745,14 @@ For large datasets:
 
 ```python
 # Use ForwardSDMolSupplier to avoid loading entire file
-with open('large.sdf') as f:
+with open("large.sdf") as f:
     suppl = Chem.ForwardSDMolSupplier(f)
     for mol in suppl:
         # Process one molecule at a time
         pass
 
 # Use MultithreadedSDMolSupplier for parallel processing
-suppl = Chem.MultithreadedSDMolSupplier('large.sdf', numWriterThreads=4)
+suppl = Chem.MultithreadedSDMolSupplier("large.sdf", numWriterThreads=4)
 ```
 
 ## Common Pitfalls

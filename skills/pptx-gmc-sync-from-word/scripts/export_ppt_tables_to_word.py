@@ -22,9 +22,7 @@ def parse_slides(spec: str) -> list[int]:
     return out
 
 
-def export_tables(
-    ppt_path: Path, out_path: Path, slide_indices: list[int], title: str
-) -> None:
+def export_tables(ppt_path: Path, out_path: Path, slide_indices: list[int], title: str) -> None:
     prs = Presentation(str(ppt_path))
     doc = Document()
 

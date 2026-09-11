@@ -27,29 +27,32 @@ from omero.gateway import BlitzGateway
 import omero.scripts as scripts
 from omero.rtypes import rlong, rstring, robject
 
+
 def run_script():
     """
     Main script function.
     """
     # Script definition
     client = scripts.client(
-        'Script_Name.py',
+        "Script_Name.py",
         """
         Description of what this script does.
         """,
-
         # Input parameters
-        scripts.String("Data_Type", optional=False, grouping="1",
-                      description="Choose source of images",
-                      values=[rstring('Dataset'), rstring('Image')],
-                      default=rstring('Dataset')),
-
-        scripts.Long("IDs", optional=False, grouping="2",
-                    description="Dataset or Image ID(s)").ofType(rlong(0)),
-
+        scripts.String(
+            "Data_Type",
+            optional=False,
+            grouping="1",
+            description="Choose source of images",
+            values=[rstring("Dataset"), rstring("Image")],
+            default=rstring("Dataset"),
+        ),
+        scripts.Long(
+            "IDs", optional=False, grouping="2", description="Dataset or Image ID(s)"
+        ).ofType(rlong(0)),
         # Outputs
         namespaces=[omero.constants.namespaces.NSDYNAMIC],
-        version="1.0"
+        version="1.0",
     )
 
     try:
@@ -70,12 +73,14 @@ def run_script():
     finally:
         client.closeSession()
 
+
 def process_data(conn, data_type, ids):
     """
     Process images based on parameters.
     """
     # Implementation here
     return "Processing complete"
+
 
 if __name__ == "__main__":
     run_script()
@@ -87,46 +92,42 @@ if __name__ == "__main__":
 
 ```python
 # String parameter
-scripts.String("Name", optional=False,
-              description="Enter a name")
+scripts.String("Name", optional=False, description="Enter a name")
 
 # String with choices
-scripts.String("Mode", optional=False,
-              values=[rstring('Fast'), rstring('Accurate')],
-              default=rstring('Fast'))
+scripts.String(
+    "Mode", optional=False, values=[rstring("Fast"), rstring("Accurate")], default=rstring("Fast")
+)
 
 # Integer parameter
-scripts.Long("ImageID", optional=False,
-            description="Image to process").ofType(rlong(0))
+scripts.Long("ImageID", optional=False, description="Image to process").ofType(rlong(0))
 
 # List of integers
-scripts.List("ImageIDs", optional=False,
-            description="Multiple images").ofType(rlong(0))
+scripts.List("ImageIDs", optional=False, description="Multiple images").ofType(rlong(0))
 
 # Float parameter
-scripts.Float("Threshold", optional=True,
-             description="Threshold value",
-             min=0.0, max=1.0, default=0.5)
+scripts.Float(
+    "Threshold", optional=True, description="Threshold value", min=0.0, max=1.0, default=0.5
+)
 
 # Boolean parameter
-scripts.Bool("SaveResults", optional=True,
-            description="Save results to OMERO",
-            default=True)
+scripts.Bool("SaveResults", optional=True, description="Save results to OMERO", default=True)
 ```
 
 ### Parameter Grouping
 
 ```python
 # Group related parameters
-scripts.String("Data_Type", grouping="1",
-              description="Source type",
-              values=[rstring('Dataset'), rstring('Image')])
+scripts.String(
+    "Data_Type",
+    grouping="1",
+    description="Source type",
+    values=[rstring("Dataset"), rstring("Image")],
+)
 
-scripts.Long("Dataset_ID", grouping="1.1",
-            description="Dataset ID").ofType(rlong(0))
+scripts.Long("Dataset_ID", grouping="1.1", description="Dataset ID").ofType(rlong(0))
 
-scripts.List("Image_IDs", grouping="1.2",
-            description="Image IDs").ofType(rlong(0))
+scripts.List("Image_IDs", grouping="1.2", description="Image IDs").ofType(rlong(0))
 ```
 
 ## Accessing Input Data
@@ -206,12 +207,16 @@ def process_images(conn, images, threshold):
                     # Count features
                     feature_count = count_features(binary)
 
-                    results.append({
-                        'image_id': image.getId(),
-                        'image_name': image.getName(),
-                        'z': z, 'c': c, 't': t,
-                        'feature_count': feature_count
-                    })
+                    results.append(
+                        {
+                            "image_id": image.getId(),
+                            "image_name": image.getName(),
+                            "z": z,
+                            "c": c,
+                            "t": t,
+                            "feature_count": feature_count,
+                        }
+                    )
 
     return results
 ```
@@ -245,9 +250,7 @@ client.setOutput("New_Image", robject(new_image._obj))
 ```python
 # Create and return file annotation
 file_ann = conn.createFileAnnfromLocalFile(
-    output_file_path,
-    mimetype="text/csv",
-    ns="analysis.results"
+    output_file_path, mimetype="text/csv", ns="analysis.results"
 )
 
 client.setOutput("Result_File", robject(file_ann._obj))
@@ -284,26 +287,32 @@ import omero.scripts as scripts
 from omero.rtypes import rlong, rstring, robject
 import numpy as np
 
+
 def run_script():
     client = scripts.client(
-        'Maximum_Intensity_Projection.py',
+        "Maximum_Intensity_Projection.py",
         """
         Creates maximum intensity projection from Z-stack images.
         """,
-
-        scripts.String("Data_Type", optional=False, grouping="1",
-                      description="Process images from",
-                      values=[rstring('Dataset'), rstring('Image')],
-                      default=rstring('Image')),
-
-        scripts.List("IDs", optional=False, grouping="2",
-                    description="Dataset or Image ID(s)").ofType(rlong(0)),
-
-        scripts.Bool("Link_to_Source", optional=True, grouping="3",
-                    description="Link results to source dataset",
-                    default=True),
-
-        version="1.0"
+        scripts.String(
+            "Data_Type",
+            optional=False,
+            grouping="1",
+            description="Process images from",
+            values=[rstring("Dataset"), rstring("Image")],
+            default=rstring("Image"),
+        ),
+        scripts.List(
+            "IDs", optional=False, grouping="2", description="Dataset or Image ID(s)"
+        ).ofType(rlong(0)),
+        scripts.Bool(
+            "Link_to_Source",
+            optional=True,
+            grouping="3",
+            description="Link results to source dataset",
+            default=True,
+        ),
+        version="1.0",
     )
 
     try:
@@ -334,6 +343,7 @@ def run_script():
     finally:
         client.closeSession()
 
+
 def get_images(conn, script_params):
     """Get images from script parameters."""
     images = []
@@ -352,6 +362,7 @@ def get_images(conn, script_params):
                 images.append(image)
 
     return images
+
 
 def create_mip(conn, source_image):
     """Create maximum intensity projection."""
@@ -381,12 +392,15 @@ def create_mip(conn, source_image):
     new_image = conn.createImageFromNumpySeq(
         plane_gen(),
         f"{source_image.getName()}_MIP",
-        1, size_c, size_t,
+        1,
+        size_c,
+        size_t,
         description="Maximum intensity projection",
-        dataset=source_image.getParent()
+        dataset=source_image.getParent(),
     )
 
     return new_image
+
 
 if __name__ == "__main__":
     run_script()
@@ -404,21 +418,24 @@ import omero.scripts as scripts
 from omero.rtypes import rlong, rstring, robject
 import omero.grid
 
+
 def run_script():
     client = scripts.client(
-        'Batch_ROI_Analysis.py',
+        "Batch_ROI_Analysis.py",
         """
         Analyzes ROIs across multiple images and creates results table.
         """,
-
-        scripts.Long("Dataset_ID", optional=False,
-                    description="Dataset with images and ROIs").ofType(rlong(0)),
-
-        scripts.Long("Channel_Index", optional=True,
-                    description="Channel to analyze (0-indexed)",
-                    default=0, min=0),
-
-        version="1.0"
+        scripts.Long(
+            "Dataset_ID", optional=False, description="Dataset with images and ROIs"
+        ).ofType(rlong(0)),
+        scripts.Long(
+            "Channel_Index",
+            optional=True,
+            description="Channel to analyze (0-indexed)",
+            default=0,
+            min=0,
+        ),
+        version="1.0",
     )
 
     try:
@@ -448,6 +465,7 @@ def run_script():
     finally:
         client.closeSession()
 
+
 def analyze_rois(conn, dataset, channel_index):
     """Analyze all ROIs in dataset images."""
     roi_service = conn.getRoiService()
@@ -466,35 +484,36 @@ def analyze_rois(conn, dataset, channel_index):
                 shape_ids.append(shape.id.val)
 
         # Get statistics
-        stats = roi_service.getShapeStatsRestricted(
-            shape_ids, 0, 0, [channel_index]
-        )
+        stats = roi_service.getShapeStatsRestricted(shape_ids, 0, 0, [channel_index])
 
         # Store results
         for i, stat in enumerate(stats):
-            results.append({
-                'image_id': image.getId(),
-                'image_name': image.getName(),
-                'shape_id': shape_ids[i],
-                'mean': stat.mean[channel_index],
-                'min': stat.min[channel_index],
-                'max': stat.max[channel_index],
-                'sum': stat.sum[channel_index],
-                'area': stat.pointsCount[channel_index]
-            })
+            results.append(
+                {
+                    "image_id": image.getId(),
+                    "image_name": image.getName(),
+                    "shape_id": shape_ids[i],
+                    "mean": stat.mean[channel_index],
+                    "min": stat.min[channel_index],
+                    "max": stat.max[channel_index],
+                    "sum": stat.sum[channel_index],
+                    "area": stat.pointsCount[channel_index],
+                }
+            )
 
     return results
+
 
 def create_results_table(conn, dataset, results):
     """Create OMERO table from results."""
     # Prepare data
-    image_ids = [r['image_id'] for r in results]
-    shape_ids = [r['shape_id'] for r in results]
-    means = [r['mean'] for r in results]
-    mins = [r['min'] for r in results]
-    maxs = [r['max'] for r in results]
-    sums = [r['sum'] for r in results]
-    areas = [r['area'] for r in results]
+    image_ids = [r["image_id"] for r in results]
+    shape_ids = [r["shape_id"] for r in results]
+    means = [r["mean"] for r in results]
+    mins = [r["min"] for r in results]
+    maxs = [r["max"] for r in results]
+    sums = [r["sum"] for r in results]
+    areas = [r["area"] for r in results]
 
     # Create table
     resources = conn.c.sf.sharedResources()
@@ -503,25 +522,25 @@ def create_results_table(conn, dataset, results):
 
     # Define columns
     columns = [
-        omero.grid.ImageColumn('Image', 'Source image', []),
-        omero.grid.LongColumn('ShapeID', 'ROI shape ID', []),
-        omero.grid.DoubleColumn('Mean', 'Mean intensity', []),
-        omero.grid.DoubleColumn('Min', 'Min intensity', []),
-        omero.grid.DoubleColumn('Max', 'Max intensity', []),
-        omero.grid.DoubleColumn('Sum', 'Integrated density', []),
-        omero.grid.LongColumn('Area', 'Area in pixels', [])
+        omero.grid.ImageColumn("Image", "Source image", []),
+        omero.grid.LongColumn("ShapeID", "ROI shape ID", []),
+        omero.grid.DoubleColumn("Mean", "Mean intensity", []),
+        omero.grid.DoubleColumn("Min", "Min intensity", []),
+        omero.grid.DoubleColumn("Max", "Max intensity", []),
+        omero.grid.DoubleColumn("Sum", "Integrated density", []),
+        omero.grid.LongColumn("Area", "Area in pixels", []),
     ]
     table.initialize(columns)
 
     # Add data
     data = [
-        omero.grid.ImageColumn('Image', 'Source image', image_ids),
-        omero.grid.LongColumn('ShapeID', 'ROI shape ID', shape_ids),
-        omero.grid.DoubleColumn('Mean', 'Mean intensity', means),
-        omero.grid.DoubleColumn('Min', 'Min intensity', mins),
-        omero.grid.DoubleColumn('Max', 'Max intensity', maxs),
-        omero.grid.DoubleColumn('Sum', 'Integrated density', sums),
-        omero.grid.LongColumn('Area', 'Area in pixels', areas)
+        omero.grid.ImageColumn("Image", "Source image", image_ids),
+        omero.grid.LongColumn("ShapeID", "ROI shape ID", shape_ids),
+        omero.grid.DoubleColumn("Mean", "Mean intensity", means),
+        omero.grid.DoubleColumn("Min", "Min intensity", mins),
+        omero.grid.DoubleColumn("Max", "Max intensity", maxs),
+        omero.grid.DoubleColumn("Sum", "Integrated density", sums),
+        omero.grid.LongColumn("Area", "Area in pixels", areas),
     ]
     table.addData(data)
 
@@ -539,6 +558,7 @@ def create_results_table(conn, dataset, results):
     conn.getUpdateService().saveAndReturnObject(link)
 
     return file_ann
+
 
 if __name__ == "__main__":
     run_script()

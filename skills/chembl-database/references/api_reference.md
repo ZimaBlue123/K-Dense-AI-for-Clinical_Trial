@@ -67,15 +67,12 @@ molecules.filter(molecule_properties__mw_freebase__lte=300)
 
 **Name pattern matching:**
 ```python
-molecules.filter(pref_name__endswith='nib')
+molecules.filter(pref_name__endswith="nib")
 ```
 
 **Multiple conditions:**
 ```python
-molecules.filter(
-    molecule_properties__mw_freebase__lte=300,
-    pref_name__endswith='nib'
-)
+molecules.filter(molecule_properties__mw_freebase__lte=300, pref_name__endswith="nib")
 ```
 
 ## Chemical Structure Searches
@@ -85,8 +82,9 @@ Search for compounds containing a specific substructure using SMILES:
 
 ```python
 from chembl_webresource_client.new_client import new_client
+
 similarity = new_client.similarity
-results = similarity.filter(smiles='CC(=O)Oc1ccccc1C(=O)O', similarity=70)
+results = similarity.filter(smiles="CC(=O)Oc1ccccc1C(=O)O", similarity=70)
 ```
 
 ### Similarity Search
@@ -94,33 +92,31 @@ Find compounds similar to a query structure:
 
 ```python
 similarity = new_client.similarity
-results = similarity.filter(smiles='CC(=O)Oc1ccccc1C(=O)O', similarity=85)
+results = similarity.filter(smiles="CC(=O)Oc1ccccc1C(=O)O", similarity=85)
 ```
 
 ## Common Data Retrieval Patterns
 
 ### Get Molecule by ChEMBL ID
 ```python
-molecule = new_client.molecule.get('CHEMBL25')
+molecule = new_client.molecule.get("CHEMBL25")
 ```
 
 ### Get Target Information
 ```python
-target = new_client.target.get('CHEMBL240')
+target = new_client.target.get("CHEMBL240")
 ```
 
 ### Get Activity Data
 ```python
 activities = new_client.activity.filter(
-    target_chembl_id='CHEMBL240',
-    standard_type='IC50',
-    standard_value__lte=100
+    target_chembl_id="CHEMBL240", standard_type="IC50", standard_value__lte=100
 )
 ```
 
 ### Get Drug Information
 ```python
-drug = new_client.drug.get('CHEMBL1234')
+drug = new_client.drug.get("CHEMBL1234")
 ```
 
 ## Response Formats
@@ -200,32 +196,24 @@ Target data includes:
 ### Find Kinase Inhibitors
 ```python
 # Get kinase targets
-targets = new_client.target.filter(
-    target_type='SINGLE PROTEIN',
-    pref_name__icontains='kinase'
-)
+targets = new_client.target.filter(target_type="SINGLE PROTEIN", pref_name__icontains="kinase")
 
 # Get activities for these targets
 activities = new_client.activity.filter(
-    target_chembl_id__in=[t['target_chembl_id'] for t in targets],
-    standard_type='IC50',
-    standard_value__lte=100
+    target_chembl_id__in=[t["target_chembl_id"] for t in targets],
+    standard_type="IC50",
+    standard_value__lte=100,
 )
 ```
 
 ### Retrieve Drug Mechanisms
 ```python
-mechanisms = new_client.mechanism.filter(
-    molecule_chembl_id='CHEMBL25'
-)
+mechanisms = new_client.mechanism.filter(molecule_chembl_id="CHEMBL25")
 ```
 
 ### Get Compound Bioactivities
 ```python
-activities = new_client.activity.filter(
-    molecule_chembl_id='CHEMBL25',
-    pchembl_value__isnull=False
-)
+activities = new_client.activity.filter(molecule_chembl_id="CHEMBL25", pchembl_value__isnull=False)
 ```
 
 ## Image Generation
@@ -234,8 +222,9 @@ ChEMBL can generate SVG images of molecular structures:
 
 ```python
 from chembl_webresource_client.new_client import new_client
+
 image = new_client.image
-svg = image.get('CHEMBL25')
+svg = image.get("CHEMBL25")
 ```
 
 ## Pagination
@@ -243,7 +232,7 @@ svg = image.get('CHEMBL25')
 Results are paginated automatically. To iterate through all results:
 
 ```python
-activities = new_client.activity.filter(target_chembl_id='CHEMBL240')
+activities = new_client.activity.filter(target_chembl_id="CHEMBL240")
 for activity in activities:
     print(activity)
 ```

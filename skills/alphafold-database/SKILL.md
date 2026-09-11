@@ -46,6 +46,7 @@ for prediction in predictions:
 
 # Get Structure objects directly
 from Bio.PDB import MMCIFParser
+
 structures = list(alphafold_db.get_structural_models_for("P00520"))
 ```
 
@@ -63,7 +64,7 @@ response = requests.get(api_url)
 prediction_data = response.json()
 
 # Extract AlphaFold ID
-alphafold_id = prediction_data[0]['entryId']
+alphafold_id = prediction_data[0]["entryId"]
 print(f"AlphaFold ID: {alphafold_id}")
 ```
 
@@ -74,18 +75,15 @@ Search UniProt to find protein accessions first:
 ```python
 import urllib.parse, urllib.request
 
-def get_uniprot_ids(query, query_type='PDB_ID'):
+
+def get_uniprot_ids(query, query_type="PDB_ID"):
     """Query UniProt to get accession IDs"""
-    url = 'https://www.uniprot.org/uploadlists/'
-    params = {
-        'from': query_type,
-        'to': 'ACC',
-        'format': 'txt',
-        'query': query
-    }
-    data = urllib.parse.urlencode(params).encode('ascii')
+    url = "https://www.uniprot.org/uploadlists/"
+    params = {"from": query_type, "to": "ACC", "format": "txt", "query": query}
+    data = urllib.parse.urlencode(params).encode("ascii")
     with urllib.request.urlopen(urllib.request.Request(url, data)) as response:
-        return response.read().decode('utf-8').splitlines()
+        return response.read().decode("utf-8").splitlines()
+
 
 # Example: Find UniProt IDs for a protein name
 protein_ids = get_uniprot_ids("hemoglobin", query_type="GENE_NAME")
@@ -152,7 +150,7 @@ confidence_url = f"https://alphafold.ebi.ac.uk/files/{alphafold_id}-confidence_v
 confidence = requests.get(confidence_url).json()
 
 # Extract pLDDT scores
-plddt_scores = confidence['confidenceScore']
+plddt_scores = confidence["confidenceScore"]
 
 # Interpret confidence levels
 # pLDDT > 90: Very high confidence
@@ -177,14 +175,14 @@ pae_url = f"https://alphafold.ebi.ac.uk/files/{alphafold_id}-predicted_aligned_e
 pae = requests.get(pae_url).json()
 
 # Visualize PAE matrix
-pae_matrix = np.array(pae['distance'])
+pae_matrix = np.array(pae["distance"])
 plt.figure(figsize=(10, 8))
-plt.imshow(pae_matrix, cmap='viridis_r', vmin=0, vmax=30)
-plt.colorbar(label='PAE (Å)')
-plt.title(f'Predicted Aligned Error: {alphafold_id}')
-plt.xlabel('Residue')
-plt.ylabel('Residue')
-plt.savefig(f'{alphafold_id}_pae.png', dpi=300, bbox_inches='tight')
+plt.imshow(pae_matrix, cmap="viridis_r", vmin=0, vmax=30)
+plt.colorbar(label="PAE (Å)")
+plt.title(f"Predicted Aligned Error: {alphafold_id}")
+plt.xlabel("Residue")
+plt.ylabel("Residue")
+plt.savefig(f"{alphafold_id}_pae.png", dpi=300, bbox_inches="tight")
 
 # Low PAE values (<5 Å) indicate confident relative positioning
 # High PAE values (>15 Å) suggest uncertain domain arrangements
@@ -244,15 +242,17 @@ print(f"Found {len(results)} high-confidence human proteins")
 import subprocess
 import shlex
 
+
 def download_proteome(taxonomy_id, output_dir="./proteomes"):
     """Download all AlphaFold predictions for a species"""
     # Validate taxonomy_id is an integer to prevent injection
     if not isinstance(taxonomy_id, int):
         raise ValueError("taxonomy_id must be an integer")
-    
+
     pattern = f"gs://public-datasets-deepmind-alphafold-v4/proteomes/proteome-tax_id-{taxonomy_id}-*_v4.tar"
     # Use list form instead of shell=True for security
     subprocess.run(["gsutil", "-m", "cp", pattern, f"{output_dir}/"], check=True)
+
 
 # Download E. coli proteome (tax ID: 83333)
 download_proteome(83333)
@@ -278,14 +278,15 @@ coords = []
 for model in structure:
     for chain in model:
         for residue in chain:
-            if 'CA' in residue:  # Alpha carbons only
-                coords.append(residue['CA'].get_coord())
+            if "CA" in residue:  # Alpha carbons only
+                coords.append(residue["CA"].get_coord())
 
 coords = np.array(coords)
 print(f"Structure has {len(coords)} residues")
 
 # Calculate distances
 from scipy.spatial.distance import pdist, squareform
+
 distance_matrix = squareform(pdist(coords))
 
 # Identify contacts (< 8 Å)
@@ -308,8 +309,8 @@ plddt_scores = []
 for model in structure:
     for chain in model:
         for residue in chain:
-            if 'CA' in residue:
-                plddt_scores.append(residue['CA'].get_bfactor())
+            if "CA" in residue:
+                plddt_scores.append(residue["CA"].get_bfactor())
 
 # Identify high-confidence regions
 high_conf_regions = [(i, score) for i, score in enumerate(plddt_scores, 1) if score > 90]
@@ -339,22 +340,24 @@ for uniprot_id in uniprot_ids:
             cif_file = alphafold_db.download_cif_for(pred, directory="./batch_structures")
 
             # Get confidence data
-            alphafold_id = pred['entryId']
+            alphafold_id = pred["entryId"]
             conf_url = f"https://alphafold.ebi.ac.uk/files/{alphafold_id}-confidence_v4.json"
             conf_data = requests.get(conf_url).json()
 
             # Calculate statistics
-            plddt_scores = conf_data['confidenceScore']
+            plddt_scores = conf_data["confidenceScore"]
             avg_plddt = np.mean(plddt_scores)
             high_conf_fraction = sum(1 for s in plddt_scores if s > 90) / len(plddt_scores)
 
-            results.append({
-                'uniprot_id': uniprot_id,
-                'alphafold_id': alphafold_id,
-                'avg_plddt': avg_plddt,
-                'high_conf_fraction': high_conf_fraction,
-                'length': len(plddt_scores)
-            })
+            results.append(
+                {
+                    "uniprot_id": uniprot_id,
+                    "alphafold_id": alphafold_id,
+                    "avg_plddt": avg_plddt,
+                    "high_conf_fraction": high_conf_fraction,
+                    "length": len(plddt_scores),
+                }
+            )
     except Exception as e:
         print(f"Error processing {uniprot_id}: {e}")
 
@@ -395,7 +398,7 @@ response = requests.get(url)
 data = response.json()
 
 # Filter for AlphaFold structures
-af_structures = [s for s in data['structures'] if s['provider'] == 'AlphaFold DB']
+af_structures = [s for s in data["structures"] if s["provider"] == "AlphaFold DB"]
 ```
 
 ## Common Use Cases

@@ -124,9 +124,9 @@ results = client.sql_query("""
     WHERE collection_id = 'rider_pilot' AND Modality = 'CT'
 """)
 
-with open('ct_manifest.txt', 'w') as f:
-    for url in results['series_aws_url']:
-        f.write(url + '\n')
+with open("ct_manifest.txt", "w") as f:
+    for url in results["series_aws_url"]:
+        f.write(url + "\n")
 ```
 
 ---
@@ -228,7 +228,7 @@ results = client.sql_query("""
 """)
 
 # Save to manifest
-results['SeriesInstanceUID'].to_csv('my_series.csv', index=False, header=False)
+results["SeriesInstanceUID"].to_csv("my_series.csv", index=False, header=False)
 ```
 
 ```bash

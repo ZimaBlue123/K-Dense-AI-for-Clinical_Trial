@@ -25,7 +25,7 @@ When using this skill within Claude Code, Claude can directly analyze waveform p
 Example workflow in Claude Code:
 ```python
 # Generate plots for a unit
-npa.plot_unit_summary(analyzer, unit_id=0, output='unit_0_summary.png')
+npa.plot_unit_summary(analyzer, unit_id=0, output="unit_0_summary.png")
 
 # Then ask Claude: "Please analyze this unit's waveforms and autocorrelogram
 # to determine if it's a well-isolated single unit, multi-unit activity, or noise"
@@ -45,7 +45,7 @@ Claude can assess:
 import neuropixels_analysis as npa
 
 # Create visual report for a unit
-report = npa.generate_unit_report(analyzer, unit_id=0, output_dir='reports/')
+report = npa.generate_unit_report(analyzer, unit_id=0, output_dir="reports/")
 
 # Report includes:
 # - Waveforms, templates, autocorrelogram
@@ -64,11 +64,7 @@ client = Anthropic()
 
 # Analyze single unit
 result = npa.analyze_unit_visually(
-    analyzer,
-    unit_id=0,
-    api_client=client,
-    model='claude-opus-4.5',
-    task='quality_assessment'
+    analyzer, unit_id=0, api_client=client, model="claude-opus-4.5", task="quality_assessment"
 )
 
 print(f"Classification: {result['classification']}")
@@ -82,12 +78,12 @@ print(f"Reasoning: {result['reasoning']}")
 results = npa.batch_visual_curation(
     analyzer,
     api_client=client,
-    output_dir='ai_curation/',
-    progress_callback=lambda i, n: print(f"Progress: {i}/{n}")
+    output_dir="ai_curation/",
+    progress_callback=lambda i, n: print(f"Progress: {i}/{n}"),
 )
 
 # Get labels
-ai_labels = {uid: r['classification'] for uid, r in results.items()}
+ai_labels = {uid: r["classification"] for uid, r in results.items()}
 ```
 
 ## Interactive Curation Session
@@ -98,8 +94,8 @@ For human-in-the-loop curation with AI assistance:
 # Create session
 session = npa.CurationSession.create(
     analyzer,
-    output_dir='curation_session/',
-    sort_by_confidence=True  # Show uncertain units first
+    output_dir="curation_session/",
+    sort_by_confidence=True,  # Show uncertain units first
 )
 
 # Process units
@@ -116,18 +112,18 @@ while True:
 
     # Get AI opinion
     ai_result = npa.analyze_unit_visually(analyzer, unit.unit_id, api_client=client)
-    session.set_ai_classification(unit.unit_id, ai_result['classification'])
+    session.set_ai_classification(unit.unit_id, ai_result["classification"])
 
     # Human decision
     decision = input("Decision (good/mua/noise/skip): ")
-    if decision != 'skip':
+    if decision != "skip":
         session.set_decision(unit.unit_id, decision)
 
     session.next_unit()
 
 # Export results
 labels = session.get_final_labels()
-session.export_decisions('final_curation.csv')
+session.export_decisions("final_curation.csv")
 ```
 
 ## Analysis Tasks
@@ -137,7 +133,7 @@ session.export_decisions('final_curation.csv')
 Analyzes waveform shape, refractory period, amplitude stability.
 
 ```python
-result = npa.analyze_unit_visually(analyzer, uid, task='quality_assessment')
+result = npa.analyze_unit_visually(analyzer, uid, task="quality_assessment")
 # Returns: 'good', 'mua', or 'noise'
 ```
 
@@ -146,7 +142,7 @@ result = npa.analyze_unit_visually(analyzer, uid, task='quality_assessment')
 Determines if two units should be merged.
 
 ```python
-result = npa.analyze_unit_visually(analyzer, uid, task='merge_candidate')
+result = npa.analyze_unit_visually(analyzer, uid, task="merge_candidate")
 # Returns: 'merge' or 'keep_separate'
 ```
 
@@ -155,7 +151,7 @@ result = npa.analyze_unit_visually(analyzer, uid, task='merge_candidate')
 Evaluates motion/drift in the recording.
 
 ```python
-result = npa.analyze_unit_visually(analyzer, uid, task='drift_assessment')
+result = npa.analyze_unit_visually(analyzer, uid, task="drift_assessment")
 # Returns drift magnitude and correction recommendation
 ```
 
@@ -168,8 +164,7 @@ from neuropixels_analysis.ai_curation import create_curation_prompt
 
 # Get base prompt
 prompt = create_curation_prompt(
-    task='quality_assessment',
-    additional_context='Focus on waveform amplitude consistency'
+    task="quality_assessment", additional_context="Focus on waveform amplitude consistency"
 )
 
 # Or fully custom
@@ -184,11 +179,7 @@ Look for:
 Classify as: FSI (fast-spiking interneuron) or OTHER
 """
 
-result = npa.analyze_unit_visually(
-    analyzer, uid,
-    api_client=client,
-    custom_prompt=custom_prompt
-)
+result = npa.analyze_unit_visually(analyzer, uid, api_client=client, custom_prompt=custom_prompt)
 ```
 
 ## Combining AI with Metrics
@@ -204,19 +195,17 @@ def hybrid_curation(analyzer, metrics, api_client):
         row = metrics.loc[unit_id]
 
         # High confidence from metrics alone
-        if row['snr'] > 10 and row['isi_violations_ratio'] < 0.001:
-            labels[unit_id] = 'good'
+        if row["snr"] > 10 and row["isi_violations_ratio"] < 0.001:
+            labels[unit_id] = "good"
             continue
 
-        if row['snr'] < 1.5:
-            labels[unit_id] = 'noise'
+        if row["snr"] < 1.5:
+            labels[unit_id] = "noise"
             continue
 
         # Uncertain cases: use AI
-        result = npa.analyze_unit_visually(
-            analyzer, unit_id, api_client=api_client
-        )
-        labels[unit_id] = result['classification']
+        result = npa.analyze_unit_visually(analyzer, unit_id, api_client=api_client)
+        labels[unit_id] = result["classification"]
 
     return labels
 ```
@@ -227,7 +216,7 @@ def hybrid_curation(analyzer, metrics, api_client):
 
 ```python
 # Resume interrupted session
-session = npa.CurationSession.load('curation_session/20250101_120000/')
+session = npa.CurationSession.load("curation_session/20250101_120000/")
 
 # Check progress
 summary = session.get_summary()
@@ -249,7 +238,7 @@ session.prev_unit()
 session.next_unit()
 
 # Update decision
-session.set_decision(42, 'good', notes='Clear refractory period')
+session.set_decision(42, "good", notes="Clear refractory period")
 ```
 
 ### Export Results
@@ -259,7 +248,7 @@ session.set_decision(42, 'good', notes='Clear refractory period')
 labels = session.get_final_labels()
 
 # Export detailed results
-df = session.export_decisions('curation_results.csv')
+df = session.export_decisions("curation_results.csv")
 
 # Summary
 summary = session.get_summary()
@@ -306,11 +295,7 @@ result = npa.analyze_unit_visually(analyzer, uid, api_client=client)
 from openai import OpenAI
 
 client = OpenAI(api_key="your-api-key")
-result = npa.analyze_unit_visually(
-    analyzer, uid,
-    api_client=client,
-    model='gpt-4-vision-preview'
-)
+result = npa.analyze_unit_visually(analyzer, uid, api_client=client, model="gpt-4-vision-preview")
 ```
 
 ## Best Practices
@@ -331,11 +316,7 @@ uncertain_units = metrics.query("""
 """).index.tolist()
 
 # Batch process only these
-results = npa.batch_visual_curation(
-    analyzer,
-    unit_ids=uncertain_units,
-    api_client=client
-)
+results = npa.batch_visual_curation(analyzer, unit_ids=uncertain_units, api_client=client)
 ```
 
 ## References

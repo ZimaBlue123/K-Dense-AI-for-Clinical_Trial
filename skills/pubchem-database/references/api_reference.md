@@ -154,7 +154,7 @@ Example workflow:
 # Step 1: Submit similarity search
 response = requests.post(
     "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/similarity/smiles/{smiles}/cids/JSON",
-    data={"Threshold": 90}
+    data={"Threshold": 90},
 )
 listkey = response.json()["Waiting"]["ListKey"]
 
@@ -202,51 +202,52 @@ compound = pcp.Compound.from_cid(2244)
 
 # Access properties
 compound.molecular_formula  # 'C9H8O4'
-compound.molecular_weight   # 180.16
-compound.iupac_name        # '2-acetyloxybenzoic acid'
-compound.canonical_smiles   # 'CC(=O)OC1=CC=CC=C1C(=O)O'
-compound.isomeric_smiles    # Same as canonical for non-stereoisomers
-compound.inchi             # InChI string
-compound.inchikey          # InChI Key
-compound.xlogp             # Partition coefficient
-compound.tpsa              # Topological polar surface area
+compound.molecular_weight  # 180.16
+compound.iupac_name  # '2-acetyloxybenzoic acid'
+compound.canonical_smiles  # 'CC(=O)OC1=CC=CC=C1C(=O)O'
+compound.isomeric_smiles  # Same as canonical for non-stereoisomers
+compound.inchi  # InChI string
+compound.inchikey  # InChI Key
+compound.xlogp  # Partition coefficient
+compound.tpsa  # Topological polar surface area
 ```
 
 #### Search Methods
 
 **By Name**:
 ```python
-compounds = pcp.get_compounds('aspirin', 'name')
+compounds = pcp.get_compounds("aspirin", "name")
 # Returns list of Compound objects
 ```
 
 **By SMILES**:
 ```python
-compound = pcp.get_compounds('CC(=O)OC1=CC=CC=C1C(=O)O', 'smiles')[0]
+compound = pcp.get_compounds("CC(=O)OC1=CC=CC=C1C(=O)O", "smiles")[0]
 ```
 
 **By InChI**:
 ```python
-compound = pcp.get_compounds('InChI=1S/C9H8O4/c1-6(10)13-8-5-3-2-4-7(8)9(11)12/h2-5H,1H3,(H,11,12)', 'inchi')[0]
+compound = pcp.get_compounds(
+    "InChI=1S/C9H8O4/c1-6(10)13-8-5-3-2-4-7(8)9(11)12/h2-5H,1H3,(H,11,12)", "inchi"
+)[0]
 ```
 
 **By Formula**:
 ```python
-compounds = pcp.get_compounds('C9H8O4', 'formula')
+compounds = pcp.get_compounds("C9H8O4", "formula")
 # Returns all compounds with this formula
 ```
 
 **Similarity Search**:
 ```python
-results = pcp.get_compounds('CC(=O)OC1=CC=CC=C1C(=O)O', 'smiles',
-                           searchtype='similarity',
-                           Threshold=90)
+results = pcp.get_compounds(
+    "CC(=O)OC1=CC=CC=C1C(=O)O", "smiles", searchtype="similarity", Threshold=90
+)
 ```
 
 **Substructure Search**:
 ```python
-results = pcp.get_compounds('c1ccccc1', 'smiles',
-                           searchtype='substructure')
+results = pcp.get_compounds("c1ccccc1", "smiles", searchtype="substructure")
 # Returns all compounds containing benzene ring
 ```
 
@@ -255,9 +256,7 @@ results = pcp.get_compounds('c1ccccc1', 'smiles',
 Get specific properties for multiple compounds:
 ```python
 properties = pcp.get_properties(
-    ['MolecularFormula', 'MolecularWeight', 'CanonicalSMILES'],
-    'aspirin',
-    'name'
+    ["MolecularFormula", "MolecularWeight", "CanonicalSMILES"], "aspirin", "name"
 )
 # Returns list of dictionaries
 ```
@@ -265,6 +264,7 @@ properties = pcp.get_properties(
 Get properties as pandas DataFrame:
 ```python
 import pandas as pd
+
 df = pd.DataFrame(properties)
 ```
 
@@ -272,7 +272,7 @@ df = pd.DataFrame(properties)
 
 Get all synonyms for a compound:
 ```python
-synonyms = pcp.get_synonyms('aspirin', 'name')
+synonyms = pcp.get_synonyms("aspirin", "name")
 # Returns list of dictionaries with CID and synonym lists
 ```
 
@@ -281,13 +281,13 @@ synonyms = pcp.get_synonyms('aspirin', 'name')
 Download compound in various formats:
 ```python
 # Get as SDF
-sdf_data = pcp.download('SDF', 'aspirin', 'name', overwrite=True)
+sdf_data = pcp.download("SDF", "aspirin", "name", overwrite=True)
 
 # Get as JSON
-json_data = pcp.download('JSON', '2244', 'cid')
+json_data = pcp.download("JSON", "2244", "cid")
 
 # Get as PNG image
-pcp.download('PNG', '2244', 'cid', 'aspirin.png', overwrite=True)
+pcp.download("PNG", "2244", "cid", "aspirin.png", overwrite=True)
 ```
 
 ### Error Handling
@@ -296,7 +296,7 @@ pcp.download('PNG', '2244', 'cid', 'aspirin.png', overwrite=True)
 from pubchempy import BadRequestError, NotFoundError, TimeoutError
 
 try:
-    compound = pcp.get_compounds('nonexistent', 'name')
+    compound = pcp.get_compounds("nonexistent", "name")
 except NotFoundError:
     print("Compound not found")
 except BadRequestError:
@@ -339,7 +339,7 @@ Convert from name to SMILES to InChI:
 ```python
 import pubchempy as pcp
 
-compound = pcp.get_compounds('caffeine', 'name')[0]
+compound = pcp.get_compounds("caffeine", "name")[0]
 smiles = compound.canonical_smiles
 inchi = compound.inchi
 inchikey = compound.inchikey
@@ -350,18 +350,15 @@ cid = compound.cid
 
 Get properties for multiple compounds:
 ```python
-compound_names = ['aspirin', 'ibuprofen', 'paracetamol']
+compound_names = ["aspirin", "ibuprofen", "paracetamol"]
 properties = []
 
 for name in compound_names:
-    props = pcp.get_properties(
-        ['MolecularFormula', 'MolecularWeight', 'XLogP'],
-        name,
-        'name'
-    )
+    props = pcp.get_properties(["MolecularFormula", "MolecularWeight", "XLogP"], name, "name")
     properties.extend(props)
 
 import pandas as pd
+
 df = pd.DataFrame(properties)
 ```
 
@@ -370,16 +367,11 @@ df = pd.DataFrame(properties)
 Find structurally similar compounds to a query:
 ```python
 # Start with a known compound
-query_compound = pcp.get_compounds('gefitinib', 'name')[0]
+query_compound = pcp.get_compounds("gefitinib", "name")[0]
 query_smiles = query_compound.canonical_smiles
 
 # Perform similarity search
-similar = pcp.get_compounds(
-    query_smiles,
-    'smiles',
-    searchtype='similarity',
-    Threshold=85
-)
+similar = pcp.get_compounds(query_smiles, "smiles", searchtype="similarity", Threshold=85)
 
 # Get properties for similar compounds
 for compound in similar[:10]:  # First 10 results
@@ -391,14 +383,9 @@ for compound in similar[:10]:  # First 10 results
 Find all compounds containing a specific substructure:
 ```python
 # Search for compounds containing pyridine ring
-pyridine_smiles = 'c1ccncc1'
+pyridine_smiles = "c1ccncc1"
 
-matches = pcp.get_compounds(
-    pyridine_smiles,
-    'smiles',
-    searchtype='substructure',
-    MaxRecords=100
-)
+matches = pcp.get_compounds(pyridine_smiles, "smiles", searchtype="substructure", MaxRecords=100)
 
 print(f"Found {len(matches)} compounds containing pyridine")
 ```

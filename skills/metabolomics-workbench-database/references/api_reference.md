@@ -469,26 +469,34 @@ import json
 
 # 1. Standardize metabolite name using RefMet
 metabolite = "citrate"
-response = requests.get(f'https://www.metabolomicsworkbench.org/rest/refmet/match/{metabolite}/name/json')
-standardized_name = response.json()['name']
+response = requests.get(
+    f"https://www.metabolomicsworkbench.org/rest/refmet/match/{metabolite}/name/json"
+)
+standardized_name = response.json()["name"]
 
 # 2. Search for studies containing this metabolite
-response = requests.get(f'https://www.metabolomicsworkbench.org/rest/study/refmet_name/{standardized_name}/summary/json')
+response = requests.get(
+    f"https://www.metabolomicsworkbench.org/rest/study/refmet_name/{standardized_name}/summary/json"
+)
 studies = response.json()
 
 # 3. Get detailed data from a specific study
-study_id = studies[0]['study_id']
-response = requests.get(f'https://www.metabolomicsworkbench.org/rest/study/study_id/{study_id}/data/json')
+study_id = studies[0]["study_id"]
+response = requests.get(
+    f"https://www.metabolomicsworkbench.org/rest/study/study_id/{study_id}/data/json"
+)
 data = response.json()
 
 # 4. Perform m/z search for compound identification
 mz_value = 180.06
-response = requests.get(f'https://www.metabolomicsworkbench.org/rest/moverz/MB/{mz_value}/M+H/0.5/json')
+response = requests.get(
+    f"https://www.metabolomicsworkbench.org/rest/moverz/MB/{mz_value}/M+H/0.5/json"
+)
 matches = response.json()
 
 # 5. Get compound structure
-regno = matches[0]['regno']
-response = requests.get(f'https://www.metabolomicsworkbench.org/rest/compound/regno/{regno}/png')
-with open('structure.png', 'wb') as f:
+regno = matches[0]["regno"]
+response = requests.get(f"https://www.metabolomicsworkbench.org/rest/compound/regno/{regno}/png")
+with open("structure.png", "wb") as f:
     f.write(response.content)
 ```

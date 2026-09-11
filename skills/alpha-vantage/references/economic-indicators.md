@@ -131,12 +131,14 @@ data = av_get("DURABLES")
 ```python
 import pandas as pd
 
+
 def econ_to_series(function, **kwargs):
     data = av_get(function, **kwargs)
     df = pd.DataFrame(data["data"])
     df["date"] = pd.to_datetime(df["date"])
     df["value"] = pd.to_numeric(df["value"], errors="coerce")
     return df.set_index("date")["value"].sort_index()
+
 
 # Build economic snapshot
 gdp = econ_to_series("REAL_GDP", interval="quarterly")
@@ -154,5 +156,7 @@ print(f"10-Year Treasury: {ten_yr.iloc[-1]:.2f}%")
 # Yield curve inversion check
 two_yr = econ_to_series("TREASURY_YIELD", interval="monthly", maturity="2year")
 spread = ten_yr - two_yr
-print(f"Yield curve spread (10yr - 2yr): {spread.iloc[-1]:.2f}% ({'inverted' if spread.iloc[-1] < 0 else 'normal'})")
+print(
+    f"Yield curve spread (10yr - 2yr): {spread.iloc[-1]:.2f}% ({'inverted' if spread.iloc[-1] < 0 else 'normal'})"
+)
 ```

@@ -138,7 +138,7 @@ print(f"Anderson-Darling test p-value: {ad_pval:.4f}")
 ```python
 from statsmodels.stats.diagnostic import lilliefors
 
-lf_stat, lf_pval = lilliefors(residuals, dist='norm')
+lf_stat, lf_pval = lilliefors(residuals, dist="norm")
 print(f"Lilliefors test p-value: {lf_pval:.4f}")
 ```
 
@@ -178,10 +178,9 @@ import pandas as pd
 # Calculate VIF for each variable
 vif_data = pd.DataFrame()
 vif_data["Variable"] = X.columns
-vif_data["VIF"] = [variance_inflation_factor(X.values, i)
-                   for i in range(X.shape[1])]
+vif_data["VIF"] = [variance_inflation_factor(X.values, i) for i in range(X.shape[1])]
 
-print(vif_data.sort_values('VIF', ascending=False))
+print(vif_data.sort_values("VIF", ascending=False))
 
 # Interpretation:
 # VIF = 1: No correlation with other predictors
@@ -240,9 +239,10 @@ print(f"Influential observations (Cook's D): {influential}")
 
 # Plot
 import matplotlib.pyplot as plt
+
 plt.stem(range(len(cooks_d)), cooks_d)
-plt.axhline(y=threshold, color='r', linestyle='--', label=f'Threshold (4/n)')
-plt.xlabel('Observation')
+plt.axhline(y=threshold, color="r", linestyle="--", label=f"Threshold (4/n)")
+plt.xlabel("Observation")
 plt.ylabel("Cook's Distance")
 plt.legend()
 plt.show()
@@ -288,7 +288,7 @@ for i, param_name in enumerate(results.params.index):
 from statsmodels.graphics.regressionplots import influence_plot
 
 fig, ax = plt.subplots(figsize=(12, 8))
-influence_plot(results, ax=ax, criterion='cooks')
+influence_plot(results, ax=ax, criterion="cooks")
 plt.show()
 
 # Combines leverage, residuals, and Cook's distance
@@ -360,7 +360,7 @@ from statsmodels.stats.proportion import proportions_ztest
 # H0: proportion = p0
 count = 45  # successes
 nobs = 100  # total observations
-p0 = 0.5    # hypothesized proportion
+p0 = 0.5  # hypothesized proportion
 
 z_stat, p_value = proportions_ztest(count, nobs, value=p0)
 
@@ -426,7 +426,7 @@ print(f"p-value: {p_value:.4f}")
 from scipy.stats import mannwhitneyu
 
 # H0: Distributions are equal
-u_stat, p_value = mannwhitneyu(group1, group2, alternative='two-sided')
+u_stat, p_value = mannwhitneyu(group1, group2, alternative="two-sided")
 
 print(f"U statistic: {u_stat:.4f}")
 print(f"p-value: {p_value:.4f}")
@@ -487,8 +487,7 @@ from statsmodels.formula.api import ols
 from statsmodels.stats.anova import anova_lm
 
 # Fit model
-model = ols('response ~ C(factor1) + C(factor2) + C(factor1):C(factor2)',
-            data=df).fit()
+model = ols("response ~ C(factor1) + C(factor2) + C(factor1):C(factor2)", data=df).fit()
 
 # ANOVA table
 anova_table = anova_lm(model, typ=2)
@@ -501,7 +500,7 @@ print(anova_table)
 from statsmodels.stats.anova import AnovaRM
 
 # Requires long-format data
-aovrm = AnovaRM(df, depvar='score', subject='subject_id', within=['time'])
+aovrm = AnovaRM(df, depvar="score", subject="subject_id", within=["time"])
 results = aovrm.fit()
 
 print(results.summary())
@@ -536,9 +535,7 @@ p_values = [0.01, 0.03, 0.04, 0.15, 0.001]
 
 # Apply correction
 reject, pvals_corrected, alphac_sidak, alphac_bonf = multipletests(
-    p_values,
-    alpha=0.05,
-    method='bonferroni'
+    p_values, alpha=0.05, method="bonferroni"
 )
 
 print("Rejected:", reject)
@@ -552,7 +549,7 @@ print("Corrected p-values:", pvals_corrected)
 reject, pvals_corrected, alphac_sidak, alphac_bonf = multipletests(
     p_values,
     alpha=0.05,
-    method='fdr_bh'  # Benjamini-Hochberg
+    method="fdr_bh",  # Benjamini-Hochberg
 )
 
 print("Rejected:", reject)
@@ -568,16 +565,16 @@ print("Corrected p-values:", pvals_corrected)
 results = sm.OLS(y, X).fit()
 
 # HC0 (White's heteroskedasticity-consistent SEs)
-results_hc0 = results.get_robustcov_results(cov_type='HC0')
+results_hc0 = results.get_robustcov_results(cov_type="HC0")
 
 # HC1 (degrees of freedom adjustment)
-results_hc1 = results.get_robustcov_results(cov_type='HC1')
+results_hc1 = results.get_robustcov_results(cov_type="HC1")
 
 # HC2 (leverage adjustment)
-results_hc2 = results.get_robustcov_results(cov_type='HC2')
+results_hc2 = results.get_robustcov_results(cov_type="HC2")
 
 # HC3 (most conservative, recommended for small samples)
-results_hc3 = results.get_robustcov_results(cov_type='HC3')
+results_hc3 = results.get_robustcov_results(cov_type="HC3")
 
 print("Standard OLS SEs:", results.bse)
 print("Robust HC3 SEs:", results_hc3.bse)
@@ -589,7 +586,7 @@ print("Robust HC3 SEs:", results_hc3.bse)
 
 ```python
 # For time series with autocorrelation and heteroskedasticity
-results_hac = results.get_robustcov_results(cov_type='HAC', maxlags=4)
+results_hac = results.get_robustcov_results(cov_type="HAC", maxlags=4)
 
 print("HAC (Newey-West) SEs:", results_hac.bse)
 print(results_hac.summary())
@@ -599,10 +596,7 @@ print(results_hac.summary())
 
 ```python
 # For clustered/grouped data
-results_cluster = results.get_robustcov_results(
-    cov_type='cluster',
-    groups=cluster_ids
-)
+results_cluster = results.get_robustcov_results(cov_type="cluster", groups=cluster_ids)
 
 print("Cluster-robust SEs:", results_cluster.bse)
 ```
@@ -667,18 +661,12 @@ effect_size = 0.5  # Cohen's d
 alpha = 0.05
 power = 0.8
 
-n = tt_ind_solve_power(effect_size=effect_size,
-                        alpha=alpha,
-                        power=power,
-                        alternative='two-sided')
+n = tt_ind_solve_power(effect_size=effect_size, alpha=alpha, power=power, alternative="two-sided")
 
 print(f"Required sample size per group: {n:.0f}")
 
 # Solve for power given n
-power = tt_ind_solve_power(effect_size=0.5,
-                           nobs1=50,
-                           alpha=0.05,
-                           alternative='two-sided')
+power = tt_ind_solve_power(effect_size=0.5, nobs1=50, alpha=0.05, alternative="two-sided")
 
 print(f"Power: {power:.4f}")
 ```
@@ -693,10 +681,7 @@ effect_size = 0.3  # Difference in proportions
 alpha = 0.05
 power = 0.8
 
-n = zt_ind_solve_power(effect_size=effect_size,
-                        alpha=alpha,
-                        power=power,
-                        alternative='two-sided')
+n = zt_ind_solve_power(effect_size=effect_size, alpha=alpha, power=power, alternative="two-sided")
 
 print(f"Required sample size per group: {n:.0f}")
 ```
@@ -717,14 +702,13 @@ effect_sizes = [0.2, 0.5, 0.8]  # Small, medium, large
 fig, ax = plt.subplots(figsize=(10, 6))
 
 for es in effect_sizes:
-    power = [analysis.solve_power(effect_size=es, nobs1=n, alpha=0.05)
-             for n in sample_sizes]
-    ax.plot(sample_sizes, power, label=f'Effect size = {es}')
+    power = [analysis.solve_power(effect_size=es, nobs1=n, alpha=0.05) for n in sample_sizes]
+    ax.plot(sample_sizes, power, label=f"Effect size = {es}")
 
-ax.axhline(y=0.8, color='r', linestyle='--', label='Power = 0.8')
-ax.set_xlabel('Sample size per group')
-ax.set_ylabel('Power')
-ax.set_title('Power Curves for Two-Sample t-test')
+ax.axhline(y=0.8, color="r", linestyle="--", label="Power = 0.8")
+ax.set_xlabel("Sample size per group")
+ax.set_ylabel("Power")
+ax.set_title("Power Curves for Two-Sample t-test")
 ax.legend()
 ax.grid(True, alpha=0.3)
 plt.show()
@@ -764,8 +748,10 @@ print(f"Cohen's d: {d:.4f}")
 # From ANOVA table
 # η² = SS_between / SS_total
 
+
 def eta_squared(anova_table):
-    return anova_table['sum_sq'][0] / anova_table['sum_sq'].sum()
+    return anova_table["sum_sq"][0] / anova_table["sum_sq"].sum()
+
 
 # After running ANOVA
 eta_sq = eta_squared(anova_table)
@@ -785,8 +771,7 @@ print(f"Eta-squared: {eta_sq:.4f}")
 from statsmodels.stats.contingency_tables import mcnemar
 
 # 2x2 contingency table
-table = [[a, b],
-         [c, d]]
+table = [[a, b], [c, d]]
 
 result = mcnemar(table, exact=True)  # or exact=False for large samples
 print(f"p-value: {result.pvalue:.4f}")
@@ -825,10 +810,10 @@ propensity_scores = ps_model.predict(X)
 
 ```python
 # Did formula: outcome ~ treatment * post
-model = ols('outcome ~ treatment + post + treatment:post', data=df).fit()
+model = ols("outcome ~ treatment + post + treatment:post", data=df).fit()
 
 # DiD estimate is the interaction coefficient
-did_estimate = model.params['treatment:post']
+did_estimate = model.params["treatment:post"]
 print(f"DiD estimate: {did_estimate:.4f}")
 ```
 

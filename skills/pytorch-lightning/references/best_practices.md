@@ -12,13 +12,9 @@ class MyModel(L.LightningModule):
         loss = self.compute_loss(batch)
         return loss
 
+
 # Engineering code (how to train) - in Trainer
-trainer = L.Trainer(
-    max_epochs=100,
-    accelerator="gpu",
-    devices=4,
-    strategy="ddp"
-)
+trainer = L.Trainer(max_epochs=100, accelerator="gpu", devices=4, strategy="ddp")
 ```
 
 **Bad:**
@@ -55,11 +51,12 @@ class MyDataModule(L.LightningDataModule):
 
     def setup(self, stage):
         # Load data per-process
-        self.train_dataset = MyDataset(self.data_dir, split='train')
-        self.val_dataset = MyDataset(self.data_dir, split='val')
+        self.train_dataset = MyDataset(self.data_dir, split="train")
+        self.val_dataset = MyDataset(self.data_dir, split="val")
 
     def train_dataloader(self):
         return DataLoader(self.train_dataset, batch_size=self.batch_size, shuffle=True)
+
 
 # Reusable and shareable
 dm = MyDataModule("./data", batch_size=32)
@@ -87,6 +84,7 @@ class Encoder(nn.Module):
     def forward(self, x):
         return self.layers(x)
 
+
 class Decoder(nn.Module):
     def __init__(self):
         super().__init__()
@@ -94,6 +92,7 @@ class Decoder(nn.Module):
 
     def forward(self, x):
         return self.layers(x)
+
 
 class MyModel(L.LightningModule):
     def __init__(self):
@@ -121,6 +120,7 @@ torch.cuda.set_device(0)
 ```python
 # Inside LightningModule
 x = x.to(self.device)
+
 
 # Or let Lightning handle it automatically
 def training_step(self, batch, batch_idx):
@@ -168,6 +168,7 @@ class MyModel(L.LightningModule):
         # Access via self.hparams
         self.model = nn.Linear(self.hparams.hidden_dim, 10)
 
+
 # Load from checkpoint with saved hparams
 model = MyModel.load_from_checkpoint("checkpoint.ckpt")
 print(model.hparams.learning_rate)  # Original value preserved
@@ -189,7 +190,7 @@ class MyModel(L.LightningModule):
     def __init__(self, lr, model, dataset):
         super().__init__()
         # Don't save 'model' and 'dataset' (not serializable)
-        self.save_hyperparameters(ignore=['model', 'dataset'])
+        self.save_hyperparameters(ignore=["model", "dataset"])
 
         self.model = model
         self.dataset = dataset
@@ -201,9 +202,7 @@ class MyModel(L.LightningModule):
 def configure_optimizers(self):
     # Use saved hyperparameters
     optimizer = torch.optim.Adam(
-        self.parameters(),
-        lr=self.hparams.learning_rate,
-        weight_decay=self.hparams.weight_decay
+        self.parameters(), lr=self.hparams.learning_rate, weight_decay=self.hparams.weight_decay
     )
     return optimizer
 ```
@@ -232,6 +231,7 @@ def training_step(self, batch, batch_idx):
     self.log("train/acc", acc)
     self.log("train/f1", f1)
 
+
 def validation_step(self, batch, batch_idx):
     self.log("val/loss", loss)
     self.log("val/acc", acc)
@@ -253,9 +253,7 @@ def validation_step(self, batch, batch_idx):
 ```python
 from lightning.pytorch.callbacks import LearningRateMonitor
 
-trainer = L.Trainer(
-    callbacks=[LearningRateMonitor(logging_interval="step")]
-)
+trainer = L.Trainer(callbacks=[LearningRateMonitor(logging_interval="step")])
 ```
 
 ## Reproducibility
@@ -270,7 +268,7 @@ L.seed_everything(42, workers=True)
 
 trainer = L.Trainer(
     deterministic=True,  # Use deterministic algorithms
-    benchmark=False      # Disable cudnn benchmarking
+    benchmark=False,  # Disable cudnn benchmarking
 )
 ```
 
@@ -289,18 +287,19 @@ torch.use_deterministic_algorithms(True)
 ```python
 def on_save_checkpoint(self, checkpoint):
     # Save random states
-    checkpoint['rng_state'] = {
-        'torch': torch.get_rng_state(),
-        'numpy': np.random.get_state(),
-        'python': random.getstate()
+    checkpoint["rng_state"] = {
+        "torch": torch.get_rng_state(),
+        "numpy": np.random.get_state(),
+        "python": random.getstate(),
     }
+
 
 def on_load_checkpoint(self, checkpoint):
     # Restore random states
-    if 'rng_state' in checkpoint:
-        torch.set_rng_state(checkpoint['rng_state']['torch'])
-        np.random.set_state(checkpoint['rng_state']['numpy'])
-        random.setstate(checkpoint['rng_state']['python'])
+    if "rng_state" in checkpoint:
+        torch.set_rng_state(checkpoint["rng_state"]["torch"])
+        np.random.set_state(checkpoint["rng_state"]["numpy"])
+        random.setstate(checkpoint["rng_state"]["python"])
 ```
 
 ## Debugging
@@ -317,10 +316,7 @@ trainer.fit(model, datamodule=dm)
 
 ```python
 # Use only 10% of data for quick iteration
-trainer = L.Trainer(
-    limit_train_batches=0.1,
-    limit_val_batches=0.1
-)
+trainer = L.Trainer(limit_train_batches=0.1, limit_val_batches=0.1)
 ```
 
 ### 3. Enable Anomaly Detection
@@ -351,9 +347,9 @@ trainer = L.Trainer(profiler="simple")  # or "advanced"
 ```python
 # FP16/BF16 mixed precision for memory savings and speed
 trainer = L.Trainer(
-    precision="16-mixed",   # V100, T4
+    precision="16-mixed",  # V100, T4
     # or
-    precision="bf16-mixed"  # A100, H100
+    precision="bf16-mixed",  # A100, H100
 )
 ```
 
@@ -396,6 +392,7 @@ def on_train_epoch_end(self):
 # Use appropriate precision
 # FP32 for stability, FP16/BF16 for speed/memory
 
+
 class MyModel(L.LightningModule):
     def __init__(self):
         super().__init__()
@@ -411,7 +408,7 @@ class MyModel(L.LightningModule):
 # Prevent gradient explosion
 trainer = L.Trainer(
     gradient_clip_val=1.0,
-    gradient_clip_algorithm="norm"  # or "value"
+    gradient_clip_algorithm="norm",  # or "value"
 )
 ```
 
@@ -425,16 +422,10 @@ def configure_optimizers(self):
         optimizer,
         max_lr=1e-2,
         total_steps=self.trainer.estimated_stepping_batches,
-        pct_start=0.1  # 10% warmup
+        pct_start=0.1,  # 10% warmup
     )
 
-    return {
-        "optimizer": optimizer,
-        "lr_scheduler": {
-            "scheduler": scheduler,
-            "interval": "step"
-        }
-    }
+    return {"optimizer": optimizer, "lr_scheduler": {"scheduler": scheduler, "interval": "step"}}
 ```
 
 ### 3. Monitor Gradients
@@ -453,12 +444,7 @@ class MyModel(L.LightningModule):
 ```python
 from lightning.pytorch.callbacks import EarlyStopping
 
-early_stop = EarlyStopping(
-    monitor="val_loss",
-    patience=10,
-    mode="min",
-    verbose=True
-)
+early_stop = EarlyStopping(monitor="val_loss", patience=10, mode="min", verbose=True)
 
 trainer = L.Trainer(callbacks=[early_stop])
 ```
@@ -475,8 +461,8 @@ checkpoint_callback = ModelCheckpoint(
     filename="{epoch}-{val_loss:.2f}",
     monitor="val_loss",
     mode="min",
-    save_top_k=3,    # Keep best 3
-    save_last=True   # Always save last for resuming
+    save_top_k=3,  # Keep best 3
+    save_last=True,  # Always save last for resuming
 )
 
 trainer = L.Trainer(callbacks=[checkpoint_callback])
@@ -497,13 +483,14 @@ trainer.fit(model, datamodule=dm, ckpt_path="epoch=10-val_loss=0.23.ckpt")
 ```python
 def on_save_checkpoint(self, checkpoint):
     # Add custom state
-    checkpoint['custom_data'] = self.custom_data
-    checkpoint['epoch_metrics'] = self.metrics
+    checkpoint["custom_data"] = self.custom_data
+    checkpoint["epoch_metrics"] = self.metrics
+
 
 def on_load_checkpoint(self, checkpoint):
     # Restore custom state
-    self.custom_data = checkpoint.get('custom_data', {})
-    self.metrics = checkpoint.get('epoch_metrics', [])
+    self.custom_data = checkpoint.get("custom_data", {})
+    self.metrics = checkpoint.get("epoch_metrics", [])
 ```
 
 ## Testing
@@ -542,6 +529,7 @@ trainer.test(best_model, datamodule=dm)
 from typing import Any, Dict, Tuple
 import torch
 from torch import Tensor
+
 
 class MyModel(L.LightningModule):
     def training_step(self, batch: Tuple[Tensor, Tensor], batch_idx: int) -> Tensor:
@@ -680,9 +668,9 @@ def train_dataloader(self):
     return DataLoader(
         self.train_dataset,
         batch_size=32,
-        num_workers=4,           # Use multiple workers
-        pin_memory=True,         # Faster GPU transfer
-        persistent_workers=True  # Keep workers alive
+        num_workers=4,  # Use multiple workers
+        pin_memory=True,  # Faster GPU transfer
+        persistent_workers=True,  # Keep workers alive
     )
 ```
 
@@ -714,10 +702,9 @@ trainer.fit(model, datamodule=dm)
 import torch
 import torchvision.transforms as T
 
-transforms = T.Compose([
-    T.ToTensor(),
-    T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-])
+transforms = T.Compose(
+    [T.ToTensor(), T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])]
+)
 
 # Use PIL-SIMD for faster image loading
 # pip install pillow-simd

@@ -92,9 +92,7 @@ def search_targets_by_name(target_name):
         List of matching targets
     """
     target = new_client.target
-    results = target.filter(
-        target_type="SINGLE PROTEIN", pref_name__icontains=target_name
-    )
+    results = target.filter(target_type="SINGLE PROTEIN", pref_name__icontains=target_name)
     return list(results)
 
 
@@ -190,14 +188,10 @@ def find_kinase_inhibitors(max_ic50=100):
     activity = new_client.activity
 
     # Find kinase targets
-    kinase_targets = target.filter(
-        target_type="SINGLE PROTEIN", pref_name__icontains="kinase"
-    )
+    kinase_targets = target.filter(target_type="SINGLE PROTEIN", pref_name__icontains="kinase")
 
     # Get target IDs
-    target_ids = [
-        t["target_chembl_id"] for t in kinase_targets[:10]
-    ]  # Limit to first 10
+    target_ids = [t["target_chembl_id"] for t in kinase_targets[:10]]  # Limit to first 10
 
     # Find activities
     results = activity.filter(
@@ -221,9 +215,7 @@ def get_compound_bioactivities(molecule_chembl_id):
         List of all activity records for the compound
     """
     activity = new_client.activity
-    results = activity.filter(
-        molecule_chembl_id=molecule_chembl_id, pchembl_value__isnull=False
-    )
+    results = activity.filter(molecule_chembl_id=molecule_chembl_id, pchembl_value__isnull=False)
     return list(results)
 
 

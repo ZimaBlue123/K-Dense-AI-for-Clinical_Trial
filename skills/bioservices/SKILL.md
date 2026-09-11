@@ -78,7 +78,7 @@ parsed = k.parse(data)
 
 # Extract pathway interactions
 interactions = k.parse_kgml_pathway("hsa04660")
-relations = interactions['relations']  # Protein-protein interactions
+relations = interactions["relations"]  # Protein-protein interactions
 
 # Convert to Simple Interaction Format
 sif_data = k.pathway2sif("hsa04660")
@@ -135,7 +135,7 @@ jobid = s.run(
     sequence=protein_sequence,
     stype="protein",
     database="uniprotkb",
-    email="your.email@example.com"  # Required by NCBI
+    email="your.email@example.com",  # Required by NCBI
 )
 
 # Check job status and retrieve results
@@ -156,8 +156,8 @@ from bioservices import UniProt, KEGG
 u = UniProt()
 results = u.mapping(
     fr="UniProtKB_AC-ID",  # Source database
-    to="KEGG",              # Target database
-    query="P43403"          # Identifier(s) to convert
+    to="KEGG",  # Target database
+    query="P43403",  # Identifier(s) to convert
 )
 
 # KEGG gene ID → UniProt
@@ -165,6 +165,7 @@ kegg_to_uniprot = u.mapping(fr="KEGG", to="UniProtKB_AC-ID", query="hsa:7535")
 
 # For compounds, use UniChem
 from bioservices import UniChem
+
 u = UniChem()
 chembl_from_kegg = u.get_compound_id_from_kegg("C11222")
 ```

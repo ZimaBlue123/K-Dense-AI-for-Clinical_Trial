@@ -11,8 +11,9 @@ NeuroKit2 provides comprehensive signal processing utilities applicable to any t
 Apply frequency-domain filtering to remove noise or isolate frequency bands.
 
 ```python
-filtered = nk.signal_filter(signal, sampling_rate=1000, lowcut=None, highcut=None,
-                            method='butterworth', order=5)
+filtered = nk.signal_filter(
+    signal, sampling_rate=1000, lowcut=None, highcut=None, method="butterworth", order=5
+)
 ```
 
 **Filter types (via lowcut/highcut combinations):**
@@ -40,7 +41,7 @@ bandpass = nk.signal_filter(signal, sampling_rate=1000, lowcut=0.5, highcut=50)
 
 **Bandstop/Notch** (powerline removal):
 ```python
-notch = nk.signal_filter(signal, sampling_rate=1000, method='powerline', powerline=50)
+notch = nk.signal_filter(signal, sampling_rate=1000, method="powerline", powerline=50)
 ```
 - Removes 50 or 60 Hz powerline noise
 - Narrow notch filter
@@ -76,8 +77,9 @@ clean_signal = nk.signal_sanitize(signal, interpolate=True)
 Change sampling rate of signal (upsample or downsample).
 
 ```python
-resampled = nk.signal_resample(signal, sampling_rate=1000, desired_sampling_rate=500,
-                               method='interpolation')
+resampled = nk.signal_resample(
+    signal, sampling_rate=1000, desired_sampling_rate=500, method="interpolation"
+)
 ```
 
 **Methods:**
@@ -95,7 +97,7 @@ resampled = nk.signal_resample(signal, sampling_rate=1000, desired_sampling_rate
 Interpolate missing or invalid data points.
 
 ```python
-filled = nk.signal_fillmissing(signal, method='linear')
+filled = nk.signal_fillmissing(signal, method="linear")
 ```
 
 **Methods:**
@@ -112,7 +114,7 @@ filled = nk.signal_fillmissing(signal, method='linear')
 Remove slow trends from signal.
 
 ```python
-detrended = nk.signal_detrend(signal, method='polynomial', order=1)
+detrended = nk.signal_detrend(signal, method="polynomial", order=1)
 ```
 
 **Methods:**
@@ -130,14 +132,14 @@ detrended = nk.signal_detrend(signal, method='polynomial', order=1)
 Decompose signal into constituent components.
 
 ```python
-components = nk.signal_decompose(signal, sampling_rate=1000, method='emd')
+components = nk.signal_decompose(signal, sampling_rate=1000, method="emd")
 ```
 
 **Methods:**
 
 **Empirical Mode Decomposition (EMD):**
 ```python
-components = nk.signal_decompose(signal, sampling_rate=1000, method='emd')
+components = nk.signal_decompose(signal, sampling_rate=1000, method="emd")
 ```
 - Data-adaptive decomposition into Intrinsic Mode Functions (IMFs)
 - Each IMF represents different frequency content (high to low)
@@ -145,7 +147,7 @@ components = nk.signal_decompose(signal, sampling_rate=1000, method='emd')
 
 **Singular Spectrum Analysis (SSA):**
 ```python
-components = nk.signal_decompose(signal, method='ssa')
+components = nk.signal_decompose(signal, method="ssa")
 ```
 - Decomposes into trend, oscillations, and noise
 - Based on eigenvalue decomposition of trajectory matrix
@@ -181,7 +183,7 @@ reconstructed = nk.signal_recompose(components, indices=[1, 2, 3])
 Convert continuous signal to binary (0/1) based on threshold.
 
 ```python
-binary = nk.signal_binarize(signal, method='threshold', threshold=0.5)
+binary = nk.signal_binarize(signal, method="threshold", threshold=0.5)
 ```
 
 **Methods:**
@@ -200,8 +202,9 @@ binary = nk.signal_binarize(signal, method='threshold', threshold=0.5)
 Add controlled noise or artifacts for testing.
 
 ```python
-distorted = nk.signal_distort(signal, sampling_rate=1000, noise_amplitude=0.1,
-                              noise_frequency=50, artifacts_amplitude=0.5)
+distorted = nk.signal_distort(
+    signal, sampling_rate=1000, noise_amplitude=0.1, noise_frequency=50, artifacts_amplitude=0.5
+)
 ```
 
 **Parameters:**
@@ -220,7 +223,7 @@ distorted = nk.signal_distort(signal, sampling_rate=1000, noise_amplitude=0.1,
 Interpolate signal at new time points or fill gaps.
 
 ```python
-interpolated = nk.signal_interpolate(x_values, y_values, x_new=None, method='quadratic')
+interpolated = nk.signal_interpolate(x_values, y_values, x_new=None, method="quadratic")
 ```
 
 **Methods:**
@@ -263,8 +266,7 @@ flatline_mask = nk.signal_flatline(signal, duration=5.0, sampling_rate=1000)
 Add various types of noise to signal.
 
 ```python
-noisy = nk.signal_noise(signal, sampling_rate=1000, noise_type='gaussian',
-                        amplitude=0.1)
+noisy = nk.signal_noise(signal, sampling_rate=1000, noise_type="gaussian", amplitude=0.1)
 ```
 
 **Noise types:**
@@ -278,7 +280,7 @@ noisy = nk.signal_noise(signal, sampling_rate=1000, noise_type='gaussian',
 Generate surrogate signals preserving certain properties.
 
 ```python
-surrogate = nk.signal_surrogate(signal, method='IAAFT')
+surrogate = nk.signal_surrogate(signal, method="IAAFT")
 ```
 
 **Methods:**
@@ -297,8 +299,9 @@ surrogate = nk.signal_surrogate(signal, method='IAAFT')
 Detect local maxima (peaks) in signal.
 
 ```python
-peaks_dict = nk.signal_findpeaks(signal, height_min=None, height_max=None,
-                                 relative_height_min=None, relative_height_max=None)
+peaks_dict = nk.signal_findpeaks(
+    signal, height_min=None, height_max=None, relative_height_min=None, relative_height_max=None
+)
 ```
 
 **Key parameters:**
@@ -323,8 +326,9 @@ peaks_dict = nk.signal_findpeaks(signal, height_min=None, height_max=None,
 Correct detected peaks for artifacts and anomalies.
 
 ```python
-corrected = nk.signal_fixpeaks(peaks, sampling_rate=1000, iterative=True,
-                               method='Kubios', interval_min=None, interval_max=None)
+corrected = nk.signal_fixpeaks(
+    peaks, sampling_rate=1000, iterative=True, method="Kubios", interval_min=None, interval_max=None
+)
 ```
 
 **Methods:**
@@ -367,8 +371,7 @@ rate = nk.signal_rate(peaks, sampling_rate=1000, desired_length=None)
 Find dominant period/frequency in signal.
 
 ```python
-period = nk.signal_period(signal, sampling_rate=1000, method='autocorrelation',
-                          show=False)
+period = nk.signal_period(signal, sampling_rate=1000, method="autocorrelation", show=False)
 ```
 
 **Methods:**
@@ -389,7 +392,7 @@ period = nk.signal_period(signal, sampling_rate=1000, method='autocorrelation',
 Compute instantaneous phase of signal.
 
 ```python
-phase = nk.signal_phase(signal, method='hilbert')
+phase = nk.signal_phase(signal, method="hilbert")
 ```
 
 **Methods:**
@@ -409,8 +412,9 @@ phase = nk.signal_phase(signal, method='hilbert')
 Compute Power Spectral Density.
 
 ```python
-psd, freqs = nk.signal_psd(signal, sampling_rate=1000, method='welch',
-                           max_frequency=None, show=False)
+psd, freqs = nk.signal_psd(
+    signal, sampling_rate=1000, method="welch", max_frequency=None, show=False
+)
 ```
 
 **Methods:**
@@ -433,11 +437,12 @@ psd, freqs = nk.signal_psd(signal, sampling_rate=1000, method='welch',
 Compute power in specific frequency bands.
 
 ```python
-power_dict = nk.signal_power(signal, sampling_rate=1000, frequency_bands={
-    'VLF': (0.003, 0.04),
-    'LF': (0.04, 0.15),
-    'HF': (0.15, 0.4)
-}, method='welch')
+power_dict = nk.signal_power(
+    signal,
+    sampling_rate=1000,
+    frequency_bands={"VLF": (0.003, 0.04), "LF": (0.04, 0.15), "HF": (0.15, 0.4)},
+    method="welch",
+)
 ```
 
 **Returns:**
@@ -488,7 +493,7 @@ n_crossings = nk.signal_zerocrossings(signal)
 Detect abrupt changes in signal properties (mean, variance).
 
 ```python
-changepoints = nk.signal_changepoints(signal, penalty=10, method='pelt', show=False)
+changepoints = nk.signal_changepoints(signal, penalty=10, method="pelt", show=False)
 ```
 
 **Methods:**
@@ -512,7 +517,7 @@ changepoints = nk.signal_changepoints(signal, penalty=10, method='pelt', show=Fa
 Assess synchronization between two signals.
 
 ```python
-sync = nk.signal_synchrony(signal1, signal2, method='correlation')
+sync = nk.signal_synchrony(signal1, signal2, method="correlation")
 ```
 
 **Methods:**
@@ -531,7 +536,7 @@ sync = nk.signal_synchrony(signal1, signal2, method='correlation')
 Apply smoothing to reduce noise.
 
 ```python
-smoothed = nk.signal_smooth(signal, method='convolution', kernel='boxzen', size=10)
+smoothed = nk.signal_smooth(signal, method="convolution", kernel="boxzen", size=10)
 ```
 
 **Methods:**
@@ -555,8 +560,9 @@ smoothed = nk.signal_smooth(signal, method='convolution', kernel='boxzen', size=
 Time-frequency representation (spectrogram).
 
 ```python
-tf, time, freq = nk.signal_timefrequency(signal, sampling_rate=1000, method='stft',
-                                        max_frequency=50, show=False)
+tf, time, freq = nk.signal_timefrequency(
+    signal, sampling_rate=1000, method="stft", max_frequency=50, show=False
+)
 ```
 
 **Methods:**
@@ -580,8 +586,9 @@ tf, time, freq = nk.signal_timefrequency(signal, sampling_rate=1000, method='stf
 Generate various synthetic signals for testing.
 
 ```python
-signal = nk.signal_simulate(duration=10, sampling_rate=1000, frequency=[5, 10],
-                            amplitude=[1.0, 0.5], noise=0.1)
+signal = nk.signal_simulate(
+    duration=10, sampling_rate=1000, frequency=[5, 10], amplitude=[1.0, 0.5], noise=0.1
+)
 ```
 
 **Signal types:**
@@ -633,7 +640,7 @@ nk.signal_plot(signal, sampling_rate=1000, peaks=None, show=True)
 # Typical preprocessing pipeline
 signal = nk.signal_sanitize(raw_signal)  # Remove invalid values
 signal = nk.signal_filter(signal, sampling_rate=1000, lowcut=0.5, highcut=40)  # Bandpass
-signal = nk.signal_detrend(signal, method='polynomial', order=1)  # Remove linear trend
+signal = nk.signal_detrend(signal, method="polynomial", order=1)  # Remove linear trend
 ```
 
 **Performance considerations:**

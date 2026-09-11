@@ -9,13 +9,13 @@ Tile extraction is the process of cropping smaller, manageable regions from larg
 All tiler classes accept these parameters:
 
 ```python
-tile_size: tuple = (512, 512)           # Tile dimensions in pixels (width, height)
-level: int = 0                          # Pyramid level for extraction (0=highest resolution)
-check_tissue: bool = True               # Filter tiles by tissue content
-tissue_percent: float = 80.0            # Minimum tissue coverage (0-100)
-pixel_overlap: int = 0                  # Overlap between adjacent tiles (GridTiler only)
-prefix: str = ""                        # Prefix for saved tile filenames
-suffix: str = ".png"                    # File extension for saved tiles
+tile_size: tuple = (512, 512)  # Tile dimensions in pixels (width, height)
+level: int = 0  # Pyramid level for extraction (0=highest resolution)
+check_tissue: bool = True  # Filter tiles by tissue content
+tissue_percent: float = 80.0  # Minimum tissue coverage (0-100)
+pixel_overlap: int = 0  # Overlap between adjacent tiles (GridTiler only)
+prefix: str = ""  # Prefix for saved tile filenames
+suffix: str = ".png"  # File extension for saved tiles
 extraction_mask: BinaryMask = BiggestTissueBoxMask()  # Mask defining extraction region
 ```
 
@@ -28,11 +28,11 @@ from histolab.tiler import RandomTiler
 
 random_tiler = RandomTiler(
     tile_size=(512, 512),
-    n_tiles=100,                # Number of random tiles to extract
+    n_tiles=100,  # Number of random tiles to extract
     level=0,
-    seed=42,                    # Random seed for reproducibility
+    seed=42,  # Random seed for reproducibility
     check_tissue=True,
-    tissue_percent=80.0
+    tissue_percent=80.0,
 )
 
 # Extract tiles
@@ -73,7 +73,7 @@ grid_tiler = GridTiler(
     level=0,
     check_tissue=True,
     tissue_percent=80.0,
-    pixel_overlap=0             # Overlap in pixels between adjacent tiles
+    pixel_overlap=0,  # Overlap in pixels between adjacent tiles
 )
 
 # Extract tiles
@@ -128,10 +128,10 @@ from histolab.scorer import NucleiScorer
 
 score_tiler = ScoreTiler(
     tile_size=(512, 512),
-    n_tiles=50,                 # Number of top-scoring tiles to extract
+    n_tiles=50,  # Number of top-scoring tiles to extract
     level=0,
-    scorer=NucleiScorer(),      # Scoring function
-    check_tissue=True
+    scorer=NucleiScorer(),  # Scoring function
+    check_tissue=True,
 )
 
 # Extract top-scoring tiles
@@ -207,6 +207,7 @@ Create custom scoring functions for specific needs:
 from histolab.scorer import Scorer
 import numpy as np
 
+
 class ColorVarianceScorer(Scorer):
     def __call__(self, tile):
         """Score tiles based on color variance."""
@@ -215,13 +216,10 @@ class ColorVarianceScorer(Scorer):
         variance = np.var(tile_array, axis=(0, 1)).sum()
         return variance
 
+
 # Use custom scorer
 variance_scorer = ColorVarianceScorer()
-score_tiler = ScoreTiler(
-    tile_size=(512, 512),
-    n_tiles=30,
-    scorer=variance_scorer
-)
+score_tiler = ScoreTiler(tile_size=(512, 512), n_tiles=30, scorer=variance_scorer)
 ```
 
 ## Tile Preview with locate_tiles()
@@ -233,7 +231,7 @@ Preview tile locations before extraction to validate tiler configuration:
 random_tiler.locate_tiles(
     slide=slide,
     extraction_mask=TissueMask(),
-    n_tiles=20  # Number of tiles to preview (for RandomTiler)
+    n_tiles=20,  # Number of tiles to preview (for RandomTiler)
 )
 ```
 
@@ -251,12 +249,7 @@ from histolab.tiler import RandomTiler
 slide = Slide("slide.svs", processed_path="output/tiles/")
 
 # Configure tiler
-tiler = RandomTiler(
-    tile_size=(512, 512),
-    n_tiles=100,
-    level=0,
-    seed=42
-)
+tiler = RandomTiler(tile_size=(512, 512), n_tiles=100, level=0, seed=42)
 
 # Extract tiles (saved to processed_path)
 tiler.extract(slide)
@@ -280,11 +273,7 @@ tiler.extract(slide)
 
 ```python
 # Generate CSV report with tile information
-score_tiler = ScoreTiler(
-    tile_size=(512, 512),
-    n_tiles=50,
-    scorer=NucleiScorer()
-)
+score_tiler = ScoreTiler(tile_size=(512, 512), n_tiles=50, scorer=NucleiScorer())
 
 # Extract and save report
 score_tiler.extract(slide, report_path="tiles_report.csv")
@@ -326,23 +315,11 @@ Extract at multiple scales from same locations:
 
 ```python
 # Extract random locations at level 0
-random_tiler_l0 = RandomTiler(
-    tile_size=(512, 512),
-    n_tiles=30,
-    level=0,
-    seed=42,
-    prefix="level0_"
-)
+random_tiler_l0 = RandomTiler(tile_size=(512, 512), n_tiles=30, level=0, seed=42, prefix="level0_")
 random_tiler_l0.extract(slide)
 
 # Extract same locations at level 1 (use same seed)
-random_tiler_l1 = RandomTiler(
-    tile_size=(512, 512),
-    n_tiles=30,
-    level=1,
-    seed=42,
-    prefix="level1_"
-)
+random_tiler_l1 = RandomTiler(tile_size=(512, 512), n_tiles=30, level=1, seed=42, prefix="level1_")
 random_tiler_l1.extract(slide)
 ```
 
@@ -355,16 +332,18 @@ from PIL import Image
 import numpy as np
 from pathlib import Path
 
+
 def filter_blurry_tiles(tile_dir, threshold=100):
     """Remove blurry tiles using Laplacian variance."""
     for tile_path in Path(tile_dir).glob("*.png"):
         img = Image.open(tile_path)
-        gray = np.array(img.convert('L'))
+        gray = np.array(img.convert("L"))
         laplacian_var = cv2.Laplacian(gray, cv2.CV_64F).var()
 
         if laplacian_var < threshold:
             tile_path.unlink()  # Remove blurry tile
             print(f"Removed blurry tile: {tile_path.name}")
+
 
 # Use after extraction
 tiler.extract(slide)

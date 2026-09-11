@@ -32,14 +32,10 @@ def init_client(config):
     try:
         from labarchivespy.client import Client
 
-        return Client(
-            config["api_url"], config["access_key_id"], config["access_password"]
-        )
+        return Client(config["api_url"], config["access_key_id"], config["access_password"])
     except ImportError:
         print("❌ labarchives-py package not installed")
-        print(
-            "   Install with: pip install git+https://github.com/mcmero/labarchives-py"
-        )
+        print("   Install with: pip install git+https://github.com/mcmero/labarchives-py")
         sys.exit(1)
 
 
@@ -94,9 +90,7 @@ def list_notebooks(client, uid):
 
             for nb in notebooks:
                 nbid = nb.find("nbid").text if nb.find("nbid") is not None else "N/A"
-                name = (
-                    nb.find("name").text if nb.find("name") is not None else "Unnamed"
-                )
+                name = nb.find("name").text if nb.find("name") is not None else "Unnamed"
                 role = nb.find("role").text if nb.find("role") is not None else "N/A"
 
                 notebook_list.append({"nbid": nbid, "name": name, "role": role})
@@ -188,9 +182,7 @@ def backup_all_notebooks(
 
         print(f"\n--- Backing up: {name} (ID: {nbid}) ---")
 
-        result = backup_notebook(
-            client, uid, nbid, output_dir, json_format, no_attachments
-        )
+        result = backup_notebook(client, uid, nbid, output_dir, json_format, no_attachments)
 
         if result:
             successful += 1
@@ -248,9 +240,7 @@ Examples:
     )
 
     # Backup all command
-    backup_all_parser = subparsers.add_parser(
-        "backup-all", help="Backup all accessible notebooks"
-    )
+    backup_all_parser = subparsers.add_parser("backup-all", help="Backup all accessible notebooks")
     backup_all_parser.add_argument(
         "--output", default="backups", help="Output directory (default: backups)"
     )
@@ -277,9 +267,7 @@ Examples:
         list_notebooks(client, uid)
 
     elif args.command == "backup":
-        backup_notebook(
-            client, uid, args.nbid, args.output, args.json, args.no_attachments
-        )
+        backup_notebook(client, uid, args.nbid, args.output, args.json, args.no_attachments)
 
     elif args.command == "backup-all":
         backup_all_notebooks(client, uid, args.output, args.json, args.no_attachments)

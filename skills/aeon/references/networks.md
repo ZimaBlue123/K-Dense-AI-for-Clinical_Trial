@@ -133,7 +133,7 @@ clf = FCNClassifier(
     batch_size=32,
     kernel_size=[7, 5, 3],  # Kernel sizes for each layer
     n_filters=[128, 256, 128],  # Filters per layer
-    learning_rate=0.001
+    learning_rate=0.001,
 )
 ```
 
@@ -168,8 +168,8 @@ clf = FCNClassifier(
     n_epochs=200,
     callbacks=[
         EarlyStopping(patience=20, restore_best_weights=True),
-        ReduceLROnPlateau(patience=10, factor=0.5)
-    ]
+        ReduceLROnPlateau(patience=10, factor=0.5),
+    ],
 )
 ```
 
@@ -179,7 +179,8 @@ Deep learning networks benefit from GPU:
 
 ```python
 import os
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'  # Use first GPU
+
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"  # Use first GPU
 
 # Networks automatically use GPU if available
 clf = InceptionTimeClassifier(n_epochs=100)
@@ -254,11 +255,7 @@ Use grid search or random search:
 ```python
 from sklearn.model_selection import GridSearchCV
 
-param_grid = {
-    'n_epochs': [100, 200],
-    'batch_size': [16, 32],
-    'learning_rate': [0.001, 0.0001]
-}
+param_grid = {"n_epochs": [100, 200], "batch_size": [16, 32], "learning_rate": [0.001, 0.0001]}
 
 clf = FCNClassifier()
 grid = GridSearchCV(clf, param_grid, cv=3)

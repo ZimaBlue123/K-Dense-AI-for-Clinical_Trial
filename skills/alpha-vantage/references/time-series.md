@@ -37,7 +37,9 @@ ts = data["Time Series (5min)"]
 # Key: "2024-01-15 16:00:00" → {"1. open": "...", "2. high": ..., "3. low": ..., "4. close": ..., "5. volume": ...}
 
 # Get specific historical month
-data = av_get("TIME_SERIES_INTRADAY", symbol="IBM", interval="5min", month="2023-06", outputsize="full")
+data = av_get(
+    "TIME_SERIES_INTRADAY", symbol="IBM", interval="5min", month="2023-06", outputsize="full"
+)
 ```
 
 ## TIME_SERIES_DAILY — Daily OHLCV

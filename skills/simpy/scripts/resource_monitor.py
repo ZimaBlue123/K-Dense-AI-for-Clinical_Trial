@@ -23,9 +23,7 @@ class ResourceMonitor:
     - Request and release events
     """
 
-    def __init__(
-        self, env: simpy.Environment, resource: simpy.Resource, name: str = "Resource"
-    ):
+    def __init__(self, env: simpy.Environment, resource: simpy.Resource, name: str = "Resource"):
         """
         Initialize the resource monitor.
 
@@ -169,12 +167,8 @@ class ResourceMonitor:
             print(f"  Min wait: {min(self.wait_times):.2f}")
         print("\nEvent Summary:")
         print(f"  Total events: {len(self.events)}")
-        request_count = sum(
-            1 for _, event_type, _ in self.events if event_type == "request"
-        )
-        release_count = sum(
-            1 for _, event_type, _ in self.events if event_type == "release"
-        )
+        request_count = sum(1 for _, event_type, _ in self.events if event_type == "request")
+        release_count = sum(1 for _, event_type, _ in self.events if event_type == "release")
         print(f"  Requests: {request_count}")
         print(f"  Releases: {release_count}")
         print(f"{'=' * 60}")
@@ -193,9 +187,7 @@ class ResourceMonitor:
             writer.writerow(["Time", "Event", "Queue Length", "Utilization"])
 
             for time, event_type, data in self.events:
-                writer.writerow(
-                    [time, event_type, data["queue_length"], data["utilization"]]
-                )
+                writer.writerow([time, event_type, data["queue_length"], data["utilization"]])
 
         print(f"Data exported to {filename}")
 

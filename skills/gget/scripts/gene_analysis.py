@@ -141,9 +141,7 @@ def main():
         default="homo_sapiens",
         help="Species (default: homo_sapiens)",
     )
-    parser.add_argument(
-        "-o", "--output", help="Output prefix for files (default: gene name)"
-    )
+    parser.add_argument("-o", "--output", help="Output prefix for files (default: gene name)")
 
     args = parser.parse_args()
 

@@ -20,13 +20,13 @@ Use BBClient when:
 from geniml.bbclient import BBClient
 
 # Initialize client
-client = BBClient(cache_folder='~/.bedcache')
+client = BBClient(cache_folder="~/.bedcache")
 
 # Fetch and cache BED file
-bed_file = client.load_bed(bed_id='GSM123456')
+bed_file = client.load_bed(bed_id="GSM123456")
 
 # Access cached file
-regions = client.get_regions('GSM123456')
+regions = client.get_regions("GSM123456")
 ```
 
 ### R Integration
@@ -70,12 +70,7 @@ Use BEDshift when:
 from geniml.bedshift import bedshift
 
 # Randomize BED file preserving chromosome distribution
-randomized = bedshift(
-    input_bed='peaks.bed',
-    genome='hg38',
-    preserve_chrom=True,
-    n_iterations=100
-)
+randomized = bedshift(input_bed="peaks.bed", genome="hg38", preserve_chrom=True, n_iterations=100)
 ```
 
 ### CLI Usage
@@ -139,9 +134,9 @@ from geniml.evaluation import evaluate_embeddings
 
 # Evaluate Region2Vec embeddings
 metrics = evaluate_embeddings(
-    embeddings_file='region2vec_model/embeddings.npy',
-    labels_file='metadata.csv',
-    metrics=['silhouette', 'davies_bouldin', 'calinski_harabasz']
+    embeddings_file="region2vec_model/embeddings.npy",
+    labels_file="metadata.csv",
+    metrics=["silhouette", "davies_bouldin", "calinski_harabasz"],
 )
 
 print(f"Silhouette score: {metrics['silhouette']:.3f}")
@@ -163,9 +158,9 @@ from geniml.evaluation import evaluate_annotation
 
 # Evaluate cell-type predictions
 results = evaluate_annotation(
-    predicted=adata.obs['predicted_celltype'],
-    true=adata.obs['true_celltype'],
-    metrics=['accuracy', 'f1', 'confusion_matrix']
+    predicted=adata.obs["predicted_celltype"],
+    true=adata.obs["true_celltype"],
+    metrics=["accuracy", "f1", "confusion_matrix"],
 )
 
 print(f"Accuracy: {results['accuracy']:.1%}")
@@ -202,10 +197,10 @@ Strict overlap-based tokenization:
 from geniml.tokenization import hard_tokenization
 
 hard_tokenization(
-    src_folder='bed_files/',
-    dst_folder='tokenized/',
-    universe_file='universe.bed',
-    p_value_threshold=1e-9
+    src_folder="bed_files/",
+    dst_folder="tokenized/",
+    universe_file="universe.bed",
+    p_value_threshold=1e-9,
 )
 ```
 
@@ -220,10 +215,10 @@ Probabilistic tokenization allowing partial matches:
 from geniml.tokenization import soft_tokenization
 
 soft_tokenization(
-    src_folder='bed_files/',
-    dst_folder='tokenized/',
-    universe_file='universe.bed',
-    overlap_threshold=0.5
+    src_folder="bed_files/",
+    dst_folder="tokenized/",
+    universe_file="universe.bed",
+    overlap_threshold=0.5,
 )
 ```
 
@@ -238,11 +233,11 @@ Map regions to universe tokens with custom parameters:
 from geniml.tokenization import universe_tokenization
 
 universe_tokenization(
-    bed_file='peaks.bed',
-    universe_file='universe.bed',
-    output_file='tokens.txt',
-    method='hard',
-    threshold=1e-9
+    bed_file="peaks.bed",
+    universe_file="universe.bed",
+    output_file="tokens.txt",
+    method="hard",
+    threshold=1e-9,
 )
 ```
 
@@ -260,11 +255,7 @@ Check how well regions tokenize:
 ```python
 from geniml.tokenization import check_coverage
 
-coverage = check_coverage(
-    bed_file='peaks.bed',
-    universe_file='universe.bed',
-    threshold=1e-9
-)
+coverage = check_coverage(bed_file="peaks.bed", universe_file="universe.bed", threshold=1e-9)
 
 print(f"Tokenization coverage: {coverage:.1%}")
 ```
@@ -299,9 +290,9 @@ Train BEDspace or Region2Vec model with metadata.
 from geniml.search import build_search_index
 
 build_search_index(
-    embeddings_file='bedspace_model/embeddings.npy',
-    metadata_file='metadata.csv',
-    output_dir='search_backend/'
+    embeddings_file="bedspace_model/embeddings.npy",
+    metadata_file="metadata.csv",
+    output_dir="search_backend/",
 )
 ```
 
@@ -310,19 +301,13 @@ build_search_index(
 ```python
 from geniml.search import SearchBackend
 
-backend = SearchBackend.load('search_backend/')
+backend = SearchBackend.load("search_backend/")
 
 # Natural language query
-results = backend.query(
-    text="T cell regulatory regions",
-    top_k=10
-)
+results = backend.query(text="T cell regulatory regions", top_k=10)
 
 # Metadata query
-results = backend.query(
-    metadata={'cell_type': 'T_cell', 'tissue': 'blood'},
-    top_k=10
-)
+results = backend.query(metadata={"cell_type": "T_cell", "tissue": "blood"}, top_k=10)
 ```
 
 ### Best Practices
@@ -342,13 +327,13 @@ results = backend.query(
 from geniml.io import read_bed, write_bed, load_universe
 
 # Read BED file
-regions = read_bed('peaks.bed')
+regions = read_bed("peaks.bed")
 
 # Write BED file
-write_bed(regions, 'output.bed')
+write_bed(regions, "output.bed")
 
 # Load universe
-universe = load_universe('universe.bed')
+universe = load_universe("universe.bed")
 ```
 
 ### Model Utilities
@@ -357,10 +342,10 @@ universe = load_universe('universe.bed')
 from geniml.models import save_model, load_model
 
 # Save trained model
-save_model(model, 'my_model/')
+save_model(model, "my_model/")
 
 # Load model
-model = load_model('my_model/')
+model = load_model("my_model/")
 ```
 
 ### Common Patterns
@@ -368,18 +353,18 @@ model = load_model('my_model/')
 **Pipeline workflow:**
 ```python
 # 1. Build universe
-universe = build_universe(coverage_folder='coverage/', method='cc', cutoff=5)
+universe = build_universe(coverage_folder="coverage/", method="cc", cutoff=5)
 
 # 2. Tokenize
-hard_tokenization(src_folder='beds/', dst_folder='tokens/',
-                   universe_file='universe.bed', p_value_threshold=1e-9)
+hard_tokenization(
+    src_folder="beds/", dst_folder="tokens/", universe_file="universe.bed", p_value_threshold=1e-9
+)
 
 # 3. Train embeddings
-region2vec(token_folder='tokens/', save_dir='model/', num_shufflings=1000)
+region2vec(token_folder="tokens/", save_dir="model/", num_shufflings=1000)
 
 # 4. Evaluate
-metrics = evaluate_embeddings(embeddings_file='model/embeddings.npy',
-                               labels_file='metadata.csv')
+metrics = evaluate_embeddings(embeddings_file="model/embeddings.npy", labels_file="metadata.csv")
 ```
 
 This modular design allows flexible composition of geniml tools for diverse genomic ML workflows.

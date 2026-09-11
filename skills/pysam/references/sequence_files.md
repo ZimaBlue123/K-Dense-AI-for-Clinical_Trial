@@ -76,6 +76,7 @@ def get_variant_context(fasta, chrom, pos, window=10):
     end = pos + window
     return fasta.fetch(chrom, start, end)
 
+
 # Get sequence for gene coordinates
 def get_gene_sequence(fasta, chrom, start, end, strand):
     """Get gene sequence with strand awareness."""
@@ -88,10 +89,11 @@ def get_gene_sequence(fasta, chrom, start, end, strand):
 
     return seq
 
+
 # Check reference allele
 def check_ref_allele(fasta, chrom, pos, expected_ref):
     """Verify reference allele at position (1-based pos)."""
-    actual = fasta.fetch(chrom, pos-1, pos)  # Convert to 0-based
+    actual = fasta.fetch(chrom, pos - 1, pos)  # Convert to 0-based
     return actual.upper() == expected_ref.upper()
 ```
 
@@ -99,11 +101,7 @@ def check_ref_allele(fasta, chrom, pos, expected_ref):
 
 ```python
 # Extract multiple regions efficiently
-regions = [
-    ("chr1", 1000, 2000),
-    ("chr1", 5000, 6000),
-    ("chr2", 10000, 11000)
-]
+regions = [("chr1", 1000, 2000), ("chr1", 5000, 6000), ("chr2", 10000, 11000)]
 
 sequences = {}
 for chrom, start, end in regions:
@@ -133,11 +131,12 @@ def count_ambiguous(sequence):
     """Count non-ATGC bases."""
     return sum(1 for base in sequence.upper() if base not in "ATGC")
 
+
 # Remove regions with too many Ns
 def has_quality_sequence(fasta, chrom, start, end, max_n_frac=0.1):
     """Check if region has acceptable N content."""
     seq = fasta.fetch(chrom, start, end)
-    n_count = seq.upper().count('N')
+    n_count = seq.upper().count("N")
     return (n_count / len(seq)) <= max_n_frac
 ```
 
@@ -202,7 +201,7 @@ Quality scores are Phred-scaled (typically Phred+33 encoding):
 def filter_by_quality(input_fastq, output_fastq, min_mean_quality=20):
     """Filter reads by mean quality score."""
     with pysam.FastxFile(input_fastq) as infile:
-        with open(output_fastq, 'w') as outfile:
+        with open(output_fastq, "w") as outfile:
             for read in infile:
                 qual_array = read.get_quality_array()
                 mean_q = sum(qual_array) / len(qual_array)
@@ -221,7 +220,7 @@ def filter_by_quality(input_fastq, output_fastq, min_mean_quality=20):
 def filter_by_length(input_fastq, output_fastq, min_length=50):
     """Filter reads by minimum length."""
     with pysam.FastxFile(input_fastq) as infile:
-        with open(output_fastq, 'w') as outfile:
+        with open(output_fastq, "w") as outfile:
             kept = 0
             for read in infile:
                 if len(read.sequence) >= min_length:
@@ -255,7 +254,7 @@ def calculate_fastq_stats(fastq_file):
         "total_reads": total_reads,
         "total_bases": total_bases,
         "mean_read_length": total_bases / total_reads if total_reads > 0 else 0,
-        "mean_quality": quality_sum / total_bases if total_bases > 0 else 0
+        "mean_quality": quality_sum / total_bases if total_bases > 0 else 0,
     }
 ```
 
@@ -267,7 +266,7 @@ def extract_reads_by_name(fastq_file, read_names, output_file):
     read_set = set(read_names)
 
     with pysam.FastxFile(fastq_file) as infile:
-        with open(output_file, 'w') as outfile:
+        with open(output_file, "w") as outfile:
             for read in infile:
                 if read.name in read_set:
                     outfile.write(f"@{read.name}\n")
@@ -282,7 +281,7 @@ def extract_reads_by_name(fastq_file, read_names, output_file):
 def fastq_to_fasta(fastq_file, fasta_file):
     """Convert FASTQ to FASTA (discards quality scores)."""
     with pysam.FastxFile(fastq_file) as infile:
-        with open(fasta_file, 'w') as outfile:
+        with open(fasta_file, "w") as outfile:
             for read in infile:
                 outfile.write(f">{read.name}\n")
                 outfile.write(f"{read.sequence}\n")
@@ -293,12 +292,13 @@ def fastq_to_fasta(fastq_file, fasta_file):
 ```python
 import random
 
+
 def subsample_fastq(input_fastq, output_fastq, fraction=0.1, seed=42):
     """Randomly subsample reads from FASTQ file."""
     random.seed(seed)
 
     with pysam.FastxFile(input_fastq) as infile:
-        with open(output_fastq, 'w') as outfile:
+        with open(output_fastq, "w") as outfile:
             for read in infile:
                 if random.random() < fraction:
                     outfile.write(f"@{read.name}\n")

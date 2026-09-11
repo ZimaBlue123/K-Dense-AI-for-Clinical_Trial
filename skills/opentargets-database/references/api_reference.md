@@ -226,7 +226,7 @@ variables = {"efoId": "EFO_0000249"}
 GraphQL returns status code 200 even for errors. Check the response structure:
 
 ```python
-if 'errors' in response_data:
+if "errors" in response_data:
     print(f"GraphQL errors: {response_data['errors']}")
 else:
     print(f"Data: {response_data['data']}")

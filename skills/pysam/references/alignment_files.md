@@ -30,10 +30,10 @@ Use `"-"` as filename for stdin/stdout operations:
 
 ```python
 # Read from stdin
-infile = pysam.AlignmentFile('-', 'rb')
+infile = pysam.AlignmentFile("-", "rb")
 
 # Write to stdout
-outfile = pysam.AlignmentFile('-', 'w', template=infile)
+outfile = pysam.AlignmentFile("-", "w", template=infile)
 ```
 
 **Important:** Pysam does not support reading/writing from true Python file objects—only stdin/stdout streams are supported.
@@ -171,13 +171,7 @@ for read in samfile.fetch("chr1", 1000, 2000):
 ### Creating Header
 
 ```python
-header = {
-    'HD': {'VN': '1.0'},
-    'SQ': [
-        {'LN': 1575, 'SN': 'chr1'},
-        {'LN': 1584, 'SN': 'chr2'}
-    ]
-}
+header = {"HD": {"VN": "1.0"}, "SQ": [{"LN": 1575, "SN": "chr1"}, {"LN": 1584, "SN": "chr2"}]}
 
 outfile = pysam.AlignmentFile("output.bam", "wb", header=header)
 ```
@@ -248,7 +242,7 @@ for pileupcolumn in samfile.pileup("chr1", 1000, 2000):
 ```python
 # These are equivalent:
 samfile.fetch("chr1", 999, 2000)  # Python style: 0-based
-samfile.fetch("chr1:1000-2000")   # samtools style: 1-based
+samfile.fetch("chr1:1000-2000")  # samtools style: 1-based
 ```
 
 ## Indexing

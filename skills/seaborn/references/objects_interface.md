@@ -18,7 +18,7 @@ from seaborn import objects as so
 import pandas as pd
 
 # Create plot with data and mappings
-p = so.Plot(data=df, x='x_var', y='y_var')
+p = so.Plot(data=df, x="x_var", y="y_var")
 
 # Add mark (visual representation)
 p = p.add(so.Dot())
@@ -34,9 +34,21 @@ The `Plot` class is the foundation of the objects interface.
 ### Initialization
 
 ```python
-so.Plot(data=None, x=None, y=None, color=None, alpha=None,
-        fill=None, fillalpha=None, fillcolor=None, marker=None,
-        pointsize=None, stroke=None, text=None, **variables)
+so.Plot(
+    data=None,
+    x=None,
+    y=None,
+    color=None,
+    alpha=None,
+    fill=None,
+    fillalpha=None,
+    fillcolor=None,
+    marker=None,
+    pointsize=None,
+    stroke=None,
+    text=None,
+    **variables,
+)
 ```
 
 **Parameters:**
@@ -53,18 +65,18 @@ so.Plot(data=None, x=None, y=None, color=None, alpha=None,
 **Examples:**
 ```python
 # Basic mapping
-so.Plot(df, x='total_bill', y='tip')
+so.Plot(df, x="total_bill", y="tip")
 
 # Multiple mappings
-so.Plot(df, x='total_bill', y='tip', color='day', pointsize='size')
+so.Plot(df, x="total_bill", y="tip", color="day", pointsize="size")
 
 # All variables in Plot
-p = so.Plot(df, x='x', y='y', color='cat')
+p = so.Plot(df, x="x", y="y", color="cat")
 p.add(so.Dot())  # Uses all mappings
 
 # Some variables in add()
-p = so.Plot(df, x='x', y='y')
-p.add(so.Dot(), color='cat')  # Only this layer uses color
+p = so.Plot(df, x="x", y="y")
+p.add(so.Dot(), color="cat")  # Only this layer uses color
 ```
 
 ### Methods
@@ -74,8 +86,7 @@ p.add(so.Dot(), color='cat')  # Only this layer uses color
 Add a layer to the plot with mark and optional stat/move.
 
 ```python
-Plot.add(mark, *transforms, orient=None, legend=True, data=None,
-         **variables)
+Plot.add(mark, *transforms, orient=None, legend=True, data=None, **variables)
 ```
 
 **Parameters:**
@@ -98,8 +109,8 @@ p.add(so.Line(), so.PolyFit(order=2))
 p.add(so.Bar(), so.Agg(), so.Dodge())
 
 # Layer-specific mappings
-p.add(so.Dot(), color='category')
-p.add(so.Line(), so.Agg(), color='category')
+p.add(so.Dot(), color="category")
+p.add(so.Line(), so.Agg(), color="category")
 
 # Layer-specific data
 p.add(so.Dot())
@@ -122,9 +133,9 @@ Plot.facet(col=None, row=None, order=None, wrap=None)
 
 **Example:**
 ```python
-p.facet(col='time', row='sex')
-p.facet(col='category', wrap=3)
-p.facet(col='day', order={'day': ['Thur', 'Fri', 'Sat', 'Sun']})
+p.facet(col="time", row="sex")
+p.facet(col="category", wrap=3)
+p.facet(col="day", order={"day": ["Thur", "Fri", "Sat", "Sun"]})
 ```
 
 #### pair()
@@ -144,11 +155,11 @@ Plot.pair(x=None, y=None, wrap=None, cross=True)
 **Example:**
 ```python
 # Pairs of all variables
-p = so.Plot(df).pair(x=['a', 'b', 'c'])
+p = so.Plot(df).pair(x=["a", "b", "c"])
 p.add(so.Dot())
 
 # Rectangular grid
-p = so.Plot(df).pair(x=['a', 'b'], y=['c', 'd'])
+p = so.Plot(df).pair(x=["a", "b"], y=["c", "d"])
 p.add(so.Dot(), alpha=0.5)
 ```
 
@@ -166,9 +177,9 @@ Plot.scale(**scales)
 ```python
 p.scale(
     x=so.Continuous().tick(every=5),
-    y=so.Continuous().label(like='{x:.1f}'),
-    color=so.Nominal(['#1f77b4', '#ff7f0e', '#2ca02c']),
-    pointsize=(5, 10)  # Shorthand for range
+    y=so.Continuous().label(like="{x:.1f}"),
+    color=so.Nominal(["#1f77b4", "#ff7f0e", "#2ca02c"]),
+    pointsize=(5, 10),  # Shorthand for range
 )
 ```
 
@@ -202,10 +213,7 @@ Plot.label(x=None, y=None, color=None, title=None, **labels)
 **Example:**
 ```python
 p.label(
-    x='Total Bill ($)',
-    y='Tip Amount ($)',
-    color='Day of Week',
-    title='Restaurant Tips Analysis'
+    x="Total Bill ($)", y="Tip Amount ($)", color="Day of Week", title="Restaurant Tips Analysis"
 )
 ```
 
@@ -224,13 +232,13 @@ Plot.theme(config, **kwargs)
 **Example:**
 ```python
 # Seaborn theme
-p.theme({**sns.axes_style('whitegrid'), **sns.plotting_context('talk')})
+p.theme({**sns.axes_style("whitegrid"), **sns.plotting_context("talk")})
 
 # Custom rcParams
-p.theme({'axes.facecolor': 'white', 'axes.grid': True})
+p.theme({"axes.facecolor": "white", "axes.grid": True})
 
 # Individual parameters
-p.theme(axes_facecolor='white', font_scale=1.2)
+p.theme(axes_facecolor="white", font_scale=1.2)
 ```
 
 #### layout()
@@ -248,7 +256,7 @@ Plot.layout(size=None, extent=None, engine=None)
 
 **Example:**
 ```python
-p.layout(size=(10, 6), engine='constrained')
+p.layout(size=(10, 6), engine="constrained")
 ```
 
 #### share()
@@ -266,7 +274,7 @@ Plot.share(x=None, y=None)
 **Example:**
 ```python
 p.share(x=True, y=False)  # Share x across all, independent y
-p.share(x='col')  # Share x within columns only
+p.share(x="col")  # Share x within columns only
 ```
 
 #### on()
@@ -285,8 +293,8 @@ Plot.on(target)
 import matplotlib.pyplot as plt
 
 fig, axes = plt.subplots(2, 2, figsize=(10, 10))
-so.Plot(df, x='x', y='y').add(so.Dot()).on(axes[0, 0])
-so.Plot(df, x='x', y='z').add(so.Line()).on(axes[0, 1])
+so.Plot(df, x="x", y="y").add(so.Dot()).on(axes[0, 0])
+so.Plot(df, x="x", y="z").add(so.Line()).on(axes[0, 1])
 ```
 
 #### show()
@@ -313,8 +321,8 @@ Plot.save(filename, **kwargs)
 
 **Example:**
 ```python
-p.save('plot.png', dpi=300, bbox_inches='tight')
-p.save('plot.pdf')
+p.save("plot.png", dpi=300, bbox_inches="tight")
+p.save("plot.pdf")
 ```
 
 ## Mark Objects
@@ -343,8 +351,8 @@ so.Dot(artist_kws=None, **kwargs)
 
 **Example:**
 ```python
-so.Plot(df, x='x', y='y').add(so.Dot(color='blue', pointsize=10))
-so.Plot(df, x='x', y='y', color='cat').add(so.Dot(alpha=0.5))
+so.Plot(df, x="x", y="y").add(so.Dot(color="blue", pointsize=10))
+so.Plot(df, x="x", y="y", color="cat").add(so.Dot(alpha=0.5))
 ```
 
 ### Line
@@ -367,8 +375,8 @@ so.Line(artist_kws=None, **kwargs)
 
 **Example:**
 ```python
-so.Plot(df, x='x', y='y').add(so.Line())
-so.Plot(df, x='x', y='y', color='cat').add(so.Line(linewidth=2))
+so.Plot(df, x="x", y="y").add(so.Line())
+so.Plot(df, x="x", y="y", color="cat").add(so.Line(linewidth=2))
 ```
 
 ### Path
@@ -384,7 +392,7 @@ Properties same as `Line`.
 **Example:**
 ```python
 # For trajectories, loops, etc.
-so.Plot(trajectory_df, x='x', y='y').add(so.Path())
+so.Plot(trajectory_df, x="x", y="y").add(so.Path())
 ```
 
 ### Bar
@@ -405,8 +413,8 @@ so.Bar(artist_kws=None, **kwargs)
 
 **Example:**
 ```python
-so.Plot(df, x='category', y='value').add(so.Bar())
-so.Plot(df, x='x', y='y').add(so.Bar(color='#1f77b4', width=0.5))
+so.Plot(df, x="category", y="value").add(so.Bar())
+so.Plot(df, x="x", y="y").add(so.Bar(color="#1f77b4", width=0.5))
 ```
 
 ### Bars
@@ -421,7 +429,7 @@ Properties same as `Bar`. Used with `Agg()` or `Est()` stats.
 
 **Example:**
 ```python
-so.Plot(df, x='category', y='value').add(so.Bars(), so.Agg())
+so.Plot(df, x="category", y="value").add(so.Bars(), so.Agg())
 ```
 
 ### Area
@@ -442,8 +450,8 @@ so.Area(artist_kws=None, **kwargs)
 
 **Example:**
 ```python
-so.Plot(df, x='x', y='y').add(so.Area(alpha=0.3))
-so.Plot(df, x='x', y='y', color='cat').add(so.Area())
+so.Plot(df, x="x", y="y").add(so.Area(alpha=0.3))
+so.Plot(df, x="x", y="y", color="cat").add(so.Area())
 ```
 
 ### Band
@@ -458,8 +466,8 @@ Properties same as `Area`. Requires `ymin` and `ymax` mappings or used with `Est
 
 **Example:**
 ```python
-so.Plot(df, x='x', ymin='lower', ymax='upper').add(so.Band())
-so.Plot(df, x='x', y='y').add(so.Band(), so.Est())
+so.Plot(df, x="x", ymin="lower", ymax="upper").add(so.Band())
+so.Plot(df, x="x", y="y").add(so.Band(), so.Est())
 ```
 
 ### Range
@@ -480,7 +488,7 @@ so.Range(artist_kws=None, **kwargs)
 
 **Example:**
 ```python
-so.Plot(df, x='x', y='y').add(so.Range(), so.Est())
+so.Plot(df, x="x", y="y").add(so.Range(), so.Est())
 ```
 
 ### Dash
@@ -499,7 +507,7 @@ so.Dash(artist_kws=None, **kwargs)
 
 **Example:**
 ```python
-so.Plot(df, x='category', y='value').add(so.Dash())
+so.Plot(df, x="category", y="value").add(so.Dash())
 ```
 
 ### Text
@@ -522,8 +530,8 @@ Requires `text` mapping.
 
 **Example:**
 ```python
-so.Plot(df, x='x', y='y', text='label').add(so.Text())
-so.Plot(df, x='x', y='y', text='value').add(so.Text(fontsize=10, offset=(0, 5)))
+so.Plot(df, x="x", y="y", text="label").add(so.Text())
+so.Plot(df, x="x", y="y", text="value").add(so.Text(fontsize=10, offset=(0, 5)))
 ```
 
 ## Stat Objects
@@ -535,7 +543,7 @@ Stats transform data before rendering. Compose with marks in `.add()`.
 Aggregate observations by group.
 
 ```python
-so.Agg(func='mean')
+so.Agg(func="mean")
 ```
 
 **Parameters:**
@@ -543,8 +551,8 @@ so.Agg(func='mean')
 
 **Example:**
 ```python
-so.Plot(df, x='category', y='value').add(so.Bar(), so.Agg('mean'))
-so.Plot(df, x='x', y='y', color='group').add(so.Line(), so.Agg('median'))
+so.Plot(df, x="category", y="value").add(so.Bar(), so.Agg("mean"))
+so.Plot(df, x="x", y="y", color="group").add(so.Line(), so.Agg("median"))
 ```
 
 ### Est
@@ -552,7 +560,7 @@ so.Plot(df, x='x', y='y', color='group').add(so.Line(), so.Agg('median'))
 Estimate central tendency with error intervals.
 
 ```python
-so.Est(func='mean', errorbar=('ci', 95), n_boot=1000, seed=None)
+so.Est(func="mean", errorbar=("ci", 95), n_boot=1000, seed=None)
 ```
 
 **Parameters:**
@@ -567,10 +575,10 @@ so.Est(func='mean', errorbar=('ci', 95), n_boot=1000, seed=None)
 
 **Example:**
 ```python
-so.Plot(df, x='category', y='value').add(so.Bar(), so.Est())
-so.Plot(df, x='x', y='y').add(so.Line(), so.Est(errorbar='sd'))
-so.Plot(df, x='x', y='y').add(so.Line(), so.Est(errorbar=('ci', 95)))
-so.Plot(df, x='x', y='y').add(so.Band(), so.Est())
+so.Plot(df, x="category", y="value").add(so.Bar(), so.Est())
+so.Plot(df, x="x", y="y").add(so.Line(), so.Est(errorbar="sd"))
+so.Plot(df, x="x", y="y").add(so.Line(), so.Est(errorbar=("ci", 95)))
+so.Plot(df, x="x", y="y").add(so.Band(), so.Est())
 ```
 
 ### Hist
@@ -578,8 +586,15 @@ so.Plot(df, x='x', y='y').add(so.Band(), so.Est())
 Bin observations and count/aggregate.
 
 ```python
-so.Hist(stat='count', bins='auto', binwidth=None, binrange=None,
-        common_norm=True, common_bins=True, cumulative=False)
+so.Hist(
+    stat="count",
+    bins="auto",
+    binwidth=None,
+    binrange=None,
+    common_norm=True,
+    common_bins=True,
+    cumulative=False,
+)
 ```
 
 **Parameters:**
@@ -593,9 +608,9 @@ so.Hist(stat='count', bins='auto', binwidth=None, binrange=None,
 
 **Example:**
 ```python
-so.Plot(df, x='value').add(so.Bars(), so.Hist())
-so.Plot(df, x='value').add(so.Bars(), so.Hist(bins=20, stat='density'))
-so.Plot(df, x='value', color='group').add(so.Area(), so.Hist(cumulative=True))
+so.Plot(df, x="value").add(so.Bars(), so.Hist())
+so.Plot(df, x="value").add(so.Bars(), so.Hist(bins=20, stat="density"))
+so.Plot(df, x="value", color="group").add(so.Area(), so.Hist(cumulative=True))
 ```
 
 ### KDE
@@ -603,8 +618,7 @@ so.Plot(df, x='value', color='group').add(so.Area(), so.Hist(cumulative=True))
 Kernel density estimate.
 
 ```python
-so.KDE(bw_method='scott', bw_adjust=1, gridsize=200,
-       cut=3, cumulative=False)
+so.KDE(bw_method="scott", bw_adjust=1, gridsize=200, cut=3, cumulative=False)
 ```
 
 **Parameters:**
@@ -616,9 +630,9 @@ so.KDE(bw_method='scott', bw_adjust=1, gridsize=200,
 
 **Example:**
 ```python
-so.Plot(df, x='value').add(so.Line(), so.KDE())
-so.Plot(df, x='value', color='group').add(so.Area(alpha=0.5), so.KDE())
-so.Plot(df, x='x', y='y').add(so.Line(), so.KDE(bw_adjust=0.5))
+so.Plot(df, x="value").add(so.Line(), so.KDE())
+so.Plot(df, x="value", color="group").add(so.Area(alpha=0.5), so.KDE())
+so.Plot(df, x="x", y="y").add(so.Line(), so.KDE(bw_adjust=0.5))
 ```
 
 ### Count
@@ -631,7 +645,7 @@ so.Count()
 
 **Example:**
 ```python
-so.Plot(df, x='category').add(so.Bar(), so.Count())
+so.Plot(df, x="category").add(so.Bar(), so.Count())
 ```
 
 ### PolyFit
@@ -647,8 +661,8 @@ so.PolyFit(order=1)
 
 **Example:**
 ```python
-so.Plot(df, x='x', y='y').add(so.Dot())
-so.Plot(df, x='x', y='y').add(so.Line(), so.PolyFit(order=2))
+so.Plot(df, x="x", y="y").add(so.Dot())
+so.Plot(df, x="x", y="y").add(so.Line(), so.PolyFit(order=2))
 ```
 
 ### Perc
@@ -656,7 +670,7 @@ so.Plot(df, x='x', y='y').add(so.Line(), so.PolyFit(order=2))
 Compute percentiles.
 
 ```python
-so.Perc(k=5, method='linear')
+so.Perc(k=5, method="linear")
 ```
 
 **Parameters:**
@@ -665,7 +679,7 @@ so.Perc(k=5, method='linear')
 
 **Example:**
 ```python
-so.Plot(df, x='x', y='y').add(so.Band(), so.Perc())
+so.Plot(df, x="x", y="y").add(so.Band(), so.Perc())
 ```
 
 ## Move Objects
@@ -677,7 +691,7 @@ Moves adjust positions to resolve overlaps or create specific layouts.
 Shift positions side-by-side.
 
 ```python
-so.Dodge(empty='keep', gap=0)
+so.Dodge(empty="keep", gap=0)
 ```
 
 **Parameters:**
@@ -686,8 +700,8 @@ so.Dodge(empty='keep', gap=0)
 
 **Example:**
 ```python
-so.Plot(df, x='category', y='value', color='group').add(so.Bar(), so.Dodge())
-so.Plot(df, x='cat', y='val', color='hue').add(so.Dot(), so.Dodge(gap=0.1))
+so.Plot(df, x="category", y="value", color="group").add(so.Bar(), so.Dodge())
+so.Plot(df, x="cat", y="val", color="hue").add(so.Dot(), so.Dodge(gap=0.1))
 ```
 
 ### Stack
@@ -700,8 +714,8 @@ so.Stack()
 
 **Example:**
 ```python
-so.Plot(df, x='x', y='y', color='category').add(so.Bar(), so.Stack())
-so.Plot(df, x='x', y='y', color='group').add(so.Area(), so.Stack())
+so.Plot(df, x="x", y="y", color="category").add(so.Bar(), so.Stack())
+so.Plot(df, x="x", y="y", color="group").add(so.Area(), so.Stack())
 ```
 
 ### Jitter
@@ -719,8 +733,8 @@ so.Jitter(width=None, height=None, seed=None)
 
 **Example:**
 ```python
-so.Plot(df, x='category', y='value').add(so.Dot(), so.Jitter())
-so.Plot(df, x='cat', y='val').add(so.Dot(), so.Jitter(width=0.2))
+so.Plot(df, x="category", y="value").add(so.Dot(), so.Jitter())
+so.Plot(df, x="cat", y="val").add(so.Dot(), so.Jitter(width=0.2))
 ```
 
 ### Shift
@@ -737,7 +751,7 @@ so.Shift(x=0, y=0)
 
 **Example:**
 ```python
-so.Plot(df, x='x', y='y').add(so.Dot(), so.Shift(x=1))
+so.Plot(df, x="x", y="y").add(so.Dot(), so.Shift(x=1))
 ```
 
 ### Norm
@@ -745,7 +759,7 @@ so.Plot(df, x='x', y='y').add(so.Dot(), so.Shift(x=1))
 Normalize values.
 
 ```python
-so.Norm(func='max', where=None, by=None, percent=False)
+so.Norm(func="max", where=None, by=None, percent=False)
 ```
 
 **Parameters:**
@@ -756,7 +770,7 @@ so.Norm(func='max', where=None, by=None, percent=False)
 
 **Example:**
 ```python
-so.Plot(df, x='x', y='y', color='group').add(so.Area(), so.Norm())
+so.Plot(df, x="x", y="y", color="group").add(so.Area(), so.Norm())
 ```
 
 ## Scale Objects
@@ -784,9 +798,9 @@ so.Continuous(values=None, norm=None, trans=None)
 ```python
 p.scale(
     x=so.Continuous().tick(every=10),
-    y=so.Continuous(trans='log').tick(at=[1, 10, 100]),
+    y=so.Continuous(trans="log").tick(at=[1, 10, 100]),
     color=so.Continuous(values=(0, 1)),
-    pointsize=(5, 20)  # Shorthand for Continuous range
+    pointsize=(5, 20),  # Shorthand for Continuous range
 )
 ```
 
@@ -805,9 +819,9 @@ so.Nominal(values=None, order=None)
 **Example:**
 ```python
 p.scale(
-    color=so.Nominal(['#1f77b4', '#ff7f0e', '#2ca02c']),
-    marker=so.Nominal(['o', 's', '^']),
-    x=so.Nominal(order=['Low', 'Medium', 'High'])
+    color=so.Nominal(["#1f77b4", "#ff7f0e", "#2ca02c"]),
+    marker=so.Nominal(["o", "s", "^"]),
+    x=so.Nominal(order=["Low", "Medium", "High"]),
 )
 ```
 
@@ -825,7 +839,7 @@ so.Temporal(values=None, trans=None)
 
 **Example:**
 ```python
-p.scale(x=so.Temporal().tick(every=('month', 1)).label(concise=True))
+p.scale(x=so.Temporal().tick(every=("month", 1)).label(concise=True))
 ```
 
 ## Complete Examples
@@ -834,12 +848,12 @@ p.scale(x=so.Temporal().tick(every=('month', 1)).label(concise=True))
 
 ```python
 (
-    so.Plot(df, x='total_bill', y='tip', color='time')
+    so.Plot(df, x="total_bill", y="tip", color="time")
     .add(so.Dot(), alpha=0.5)
     .add(so.Line(), so.PolyFit(order=2))
-    .scale(color=so.Nominal(['#1f77b4', '#ff7f0e']))
-    .label(x='Total Bill ($)', y='Tip ($)', title='Tips Analysis')
-    .theme({**sns.axes_style('whitegrid')})
+    .scale(color=so.Nominal(["#1f77b4", "#ff7f0e"]))
+    .label(x="Total Bill ($)", y="Tip ($)", title="Tips Analysis")
+    .theme({**sns.axes_style("whitegrid")})
 )
 ```
 
@@ -847,12 +861,12 @@ p.scale(x=so.Temporal().tick(every=('month', 1)).label(concise=True))
 
 ```python
 (
-    so.Plot(df, x='measurement', color='treatment')
-    .facet(col='timepoint', wrap=3)
+    so.Plot(df, x="measurement", color="treatment")
+    .facet(col="timepoint", wrap=3)
     .add(so.Area(alpha=0.5), so.KDE())
     .add(so.Dot(), so.Jitter(width=0.1), y=0)
     .scale(x=so.Continuous().tick(every=5))
-    .label(x='Measurement (units)', title='Treatment Effects Over Time')
+    .label(x="Measurement (units)", title="Treatment Effects Over Time")
     .share(x=True, y=False)
 )
 ```
@@ -861,11 +875,11 @@ p.scale(x=so.Temporal().tick(every=('month', 1)).label(concise=True))
 
 ```python
 (
-    so.Plot(df, x='category', y='value', color='group')
-    .add(so.Bar(), so.Agg('mean'), so.Dodge())
-    .add(so.Range(), so.Est(errorbar='se'), so.Dodge())
-    .scale(color=so.Nominal(order=['A', 'B', 'C']))
-    .label(y='Mean Value', title='Comparison by Category and Group')
+    so.Plot(df, x="category", y="value", color="group")
+    .add(so.Bar(), so.Agg("mean"), so.Dodge())
+    .add(so.Range(), so.Est(errorbar="se"), so.Dodge())
+    .scale(color=so.Nominal(order=["A", "B", "C"]))
+    .label(y="Mean Value", title="Comparison by Category and Group")
 )
 ```
 
@@ -873,21 +887,14 @@ p.scale(x=so.Temporal().tick(every=('month', 1)).label(concise=True))
 
 ```python
 (
-    so.Plot(df, x='date', y='value')
-    .add(so.Dot(color='gray', pointsize=3), alpha=0.3)
-    .add(so.Line(color='blue', linewidth=2), so.Agg('mean'))
-    .add(so.Band(color='blue', alpha=0.2), so.Est(errorbar=('ci', 95)))
-    .facet(col='sensor', row='location')
-    .scale(
-        x=so.Temporal().label(concise=True),
-        y=so.Continuous().tick(every=10)
-    )
-    .label(
-        x='Date',
-        y='Measurement',
-        title='Sensor Measurements by Location'
-    )
-    .layout(size=(12, 8), engine='constrained')
+    so.Plot(df, x="date", y="value")
+    .add(so.Dot(color="gray", pointsize=3), alpha=0.3)
+    .add(so.Line(color="blue", linewidth=2), so.Agg("mean"))
+    .add(so.Band(color="blue", alpha=0.2), so.Est(errorbar=("ci", 95)))
+    .facet(col="sensor", row="location")
+    .scale(x=so.Temporal().label(concise=True), y=so.Continuous().tick(every=10))
+    .label(x="Date", y="Measurement", title="Sensor Measurements by Location")
+    .layout(size=(12, 8), engine="constrained")
 )
 ```
 
@@ -897,41 +904,38 @@ p.scale(x=so.Temporal().tick(every=('month', 1)).label(concise=True))
 
 **Function interface:**
 ```python
-sns.scatterplot(data=df, x='x', y='y', hue='category', size='value')
+sns.scatterplot(data=df, x="x", y="y", hue="category", size="value")
 ```
 
 **Objects interface:**
 ```python
-so.Plot(df, x='x', y='y', color='category', pointsize='value').add(so.Dot())
+so.Plot(df, x="x", y="y", color="category", pointsize="value").add(so.Dot())
 ```
 
 ### Line Plot with CI
 
 **Function interface:**
 ```python
-sns.lineplot(data=df, x='time', y='measurement', hue='group', errorbar='ci')
+sns.lineplot(data=df, x="time", y="measurement", hue="group", errorbar="ci")
 ```
 
 **Objects interface:**
 ```python
-(
-    so.Plot(df, x='time', y='measurement', color='group')
-    .add(so.Line(), so.Est())
-)
+(so.Plot(df, x="time", y="measurement", color="group").add(so.Line(), so.Est()))
 ```
 
 ### Histogram
 
 **Function interface:**
 ```python
-sns.histplot(data=df, x='value', hue='category', stat='density', kde=True)
+sns.histplot(data=df, x="value", hue="category", stat="density", kde=True)
 ```
 
 **Objects interface:**
 ```python
 (
-    so.Plot(df, x='value', color='category')
-    .add(so.Bars(), so.Hist(stat='density'))
+    so.Plot(df, x="value", color="category")
+    .add(so.Bars(), so.Hist(stat="density"))
     .add(so.Line(), so.KDE())
 )
 ```
@@ -940,13 +944,13 @@ sns.histplot(data=df, x='value', hue='category', stat='density', kde=True)
 
 **Function interface:**
 ```python
-sns.barplot(data=df, x='category', y='value', hue='group', errorbar='ci')
+sns.barplot(data=df, x="category", y="value", hue="group", errorbar="ci")
 ```
 
 **Objects interface:**
 ```python
 (
-    so.Plot(df, x='category', y='value', color='group')
+    so.Plot(df, x="category", y="value", color="group")
     .add(so.Bar(), so.Agg(), so.Dodge())
     .add(so.Range(), so.Est(), so.Dodge())
 )

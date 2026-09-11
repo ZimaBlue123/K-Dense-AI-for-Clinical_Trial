@@ -17,7 +17,8 @@
 import pennylane as qml
 import numpy as np
 
-dev = qml.device('default.qubit', wires=4)
+dev = qml.device("default.qubit", wires=4)
+
 
 @qml.qnode(dev)
 def quantum_layer(inputs, weights):
@@ -30,10 +31,11 @@ def quantum_layer(inputs, weights):
         qml.RX(weights[wire], wires=wire)
 
     for wire in range(3):
-        qml.CNOT(wires=[wire, wire+1])
+        qml.CNOT(wires=[wire, wire + 1])
 
     # Measure
     return [qml.expval(qml.PauliZ(i)) for i in range(4)]
+
 
 # Use in classical workflow
 inputs = np.array([0.1, 0.2, 0.3, 0.4])
@@ -46,13 +48,13 @@ output = quantum_layer(inputs, weights)
 ```python
 def hybrid_model(x, quantum_weights, classical_weights):
     # Classical preprocessing
-    x_preprocessed = np.tanh(classical_weights['pre'] @ x)
+    x_preprocessed = np.tanh(classical_weights["pre"] @ x)
 
     # Quantum layer
     quantum_out = quantum_layer(x_preprocessed, quantum_weights)
 
     # Classical postprocessing
-    output = classical_weights['post'] @ quantum_out
+    output = classical_weights["post"] @ quantum_out
 
     return output
 ```
@@ -65,9 +67,10 @@ def hybrid_model(x, quantum_weights, classical_weights):
 import torch
 import pennylane as qml
 
-dev = qml.device('default.qubit', wires=2)
+dev = qml.device("default.qubit", wires=2)
 
-@qml.qnode(dev, interface='torch')
+
+@qml.qnode(dev, interface="torch")
 def quantum_circuit(inputs, weights):
     qml.RY(inputs[0], wires=0)
     qml.RY(inputs[1], wires=1)
@@ -75,6 +78,7 @@ def quantum_circuit(inputs, weights):
     qml.RX(weights[1], wires=1)
     qml.CNOT(wires=[0, 1])
     return qml.expval(qml.PauliZ(0))
+
 
 # Create PyTorch layer
 class QuantumLayer(torch.nn.Module):
@@ -85,6 +89,7 @@ class QuantumLayer(torch.nn.Module):
 
     def forward(self, x):
         return torch.stack([quantum_circuit(xi, self.weights) for xi in x])
+
 
 # Use in PyTorch model
 class HybridModel(torch.nn.Module):
@@ -99,6 +104,7 @@ class HybridModel(torch.nn.Module):
         x = self.quantum(x)
         x = self.classical_2(x.unsqueeze(1))
         return x
+
 
 # Training loop
 model = HybridModel()
@@ -120,9 +126,10 @@ import jax
 import jax.numpy as jnp
 import pennylane as qml
 
-dev = qml.device('default.qubit', wires=2)
+dev = qml.device("default.qubit", wires=2)
 
-@qml.qnode(dev, interface='jax')
+
+@qml.qnode(dev, interface="jax")
 def quantum_circuit(inputs, weights):
     qml.RY(inputs[0], wires=0)
     qml.RY(inputs[1], wires=1)
@@ -131,11 +138,13 @@ def quantum_circuit(inputs, weights):
     qml.CNOT(wires=[0, 1])
     return qml.expval(qml.PauliZ(0))
 
+
 # JAX-compatible training
 @jax.jit
 def loss_fn(weights, x, y):
     predictions = quantum_circuit(x, weights)
     return jnp.mean((predictions - y) ** 2)
+
 
 # Compute gradients with JAX
 grad_fn = jax.grad(loss_fn)
@@ -153,9 +162,10 @@ for i in range(100):
 import tensorflow as tf
 import pennylane as qml
 
-dev = qml.device('default.qubit', wires=2)
+dev = qml.device("default.qubit", wires=2)
 
-@qml.qnode(dev, interface='tf')
+
+@qml.qnode(dev, interface="tf")
 def quantum_circuit(inputs, weights):
     qml.RY(inputs[0], wires=0)
     qml.RY(inputs[1], wires=1)
@@ -164,6 +174,7 @@ def quantum_circuit(inputs, weights):
     qml.CNOT(wires=[0, 1])
     return qml.expval(qml.PauliZ(0))
 
+
 # Keras layer
 class QuantumLayer(tf.keras.layers.Layer):
     def __init__(self, n_qubits):
@@ -171,24 +182,26 @@ class QuantumLayer(tf.keras.layers.Layer):
         self.n_qubits = n_qubits
         weight_init = tf.random_uniform_initializer()
         self.weights = tf.Variable(
-            initial_value=weight_init(shape=(n_qubits,), dtype=tf.float32),
-            trainable=True
+            initial_value=weight_init(shape=(n_qubits,), dtype=tf.float32), trainable=True
         )
 
     def call(self, inputs):
         return tf.stack([quantum_circuit(x, self.weights) for x in inputs])
 
+
 # Keras model
-model = tf.keras.Sequential([
-    tf.keras.layers.Dense(2, activation='relu'),
-    QuantumLayer(2),
-    tf.keras.layers.Dense(2, activation='softmax')
-])
+model = tf.keras.Sequential(
+    [
+        tf.keras.layers.Dense(2, activation="relu"),
+        QuantumLayer(2),
+        tf.keras.layers.Dense(2, activation="softmax"),
+    ]
+)
 
 model.compile(
     optimizer=tf.keras.optimizers.Adam(0.01),
-    loss='sparse_categorical_crossentropy',
-    metrics=['accuracy']
+    loss="sparse_categorical_crossentropy",
+    metrics=["accuracy"],
 )
 
 model.fit(x_train, y_train, epochs=100, batch_size=32)
@@ -201,7 +214,8 @@ model.fit(x_train, y_train, epochs=100, batch_size=32)
 ```python
 from pennylane import numpy as np
 
-dev = qml.device('default.qubit', wires=4)
+dev = qml.device("default.qubit", wires=4)
+
 
 def variational_block(weights, wires):
     """Single layer of variational circuit."""
@@ -209,8 +223,9 @@ def variational_block(weights, wires):
         qml.RY(weights[i, 0], wires=wire)
         qml.RZ(weights[i, 1], wires=wire)
 
-    for i in range(len(wires)-1):
-        qml.CNOT(wires=[wires[i], wires[i+1]])
+    for i in range(len(wires) - 1):
+        qml.CNOT(wires=[wires[i], wires[i + 1]])
+
 
 @qml.qnode(dev)
 def quantum_neural_network(inputs, weights):
@@ -224,6 +239,7 @@ def quantum_neural_network(inputs, weights):
         variational_block(layer_weights, wires=range(4))
 
     return qml.expval(qml.PauliZ(0))
+
 
 # Initialize weights
 n_layers = 3
@@ -244,8 +260,9 @@ def conv_layer(weights, wires):
         qml.RY(weights[i], wires=wires[i])
 
     # Nearest-neighbor entanglement
-    for i in range(0, n_wires-1, 2):
-        qml.CNOT(wires=[wires[i], wires[i+1]])
+    for i in range(0, n_wires - 1, 2):
+        qml.CNOT(wires=[wires[i], wires[i + 1]])
+
 
 def pooling_layer(wires):
     """Quantum pooling (measure and discard)."""
@@ -253,6 +270,7 @@ def pooling_layer(wires):
     for i in range(0, len(wires), 2):
         measurements.append(qml.measure(wires[i]))
     return measurements
+
 
 @qml.qnode(dev)
 def qcnn(inputs, weights):
@@ -275,6 +293,7 @@ def qcnn(inputs, weights):
 ```python
 def qrnn_cell(x, hidden, weights):
     """Single QRNN cell."""
+
     @qml.qnode(dev)
     def cell(x, h, w):
         # Encode input and hidden state
@@ -290,6 +309,7 @@ def qrnn_cell(x, hidden, weights):
         return qml.expval(qml.PauliZ(1))
 
     return cell(x, hidden, weights)
+
 
 def qrnn_sequence(sequence, weights):
     """Process sequence with QRNN."""
@@ -308,7 +328,8 @@ def qrnn_sequence(sequence, weights):
 ### Binary Classification
 
 ```python
-dev = qml.device('default.qubit', wires=2)
+dev = qml.device("default.qubit", wires=2)
+
 
 @qml.qnode(dev)
 def variational_classifier(x, weights):
@@ -326,11 +347,13 @@ def variational_classifier(x, weights):
 
     return qml.expval(qml.PauliZ(0))
 
+
 def cost_function(weights, X, y):
     """Binary cross-entropy loss."""
     predictions = np.array([variational_classifier(x, weights) for x in X])
     predictions = (predictions + 1) / 2  # Map [-1, 1] to [0, 1]
     return -np.mean(y * np.log(predictions) + (1 - y) * np.log(1 - predictions))
+
 
 # Training
 n_layers = 2
@@ -355,15 +378,17 @@ def multiclass_circuit(x, weights):
     for layer_weights in weights:
         for i, w in enumerate(layer_weights):
             qml.RY(w, wires=i)
-        for i in range(len(x)-1):
-            qml.CNOT(wires=[i, i+1])
+        for i in range(len(x) - 1):
+            qml.CNOT(wires=[i, i + 1])
 
     # Multiple outputs for classes
     return [qml.expval(qml.PauliZ(i)) for i in range(3)]
 
+
 def softmax(x):
     exp_x = np.exp(x - np.max(x))
     return exp_x / exp_x.sum()
+
 
 def predict_class(x, weights):
     logits = multiclass_circuit(x, weights)
@@ -376,19 +401,21 @@ def predict_class(x, weights):
 
 ```python
 # Automatic differentiation
-@qml.qnode(dev, diff_method='backprop')
+@qml.qnode(dev, diff_method="backprop")
 def circuit_backprop(x, weights):
     # ... circuit definition
     return qml.expval(qml.PauliZ(0))
 
+
 # Parameter shift rule
-@qml.qnode(dev, diff_method='parameter-shift')
+@qml.qnode(dev, diff_method="parameter-shift")
 def circuit_param_shift(x, weights):
     # ... circuit definition
     return qml.expval(qml.PauliZ(0))
 
+
 # Finite differences
-@qml.qnode(dev, diff_method='finite-diff')
+@qml.qnode(dev, diff_method="finite-diff")
 def circuit_finite_diff(x, weights):
     # ... circuit definition
     return qml.expval(qml.PauliZ(0))
@@ -401,14 +428,15 @@ def batch_cost(weights, X_batch, y_batch):
     predictions = np.array([variational_classifier(x, weights) for x in X_batch])
     return np.mean((predictions - y_batch) ** 2)
 
+
 # Mini-batch training
 batch_size = 32
 n_epochs = 100
 
 for epoch in range(n_epochs):
     for i in range(0, len(X_train), batch_size):
-        X_batch = X_train[i:i+batch_size]
-        y_batch = y_train[i:i+batch_size]
+        X_batch = X_train[i : i + batch_size]
+        y_batch = y_train[i : i + batch_size]
 
         weights = opt.step(lambda w: batch_cost(w, X_batch, y_batch), weights)
 ```
@@ -421,7 +449,7 @@ def train_with_schedule(weights, X, y, n_epochs):
     decay = 0.95
 
     for epoch in range(n_epochs):
-        lr = initial_lr * (decay ** epoch)
+        lr = initial_lr * (decay**epoch)
         opt = qml.GradientDescentOptimizer(stepsize=lr)
 
         weights = opt.step(lambda w: cost_function(w, X, y), weights)
@@ -477,8 +505,8 @@ def iqp_encoding(x, wires):
         qml.RZ(feature, wires=wires[i])
 
     # Entanglement
-    for i in range(len(wires)-1):
-        qml.IsingZZ(x[i] * x[i+1], wires=[wires[i], wires[i+1]])
+    for i in range(len(wires) - 1):
+        qml.IsingZZ(x[i] * x[i + 1], wires=[wires[i], wires[i + 1]])
 ```
 
 ### Hamiltonian Encoding
@@ -504,6 +532,7 @@ def hamiltonian_encoding(x, wires, time=1.0):
 # Train on large dataset
 pretrained_weights = train_quantum_model(large_dataset)
 
+
 # Fine-tune on specific task
 def fine_tune(pretrained_weights, small_dataset, n_epochs=50):
     # Freeze early layers
@@ -524,10 +553,7 @@ def fine_tune(pretrained_weights, small_dataset, n_epochs=50):
     # Train only last layer
     opt = qml.AdamOptimizer(stepsize=0.01)
     for epoch in range(n_epochs):
-        trainable_weights = opt.step(
-            lambda w: cost_function(w, small_dataset),
-            trainable_weights
-        )
+        trainable_weights = opt.step(lambda w: cost_function(w, small_dataset), trainable_weights)
 
     return np.concatenate([frozen_weights, trainable_weights])
 ```
@@ -543,8 +569,9 @@ classical_extractor = nn.Sequential(
     nn.ReLU(),
     nn.MaxPool2d(2),
     nn.Flatten(),
-    nn.Linear(16*13*13, 4)  # Output 4 features for quantum circuit
+    nn.Linear(16 * 13 * 13, 4),  # Output 4 features for quantum circuit
 )
+
 
 # Quantum classifier
 @qml.qnode(dev)
@@ -552,6 +579,7 @@ def quantum_classifier(features, weights):
     angle_encoding(features, wires=range(4))
     variational_block(weights, wires=range(4))
     return qml.expval(qml.PauliZ(0))
+
 
 # Combined model
 def hybrid_transfer_model(image, classical_weights, quantum_weights):

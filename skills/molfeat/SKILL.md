@@ -134,7 +134,7 @@ transformer = MoleculeTransformer(
     calc,
     n_jobs=-1,
     ignore_errors=True,  # Continue on failures
-    verbose=True          # Log error details
+    verbose=True,  # Log error details
 )
 
 features = transformer(smiles_with_errors)
@@ -161,10 +161,12 @@ FPCalculator("map4")
 ```python
 # RDKit 2D descriptors (200+ named properties)
 from molfeat.calc import RDKitDescriptors2D
+
 RDKitDescriptors2D()
 
 # Mordred (1800+ comprehensive descriptors)
 from molfeat.calc import MordredDescriptors
+
 MordredDescriptors()
 ```
 
@@ -172,10 +174,12 @@ MordredDescriptors()
 ```python
 from molfeat.trans import FeatConcat
 
-concat = FeatConcat([
-    FPCalculator("maccs"),      # 167 dimensions
-    FPCalculator("ecfp")         # 2048 dimensions
-])  # Result: 2215-dimensional combined features
+concat = FeatConcat(
+    [
+        FPCalculator("maccs"),  # 167 dimensions
+        FPCalculator("ecfp"),  # 2048 dimensions
+    ]
+)  # Result: 2215-dimensional combined features
 ```
 
 ### For Deep Learning
@@ -213,6 +217,7 @@ FPCalculator("map4")
 
 # USR/USRCAT - 3D shape similarity
 from molfeat.calc import USRDescriptors
+
 USRDescriptors()
 ```
 
@@ -224,6 +229,7 @@ FPCalculator("fcfp")
 
 # CATS - Pharmacophore pair distributions
 from molfeat.calc import CATSCalculator
+
 CATSCalculator(mode="2D")
 
 # Gobbi - Explicit pharmacophore features
@@ -298,10 +304,12 @@ from sklearn.pipeline import Pipeline
 from sklearn.ensemble import RandomForestClassifier
 
 # Create end-to-end pipeline
-pipeline = Pipeline([
-    ('featurizer', MoleculeTransformer(FPCalculator("ecfp"), n_jobs=-1)),
-    ('classifier', RandomForestClassifier(n_estimators=100))
-])
+pipeline = Pipeline(
+    [
+        ("featurizer", MoleculeTransformer(FPCalculator("ecfp"), n_jobs=-1)),
+        ("classifier", RandomForestClassifier(n_estimators=100)),
+    ]
+)
 
 # Train and predict directly on SMILES
 pipeline.fit(smiles_train, y_train)
@@ -312,10 +320,10 @@ predictions = pipeline.predict(smiles_test)
 
 ```python
 featurizers = {
-    'ECFP': FPCalculator("ecfp"),
-    'MACCS': FPCalculator("maccs"),
-    'Descriptors': RDKitDescriptors2D(),
-    'ChemBERTa': PretrainedMolTransformer("ChemBERTa-77M-MLM")
+    "ECFP": FPCalculator("ecfp"),
+    "MACCS": FPCalculator("maccs"),
+    "Descriptors": RDKitDescriptors2D(),
+    "ChemBERTa": PretrainedMolTransformer("ChemBERTa-77M-MLM"),
 }
 
 results = {}
@@ -367,6 +375,7 @@ class CustomTransformer(MoleculeTransformer):
         mol = dm.remove_salts(mol)
         return mol
 
+
 transformer = CustomTransformer(FPCalculator("ecfp"), n_jobs=-1)
 ```
 
@@ -377,7 +386,7 @@ def featurize_in_chunks(smiles_list, transformer, chunk_size=10000):
     """Process large datasets in chunks to manage memory"""
     all_features = []
     for i in range(0, len(smiles_list), chunk_size):
-        chunk = smiles_list[i:i+chunk_size]
+        chunk = smiles_list[i : i + chunk_size]
         features = transformer(chunk)
         all_features.append(features)
     return np.vstack(all_features)
@@ -475,11 +484,7 @@ Practical code examples for common scenarios:
 ### Invalid Molecules
 Enable error handling to skip invalid SMILES:
 ```python
-transformer = MoleculeTransformer(
-    calc,
-    ignore_errors=True,
-    verbose=True
-)
+transformer = MoleculeTransformer(calc, ignore_errors=True, verbose=True)
 ```
 
 ### Memory Issues with Large Datasets
@@ -497,6 +502,7 @@ Save exact configurations and document versions:
 ```python
 transformer.to_state_yaml_file("config.yml")
 import molfeat
+
 print(f"molfeat version: {molfeat.__version__}")
 ```
 

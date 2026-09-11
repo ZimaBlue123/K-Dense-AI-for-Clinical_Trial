@@ -99,12 +99,12 @@ Common formats include:
 `SeqRecord` objects combine sequence data with annotations:
 
 ```python
-record.id          # Primary identifier
-record.name        # Short name
-record.description # Description line
-record.seq         # The actual sequence (Seq object)
-record.annotations # Dictionary of additional info
-record.features    # List of SeqFeature objects
+record.id  # Primary identifier
+record.name  # Short name
+record.description  # Description line
+record.seq  # The actual sequence (Seq object)
+record.annotations  # Dictionary of additional info
+record.features  # List of SeqFeature objects
 record.letter_annotations  # Per-letter annotations (e.g., quality scores)
 ```
 
@@ -191,6 +191,7 @@ for record in SeqIO.parse("sequences.fasta.gz", "fasta"):
 
 # BGZF format for random access
 from Bio import bgzf
+
 with bgzf.open("sequences.fasta.bgz", "r") as handle:
     records = SeqIO.parse(handle, "fasta")
 ```
@@ -204,8 +205,7 @@ with bgzf.open("sequences.fasta.bgz", "r") as handle:
 ids = [record.id for record in SeqIO.parse("file.fasta", "fasta")]
 
 # Get sequences above length threshold
-long_seqs = [record for record in SeqIO.parse("file.fasta", "fasta")
-             if len(record.seq) > 500]
+long_seqs = [record for record in SeqIO.parse("file.fasta", "fasta") if len(record.seq) > 500]
 
 # Extract organism from GenBank
 for record in SeqIO.parse("file.gbk", "genbank"):
@@ -217,8 +217,7 @@ for record in SeqIO.parse("file.gbk", "genbank"):
 
 ```python
 # Filter sequences by criteria
-long_sequences = (record for record in SeqIO.parse("input.fasta", "fasta")
-                  if len(record) > 500)
+long_sequences = (record for record in SeqIO.parse("input.fasta", "fasta") if len(record) > 500)
 SeqIO.write(long_sequences, "filtered.fasta", "fasta")
 ```
 
@@ -251,8 +250,11 @@ for fmt in ["fasta", "genbank", "embl"]:
 ```python
 from Bio import SeqIO
 
-good_reads = (record for record in SeqIO.parse("reads.fastq", "fastq")
-              if min(record.letter_annotations["phred_quality"]) >= 20)
+good_reads = (
+    record
+    for record in SeqIO.parse("reads.fastq", "fastq")
+    if min(record.letter_annotations["phred_quality"]) >= 20
+)
 count = SeqIO.write(good_reads, "filtered.fastq", "fastq")
 ```
 
@@ -274,10 +276,7 @@ from Bio.SeqRecord import SeqRecord
 
 # Create a new record
 new_record = SeqRecord(
-    Seq("ATGCGATCGATCG"),
-    id="seq001",
-    name="MySequence",
-    description="Test sequence"
+    Seq("ATGCGATCGATCG"), id="seq001", name="MySequence", description="Test sequence"
 )
 
 # Write to file

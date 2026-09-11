@@ -54,15 +54,18 @@ from torchdrug import core, models, tasks, datasets
 dataset = datasets.BBBP("~/molecule-datasets/")
 
 # Define model
-model = models.GIN(input_dim=dataset.node_feature_dim,
-                   hidden_dims=[256, 256, 256, 256],
-                   edge_input_dim=dataset.edge_feature_dim,
-                   batch_norm=True, readout="mean")
+model = models.GIN(
+    input_dim=dataset.node_feature_dim,
+    hidden_dims=[256, 256, 256, 256],
+    edge_input_dim=dataset.edge_feature_dim,
+    batch_norm=True,
+    readout="mean",
+)
 
 # Define task
-task = tasks.PropertyPrediction(model, task=dataset.tasks,
-                                 criterion="bce",
-                                 metric=("auprc", "auroc"))
+task = tasks.PropertyPrediction(
+    model, task=dataset.tasks, criterion="bce", metric=("auprc", "auroc")
+)
 ```
 
 ### MultipleBinaryClassification
@@ -124,8 +127,7 @@ from torchdrug import data, transforms
 
 # Add custom features
 transform = transforms.VirtualNode()  # Add virtual node
-dataset = datasets.BBBP("~/molecule-datasets/",
-                        transform=transform)
+dataset = datasets.BBBP("~/molecule-datasets/", transform=transform)
 ```
 
 ## Training Workflow

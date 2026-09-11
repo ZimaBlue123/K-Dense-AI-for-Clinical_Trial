@@ -124,6 +124,7 @@ Callbacks enable monitoring metrics, saving checkpoints, implementing early stop
 ```python
 from stable_baselines3.common.callbacks import BaseCallback
 
+
 class CustomCallback(BaseCallback):
     def _on_training_start(self):
         # Called before first rollout
@@ -189,12 +190,7 @@ state_dict = model.policy.state_dict()
 ```python
 from stable_baselines3.common.evaluation import evaluate_policy
 
-mean_reward, std_reward = evaluate_policy(
-    model,
-    env,
-    n_eval_episodes=10,
-    deterministic=True
-)
+mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=10, deterministic=True)
 ```
 
 **Video Recording:**
@@ -203,10 +199,7 @@ from stable_baselines3.common.vec_env import VecVideoRecorder
 
 # Wrap environment with video recorder
 env = VecVideoRecorder(
-    env,
-    "videos/",
-    record_video_trigger=lambda x: x % 2000 == 0,
-    video_length=200
+    env, "videos/", record_video_trigger=lambda x: x % 2000 == 0, video_length=200
 )
 ```
 
@@ -220,7 +213,9 @@ def linear_schedule(initial_value):
     def func(progress_remaining):
         # progress_remaining goes from 1 to 0
         return progress_remaining * initial_value
+
     return func
+
 
 model = PPO("MlpPolicy", env, learning_rate=linear_schedule(0.001))
 ```

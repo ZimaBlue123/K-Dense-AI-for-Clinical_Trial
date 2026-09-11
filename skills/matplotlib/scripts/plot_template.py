@@ -246,9 +246,7 @@ def create_contour_plot(data, ax=None):
         fig, ax = plt.subplots(figsize=(10, 8), constrained_layout=True)
 
     # Filled contours
-    contourf = ax.contourf(
-        data["X"], data["Y"], data["Z"], levels=20, cmap="viridis", alpha=0.8
-    )
+    contourf = ax.contourf(data["X"], data["Y"], data["Z"], levels=20, cmap="viridis", alpha=0.8)
 
     # Contour lines
     contour = ax.contour(
@@ -314,9 +312,7 @@ def create_violin_plot(data, ax=None):
     # Generate multiple distributions
     violin_data = [np.random.normal(0, std, 100) for std in range(1, 5)]
 
-    parts = ax.violinplot(
-        violin_data, positions=range(1, 5), showmeans=True, showmedians=True
-    )
+    parts = ax.violinplot(violin_data, positions=range(1, 5), showmeans=True, showmedians=True)
 
     # Customize colors
     for pc in parts["bodies"]:
@@ -421,12 +417,8 @@ def main():
         ],
         help="Type of plot to create",
     )
-    parser.add_argument(
-        "--style", type=str, default="default", help="Matplotlib style to use"
-    )
-    parser.add_argument(
-        "--output", type=str, default="plot.png", help="Output filename"
-    )
+    parser.add_argument("--style", type=str, default="default", help="Matplotlib style to use")
+    parser.add_argument("--output", type=str, default="plot.png", help="Output filename")
 
     args = parser.parse_args()
 

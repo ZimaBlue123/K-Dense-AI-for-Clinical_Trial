@@ -237,6 +237,7 @@ To ensure reproducibility in analyses:
 2. **Document gget version:**
    ```python
    import gget
+
    print(gget.__version__)
    ```
 

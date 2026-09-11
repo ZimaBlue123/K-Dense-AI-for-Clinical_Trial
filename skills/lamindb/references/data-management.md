@@ -35,6 +35,7 @@ sample_a = records.sample_a
 
 # Works with biological ontologies too
 import bionty as bt
+
 cell_types = bt.CellType.lookup()
 t_cell = cell_types.t_cell
 ```
@@ -80,16 +81,13 @@ artifacts = ln.Artifact.filter(suffix=".h5ad")
 artifacts.to_dataframe()
 
 # Multiple conditions (AND logic)
-artifacts = ln.Artifact.filter(
-    suffix=".h5ad",
-    created_by=user
-)
+artifacts = ln.Artifact.filter(suffix=".h5ad", created_by=user)
 
 # Comparison operators
-ln.Artifact.filter(size__gt=1e6).to_dataframe()           # Greater than
-ln.Artifact.filter(size__gte=1e6).to_dataframe()          # Greater than or equal
-ln.Artifact.filter(size__lt=1e9).to_dataframe()           # Less than
-ln.Artifact.filter(size__lte=1e9).to_dataframe()          # Less than or equal
+ln.Artifact.filter(size__gt=1e6).to_dataframe()  # Greater than
+ln.Artifact.filter(size__gte=1e6).to_dataframe()  # Greater than or equal
+ln.Artifact.filter(size__lt=1e9).to_dataframe()  # Less than
+ln.Artifact.filter(size__lte=1e9).to_dataframe()  # Less than or equal
 
 # Range queries
 ln.Artifact.filter(size__gte=1e6, size__lte=1e9).to_dataframe()
@@ -135,7 +133,7 @@ ln.Artifact.filter(study_metadata__detail1="123").to_dataframe()
 
 # Check annotation status
 ln.Artifact.filter(cell_type__isnull=False).to_dataframe()  # Has annotation
-ln.Artifact.filter(treatment__isnull=True).to_dataframe()    # Missing annotation
+ln.Artifact.filter(treatment__isnull=True).to_dataframe()  # Missing annotation
 ```
 
 ## Traversing Related Registries
@@ -184,9 +182,7 @@ ln.Artifact.order_by("-created_at", "size").to_dataframe()
 from lamindb import Q
 
 # OR condition
-artifacts = ln.Artifact.filter(
-    Q(suffix=".jpg") | Q(suffix=".png")
-).to_dataframe()
+artifacts = ln.Artifact.filter(Q(suffix=".jpg") | Q(suffix=".png")).to_dataframe()
 
 # Complex OR with multiple conditions
 artifacts = ln.Artifact.filter(
@@ -198,14 +194,10 @@ artifacts = ln.Artifact.filter(
 
 ```python
 # Exclude condition
-artifacts = ln.Artifact.filter(
-    ~Q(suffix=".tmp")
-).to_dataframe()
+artifacts = ln.Artifact.filter(~Q(suffix=".tmp")).to_dataframe()
 
 # Complex exclusion
-artifacts = ln.Artifact.filter(
-    ~Q(created_by__handle="testuser")
-).to_dataframe()
+artifacts = ln.Artifact.filter(~Q(created_by__handle="testuser")).to_dataframe()
 ```
 
 ### Combining AND, OR, NOT
@@ -213,9 +205,9 @@ artifacts = ln.Artifact.filter(
 ```python
 # Complex query
 artifacts = ln.Artifact.filter(
-    (Q(suffix=".h5ad") | Q(suffix=".csv")) &
-    Q(size__gt=1e6) &
-    ~Q(created_by__handle__startswith="test")
+    (Q(suffix=".h5ad") | Q(suffix=".csv"))
+    & Q(size__gt=1e6)
+    & ~Q(created_by__handle__startswith="test")
 ).to_dataframe()
 ```
 
@@ -242,10 +234,10 @@ QuerySets are lazy - they don't hit the database until evaluated:
 qs = ln.Artifact.filter(suffix=".h5ad")
 
 # Evaluate in different ways
-df = qs.to_dataframe()        # As pandas DataFrame
-list_records = list(qs)       # As Python list
-count = qs.count()            # Count only
-exists = qs.exists()          # Boolean check
+df = qs.to_dataframe()  # As pandas DataFrame
+list_records = list(qs)  # As Python list
+count = qs.count()  # Count only
+exists = qs.exists()  # Boolean check
 
 # Iteration
 for artifact in qs:
@@ -300,7 +292,7 @@ genes_of_interest = adata[:, ["CD4", "CD8A", "CD8B"]]
 
 # Stream batches
 for i in range(0, adata.n_obs, 1000):
-    batch = adata[i:i+1000, :]
+    batch = adata[i : i + 1000, :]
     # Process batch
 ```
 
@@ -381,7 +373,7 @@ Group related artifacts into collections:
 collection = ln.Collection(
     [artifact1, artifact2, artifact3],
     name="scRNA-seq batch 1-3",
-    description="Complete dataset across three batches"
+    description="Complete dataset across three batches",
 ).save()
 
 # Access collection members
@@ -420,14 +412,9 @@ ln.Artifact.filter(size__gt=1e9).order_by("-size").to_dataframe()
 
 # This month's data
 from datetime import datetime
-ln.Artifact.filter(
-    created_at__year=2025,
-    created_at__month=10
-).to_dataframe()
+
+ln.Artifact.filter(created_at__year=2025, created_at__month=10).to_dataframe()
 
 # Validated datasets with specific features
-ln.Artifact.filter(
-    is_valid=True,
-    cell_type__isnull=False
-).to_dataframe(include="features")
+ln.Artifact.filter(is_valid=True, cell_type__isnull=False).to_dataframe(include="features")
 ```

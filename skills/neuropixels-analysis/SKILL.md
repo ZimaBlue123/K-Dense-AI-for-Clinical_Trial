@@ -48,20 +48,20 @@ import spikeinterface.full as si
 import neuropixels_analysis as npa
 
 # Configure parallel processing
-job_kwargs = dict(n_jobs=-1, chunk_duration='1s', progress_bar=True)
+job_kwargs = dict(n_jobs=-1, chunk_duration="1s", progress_bar=True)
 ```
 
 ### Loading Data
 
 ```python
 # SpikeGLX (most common)
-recording = si.read_spikeglx('/path/to/data', stream_id='imec0.ap')
+recording = si.read_spikeglx("/path/to/data", stream_id="imec0.ap")
 
 # Open Ephys (common for many labs)
-recording = si.read_openephys('/path/to/Record_Node_101/')
+recording = si.read_openephys("/path/to/Record_Node_101/")
 
 # Check available streams
-streams, ids = si.get_neo_streams('spikeglx', '/path/to/data')
+streams, ids = si.get_neo_streams("spikeglx", "/path/to/data")
 print(streams)  # ['imec0.ap', 'imec0.lf', 'nidq']
 
 # For testing with subset of data
@@ -74,15 +74,15 @@ recording = recording.frame_slice(0, int(60 * recording.get_sampling_frequency()
 # Run full analysis pipeline
 results = npa.run_pipeline(
     recording,
-    output_dir='output/',
-    sorter='kilosort4',
-    curation_method='allen',
+    output_dir="output/",
+    sorter="kilosort4",
+    curation_method="allen",
 )
 
 # Access results
-sorting = results['sorting']
-metrics = results['metrics']
-labels = results['labels']
+sorting = results["sorting"]
+metrics = results["metrics"]
+labels = results["labels"]
 ```
 
 ## Standard Analysis Workflow
@@ -95,7 +95,7 @@ rec = si.highpass_filter(recording, freq_min=400)
 rec = si.phase_shift(rec)  # Required for Neuropixels 1.0
 bad_ids, _ = si.detect_bad_channels(rec)
 rec = rec.remove_channels(bad_ids)
-rec = si.common_reference(rec, operator='median')
+rec = si.common_reference(rec, operator="median")
 
 # Or use our wrapper
 rec = npa.preprocess(recording)
@@ -105,24 +105,24 @@ rec = npa.preprocess(recording)
 
 ```python
 # Check for drift (always do this!)
-motion_info = npa.estimate_motion(rec, preset='kilosort_like')
-npa.plot_drift(rec, motion_info, output='drift_map.png')
+motion_info = npa.estimate_motion(rec, preset="kilosort_like")
+npa.plot_drift(rec, motion_info, output="drift_map.png")
 
 # Apply correction if needed
-if motion_info['motion'].max() > 10:  # microns
-    rec = npa.correct_motion(rec, preset='nonrigid_accurate')
+if motion_info["motion"].max() > 10:  # microns
+    rec = npa.correct_motion(rec, preset="nonrigid_accurate")
 ```
 
 ### 3. Spike Sorting
 
 ```python
 # Kilosort4 (recommended, requires GPU)
-sorting = si.run_sorter('kilosort4', rec, folder='ks4_output')
+sorting = si.run_sorter("kilosort4", rec, folder="ks4_output")
 
 # CPU alternatives
-sorting = si.run_sorter('tridesclous2', rec, folder='tdc2_output')
-sorting = si.run_sorter('spykingcircus2', rec, folder='sc2_output')
-sorting = si.run_sorter('mountainsort5', rec, folder='ms5_output')
+sorting = si.run_sorter("tridesclous2", rec, folder="tdc2_output")
+sorting = si.run_sorter("spykingcircus2", rec, folder="sc2_output")
+sorting = si.run_sorter("mountainsort5", rec, folder="ms5_output")
 
 # Check available sorters
 print(si.installed_sorters())
@@ -134,15 +134,15 @@ print(si.installed_sorters())
 # Create analyzer and compute all extensions
 analyzer = si.create_sorting_analyzer(sorting, rec, sparse=True)
 
-analyzer.compute('random_spikes', max_spikes_per_unit=500)
-analyzer.compute('waveforms', ms_before=1.0, ms_after=2.0)
-analyzer.compute('templates', operators=['average', 'std'])
-analyzer.compute('spike_amplitudes')
-analyzer.compute('correlograms', window_ms=50.0, bin_ms=1.0)
-analyzer.compute('unit_locations', method='monopolar_triangulation')
-analyzer.compute('quality_metrics')
+analyzer.compute("random_spikes", max_spikes_per_unit=500)
+analyzer.compute("waveforms", ms_before=1.0, ms_after=2.0)
+analyzer.compute("templates", operators=["average", "std"])
+analyzer.compute("spike_amplitudes")
+analyzer.compute("correlograms", window_ms=50.0, bin_ms=1.0)
+analyzer.compute("unit_locations", method="monopolar_triangulation")
+analyzer.compute("quality_metrics")
 
-metrics = analyzer.get_extension('quality_metrics').get_data()
+metrics = analyzer.get_extension("quality_metrics").get_data()
 ```
 
 ### 5. Curation
@@ -156,7 +156,7 @@ good_units = metrics.query("""
 """).index.tolist()
 
 # Or use automated curation
-labels = npa.curate(metrics, method='allen')  # 'allen', 'ibl', 'strict'
+labels = npa.curate(metrics, method="allen")  # 'allen', 'ibl', 'strict'
 ```
 
 ### 6. AI-Assisted Curation (For Uncertain Units)
@@ -170,7 +170,7 @@ from anthropic import Anthropic
 client = Anthropic()
 
 # Analyze uncertain units visually
-uncertain = metrics.query('snr > 3 and snr < 8').index.tolist()
+uncertain = metrics.query("snr > 3 and snr < 8").index.tolist()
 
 for unit_id in uncertain:
     result = npa.analyze_unit_visually(analyzer, unit_id, api_client=client)
@@ -184,7 +184,7 @@ for unit_id in uncertain:
 
 ```python
 # Generate comprehensive HTML report with visualizations
-report_dir = npa.generate_analysis_report(results, 'output/')
+report_dir = npa.generate_analysis_report(results, "output/")
 # Opens report.html with summary stats, figures, and unit table
 
 # Print formatted summary to console
@@ -195,15 +195,17 @@ npa.print_analysis_summary(results)
 
 ```python
 # Export to Phy for manual review
-si.export_to_phy(analyzer, output_folder='phy_export/',
-                 compute_pc_features=True, compute_amplitudes=True)
+si.export_to_phy(
+    analyzer, output_folder="phy_export/", compute_pc_features=True, compute_amplitudes=True
+)
 
 # Export to NWB
 from spikeinterface.exporters import export_to_nwb
-export_to_nwb(rec, sorting, 'output.nwb')
+
+export_to_nwb(rec, sorting, "output.nwb")
 
 # Save quality metrics
-metrics.to_csv('quality_metrics.csv')
+metrics.to_csv("quality_metrics.csv")
 ```
 
 ## Common Pitfalls and Best Practices

@@ -39,13 +39,9 @@ class GCN(torch.nn.Module):
 
 
 class GAT(torch.nn.Module):
-    def __init__(
-        self, num_features, hidden_channels, num_classes, heads=8, dropout=0.6
-    ):
+    def __init__(self, num_features, hidden_channels, num_classes, heads=8, dropout=0.6):
         super().__init__()
-        self.conv1 = GATConv(
-            num_features, hidden_channels, heads=heads, dropout=dropout
-        )
+        self.conv1 = GATConv(num_features, hidden_channels, heads=heads, dropout=dropout)
         self.conv2 = GATConv(
             hidden_channels * heads, num_classes, heads=1, concat=False, dropout=dropout
         )
@@ -143,9 +139,7 @@ def test_graph_classification(model, loader, device):
     return correct / len(loader.dataset)
 
 
-def benchmark_node_classification(
-    model_name, dataset_name, epochs, lr, weight_decay, device
-):
+def benchmark_node_classification(model_name, dataset_name, epochs, lr, weight_decay, device):
     """Benchmark a model on node classification."""
     # Load dataset
     dataset = Planetoid(root=f"/tmp/{dataset_name}", name=dataset_name)
@@ -267,18 +261,12 @@ def run_benchmark(args):
                         args.weight_decay,
                         device,
                     )
-                    print(
-                        f"Test Acc: {result['test_acc']:.4f}, "
-                        f"Time: {result['train_time']:.2f}s"
-                    )
+                    print(f"Test Acc: {result['test_acc']:.4f}, Time: {result['train_time']:.2f}s")
                 else:
                     result = benchmark_graph_classification(
                         model_name, args.dataset, args.epochs, args.lr, device
                     )
-                    print(
-                        f"Test Acc: {result['test_acc']:.4f}, "
-                        f"Time: {result['train_time']:.2f}s"
-                    )
+                    print(f"Test Acc: {result['test_acc']:.4f}, Time: {result['train_time']:.2f}s")
 
                 results[model_name].append(result)
             except Exception as e:
@@ -315,12 +303,8 @@ def main():
         default="Cora",
         help="Dataset name (Cora, CiteSeer, PubMed, ENZYMES, PROTEINS)",
     )
-    parser.add_argument(
-        "--epochs", type=int, default=200, help="Number of training epochs"
-    )
-    parser.add_argument(
-        "--runs", type=int, default=5, help="Number of runs to average over"
-    )
+    parser.add_argument("--epochs", type=int, default=200, help="Number of training epochs")
+    parser.add_argument("--runs", type=int, default=5, help="Number of runs to average over")
     parser.add_argument("--lr", type=float, default=0.01, help="Learning rate")
     parser.add_argument(
         "--weight-decay",

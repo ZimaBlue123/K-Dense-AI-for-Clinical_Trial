@@ -20,10 +20,7 @@ pip install tensorboard
 from lightning.pytorch import loggers as pl_loggers
 
 tb_logger = pl_loggers.TensorBoardLogger(
-    save_dir="logs/",
-    name="my_model",
-    version="version_1",
-    default_hp_metric=False
+    save_dir="logs/", name="my_model", version="version_1", default_hp_metric=False
 )
 
 trainer = L.Trainer(logger=tb_logger)
@@ -51,7 +48,7 @@ wandb_logger = pl_loggers.WandbLogger(
     project="my-project",
     name="experiment-1",
     save_dir="logs/",
-    log_model=True  # Log model checkpoints to W&B
+    log_model=True,  # Log model checkpoints to W&B
 )
 
 trainer = L.Trainer(logger=wandb_logger)
@@ -78,9 +75,7 @@ pip install mlflow
 from lightning.pytorch import loggers as pl_loggers
 
 mlflow_logger = pl_loggers.MLFlowLogger(
-    experiment_name="my_experiment",
-    tracking_uri="http://localhost:5000",
-    run_name="run_1"
+    experiment_name="my_experiment", tracking_uri="http://localhost:5000", run_name="run_1"
 )
 
 trainer = L.Trainer(logger=mlflow_logger)
@@ -100,9 +95,7 @@ pip install comet-ml
 from lightning.pytorch import loggers as pl_loggers
 
 comet_logger = pl_loggers.CometLogger(
-    api_key="YOUR_API_KEY",
-    project_name="my-project",
-    experiment_name="experiment-1"
+    api_key="YOUR_API_KEY", project_name="my-project", experiment_name="experiment-1"
 )
 
 trainer = L.Trainer(logger=comet_logger)
@@ -122,9 +115,7 @@ pip install neptune
 from lightning.pytorch import loggers as pl_loggers
 
 neptune_logger = pl_loggers.NeptuneLogger(
-    api_key="YOUR_API_KEY",
-    project="username/project-name",
-    name="experiment-1"
+    api_key="YOUR_API_KEY", project="username/project-name", name="experiment-1"
 )
 
 trainer = L.Trainer(logger=neptune_logger)
@@ -138,11 +129,7 @@ Log to local file system in YAML and CSV format.
 ```python
 from lightning.pytorch import loggers as pl_loggers
 
-csv_logger = pl_loggers.CSVLogger(
-    save_dir="logs/",
-    name="my_model",
-    version="1"
-)
+csv_logger = pl_loggers.CSVLogger(save_dir="logs/", name="my_model", version="1")
 
 trainer = L.Trainer(logger=csv_logger)
 ```
@@ -242,6 +229,7 @@ def training_step(self, batch, batch_idx):
 
     return loss
 
+
 def validation_step(self, batch, batch_idx):
     loss = self.compute_loss(batch)
     acc = self.compute_accuracy(batch)
@@ -259,11 +247,7 @@ Use `log_dict()` to log multiple metrics at once:
 def training_step(self, batch, batch_idx):
     loss, acc, f1 = self.compute_metrics(batch)
 
-    metrics = {
-        "train_loss": loss,
-        "train_acc": acc,
-        "train_f1": f1
-    }
+    metrics = {"train_loss": loss, "train_acc": acc, "train_f1": f1}
 
     self.log_dict(metrics, on_step=True, on_epoch=True)
 
@@ -293,11 +277,9 @@ class MyModel(L.LightningModule):
         super().__init__()
         self.save_hyperparameters()
 
+
 # Or manually with logger
-trainer.logger.log_hyperparams({
-    "learning_rate": 0.001,
-    "batch_size": 32
-})
+trainer.logger.log_hyperparams({"learning_rate": 0.001, "batch_size": 32})
 ```
 
 ## Logging Frequency
@@ -329,6 +311,7 @@ trainer = L.Trainer(logger=[tb_logger, wandb_logger, csv_logger])
 ```python
 import torchvision
 
+
 def validation_step(self, batch, batch_idx):
     x, y = batch
     y_hat = self.model(x)
@@ -344,9 +327,8 @@ def validation_step(self, batch, batch_idx):
         # Log to Wandb
         if isinstance(self.logger, pl_loggers.WandbLogger):
             import wandb
-            self.logger.experiment.log({
-                "val_images": [wandb.Image(img) for img in x[:8]]
-            })
+
+            self.logger.experiment.log({"val_images": [wandb.Image(img) for img in x[:8]]})
 ```
 
 ### Logging Histograms
@@ -358,9 +340,7 @@ def on_train_epoch_end(self):
         self.logger.experiment.add_histogram(name, param, self.current_epoch)
 
         if param.grad is not None:
-            self.logger.experiment.add_histogram(
-                f"{name}_grad", param.grad, self.current_epoch
-            )
+            self.logger.experiment.add_histogram(f"{name}_grad", param.grad, self.current_epoch)
 ```
 
 ### Logging Model Graph
@@ -376,6 +356,7 @@ def on_train_start(self):
 
 ```python
 import matplotlib.pyplot as plt
+
 
 def on_validation_epoch_end(self):
     # Create custom plot
@@ -399,9 +380,7 @@ def validation_step(self, batch, batch_idx):
 
     # Log to TensorBoard
     self.logger.experiment.add_text(
-        "predictions",
-        f"Batch {batch_idx}: {predictions}",
-        self.current_epoch
+        "predictions", f"Batch {batch_idx}: {predictions}", self.current_epoch
     )
 ```
 
@@ -413,10 +392,7 @@ def validation_step(self, batch, batch_idx):
 
     # Log to TensorBoard (audio is tensor of shape [1, samples])
     self.logger.experiment.add_audio(
-        "generated_audio",
-        audio,
-        self.current_epoch,
-        sample_rate=22050
+        "generated_audio", audio, self.current_epoch, sample_rate=22050
     )
 ```
 
@@ -448,6 +424,7 @@ Create a custom logger by inheriting from `Logger`:
 ```python
 from lightning.pytorch.loggers import Logger
 from lightning.pytorch.utilities import rank_zero_only
+
 
 class MyCustomLogger(Logger):
     def __init__(self, save_dir):
@@ -483,6 +460,7 @@ class MyCustomLogger(Logger):
     def finalize(self, status):
         # Cleanup when training ends
         pass
+
 
 # Usage
 custom_logger = MyCustomLogger(save_dir="logs/")
@@ -525,7 +503,7 @@ trainer = L.Trainer(callbacks=[LearningRateMonitor(logging_interval="step")])
 ```python
 def on_after_backward(self):
     # Monitor gradient flow
-    grad_norm = torch.nn.utils.clip_grad_norm_(self.parameters(), max_norm=float('inf'))
+    grad_norm = torch.nn.utils.clip_grad_norm_(self.parameters(), max_norm=float("inf"))
     self.log("grad_norm", grad_norm)
 ```
 
@@ -571,6 +549,7 @@ def training_step(self, batch, batch_idx):
 
     return loss
 
+
 def validation_step(self, batch, batch_idx):
     loss, metrics = self.compute_loss_and_metrics(batch)
 
@@ -604,11 +583,13 @@ def training_step(self, batch, batch_idx):
     total_loss = loss_task1 + loss_task2
 
     # Log per-task metrics
-    self.log_dict({
-        "train/loss_task1": loss_task1,
-        "train/loss_task2": loss_task2,
-        "train/loss_total": total_loss
-    })
+    self.log_dict(
+        {
+            "train/loss_task1": loss_task1,
+            "train/loss_task2": loss_task2,
+            "train/loss_total": total_loss,
+        }
+    )
 
     return total_loss
 ```
@@ -623,6 +604,7 @@ If you get "metric not found" errors with schedulers:
 # Make sure metric is logged with logger=True
 self.log("val_loss", loss, logger=True)
 
+
 # And configure scheduler to monitor it
 def configure_optimizers(self):
     optimizer = torch.optim.Adam(self.parameters())
@@ -631,8 +613,8 @@ def configure_optimizers(self):
         "optimizer": optimizer,
         "lr_scheduler": {
             "scheduler": scheduler,
-            "monitor": "val_loss"  # Must match logged metric name
-        }
+            "monitor": "val_loss",  # Must match logged metric name
+        },
     }
 ```
 
@@ -649,6 +631,6 @@ self.log("val_acc", acc, sync_dist=True)
 # Ensure logger has write permissions
 trainer = L.Trainer(
     logger=pl_loggers.TensorBoardLogger("logs/"),
-    default_root_dir="outputs/"  # Ensure directory exists and is writable
+    default_root_dir="outputs/",  # Ensure directory exists and is writable
 )
 ```

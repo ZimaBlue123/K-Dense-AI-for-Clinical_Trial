@@ -8,7 +8,7 @@ Complete reference for molecular descriptors available in RDKit's `Descriptors` 
 from rdkit import Chem
 from rdkit.Chem import Descriptors
 
-mol = Chem.MolFromSmiles('CCO')
+mol = Chem.MolFromSmiles("CCO")
 
 # Calculate individual descriptor
 mw = Descriptors.MolWt(mol)
@@ -485,7 +485,7 @@ Integer descriptors counting various molecular features.
 ```python
 # Access via CalcMolDescriptors
 desc = Descriptors.CalcMolDescriptors(mol)
-mqns = {k: v for k, v in desc.items() if k.startswith('mqn')}
+mqns = {k: v for k, v in desc.items() if k.startswith("mqn")}
 ```
 
 ## QED
@@ -517,17 +517,18 @@ Calculate all descriptors at once:
 from rdkit import Chem
 from rdkit.Chem import Descriptors
 
-mol = Chem.MolFromSmiles('CCO')
+mol = Chem.MolFromSmiles("CCO")
 
 # Get all descriptors as dictionary
 all_descriptors = Descriptors.CalcMolDescriptors(mol)
 
 # Access specific descriptor
-mw = all_descriptors['MolWt']
-logp = all_descriptors['MolLogP']
+mw = all_descriptors["MolWt"]
+logp = all_descriptors["MolLogP"]
 
 # Get list of available descriptor names
 from rdkit.Chem import Descriptors
+
 descriptor_names = [desc[0] for desc in Descriptors._descList]
 ```
 
@@ -551,14 +552,14 @@ descriptor_names = [desc[0] for desc in Descriptors._descList]
 ```python
 def screen_druglikeness(mol):
     return {
-        'MW': Descriptors.MolWt(mol),
-        'LogP': Descriptors.MolLogP(mol),
-        'HBD': Descriptors.NumHDonors(mol),
-        'HBA': Descriptors.NumHAcceptors(mol),
-        'TPSA': Descriptors.TPSA(mol),
-        'RotBonds': Descriptors.NumRotatableBonds(mol),
-        'AromaticRings': Descriptors.NumAromaticRings(mol),
-        'QED': Descriptors.qed(mol)
+        "MW": Descriptors.MolWt(mol),
+        "LogP": Descriptors.MolLogP(mol),
+        "HBD": Descriptors.NumHDonors(mol),
+        "HBA": Descriptors.NumHAcceptors(mol),
+        "TPSA": Descriptors.TPSA(mol),
+        "RotBonds": Descriptors.NumRotatableBonds(mol),
+        "AromaticRings": Descriptors.NumAromaticRings(mol),
+        "QED": Descriptors.qed(mol),
     }
 ```
 
@@ -577,11 +578,11 @@ def is_leadlike(mol):
 ```python
 def molecular_complexity(mol):
     return {
-        'BertzCT': Descriptors.BertzCT(mol),
-        'NumRings': Descriptors.RingCount(mol),
-        'NumRotBonds': Descriptors.NumRotatableBonds(mol),
-        'FractionCsp3': Descriptors.FractionCsp3(mol),
-        'NumAromaticRings': Descriptors.NumAromaticRings(mol)
+        "BertzCT": Descriptors.BertzCT(mol),
+        "NumRings": Descriptors.RingCount(mol),
+        "NumRotBonds": Descriptors.NumRotatableBonds(mol),
+        "FractionCsp3": Descriptors.FractionCsp3(mol),
+        "NumAromaticRings": Descriptors.NumAromaticRings(mol),
     }
 ```
 

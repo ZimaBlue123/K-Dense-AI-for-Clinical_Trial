@@ -83,9 +83,7 @@ def fetch_gene_by_id(gene_id: str, api_key: str | None = None) -> dict[str, Any]
         return {}
 
 
-def fetch_gene_by_symbol(
-    symbol: str, taxon: str, api_key: str | None = None
-) -> dict[str, Any]:
+def fetch_gene_by_symbol(symbol: str, taxon: str, api_key: str | None = None) -> dict[str, Any]:
     """
     Fetch gene data by gene symbol and taxon.
 
@@ -116,18 +114,14 @@ def fetch_gene_by_symbol(
     except urllib.error.HTTPError as e:
         print(f"HTTP Error {e.code}: {e.reason}", file=sys.stderr)
         if e.code == 404:
-            print(
-                f"Gene symbol '{symbol}' not found for taxon {taxon}", file=sys.stderr
-            )
+            print(f"Gene symbol '{symbol}' not found for taxon {taxon}", file=sys.stderr)
         return {}
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
         return {}
 
 
-def fetch_multiple_genes(
-    gene_ids: list[str], api_key: str | None = None
-) -> dict[str, Any]:
+def fetch_multiple_genes(gene_ids: list[str], api_key: str | None = None) -> dict[str, Any]:
     """
     Fetch data for multiple genes by ID.
 
@@ -243,9 +237,7 @@ Examples:
 
     parser.add_argument("--gene-id", "-g", help="Gene ID(s), comma-separated")
     parser.add_argument("--symbol", "-s", help="Gene symbol")
-    parser.add_argument(
-        "--taxon", "-t", help="Organism name or taxon ID (required with --symbol)"
-    )
+    parser.add_argument("--taxon", "-t", help="Organism name or taxon ID (required with --symbol)")
     parser.add_argument(
         "--output",
         "-o",
@@ -253,9 +245,7 @@ Examples:
         default="pretty",
         help="Output format (default: pretty)",
     )
-    parser.add_argument(
-        "--verbose", "-v", action="store_true", help="Show detailed information"
-    )
+    parser.add_argument("--verbose", "-v", action="store_true", help="Show detailed information")
     parser.add_argument("--api-key", "-k", help="NCBI API key")
 
     args = parser.parse_args()

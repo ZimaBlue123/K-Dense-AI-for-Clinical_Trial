@@ -73,7 +73,7 @@ For ACRIN collections, value descriptions come from provided data dictionaries. 
 from idc_index import IDCClient
 
 client = IDCClient()
-client.fetch_index('clinical_index')
+client.fetch_index("clinical_index")
 
 # View available columns
 print(client.clinical_index.columns.tolist())
@@ -87,8 +87,8 @@ collections_with_clinical = client.clinical_index["collection_id"].unique().toli
 print(f"{len(collections_with_clinical)} collections have clinical data")
 
 # Find clinical attributes for a specific collection
-nlst_columns = client.clinical_index[client.clinical_index['collection_id']=='nlst']
-nlst_columns[['short_table_name', 'column', 'column_label', 'values']]
+nlst_columns = client.clinical_index[client.clinical_index["collection_id"] == "nlst"]
+nlst_columns[["short_table_name", "column", "column_label", "values"]]
 ```
 
 ### Step 3: Search for Specific Attributes
@@ -118,13 +118,13 @@ Many clinical attributes use coded values. The `values` column in `clinical_inde
 
 ```python
 # Get the clinical_index rows for NLST
-nlst_clinical_columns = client.clinical_index[client.clinical_index['collection_id']=='nlst']
+nlst_clinical_columns = client.clinical_index[client.clinical_index["collection_id"] == "nlst"]
 
 # Get observed values for a specific column
 # Filter to the row for 'clinical_stag' and extract the values array
-clinical_stag_values = nlst_clinical_columns[
-    nlst_clinical_columns['column']=='clinical_stag'
-]['values'].values[0]
+clinical_stag_values = nlst_clinical_columns[nlst_clinical_columns["column"] == "clinical_stag"][
+    "values"
+].values[0]
 
 # View the observed values and their descriptions
 print(clinical_stag_values)
@@ -133,10 +133,10 @@ print(clinical_stag_values)
 #                {'option_code': '120', 'option_description': 'Stage IB'}, ...])
 
 # Create mapping dictionary from codes to descriptions
-mapping_dict = {item['option_code']: item['option_description'] for item in clinical_stag_values}
+mapping_dict = {item["option_code"]: item["option_description"] for item in clinical_stag_values}
 
 # Apply to DataFrame - convert column to string first for consistent matching
-nlst_canc_df['clinical_stag_meaning'] = nlst_canc_df['clinical_stag'].astype(str).map(mapping_dict)
+nlst_canc_df["clinical_stag_meaning"] = nlst_canc_df["clinical_stag"].astype(str).map(mapping_dict)
 ```
 
 ### Step 6: Join with Imaging Data
@@ -148,15 +148,17 @@ The `dicom_patient_id` column links clinical data to imaging. It matches the `Pa
 import pandas as pd
 
 # Get NLST CT imaging data
-nlst_imaging = client.index[(client.index['collection_id']=='nlst') & (client.index['Modality']=='CT')]
+nlst_imaging = client.index[
+    (client.index["collection_id"] == "nlst") & (client.index["Modality"] == "CT")
+]
 
 # Join with clinical data
 merged = pd.merge(
-    nlst_imaging[['PatientID', 'StudyInstanceUID']].drop_duplicates(),
-    nlst_canc_df[['dicom_patient_id', 'clinical_stag', 'clinical_stag_meaning']],
-    left_on='PatientID',
-    right_on='dicom_patient_id',
-    how='inner'
+    nlst_imaging[["PatientID", "StudyInstanceUID"]].drop_duplicates(),
+    nlst_canc_df[["dicom_patient_id", "clinical_stag", "clinical_stag_meaning"]],
+    left_on="PatientID",
+    right_on="dicom_patient_id",
+    how="inner",
 )
 ```
 
@@ -184,22 +186,22 @@ from idc_index import IDCClient
 import pandas as pd
 
 client = IDCClient()
-client.fetch_index('clinical_index')
+client.fetch_index("clinical_index")
 
 # Load clinical table
 nlst_canc = client.get_clinical_table("nlst_canc")
 
 # Select Stage IV patients (code '400')
-stage_iv_patients = nlst_canc[nlst_canc['clinical_stag'] == '400']['dicom_patient_id']
+stage_iv_patients = nlst_canc[nlst_canc["clinical_stag"] == "400"]["dicom_patient_id"]
 
 # Get CT imaging studies for these patients
 stage_iv_studies = pd.merge(
-    client.index[(client.index['collection_id']=='nlst') & (client.index['Modality']=='CT')],
+    client.index[(client.index["collection_id"] == "nlst") & (client.index["Modality"] == "CT")],
     stage_iv_patients,
-    left_on='PatientID',
-    right_on='dicom_patient_id',
-    how='inner'
-)['StudyInstanceUID'].drop_duplicates()
+    left_on="PatientID",
+    right_on="dicom_patient_id",
+    how="inner",
+)["StudyInstanceUID"].drop_duplicates()
 
 print(f"Found {len(stage_iv_studies)} CT studies for Stage IV patients")
 ```
@@ -220,8 +222,8 @@ print(f"Collections with chemotherapy data: {list(chemo_collections)}")
 ```python
 # Find what values have been observed for a specific attribute
 chemotherapy_rows = client.clinical_index[
-    (client.clinical_index["collection_id"] == "hcc_tace_seg") &
-    (client.clinical_index["column"] == "chemotherapy")
+    (client.clinical_index["collection_id"] == "hcc_tace_seg")
+    & (client.clinical_index["column"] == "chemotherapy")
 ]
 
 # Get the observed values array
@@ -238,7 +240,7 @@ import random
 
 # Get studies for a sample Stage IV patient
 sample_patient = stage_iv_patients.iloc[0]
-studies = client.index[client.index['PatientID'] == sample_patient]['StudyInstanceUID'].unique()
+studies = client.index[client.index["PatientID"] == sample_patient]["StudyInstanceUID"].unique()
 
 # Generate viewer URL
 if len(studies) > 0:
@@ -273,7 +275,9 @@ Every clinical table includes `dicom_patient_id`, which matches the `PatientID` 
 
 **Solution:** Query clinical_index first to find available tables:
 ```python
-client.clinical_index[client.clinical_index['collection_id']=='your_collection']['short_table_name'].unique()
+client.clinical_index[client.clinical_index["collection_id"] == "your_collection"][
+    "short_table_name"
+].unique()
 ```
 
 ### Issue: Empty values array
@@ -283,7 +287,7 @@ client.clinical_index[client.clinical_index['collection_id']=='your_collection']
 **Solution:** Load the clinical table and examine unique values directly:
 ```python
 clinical_df = client.get_clinical_table("table_name")
-clinical_df['column_name'].unique()
+clinical_df["column_name"].unique()
 ```
 
 ### Issue: Coded values not in mapping
@@ -292,7 +296,7 @@ clinical_df['column_name'].unique()
 
 **Solution:** Handle unmapped values gracefully:
 ```python
-df['meaning'] = df['code'].astype(str).map(mapping_dict).fillna('Unknown/Missing')
+df["meaning"] = df["code"].astype(str).map(mapping_dict).fillna("Unknown/Missing")
 ```
 
 ### Issue: No matching patients when joining
@@ -301,8 +305,8 @@ df['meaning'] = df['code'].astype(str).map(mapping_dict).fillna('Unknown/Missing
 
 **Solution:** Verify patient overlap before joining:
 ```python
-imaging_patients = set(client.index[client.index['collection_id']=='nlst']['PatientID'].unique())
-clinical_patients = set(clinical_df['dicom_patient_id'].unique())
+imaging_patients = set(client.index[client.index["collection_id"] == "nlst"]["PatientID"].unique())
+clinical_patients = set(clinical_df["dicom_patient_id"].unique())
 overlap = imaging_patients & clinical_patients
 print(f"Patients with both imaging and clinical data: {len(overlap)}")
 ```

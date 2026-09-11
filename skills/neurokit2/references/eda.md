@@ -11,7 +11,7 @@ Electrodermal Activity (EDA), also known as Galvanic Skin Response (GSR) or Skin
 Automated processing of raw EDA signals returning tonic/phasic decomposition and SCR features.
 
 ```python
-signals, info = nk.eda_process(eda_signal, sampling_rate=100, method='neurokit')
+signals, info = nk.eda_process(eda_signal, sampling_rate=100, method="neurokit")
 ```
 
 **Pipeline steps:**
@@ -40,7 +40,7 @@ signals, info = nk.eda_process(eda_signal, sampling_rate=100, method='neurokit')
 Remove noise through low-pass filtering.
 
 ```python
-cleaned_eda = nk.eda_clean(eda_signal, sampling_rate=100, method='neurokit')
+cleaned_eda = nk.eda_clean(eda_signal, sampling_rate=100, method="neurokit")
 ```
 
 **Methods:**
@@ -60,14 +60,14 @@ cleaned_eda = nk.eda_clean(eda_signal, sampling_rate=100, method='neurokit')
 Decompose EDA into tonic (slow baseline) and phasic (rapid responses) components.
 
 ```python
-tonic, phasic = nk.eda_phasic(eda_cleaned, sampling_rate=100, method='cvxeda')
+tonic, phasic = nk.eda_phasic(eda_cleaned, sampling_rate=100, method="cvxeda")
 ```
 
 **Methods:**
 
 **1. cvxEDA (default, recommended):**
 ```python
-tonic, phasic = nk.eda_phasic(eda_cleaned, sampling_rate=100, method='cvxeda')
+tonic, phasic = nk.eda_phasic(eda_cleaned, sampling_rate=100, method="cvxeda")
 ```
 - Convex optimization approach (Greco et al., 2016)
 - Sparse phasic driver model
@@ -76,7 +76,7 @@ tonic, phasic = nk.eda_phasic(eda_cleaned, sampling_rate=100, method='cvxeda')
 
 **2. Median smoothing:**
 ```python
-tonic, phasic = nk.eda_phasic(eda_cleaned, sampling_rate=100, method='smoothmedian')
+tonic, phasic = nk.eda_phasic(eda_cleaned, sampling_rate=100, method="smoothmedian")
 ```
 - Median filter with configurable window
 - Fast, simple
@@ -84,7 +84,7 @@ tonic, phasic = nk.eda_phasic(eda_cleaned, sampling_rate=100, method='smoothmedi
 
 **3. High-pass filtering (Biopac's Acqknowledge):**
 ```python
-tonic, phasic = nk.eda_phasic(eda_cleaned, sampling_rate=100, method='highpass')
+tonic, phasic = nk.eda_phasic(eda_cleaned, sampling_rate=100, method="highpass")
 ```
 - High-pass filter (0.05 Hz) extracts phasic
 - Fast computation
@@ -92,7 +92,7 @@ tonic, phasic = nk.eda_phasic(eda_cleaned, sampling_rate=100, method='highpass')
 
 **4. SparsEDA:**
 ```python
-tonic, phasic = nk.eda_phasic(eda_cleaned, sampling_rate=100, method='sparseda')
+tonic, phasic = nk.eda_phasic(eda_cleaned, sampling_rate=100, method="sparseda")
 ```
 - Sparse deconvolution approach
 - Alternative optimization method
@@ -110,8 +110,7 @@ tonic, phasic = nk.eda_phasic(eda_cleaned, sampling_rate=100, method='sparseda')
 Detect Skin Conductance Responses (SCRs) in phasic component.
 
 ```python
-peaks, info = nk.eda_peaks(eda_phasic, sampling_rate=100, method='neurokit',
-                           amplitude_min=0.1)
+peaks, info = nk.eda_peaks(eda_phasic, sampling_rate=100, method="neurokit", amplitude_min=0.1)
 ```
 
 **Methods:**
@@ -234,8 +233,7 @@ results = nk.eda_intervalrelated(signals, sampling_rate=100)
 Derive sympathetic nervous system activity from frequency band (0.045-0.25 Hz).
 
 ```python
-sympathetic = nk.eda_sympathetic(signals, sampling_rate=100, method='posada',
-                                  show=False)
+sympathetic = nk.eda_sympathetic(signals, sampling_rate=100, method="posada", show=False)
 ```
 
 **Methods:**
@@ -340,8 +338,9 @@ nk.eda_plot(signals, info, static=True)
 Generate synthetic EDA signals with configurable parameters.
 
 ```python
-synthetic_eda = nk.eda_simulate(duration=10, sampling_rate=100, scr_number=3,
-                                noise=0.01, drift=0.01)
+synthetic_eda = nk.eda_simulate(
+    duration=10, sampling_rate=100, scr_number=3, noise=0.01, drift=0.01
+)
 ```
 
 **Parameters:**
@@ -408,10 +407,10 @@ synthetic_eda = nk.eda_simulate(duration=10, sampling_rate=100, scr_number=3,
 **Preprocessing workflow:**
 ```python
 # 1. Clean signal
-cleaned = nk.eda_clean(eda_raw, sampling_rate=100, method='neurokit')
+cleaned = nk.eda_clean(eda_raw, sampling_rate=100, method="neurokit")
 
 # 2. Decompose tonic/phasic
-tonic, phasic = nk.eda_phasic(cleaned, sampling_rate=100, method='cvxeda')
+tonic, phasic = nk.eda_phasic(cleaned, sampling_rate=100, method="cvxeda")
 
 # 3. Detect SCRs
 signals, info = nk.eda_peaks(phasic, sampling_rate=100, amplitude_min=0.05)
@@ -429,8 +428,7 @@ signals, info = nk.eda_process(eda_raw, sampling_rate=100)
 events = nk.events_find(trigger_channel, threshold=0.5)
 
 # 3. Create epochs (-1 to 10 seconds around stimulus)
-epochs = nk.epochs_create(signals, events, sampling_rate=100,
-                          epochs_start=-1, epochs_end=10)
+epochs = nk.epochs_create(signals, events, sampling_rate=100, epochs_start=-1, epochs_end=10)
 
 # 4. Event-related analysis
 results = nk.eda_eventrelated(epochs)

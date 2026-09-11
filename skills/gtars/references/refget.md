@@ -113,11 +113,7 @@ Extract specific genomic regions:
 # Extract regions of interest
 store = gtars.RefgetStore.from_fasta("hg38.fa")
 
-regions = [
-    ("chr1", 1000, 2000),
-    ("chr2", 5000, 6000),
-    ("chr3", 10000, 11000)
-]
+regions = [("chr1", 1000, 2000), ("chr2", 5000, 6000), ("chr3", 10000, 11000)]
 
 sequences = [store.get_subsequence(c, s, e) for c, s, e in regions]
 ```

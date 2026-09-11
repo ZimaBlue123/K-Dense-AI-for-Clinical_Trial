@@ -34,10 +34,7 @@ import scvi
 sc.pp.filter_genes(adata, min_cells=3)
 
 # Setup data
-scvi.model.PEAKVI.setup_anndata(
-    adata,
-    batch_key="batch"
-)
+scvi.model.PEAKVI.setup_anndata(adata, batch_key="batch")
 
 # Train model
 model = scvi.model.PEAKVI(adata)
@@ -48,11 +45,7 @@ latent = model.get_latent_representation()
 adata.obsm["X_PeakVI"] = latent
 
 # Differential accessibility
-da_results = model.differential_accessibility(
-    groupby="cell_type",
-    group1="TypeA",
-    group2="TypeB"
-)
+da_results = model.differential_accessibility(groupby="cell_type", group1="TypeA", group2="TypeB")
 ```
 
 **Key Parameters**:
@@ -97,10 +90,7 @@ da_results = model.differential_accessibility(
 
 **Basic Usage**:
 ```python
-scvi.model.POISSONVI.setup_anndata(
-    adata,
-    batch_key="batch"
-)
+scvi.model.POISSONVI.setup_anndata(adata, batch_key="batch")
 
 model = scvi.model.POISSONVI(adata)
 model.train()
@@ -148,13 +138,11 @@ accessibility = model.get_accessibility_estimates()
 # scBasset requires sequence information
 # First, extract sequences for peaks
 from scbasset import utils
+
 sequences = utils.fetch_sequences(adata, genome="hg38")
 
 # Setup and train
-scvi.model.SCBASSET.setup_anndata(
-    adata,
-    batch_key="batch"
-)
+scvi.model.SCBASSET.setup_anndata(adata, batch_key="batch")
 
 model = scvi.model.SCBASSET(adata, sequences=sequences)
 model.train()
@@ -242,10 +230,7 @@ adata = sc.read_h5ad("atac_data.h5ad")
 sc.pp.filter_genes(adata, min_cells=10)
 
 # 3. Setup and train PeakVI
-scvi.model.PEAKVI.setup_anndata(
-    adata,
-    batch_key="sample"
-)
+scvi.model.PEAKVI.setup_anndata(adata, batch_key="sample")
 
 model = scvi.model.PEAKVI(adata, n_latent=20)
 model.train(max_epochs=400)
@@ -260,11 +245,7 @@ sc.tl.umap(adata)
 sc.tl.leiden(adata, key_added="clusters")
 
 # 6. Differential accessibility
-da_results = model.differential_accessibility(
-    groupby="clusters",
-    group1="0",
-    group2="1"
-)
+da_results = model.differential_accessibility(groupby="clusters", group1="0", group2="1")
 
 # 7. Save model
 model.save("peakvi_model")
@@ -279,7 +260,7 @@ For paired multimodal data (RNA+ATAC from same cells), use **MultiVI** instead:
 scvi.model.MULTIVI.setup_anndata(
     adata,
     batch_key="sample",
-    modality_key="modality"  # "RNA" or "ATAC"
+    modality_key="modality",  # "RNA" or "ATAC"
 )
 
 model = scvi.model.MULTIVI(adata)

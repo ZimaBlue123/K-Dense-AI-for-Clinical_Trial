@@ -74,7 +74,7 @@ file_obj = dxpy.upload_local_file(
     project="project-xxxx",
     folder="/results",
     properties={"sample": "sample1", "type": "raw"},
-    tags=["experiment1", "batch2"]
+    tags=["experiment1", "batch2"],
 )
 ```
 
@@ -142,14 +142,9 @@ Records store structured metadata with arbitrary JSON.
 record = dxpy.new_dxrecord(
     name="sample_metadata",
     types=["SampleMetadata"],
-    details={
-        "sample_id": "S001",
-        "tissue": "blood",
-        "age": 45,
-        "conditions": ["diabetes"]
-    },
+    details={"sample_id": "S001", "tissue": "blood", "age": 45, "conditions": ["diabetes"]},
     project="project-xxxx",
-    close=True
+    close=True,
 )
 ```
 
@@ -182,11 +177,7 @@ record.close()
 
 **Search by name**:
 ```python
-results = dxpy.find_data_objects(
-    name="*.fastq",
-    project="project-xxxx",
-    folder="/raw_data"
-)
+results = dxpy.find_data_objects(name="*.fastq", project="project-xxxx", folder="/raw_data")
 
 for result in results:
     print(f"{result['describe']['name']}: {result['id']}")
@@ -195,9 +186,7 @@ for result in results:
 **Search by properties**:
 ```python
 results = dxpy.find_data_objects(
-    classname="file",
-    properties={"sample": "sample1", "type": "processed"},
-    project="project-xxxx"
+    classname="file", properties={"sample": "sample1", "type": "processed"}, project="project-xxxx"
 )
 ```
 
@@ -205,20 +194,14 @@ results = dxpy.find_data_objects(
 ```python
 # Find all records of specific type
 results = dxpy.find_data_objects(
-    classname="record",
-    typename="SampleMetadata",
-    project="project-xxxx"
+    classname="record", typename="SampleMetadata", project="project-xxxx"
 )
 ```
 
 **Search with state filter**:
 ```python
 # Find only closed files
-results = dxpy.find_data_objects(
-    classname="file",
-    state="closed",
-    project="project-xxxx"
-)
+results = dxpy.find_data_objects(classname="file", state="closed", project="project-xxxx")
 ```
 
 ### System-wide Search
@@ -227,7 +210,7 @@ results = dxpy.find_data_objects(
 # Search across all accessible projects
 results = dxpy.find_data_objects(
     name="important_data.txt",
-    describe=True  # Include full descriptions
+    describe=True,  # Include full descriptions
 )
 ```
 
@@ -237,24 +220,17 @@ results = dxpy.find_data_objects(
 
 ```python
 # Clone file to another project
-new_file = dxpy.DXFile("file-xxxx").clone(
-    project="project-yyyy",
-    folder="/imported_data"
-)
+new_file = dxpy.DXFile("file-xxxx").clone(project="project-yyyy", folder="/imported_data")
 ```
 
 ### Clone Multiple Objects
 
 ```python
 # Clone folder contents
-files = dxpy.find_data_objects(
-    classname="file",
-    project="project-xxxx",
-    folder="/results"
-)
+files = dxpy.find_data_objects(classname="file", project="project-xxxx", folder="/results")
 
 for file in files:
-    file_obj = dxpy.DXFile(file['id'])
+    file_obj = dxpy.DXFile(file["id"])
     file_obj.clone(project="project-yyyy", folder="/backup")
 ```
 
@@ -264,12 +240,11 @@ for file in files:
 
 ```python
 # Create a new project
-project = dxpy.api.project_new({
-    "name": "My Analysis Project",
-    "description": "RNA-seq analysis for experiment X"
-})
+project = dxpy.api.project_new(
+    {"name": "My Analysis Project", "description": "RNA-seq analysis for experiment X"}
+)
 
-project_id = project['id']
+project_id = project["id"]
 ```
 
 ### Project Permissions
@@ -280,8 +255,8 @@ dxpy.api.project_invite(
     project_id,
     {
         "invitee": "user-xxxx",
-        "level": "CONTRIBUTE"  # VIEW, UPLOAD, CONTRIBUTE, ADMINISTER
-    }
+        "level": "CONTRIBUTE",  # VIEW, UPLOAD, CONTRIBUTE, ADMINISTER
+    },
 )
 ```
 
@@ -292,7 +267,7 @@ dxpy.api.project_invite(
 projects = dxpy.find_projects(describe=True)
 
 for proj in projects:
-    desc = proj['describe']
+    desc = proj["describe"]
     print(f"{desc['name']}: {proj['id']}")
 ```
 
@@ -302,10 +277,7 @@ for proj in projects:
 
 ```python
 # Create nested folders
-dxpy.api.project_new_folder(
-    "project-xxxx",
-    {"folder": "/analysis/batch1/results", "parents": True}
-)
+dxpy.api.project_new_folder("project-xxxx", {"folder": "/analysis/batch1/results", "parents": True})
 ```
 
 ### Moving Objects
@@ -320,10 +292,7 @@ file_obj.move("/new_location")
 
 ```python
 # Remove file from project (not permanent deletion)
-dxpy.api.project_remove_objects(
-    "project-xxxx",
-    {"objects": ["file-xxxx"]}
-)
+dxpy.api.project_remove_objects("project-xxxx", {"objects": ["file-xxxx"]})
 
 # Permanent deletion
 file_obj = dxpy.DXFile("file-xxxx")
@@ -338,20 +307,14 @@ Archived data is moved to cheaper long-term storage:
 
 ```python
 # Archive a file
-dxpy.api.project_archive(
-    "project-xxxx",
-    {"files": ["file-xxxx"]}
-)
+dxpy.api.project_archive("project-xxxx", {"files": ["file-xxxx"]})
 ```
 
 ### Unarchive Data
 
 ```python
 # Unarchive when needed
-dxpy.api.project_unarchive(
-    "project-xxxx",
-    {"files": ["file-xxxx"]}
-)
+dxpy.api.project_unarchive("project-xxxx", {"files": ["file-xxxx"]})
 ```
 
 ## Batch Operations
@@ -365,27 +328,19 @@ import os
 for filename in os.listdir("./data"):
     filepath = os.path.join("./data", filename)
     if os.path.isfile(filepath):
-        dxpy.upload_local_file(
-            filepath,
-            project="project-xxxx",
-            folder="/batch_upload"
-        )
+        dxpy.upload_local_file(filepath, project="project-xxxx", folder="/batch_upload")
 ```
 
 ### Download Multiple Files
 
 ```python
 # Download all files from folder
-files = dxpy.find_data_objects(
-    classname="file",
-    project="project-xxxx",
-    folder="/results"
-)
+files = dxpy.find_data_objects(classname="file", project="project-xxxx", folder="/results")
 
 for file in files:
-    file_obj = dxpy.DXFile(file['id'])
-    filename = file_obj.describe()['name']
-    dxpy.download_dxfile(file['id'], f"./downloads/{filename}")
+    file_obj = dxpy.DXFile(file["id"])
+    filename = file_obj.describe()["name"]
+    dxpy.download_dxfile(file["id"], f"./downloads/{filename}")
 ```
 
 ## Best Practices

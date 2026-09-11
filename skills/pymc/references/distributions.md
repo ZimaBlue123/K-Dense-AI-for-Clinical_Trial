@@ -304,10 +304,10 @@ PyMC distributions support NumPy-style broadcasting. Use the `shape` parameter t
 
 ```python
 # Vector of 5 independent normals
-beta = pm.Normal('beta', mu=0, sigma=1, shape=5)
+beta = pm.Normal("beta", mu=0, sigma=1, shape=5)
 
 # 3x4 matrix of independent gammas
-tau = pm.Gamma('tau', alpha=2, beta=1, shape=(3, 4))
+tau = pm.Gamma("tau", alpha=2, beta=1, shape=(3, 4))
 ```
 
 ### Using dims for Named Dimensions
@@ -315,6 +315,6 @@ tau = pm.Gamma('tau', alpha=2, beta=1, shape=(3, 4))
 Instead of shape, use `dims` for more readable models:
 
 ```python
-with pm.Model(coords={'predictors': ['age', 'income', 'education']}) as model:
-    beta = pm.Normal('beta', mu=0, sigma=1, dims='predictors')
+with pm.Model(coords={"predictors": ["age", "income", "education"]}) as model:
+    beta = pm.Normal("beta", mu=0, sigma=1, dims="predictors")
 ```

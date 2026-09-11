@@ -19,7 +19,7 @@ ln.Artifact("sample.fasta", key="sample.fasta").save()
 artifact = ln.Artifact(
     "data/analysis.h5ad",
     key="experiments/scrna_batch1.h5ad",
-    description="Single-cell RNA-seq batch 1"
+    description="Single-cell RNA-seq batch 1",
 ).save()
 ```
 
@@ -29,9 +29,7 @@ import pandas as pd
 
 df = pd.read_csv("data.csv")
 artifact = ln.Artifact.from_dataframe(
-    df,
-    key="datasets/processed_data.parquet",
-    description="Processed experimental data"
+    df, key="datasets/processed_data.parquet", description="Processed experimental data"
 ).save()
 ```
 
@@ -41,9 +39,7 @@ import anndata as ad
 
 adata = ad.read_h5ad("data.h5ad")
 artifact = ln.Artifact.from_anndata(
-    adata,
-    key="scrna/experiment1.h5ad",
-    description="scRNA-seq data with QC"
+    adata, key="scrna/experiment1.h5ad", description="scRNA-seq data with QC"
 ).save()
 ```
 
@@ -82,13 +78,13 @@ with artifact.open() as f:
 artifact.describe()
 
 # Access specific metadata
-artifact.size          # File size in bytes
-artifact.suffix        # File extension
-artifact.created_at    # Timestamp
-artifact.created_by    # User who created it
-artifact.run          # Associated run
-artifact.transform    # Associated transform
-artifact.version      # Version string
+artifact.size  # File size in bytes
+artifact.suffix  # File extension
+artifact.created_at  # Timestamp
+artifact.created_by  # User who created it
+artifact.run  # Associated run
+artifact.transform  # Associated transform
+artifact.version  # Version string
 ```
 
 ## Records
@@ -158,12 +154,7 @@ ln.finish()
 ### Tracking with Parameters
 
 ```python
-ln.track(params={
-    "learning_rate": 0.01,
-    "batch_size": 32,
-    "epochs": 100,
-    "downsample": True
-})
+ln.track(params={"learning_rate": 0.01, "batch_size": 32, "epochs": 100, "downsample": True})
 
 # Query runs by parameters
 ln.Run.filter(params__learning_rate=0.01).to_dataframe()
@@ -201,6 +192,7 @@ def preprocess_data(input_key: str, output_key: str, normalize: bool = True) -> 
     # Save output (automatically tracked)
     ln.Artifact.from_dataframe(data, key=output_key).save()
 
+
 # Each call creates a separate Transform and Run
 preprocess_data("raw/batch1.csv", "processed/batch1.csv", normalize=True)
 preprocess_data("raw/batch2.csv", "processed/batch2.csv", normalize=False)
@@ -215,8 +207,8 @@ run = artifact.run
 transform = run.transform
 
 # View details
-run.describe()          # Run metadata
-transform.describe()    # Transform metadata
+run.describe()  # Run metadata
+transform.describe()  # Transform metadata
 
 # Access inputs
 run.inputs.to_dataframe()
@@ -250,10 +242,7 @@ ln.Feature(name="treatment", dtype=str).save()
 
 ```python
 # Single values
-artifact.features.add_values({
-    "gc_content": 0.55,
-    "experiment_date": "2025-10-31"
-})
+artifact.features.add_values({"gc_content": 0.55, "experiment_date": "2025-10-31"})
 
 # Using feature registry records
 gc_content_feature = ln.Feature.get(name="gc_content")
@@ -311,10 +300,10 @@ artifact.view_lineage()
 artifact.describe()
 
 # Access related entities
-artifact.run              # The run that created it
-artifact.run.transform    # The transform (code) used
-artifact.run.inputs       # Input artifacts
-artifact.run.report       # Execution report
+artifact.run  # The run that created it
+artifact.run.transform  # The transform (code) used
+artifact.run.inputs  # Input artifacts
+artifact.run.report  # Execution report
 ```
 
 ### Querying Lineage

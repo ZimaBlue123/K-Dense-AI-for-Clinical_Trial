@@ -85,11 +85,7 @@ path = dtw_alignment_path(x, y)
 from aeon.classification.distance_based import KNeighborsTimeSeriesClassifier
 
 # Use DTW distance in classifier
-clf = KNeighborsTimeSeriesClassifier(
-    n_neighbors=5,
-    distance="dtw",
-    distance_params={"window": 0.2}
-)
+clf = KNeighborsTimeSeriesClassifier(n_neighbors=5, distance="dtw", distance_params={"window": 0.2})
 clf.fit(X_train, y_train)
 ```
 
@@ -231,7 +227,7 @@ from aeon.distances import dtw_pairwise_distance
 X_train_distances = dtw_pairwise_distance(X_train)
 
 # Use with sklearn
-clf = KNeighborsClassifier(metric='precomputed')
+clf = KNeighborsClassifier(metric="precomputed")
 clf.fit(X_train_distances, y_train)
 ```
 

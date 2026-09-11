@@ -59,7 +59,7 @@ gdf.plot()
 gdf_projected = gdf.to_crs("EPSG:3857")
 
 # Calculate area (use projected CRS for accuracy)
-gdf_projected['area'] = gdf_projected.geometry.area
+gdf_projected["area"] = gdf_projected.geometry.area
 
 # Save to file
 gdf.to_file("output.gpkg")
@@ -130,16 +130,16 @@ Spatial joins, overlay operations, dissolve:
 
 ```python
 # Spatial join (intersects)
-joined = gpd.sjoin(gdf1, gdf2, predicate='intersects')
+joined = gpd.sjoin(gdf1, gdf2, predicate="intersects")
 
 # Nearest neighbor join
 nearest = gpd.sjoin_nearest(gdf1, gdf2, max_distance=1000)
 
 # Overlay intersection
-intersection = gpd.overlay(gdf1, gdf2, how='intersection')
+intersection = gpd.overlay(gdf1, gdf2, how="intersection")
 
 # Dissolve by attribute
-dissolved = gdf.dissolve(by='region', aggfunc='sum')
+dissolved = gdf.dissolve(by="region", aggfunc="sum")
 ```
 
 See [spatial-analysis.md](references/spatial-analysis.md) for analysis operations.
@@ -150,16 +150,17 @@ Create static and interactive maps:
 
 ```python
 # Choropleth map
-gdf.plot(column='population', cmap='YlOrRd', legend=True)
+gdf.plot(column="population", cmap="YlOrRd", legend=True)
 
 # Interactive map
-gdf.explore(column='population', legend=True).save('map.html')
+gdf.explore(column="population", legend=True).save("map.html")
 
 # Multi-layer map
 import matplotlib.pyplot as plt
+
 fig, ax = plt.subplots()
-gdf1.plot(ax=ax, color='blue')
-gdf2.plot(ax=ax, color='red')
+gdf1.plot(ax=ax, color="blue")
+gdf2.plot(ax=ax, color="red")
 ```
 
 See [visualization.md](references/visualization.md) for mapping techniques.
@@ -186,26 +187,23 @@ print(gdf.crs)
 gdf = gdf.to_crs("EPSG:3857")
 
 # 3. Perform analysis
-gdf['area'] = gdf.geometry.area
+gdf["area"] = gdf.geometry.area
 buffered = gdf.copy()
-buffered['geometry'] = gdf.geometry.buffer(100)
+buffered["geometry"] = gdf.geometry.buffer(100)
 
 # 4. Export results
-gdf.to_file("results.gpkg", layer='original')
-buffered.to_file("results.gpkg", layer='buffered')
+gdf.to_file("results.gpkg", layer="original")
+buffered.to_file("results.gpkg", layer="buffered")
 ```
 
 ### Spatial Join and Aggregate
 
 ```python
 # Join points to polygons
-points_in_polygons = gpd.sjoin(points_gdf, polygons_gdf, predicate='within')
+points_in_polygons = gpd.sjoin(points_gdf, polygons_gdf, predicate="within")
 
 # Aggregate by polygon
-aggregated = points_in_polygons.groupby('index_right').agg({
-    'value': 'sum',
-    'count': 'size'
-})
+aggregated = points_in_polygons.groupby("index_right").agg({"value": "sum", "count": "size"})
 
 # Merge back to polygons
 result = polygons_gdf.merge(aggregated, left_index=True, right_index=True)
@@ -217,7 +215,7 @@ result = polygons_gdf.merge(aggregated, left_index=True, right_index=True)
 # Read from different sources
 roads = gpd.read_file("roads.shp")
 buildings = gpd.read_file("buildings.geojson")
-parcels = gpd.read_postgis("SELECT * FROM parcels", con=engine, geom_col='geom')
+parcels = gpd.read_postgis("SELECT * FROM parcels", con=engine, geom_col="geom")
 
 # Ensure matching CRS
 buildings = buildings.to_crs(roads.crs)

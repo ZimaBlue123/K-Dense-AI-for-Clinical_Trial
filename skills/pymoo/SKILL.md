@@ -35,11 +35,11 @@ Pymoo uses a consistent `minimize()` function for all optimization tasks:
 from pymoo.optimize import minimize
 
 result = minimize(
-    problem,        # What to optimize
-    algorithm,      # How to optimize
-    termination,    # When to stop
+    problem,  # What to optimize
+    algorithm,  # How to optimize
+    termination,  # When to stop
     seed=1,
-    verbose=True
+    verbose=True,
 )
 ```
 
@@ -80,19 +80,10 @@ from pymoo.optimize import minimize
 problem = get_problem("rastrigin", n_var=10)
 
 # Configure Genetic Algorithm
-algorithm = GA(
-    pop_size=100,
-    eliminate_duplicates=True
-)
+algorithm = GA(pop_size=100, eliminate_duplicates=True)
 
 # Optimize
-result = minimize(
-    problem,
-    algorithm,
-    ('n_gen', 200),
-    seed=1,
-    verbose=True
-)
+result = minimize(problem, algorithm, ("n_gen", 200), seed=1, verbose=True)
 
 print(f"Best solution: {result.X}")
 print(f"Best objective: {result.F[0]}")
@@ -127,7 +118,7 @@ problem = get_problem("zdt1")
 algorithm = NSGA2(pop_size=100)
 
 # Optimize
-result = minimize(problem, algorithm, ('n_gen', 200), seed=1)
+result = minimize(problem, algorithm, ("n_gen", 200), seed=1)
 
 # Visualize Pareto front
 plot = Scatter()
@@ -173,10 +164,10 @@ ref_dirs = get_reference_directions("das-dennis", n_dim=5, n_partitions=12)
 algorithm = NSGA3(ref_dirs=ref_dirs)
 
 # Optimize
-result = minimize(problem, algorithm, ('n_gen', 300), seed=1)
+result = minimize(problem, algorithm, ("n_gen", 300), seed=1)
 
 # Visualize with Parallel Coordinates
-plot = PCP(labels=[f"f{i+1}" for i in range(5)])
+plot = PCP(labels=[f"f{i + 1}" for i in range(5)])
 plot.add(result.F, alpha=0.3)
 plot.show()
 ```
@@ -198,19 +189,20 @@ plot.show()
 from pymoo.core.problem import ElementwiseProblem
 import numpy as np
 
+
 class MyProblem(ElementwiseProblem):
     def __init__(self):
         super().__init__(
-            n_var=2,              # Number of variables
-            n_obj=2,              # Number of objectives
+            n_var=2,  # Number of variables
+            n_obj=2,  # Number of objectives
             xl=np.array([0, 0]),  # Lower bounds
-            xu=np.array([5, 5])   # Upper bounds
+            xu=np.array([5, 5]),  # Upper bounds
         )
 
     def _evaluate(self, x, out, *args, **kwargs):
         # Define objectives
-        f1 = x[0]**2 + x[1]**2
-        f2 = (x[0]-1)**2 + (x[1]-1)**2
+        f1 = x[0] ** 2 + x[1] ** 2
+        f2 = (x[0] - 1) ** 2 + (x[1] - 1) ** 2
 
         out["F"] = [f1, f2]
 ```
@@ -222,10 +214,10 @@ class ConstrainedProblem(ElementwiseProblem):
         super().__init__(
             n_var=2,
             n_obj=2,
-            n_ieq_constr=2,        # Inequality constraints
-            n_eq_constr=1,         # Equality constraints
+            n_ieq_constr=2,  # Inequality constraints
+            n_eq_constr=1,  # Equality constraints
             xl=np.array([0, 0]),
-            xu=np.array([5, 5])
+            xu=np.array([5, 5]),
         )
 
     def _evaluate(self, x, out, *args, **kwargs):
@@ -359,10 +351,7 @@ plot.show()
 ```python
 from pymoo.visualization.pcp import PCP
 
-plot = PCP(
-    labels=[f"f{i+1}" for i in range(n_obj)],
-    normalize_each_axis=True
-)
+plot = PCP(labels=[f"f{i + 1}" for i in range(n_obj)], normalize_each_axis=True)
 plot.add(result.F, alpha=0.3)
 plot.show()
 ```
@@ -372,8 +361,7 @@ plot.show()
 from pymoo.visualization.petal import Petal
 
 plot = Petal(
-    bounds=[result.F.min(axis=0), result.F.max(axis=0)],
-    labels=["Cost", "Weight", "Efficiency"]
+    bounds=[result.F.min(axis=0), result.F.max(axis=0)], labels=["Cost", "Weight", "Efficiency"]
 )
 plot.add(solution_A, label="Design A")
 plot.add(solution_B, label="Design B")
@@ -430,9 +418,9 @@ problem = get_problem("rastrigin", n_var=10)
 problem = get_problem("rosenbrock", n_var=10)
 
 # Multi-objective
-problem = get_problem("zdt1")        # Convex front
-problem = get_problem("zdt2")        # Non-convex front
-problem = get_problem("zdt3")        # Disconnected front
+problem = get_problem("zdt1")  # Convex front
+problem = get_problem("zdt2")  # Non-convex front
+problem = get_problem("zdt3")  # Disconnected front
 
 # Many-objective
 problem = get_problem("dtlz2", n_obj=5, n_var=12)
@@ -450,10 +438,7 @@ from pymoo.operators.crossover.sbx import SBX
 from pymoo.operators.mutation.pm import PM
 
 algorithm = GA(
-    pop_size=100,
-    crossover=SBX(prob=0.9, eta=15),
-    mutation=PM(eta=20),
-    eliminate_duplicates=True
+    pop_size=100, crossover=SBX(prob=0.9, eta=15), mutation=PM(eta=20), eliminate_duplicates=True
 )
 ```
 

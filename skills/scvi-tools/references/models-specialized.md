@@ -32,7 +32,7 @@ import scvi
 scvi.model.METHYLVI.setup_anndata(
     adata,
     layer="methylation_counts",  # Methylation data
-    batch_key="batch"
+    batch_key="batch",
 )
 
 model = scvi.model.METHYLVI(adata)
@@ -55,7 +55,7 @@ scvi.model.METHYLANVI.setup_anndata(
     layer="methylation_counts",
     batch_key="batch",
     labels_key="cell_type",
-    unlabeled_category="Unknown"
+    unlabeled_category="Unknown",
 )
 
 model = scvi.model.METHYLANVI(adata)
@@ -99,9 +99,7 @@ predictions = model.predict()
 **Basic Usage**:
 ```python
 scvi.model.CYTOVI.setup_anndata(
-    adata,
-    protein_expression_obsm_key="protein_expression",
-    batch_key="batch"
+    adata, protein_expression_obsm_key="protein_expression", batch_key="batch"
 )
 
 model = scvi.model.CYTOVI(adata)
@@ -127,9 +125,7 @@ adata = sc.read_h5ad("cytof_data.h5ad")
 
 # 2. Train CytoVI
 scvi.model.CYTOVI.setup_anndata(
-    adata,
-    protein_expression_obsm_key="protein",
-    batch_key="experiment"
+    adata, protein_expression_obsm_key="protein", batch_key="experiment"
 )
 model = scvi.model.CYTOVI(adata)
 model.train()
@@ -163,11 +159,7 @@ sc.pl.umap(adata, color=["batch", "leiden"])
 
 **Basic Usage**:
 ```python
-scvi.model.SYSVI.setup_anndata(
-    adata,
-    layer="counts",
-    batch_key="batch"
-)
+scvi.model.SYSVI.setup_anndata(adata, layer="counts", batch_key="batch")
 
 model = scvi.model.SYSVI(adata)
 model.train()
@@ -236,11 +228,7 @@ sc.pl.scatter(adata, x="pseudotime", y="gene_of_interest")
 **Basic Usage**:
 ```python
 # Requires paired RNA + ATAC data
-scvi.model.PEREGLM.setup_anndata(
-    multiome_adata,
-    rna_layer="counts",
-    atac_layer="atac_counts"
-)
+scvi.model.PEREGLM.setup_anndata(multiome_adata, rna_layer="counts", atac_layer="atac_counts")
 
 model = scvi.model.PEREGLM(multiome_adata)
 model.train()
@@ -342,11 +330,7 @@ meth_adata = sc.read_h5ad("methylation_data.h5ad")
 sc.pp.filter_genes(meth_adata, min_cells=10)
 
 # 3. Setup MethylVI
-scvi.model.METHYLVI.setup_anndata(
-    meth_adata,
-    layer="methylation",
-    batch_key="batch"
-)
+scvi.model.METHYLVI.setup_anndata(meth_adata, layer="methylation", batch_key="batch")
 
 # 4. Train model
 model = scvi.model.METHYLVI(meth_adata, n_latent=15)
@@ -362,11 +346,7 @@ sc.tl.umap(meth_adata)
 sc.tl.leiden(meth_adata)
 
 # 7. Differential methylation
-dm_results = model.differential_methylation(
-    groupby="leiden",
-    group1="0",
-    group2="1"
-)
+dm_results = model.differential_methylation(groupby="leiden", group1="0", group2="1")
 
 # 8. Save
 model.save("methylvi_model")

@@ -104,9 +104,7 @@ def check_diagnostics(idata, var_names=None, ess_threshold=400, rhat_threshold=1
         print(
             f"⚠️  WARNING: {divergences} divergent transitions ({divergence_rate:.2f}% of samples)"
         )
-        print(
-            "\n   Divergences indicate biased sampling in difficult posterior regions"
-        )
+        print("\n   Divergences indicate biased sampling in difficult posterior regions")
         print("   Solutions:")
         print("   → Increase target_accept (e.g., target_accept=0.95 or 0.99)")
         print("   → Use non-centered parameterization for hierarchical models")
@@ -132,9 +130,7 @@ def check_diagnostics(idata, var_names=None, ess_threshold=400, rhat_threshold=1
         total_samples = len(idata.posterior.draw) * len(idata.posterior.chain)
         hit_rate = hits_max / total_samples * 100
 
-        print(
-            f"⚠️  WARNING: Hit maximum tree depth {hits_max} times ({hit_rate:.2f}% of samples)"
-        )
+        print(f"⚠️  WARNING: Hit maximum tree depth {hits_max} times ({hit_rate:.2f}% of samples)")
         print("\n   Model may be difficult to explore efficiently")
         print("   Solutions:")
         print("   → Reparameterize model to improve geometry")
@@ -171,9 +167,7 @@ def check_diagnostics(idata, var_names=None, ess_threshold=400, rhat_threshold=1
     return results
 
 
-def create_diagnostic_report(
-    idata, var_names=None, output_dir="diagnostics/", show=False
-):
+def create_diagnostic_report(idata, var_names=None, output_dir="diagnostics/", show=False):
     """
     Create comprehensive diagnostic report with plots.
 
@@ -291,9 +285,7 @@ def compare_prior_posterior(idata, prior_idata, var_names=None, output_path=None
     if not isinstance(axes, np.ndarray):
         axes = [axes]
 
-    for idx, var in enumerate(
-        var_names if var_names else list(idata.posterior.data_vars)[:3]
-    ):
+    for idx, var in enumerate(var_names if var_names else list(idata.posterior.data_vars)[:3]):
         # Plot prior
         az.plot_dist(
             prior_idata.prior[var].values.flatten(),

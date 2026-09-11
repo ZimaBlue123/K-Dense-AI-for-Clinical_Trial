@@ -27,8 +27,7 @@ from benchling_sdk.benchling import Benchling
 from benchling_sdk.auth.api_key_auth import ApiKeyAuth
 
 benchling = Benchling(
-    url="https://your-tenant.benchling.com",
-    auth_method=ApiKeyAuth("your_api_key")
+    url="https://your-tenant.benchling.com", auth_method=ApiKeyAuth("your_api_key")
 )
 ```
 
@@ -40,22 +39,22 @@ benchling = Benchling(
 The `benchling_sdk.benchling.Benchling` class is the root of all SDK interactions. It provides access to all resource endpoints:
 
 ```python
-benchling.dna_sequences      # DNA sequence operations
-benchling.rna_sequences      # RNA sequence operations
-benchling.aa_sequences       # Amino acid sequence operations
-benchling.custom_entities    # Custom entity operations
-benchling.mixtures           # Mixture operations
-benchling.containers         # Container operations
-benchling.boxes              # Box operations
-benchling.locations          # Location operations
-benchling.plates             # Plate operations
-benchling.entries            # Notebook entry operations
-benchling.workflow_tasks     # Workflow task operations
-benchling.requests           # Request operations
-benchling.folders            # Folder operations
-benchling.projects           # Project operations
-benchling.users              # User operations
-benchling.teams              # Team operations
+benchling.dna_sequences  # DNA sequence operations
+benchling.rna_sequences  # RNA sequence operations
+benchling.aa_sequences  # Amino acid sequence operations
+benchling.custom_entities  # Custom entity operations
+benchling.mixtures  # Mixture operations
+benchling.containers  # Container operations
+benchling.boxes  # Box operations
+benchling.locations  # Location operations
+benchling.plates  # Plate operations
+benchling.entries  # Notebook entry operations
+benchling.workflow_tasks  # Workflow task operations
+benchling.requests  # Request operations
+benchling.folders  # Folder operations
+benchling.projects  # Project operations
+benchling.users  # User operations
+benchling.teams  # Team operations
 ```
 
 ### Resource Pattern
@@ -94,11 +93,9 @@ sequence = benchling.dna_sequences.create(
         is_circular=True,
         folder_id="fld_abc123",
         schema_id="ts_abc123",
-        fields=benchling.models.fields({
-            "gene_name": "GFP",
-            "resistance": "Kanamycin",
-            "copy_number": "High"
-        })
+        fields=benchling.models.fields(
+            {"gene_name": "GFP", "resistance": "Kanamycin", "copy_number": "High"}
+        ),
     )
 )
 ```
@@ -113,7 +110,7 @@ print(f"{seq.name}: {len(seq.bases)} bp")
 sequences = benchling.dna_sequences.list(
     folder_id="fld_abc123",
     schema_id="ts_abc123",
-    name="pET28a"  # Filter by name
+    name="pET28a",  # Filter by name
 )
 
 for page in sequences:
@@ -129,20 +126,14 @@ updated = benchling.dna_sequences.update(
     sequence_id="seq_abc123",
     dna_sequence=DnaSequenceUpdate(
         name="pET28a-GFP-v2",
-        fields=benchling.models.fields({
-            "gene_name": "eGFP",
-            "notes": "Codon optimized"
-        })
-    )
+        fields=benchling.models.fields({"gene_name": "eGFP", "notes": "Codon optimized"}),
+    ),
 )
 ```
 
 **Archive:**
 ```python
-benchling.dna_sequences.archive(
-    sequence_id="seq_abc123",
-    reason="Deprecated construct"
-)
+benchling.dna_sequences.archive(sequence_id="seq_abc123", reason="Deprecated construct")
 ```
 
 ### RNA Sequences
@@ -158,21 +149,14 @@ rna = benchling.rna_sequences.create(
         name="gRNA-target1",
         bases="AUCGAUCGAUCG",
         folder_id="fld_abc123",
-        fields=benchling.models.fields({
-            "target_gene": "TP53",
-            "off_target_score": "95"
-        })
+        fields=benchling.models.fields({"target_gene": "TP53", "off_target_score": "95"}),
     )
 )
 
 # Update
 updated_rna = benchling.rna_sequences.update(
     rna_sequence_id=rna.id,
-    rna_sequence=RnaSequenceUpdate(
-        fields=benchling.models.fields({
-            "validated": "Yes"
-        })
-    )
+    rna_sequence=RnaSequenceUpdate(fields=benchling.models.fields({"validated": "Yes"})),
 )
 ```
 
@@ -186,10 +170,9 @@ protein = benchling.aa_sequences.create(
         name="Green Fluorescent Protein",
         amino_acids="MSKGEELFTGVVPILVELDGDVNGHKFSVSGEGEGDATYGKLTLKF",
         folder_id="fld_abc123",
-        fields=benchling.models.fields({
-            "molecular_weight": "27000",
-            "extinction_coefficient": "21000"
-        })
+        fields=benchling.models.fields(
+            {"molecular_weight": "27000", "extinction_coefficient": "21000"}
+        ),
     )
 )
 ```
@@ -207,11 +190,9 @@ cell_line = benchling.custom_entities.create(
         name="HEK293T-Clone5",
         schema_id="ts_cellline_abc123",
         folder_id="fld_abc123",
-        fields=benchling.models.fields({
-            "passage_number": "15",
-            "mycoplasma_test": "Negative",
-            "freezing_date": "2025-10-15"
-        })
+        fields=benchling.models.fields(
+            {"passage_number": "15", "mycoplasma_test": "Negative", "freezing_date": "2025-10-15"}
+        ),
     )
 )
 
@@ -219,11 +200,8 @@ cell_line = benchling.custom_entities.create(
 updated_cell_line = benchling.custom_entities.update(
     entity_id=cell_line.id,
     custom_entity=CustomEntityUpdate(
-        fields=benchling.models.fields({
-            "passage_number": "16",
-            "notes": "Expanded for experiment"
-        })
-    )
+        fields=benchling.models.fields({"passage_number": "16", "notes": "Expanded for experiment"})
+    ),
 )
 ```
 
@@ -240,19 +218,10 @@ mixture = benchling.mixtures.create(
         folder_id="fld_abc123",
         schema_id="ts_mixture_abc123",
         ingredients=[
-            IngredientCreate(
-                component_entity_id="ent_lb_base",
-                amount="1000 mL"
-            ),
-            IngredientCreate(
-                component_entity_id="ent_ampicillin",
-                amount="100 mg"
-            )
+            IngredientCreate(component_entity_id="ent_lb_base", amount="1000 mL"),
+            IngredientCreate(component_entity_id="ent_ampicillin", amount="100 mg"),
         ],
-        fields=benchling.models.fields({
-            "pH": "7.0",
-            "sterilized": "Yes"
-        })
+        fields=benchling.models.fields({"pH": "7.0", "sterilized": "Yes"}),
     )
 )
 ```
@@ -269,7 +238,7 @@ registered_seq = benchling.dna_sequences.create(
         is_circular=True,
         folder_id="fld_abc123",
         entity_registry_id="src_abc123",
-        naming_strategy="NEW_IDS"  # or "IDS_FROM_NAMES"
+        naming_strategy="NEW_IDS",  # or "IDS_FROM_NAMES"
     )
 )
 print(f"Registry ID: {registered_seq.registry_id}")
@@ -293,42 +262,28 @@ container = benchling.containers.create(
         schema_id="cont_schema_abc123",
         barcode="CONT001",
         parent_storage_id="box_abc123",  # Place in box
-        fields=benchling.models.fields({
-            "concentration": "100 ng/μL",
-            "volume": "50 μL",
-            "sample_type": "gDNA"
-        })
+        fields=benchling.models.fields(
+            {"concentration": "100 ng/μL", "volume": "50 μL", "sample_type": "gDNA"}
+        ),
     )
 )
 
 # Update location
-benchling.containers.transfer(
-    container_id=container.id,
-    destination_id="box_xyz789"
-)
+benchling.containers.transfer(container_id=container.id, destination_id="box_xyz789")
 
 # Update properties
 updated = benchling.containers.update(
     container_id=container.id,
     container=ContainerUpdate(
-        fields=benchling.models.fields({
-            "volume": "45 μL",
-            "notes": "Used 5 μL for PCR"
-        })
-    )
+        fields=benchling.models.fields({"volume": "45 μL", "notes": "Used 5 μL for PCR"})
+    ),
 )
 
 # Check out
-benchling.containers.check_out(
-    container_id=container.id,
-    comment="Taking to bench"
-)
+benchling.containers.check_out(container_id=container.id, comment="Taking to bench")
 
 # Check in
-benchling.containers.check_in(
-    container_id=container.id,
-    location_id="bench_location_abc"
-)
+benchling.containers.check_in(container_id=container.id, location_id="bench_location_abc")
 ```
 
 ### Boxes
@@ -342,17 +297,12 @@ box = benchling.boxes.create(
         schema_id="box_schema_abc123",
         parent_storage_id="loc_freezer_a",
         barcode="BOX001",
-        fields=benchling.models.fields({
-            "box_type": "81-place",
-            "temperature": "-80C"
-        })
+        fields=benchling.models.fields({"box_type": "81-place", "temperature": "-80C"}),
     )
 )
 
 # List containers in box
-containers = benchling.containers.list(
-    parent_storage_id=box.id
-)
+containers = benchling.containers.list(parent_storage_id=box.id)
 ```
 
 ### Locations
@@ -362,9 +312,7 @@ from benchling_sdk.models import LocationCreate
 
 location = benchling.locations.create(
     LocationCreate(
-        name="Freezer A - Shelf 2",
-        parent_storage_id="loc_freezer_a",
-        barcode="LOC-A-S2"
+        name="Freezer A - Shelf 2", parent_storage_id="loc_freezer_a", barcode="LOC-A-S2"
     )
 )
 ```
@@ -381,16 +329,10 @@ plate = benchling.plates.create(
         schema_id="plate_schema_abc123",
         barcode="PLATE001",
         wells=[
-            WellCreate(
-                position="A1",
-                entity_id="sample_entity_abc"
-            ),
-            WellCreate(
-                position="A2",
-                entity_id="sample_entity_xyz"
-            )
+            WellCreate(position="A1", entity_id="sample_entity_abc"),
+            WellCreate(position="A2", entity_id="sample_entity_xyz"),
             # ... more wells
-        ]
+        ],
     )
 )
 ```
@@ -408,11 +350,13 @@ entry = benchling.entries.create(
         name="Cloning Experiment 2025-10-20",
         folder_id="fld_abc123",
         schema_id="entry_schema_abc123",
-        fields=benchling.models.fields({
-            "objective": "Clone GFP into pET28a",
-            "date": "2025-10-20",
-            "experiment_type": "Molecular Biology"
-        })
+        fields=benchling.models.fields(
+            {
+                "objective": "Clone GFP into pET28a",
+                "date": "2025-10-20",
+                "experiment_type": "Molecular Biology",
+            }
+        ),
     )
 )
 
@@ -420,11 +364,13 @@ entry = benchling.entries.create(
 updated_entry = benchling.entries.update(
     entry_id=entry.id,
     entry=EntryUpdate(
-        fields=benchling.models.fields({
-            "results": "Successful cloning, 10 colonies",
-            "notes": "Colony 5 shows best fluorescence"
-        })
-    )
+        fields=benchling.models.fields(
+            {
+                "results": "Successful cloning, 10 colonies",
+                "notes": "Colony 5 shows best fluorescence",
+            }
+        )
+    ),
 )
 ```
 
@@ -432,10 +378,7 @@ updated_entry = benchling.entries.update(
 
 ```python
 # Link DNA sequence to entry
-link = benchling.entry_links.create(
-    entry_id="entry_abc123",
-    entity_id="seq_xyz789"
-)
+link = benchling.entry_links.create(entry_id="entry_abc123", entity_id="seq_xyz789")
 
 # List links for an entry
 links = benchling.entry_links.list(entry_id="entry_abc123")
@@ -455,11 +398,13 @@ task = benchling.workflow_tasks.create(
         workflow_id="wf_abc123",
         assignee_id="user_abc123",
         schema_id="task_schema_abc123",
-        fields=benchling.models.fields({
-            "template": "seq_abc123",
-            "primers": "Forward: ATCG, Reverse: CGAT",
-            "priority": "High"
-        })
+        fields=benchling.models.fields(
+            {
+                "template": "seq_abc123",
+                "primers": "Forward: ATCG, Reverse: CGAT",
+                "priority": "High",
+            }
+        ),
     )
 )
 
@@ -468,17 +413,13 @@ completed_task = benchling.workflow_tasks.update(
     task_id=task.id,
     workflow_task=WorkflowTaskUpdate(
         status_id="status_complete_abc123",
-        fields=benchling.models.fields({
-            "completion_date": "2025-10-20",
-            "yield": "500 ng"
-        })
-    )
+        fields=benchling.models.fields({"completion_date": "2025-10-20", "yield": "500 ng"}),
+    ),
 )
 
 # List tasks
 tasks = benchling.workflow_tasks.list(
-    workflow_id="wf_abc123",
-    status_ids=["status_pending", "status_in_progress"]
+    workflow_id="wf_abc123", status_ids=["status_pending", "status_in_progress"]
 )
 ```
 
@@ -523,7 +464,7 @@ try:
         benchling,
         task_id=task_id,
         interval_wait_seconds=2,  # Poll every 2 seconds
-        max_wait_seconds=600       # Timeout after 10 minutes
+        max_wait_seconds=600,  # Timeout after 10 minutes
     )
     print("Task completed successfully")
 except WaitForTaskExpiredError:
@@ -533,12 +474,7 @@ except WaitForTaskExpiredError:
 ### Error Handling
 
 ```python
-from benchling_sdk.errors import (
-    BenchlingError,
-    NotFoundError,
-    ValidationError,
-    UnauthorizedError
-)
+from benchling_sdk.errors import BenchlingError, NotFoundError, ValidationError, UnauthorizedError
 
 try:
     sequence = benchling.dna_sequences.get(sequence_id="seq_invalid")
@@ -563,22 +499,20 @@ from benchling_sdk.retry import RetryStrategy
 
 # Custom retry configuration
 retry_strategy = RetryStrategy(
-    max_retries=3,
-    backoff_factor=0.5,
-    status_codes_to_retry=[429, 502, 503, 504]
+    max_retries=3, backoff_factor=0.5, status_codes_to_retry=[429, 502, 503, 504]
 )
 
 benchling = Benchling(
     url="https://your-tenant.benchling.com",
     auth_method=ApiKeyAuth("your_api_key"),
-    retry_strategy=retry_strategy
+    retry_strategy=retry_strategy,
 )
 
 # Disable retries
 benchling = Benchling(
     url="https://your-tenant.benchling.com",
     auth_method=ApiKeyAuth("your_api_key"),
-    retry_strategy=RetryStrategy(max_retries=0)
+    retry_strategy=RetryStrategy(max_retries=0),
 )
 ```
 
@@ -591,24 +525,18 @@ For unsupported endpoints:
 from benchling_sdk.models import DnaSequence
 
 response = benchling.api.get_modeled(
-    path="/api/v2/dna-sequences/seq_abc123",
-    response_type=DnaSequence
+    path="/api/v2/dna-sequences/seq_abc123", response_type=DnaSequence
 )
 
 # POST request
 from benchling_sdk.models import DnaSequenceCreate
 
 response = benchling.api.post_modeled(
-    path="/api/v2/dna-sequences",
-    request_body=DnaSequenceCreate(...),
-    response_type=DnaSequence
+    path="/api/v2/dna-sequences", request_body=DnaSequenceCreate(...), response_type=DnaSequence
 )
 
 # Raw requests
-raw_response = benchling.api.get(
-    path="/api/v2/custom-endpoint",
-    params={"key": "value"}
-)
+raw_response = benchling.api.get(path="/api/v2/custom-endpoint", params={"key": "value"})
 ```
 
 ### Batch Operations
@@ -620,14 +548,13 @@ Efficiently process multiple items:
 from benchling_sdk.models import DnaSequenceCreate
 
 sequences_to_create = [
-    DnaSequenceCreate(name=f"Seq-{i}", bases="ATCG", folder_id="fld_abc")
-    for i in range(100)
+    DnaSequenceCreate(name=f"Seq-{i}", bases="ATCG", folder_id="fld_abc") for i in range(100)
 ]
 
 # Create in batches
 batch_size = 10
 for i in range(0, len(sequences_to_create), batch_size):
-    batch = sequences_to_create[i:i+batch_size]
+    batch = sequences_to_create[i : i + batch_size]
     for seq in batch:
         benchling.dna_sequences.create(seq)
 ```
@@ -642,18 +569,14 @@ fields_dict = {
     "concentration": "100 ng/μL",
     "volume": "50 μL",
     "quality_score": "8.5",
-    "date_prepared": "2025-10-20"
+    "date_prepared": "2025-10-20",
 }
 
 fields = benchling.models.fields(fields_dict)
 
 # Use in create/update
 container = benchling.containers.create(
-    ContainerCreate(
-        name="Sample-001",
-        schema_id="schema_abc",
-        fields=fields
-    )
+    ContainerCreate(name="Sample-001", schema_id="schema_abc", fields=fields)
 )
 ```
 
@@ -683,15 +606,12 @@ if isinstance(entity, UnknownType):
 from benchling_sdk.models import DnaSequence, DnaSequenceCreate
 from typing import List
 
+
 def create_sequences(names: List[str], folder_id: str) -> List[DnaSequence]:
     sequences = []
     for name in names:
         seq = benchling.dna_sequences.create(
-            DnaSequenceCreate(
-                name=name,
-                bases="ATCG",
-                folder_id=folder_id
-            )
+            DnaSequenceCreate(name=name, bases="ATCG", folder_id=folder_id)
         )
         sequences.append(seq)
     return sequences
@@ -703,10 +623,7 @@ Use API filters instead of client-side filtering:
 
 ```python
 # Good - filter on server
-sequences = benchling.dna_sequences.list(
-    folder_id="fld_abc123",
-    schema_id="ts_abc123"
-)
+sequences = benchling.dna_sequences.list(folder_id="fld_abc123", schema_id="ts_abc123")
 
 # Bad - loads everything then filters
 all_sequences = benchling.dna_sequences.list()
@@ -723,10 +640,7 @@ sequences = benchling.dna_sequences.list()
 for page in sequences:
     for seq in page:
         if seq.created_at < cutoff_date:
-            benchling.dna_sequences.archive(
-                sequence_id=seq.id,
-                reason="Archiving old sequences"
-            )
+            benchling.dna_sequences.archive(sequence_id=seq.id, reason="Archiving old sequences")
 ```
 
 ## Troubleshooting
@@ -746,11 +660,13 @@ from benchling_sdk.benchling import Benchling
 ```python
 # Fields must match schema
 # Check schema field types in Benchling UI
-fields = benchling.models.fields({
-    "numeric_field": "123",    # Should be string even for numbers
-    "date_field": "2025-10-20", # Format: YYYY-MM-DD
-    "dropdown_field": "Option1" # Must match dropdown options exactly
-})
+fields = benchling.models.fields(
+    {
+        "numeric_field": "123",  # Should be string even for numbers
+        "date_field": "2025-10-20",  # Format: YYYY-MM-DD
+        "dropdown_field": "Option1",  # Must match dropdown options exactly
+    }
+)
 ```
 
 **Pagination Exhaustion:**

@@ -10,13 +10,13 @@ The `astropy.io.fits` module provides comprehensive tools for reading, writing, 
 from astropy.io import fits
 
 # Open file (returns HDUList - list of HDUs)
-hdul = fits.open('filename.fits')
+hdul = fits.open("filename.fits")
 
 # Always close when done
 hdul.close()
 
 # Better: use context manager (automatically closes)
-with fits.open('filename.fits') as hdul:
+with fits.open("filename.fits") as hdul:
     hdul.info()  # Display file structure
     data = hdul[0].data
 ```
@@ -24,9 +24,9 @@ with fits.open('filename.fits') as hdul:
 ### File Opening Modes
 
 ```python
-fits.open('file.fits', mode='readonly')   # Read-only (default)
-fits.open('file.fits', mode='update')     # Read and write
-fits.open('file.fits', mode='append')     # Add HDUs to file
+fits.open("file.fits", mode="readonly")  # Read-only (default)
+fits.open("file.fits", mode="update")  # Read and write
+fits.open("file.fits", mode="append")  # Add HDUs to file
 ```
 
 ### Memory Mapping
@@ -34,7 +34,7 @@ fits.open('file.fits', mode='append')     # Add HDUs to file
 For large files, use memory mapping (default behavior):
 
 ```python
-hdul = fits.open('large_file.fits', memmap=True)
+hdul = fits.open("large_file.fits", memmap=True)
 # Only loads data chunks as needed
 ```
 
@@ -72,10 +72,10 @@ primary = hdul[0]
 extension1 = hdul[1]
 
 # By name
-sci = hdul['SCI']
+sci = hdul["SCI"]
 
 # By name and version number
-sci2 = hdul['SCI', 2]  # Second SCI extension
+sci2 = hdul["SCI", 2]  # Second SCI extension
 ```
 
 ## Working with Headers
@@ -87,11 +87,11 @@ hdu = hdul[0]
 header = hdu.header
 
 # Get keyword value (case-insensitive)
-observer = header['OBSERVER']
-exptime = header['EXPTIME']
+observer = header["OBSERVER"]
+exptime = header["EXPTIME"]
 
 # Get with default if missing
-filter_name = header.get('FILTER', 'Unknown')
+filter_name = header.get("FILTER", "Unknown")
 
 # Access by index
 value = header[7]  # 8th card's value
@@ -101,20 +101,20 @@ value = header[7]  # 8th card's value
 
 ```python
 # Update existing keyword
-header['OBSERVER'] = 'Edwin Hubble'
+header["OBSERVER"] = "Edwin Hubble"
 
 # Add/update with comment
-header['OBSERVER'] = ('Edwin Hubble', 'Name of observer')
+header["OBSERVER"] = ("Edwin Hubble", "Name of observer")
 
 # Add keyword at specific position
-header.insert(5, ('NEWKEY', 'value', 'comment'))
+header.insert(5, ("NEWKEY", "value", "comment"))
 
 # Add HISTORY and COMMENT
-header['HISTORY'] = 'File processed on 2025-01-15'
-header['COMMENT'] = 'Note about the data'
+header["HISTORY"] = "File processed on 2025-01-15"
+header["COMMENT"] = "Note about the data"
 
 # Delete keyword
-del header['OLDKEY']
+del header["OLDKEY"]
 ```
 
 ### Header Cards
@@ -140,8 +140,8 @@ for card in header.cards:
 data = hdul[1].data  # Returns NumPy array
 
 # Data properties
-print(data.shape)      # e.g., (1024, 1024)
-print(data.dtype)      # e.g., float32
+print(data.shape)  # e.g., (1024, 1024)
+print(data.dtype)  # e.g., float32
 print(data.min(), data.max())
 
 # Access specific pixels
@@ -191,14 +191,14 @@ data = np.random.random((100, 100))
 hdu = fits.PrimaryHDU(data=data)
 
 # Add header keywords
-hdu.header['OBJECT'] = 'Test Image'
-hdu.header['EXPTIME'] = 300.0
+hdu.header["OBJECT"] = "Test Image"
+hdu.header["EXPTIME"] = 300.0
 
 # Write to file
-hdu.writeto('new_image.fits')
+hdu.writeto("new_image.fits")
 
 # Overwrite if exists
-hdu.writeto('new_image.fits', overwrite=True)
+hdu.writeto("new_image.fits", overwrite=True)
 ```
 
 ### Multi-Extension File
@@ -206,20 +206,20 @@ hdu.writeto('new_image.fits', overwrite=True)
 ```python
 # Create primary HDU (can have no data)
 primary = fits.PrimaryHDU()
-primary.header['TELESCOP'] = 'HST'
+primary.header["TELESCOP"] = "HST"
 
 # Create image extensions
 sci_data = np.ones((100, 100))
-sci = fits.ImageHDU(data=sci_data, name='SCI')
+sci = fits.ImageHDU(data=sci_data, name="SCI")
 
 err_data = np.ones((100, 100)) * 0.1
-err = fits.ImageHDU(data=err_data, name='ERR')
+err = fits.ImageHDU(data=err_data, name="ERR")
 
 # Combine into HDUList
 hdul = fits.HDUList([primary, sci, err])
 
 # Write to file
-hdul.writeto('multi_extension.fits')
+hdul.writeto("multi_extension.fits")
 ```
 
 ## Working with Table Data
@@ -228,13 +228,13 @@ hdul.writeto('multi_extension.fits')
 
 ```python
 # Open table
-with fits.open('table.fits') as hdul:
+with fits.open("table.fits") as hdul:
     table = hdul[1].data  # BinTableHDU or TableHDU
 
     # Access columns
-    ra = table['RA']
-    dec = table['DEC']
-    mag = table['MAG']
+    ra = table["RA"]
+    dec = table["DEC"]
+    mag = table["MAG"]
 
     # Access rows
     first_row = table[0]
@@ -250,18 +250,17 @@ with fits.open('table.fits') as hdul:
 
 ```python
 # Define columns
-col1 = fits.Column(name='ID', format='K', array=[1, 2, 3, 4])
-col2 = fits.Column(name='RA', format='D', array=[10.5, 11.2, 12.3, 13.1])
-col3 = fits.Column(name='DEC', format='D', array=[41.2, 42.1, 43.5, 44.2])
-col4 = fits.Column(name='Name', format='20A',
-                   array=['Star1', 'Star2', 'Star3', 'Star4'])
+col1 = fits.Column(name="ID", format="K", array=[1, 2, 3, 4])
+col2 = fits.Column(name="RA", format="D", array=[10.5, 11.2, 12.3, 13.1])
+col3 = fits.Column(name="DEC", format="D", array=[41.2, 42.1, 43.5, 44.2])
+col4 = fits.Column(name="Name", format="20A", array=["Star1", "Star2", "Star3", "Star4"])
 
 # Create table HDU
 table_hdu = fits.BinTableHDU.from_columns([col1, col2, col3, col4])
-table_hdu.name = 'CATALOG'
+table_hdu.name = "CATALOG"
 
 # Write to file
-table_hdu.writeto('catalog.fits', overwrite=True)
+table_hdu.writeto("catalog.fits", overwrite=True)
 ```
 
 ### Column Formats
@@ -281,9 +280,9 @@ Common FITS table column formats:
 ### Update Mode
 
 ```python
-with fits.open('file.fits', mode='update') as hdul:
+with fits.open("file.fits", mode="update") as hdul:
     # Modify header
-    hdul[0].header['NEWKEY'] = 'value'
+    hdul[0].header["NEWKEY"] = "value"
 
     # Modify data
     hdul[1].data[100, 100] = 999
@@ -296,9 +295,9 @@ with fits.open('file.fits', mode='update') as hdul:
 ```python
 # Add new extension to existing file
 new_data = np.random.random((50, 50))
-new_hdu = fits.ImageHDU(data=new_data, name='NEW_EXT')
+new_hdu = fits.ImageHDU(data=new_data, name="NEW_EXT")
 
-with fits.open('file.fits', mode='append') as hdul:
+with fits.open("file.fits", mode="append") as hdul:
     hdul.append(new_hdu)
 ```
 
@@ -308,38 +307,38 @@ For quick operations without managing HDU lists:
 
 ```python
 # Get data only
-data = fits.getdata('file.fits', ext=1)
+data = fits.getdata("file.fits", ext=1)
 
 # Get header only
-header = fits.getheader('file.fits', ext=0)
+header = fits.getheader("file.fits", ext=0)
 
 # Get both
-data, header = fits.getdata('file.fits', ext=1, header=True)
+data, header = fits.getdata("file.fits", ext=1, header=True)
 
 # Get single keyword value
-exptime = fits.getval('file.fits', 'EXPTIME', ext=0)
+exptime = fits.getval("file.fits", "EXPTIME", ext=0)
 
 # Set keyword value
-fits.setval('file.fits', 'NEWKEY', value='newvalue', ext=0)
+fits.setval("file.fits", "NEWKEY", value="newvalue", ext=0)
 
 # Write simple file
-fits.writeto('output.fits', data, header, overwrite=True)
+fits.writeto("output.fits", data, header, overwrite=True)
 
 # Append to file
-fits.append('file.fits', data, header)
+fits.append("file.fits", data, header)
 
 # Display file info
-fits.info('file.fits')
+fits.info("file.fits")
 ```
 
 ## Comparing FITS Files
 
 ```python
 # Print differences between two files
-fits.printdiff('file1.fits', 'file2.fits')
+fits.printdiff("file1.fits", "file2.fits")
 
 # Compare programmatically
-diff = fits.FITSDiff('file1.fits', 'file2.fits')
+diff = fits.FITSDiff("file1.fits", "file2.fits")
 print(diff.report())
 ```
 
@@ -351,10 +350,10 @@ print(diff.report())
 from astropy.table import Table
 
 # FITS to Table
-table = Table.read('catalog.fits')
+table = Table.read("catalog.fits")
 
 # Table to FITS
-table.write('output.fits', format='fits', overwrite=True)
+table.write("output.fits", format="fits", overwrite=True)
 ```
 
 ## Best Practices
@@ -375,22 +374,23 @@ Some files violate FITS standards:
 
 ```python
 # Ignore verification warnings
-hdul = fits.open('bad_file.fits', ignore_missing_end=True)
+hdul = fits.open("bad_file.fits", ignore_missing_end=True)
 
 # Fix non-standard files
-hdul = fits.open('bad_file.fits')
-hdul.verify('fix')  # Try to fix issues
-hdul.writeto('fixed_file.fits')
+hdul = fits.open("bad_file.fits")
+hdul.verify("fix")  # Try to fix issues
+hdul.writeto("fixed_file.fits")
 ```
 
 ### Large File Performance
 
 ```python
 # Use memory mapping (default)
-hdul = fits.open('huge_file.fits', memmap=True)
+hdul = fits.open("huge_file.fits", memmap=True)
 
 # For write operations with large arrays, use Dask
 import dask.array as da
+
 large_array = da.random.random((10000, 10000))
-fits.writeto('output.fits', large_array)
+fits.writeto("output.fits", large_array)
 ```

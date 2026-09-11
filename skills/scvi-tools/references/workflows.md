@@ -19,8 +19,8 @@ adata = sc.read_h5ad("data.h5ad")
 
 # Basic QC metrics
 sc.pp.calculate_qc_metrics(adata, inplace=True)
-adata.var['mt'] = adata.var_names.str.startswith('MT-')
-sc.pp.calculate_qc_metrics(adata, qc_vars=['mt'], inplace=True)
+adata.var["mt"] = adata.var_names.str.startswith("MT-")
+sc.pp.calculate_qc_metrics(adata, qc_vars=["mt"], inplace=True)
 ```
 
 ### 2. Quality Control
@@ -34,11 +34,11 @@ sc.pp.filter_cells(adata, max_genes=5000)
 sc.pp.filter_genes(adata, min_cells=3)
 
 # Filter by mitochondrial content
-adata = adata[adata.obs['pct_counts_mt'] < 20, :]
+adata = adata[adata.obs["pct_counts_mt"] < 20, :]
 
 # Remove doublets (optional, before training)
 sc.external.pp.scrublet(adata)
-adata = adata[~adata.obs['predicted_doublet'], :]
+adata = adata[~adata.obs["predicted_doublet"], :]
 ```
 
 ### 3. Preprocessing for scvi-tools
@@ -48,15 +48,15 @@ adata = adata[~adata.obs['predicted_doublet'], :]
 # If you've already normalized, use the raw layer or reload data
 
 # Save raw counts if not already available
-if 'counts' not in adata.layers:
-    adata.layers['counts'] = adata.X.copy()
+if "counts" not in adata.layers:
+    adata.layers["counts"] = adata.X.copy()
 
 # Feature selection (optional but recommended)
 sc.pp.highly_variable_genes(
     adata,
     n_top_genes=4000,
     subset=False,  # Keep all genes, just mark HVGs
-    batch_key="batch"  # If multiple batches
+    batch_key="batch",  # If multiple batches
 )
 
 # Filter to HVGs (optional)
@@ -72,11 +72,11 @@ scvi.model.SCVI.setup_anndata(
     layer="counts",  # Use raw counts
     batch_key="batch",  # Technical batches
     categorical_covariate_keys=["donor", "condition"],
-    continuous_covariate_keys=["percent_mito", "n_counts"]
+    continuous_covariate_keys=["percent_mito", "n_counts"],
 )
 
 # Check registration
-adata.uns['_scvi']['summary_stats']
+adata.uns["_scvi"]["summary_stats"]
 ```
 
 ### 5. Model Training
@@ -86,19 +86,15 @@ adata.uns['_scvi']['summary_stats']
 model = scvi.model.SCVI(
     adata,
     n_latent=30,  # Latent dimensions
-    n_layers=2,   # Network depth
-    n_hidden=128, # Hidden layer size
+    n_layers=2,  # Network depth
+    n_hidden=128,  # Hidden layer size
     dropout_rate=0.1,
-    gene_likelihood="zinb"  # zero-inflated negative binomial
+    gene_likelihood="zinb",  # zero-inflated negative binomial
 )
 
 # Train model
 model.train(
-    max_epochs=400,
-    batch_size=128,
-    train_size=0.9,
-    early_stopping=True,
-    check_val_every_n_epoch=10
+    max_epochs=400, batch_size=128, train_size=0.9, early_stopping=True, check_val_every_n_epoch=10
 )
 
 # View training history
@@ -117,7 +113,7 @@ adata.obsm["X_scVI"] = latent
 normalized = model.get_normalized_expression(
     adata,
     library_size=1e4,
-    n_samples=25  # Monte Carlo samples
+    n_samples=25,  # Monte Carlo samples
 )
 adata.layers["scvi_normalized"] = normalized
 ```
@@ -135,11 +131,7 @@ sc.pl.umap(adata, color=["leiden", "batch", "cell_type"])
 
 # Differential expression
 de_results = model.differential_expression(
-    groupby="leiden",
-    group1="0",
-    group2="1",
-    mode="change",
-    delta=0.25
+    groupby="leiden", group1="0", group2="1", mode="change", delta=0.25
 )
 ```
 
@@ -193,16 +185,12 @@ from scvi.model import SCVI
 latent_dims = [10, 20, 30]
 n_layers_options = [1, 2]
 
-best_score = float('-inf')
+best_score = float("-inf")
 best_params = None
 
 for n_latent in latent_dims:
     for n_layers in n_layers_options:
-        model = SCVI(
-            adata,
-            n_latent=n_latent,
-            n_layers=n_layers
-        )
+        model = SCVI(adata, n_latent=n_latent, n_layers=n_layers)
         model.train(max_epochs=200)
 
         # Evaluate on validation set
@@ -220,20 +208,17 @@ print(f"Best params: {best_params}")
 ```python
 import optuna
 
+
 def objective(trial):
     n_latent = trial.suggest_int("n_latent", 10, 50)
     n_layers = trial.suggest_int("n_layers", 1, 3)
     n_hidden = trial.suggest_categorical("n_hidden", [64, 128, 256])
 
-    model = scvi.model.SCVI(
-        adata,
-        n_latent=n_latent,
-        n_layers=n_layers,
-        n_hidden=n_hidden
-    )
+    model = scvi.model.SCVI(adata, n_latent=n_latent, n_layers=n_layers, n_hidden=n_hidden)
 
     model.train(max_epochs=200, early_stopping=True)
     return model.history["elbo_validation"][-1]
+
 
 study = optuna.create_study(direction="maximize")
 study.optimize(objective, n_trials=20)
@@ -258,6 +243,7 @@ model.train(accelerator="gpu", devices=2)
 
 # Check if GPU is being used
 import torch
+
 print(f"CUDA available: {torch.cuda.is_available()}")
 print(f"GPU count: {torch.cuda.device_count()}")
 ```
@@ -273,6 +259,7 @@ model.train(precision=16)
 
 # Clear cache between runs
 import torch
+
 torch.cuda.empty_cache()
 ```
 
@@ -294,7 +281,7 @@ scvi.model.SCVI.setup_anndata(
     adata,
     batch_key="sequencing_batch",
     categorical_covariate_keys=["donor", "tissue"],
-    continuous_covariate_keys=["percent_mito"]
+    continuous_covariate_keys=["percent_mito"],
 )
 ```
 
@@ -304,8 +291,7 @@ scvi.model.SCVI.setup_anndata(
 # When batches have hierarchical structure
 # E.g., samples within studies
 adata.obs["batch_hierarchy"] = (
-    adata.obs["study"].astype(str) + "_" +
-    adata.obs["sample"].astype(str)
+    adata.obs["study"].astype(str) + "_" + adata.obs["sample"].astype(str)
 )
 
 scvi.model.SCVI.setup_anndata(adata, batch_key="batch_hierarchy")
@@ -335,10 +321,7 @@ ref_model = scvi.model.SCVI.load("reference_model", adata=ref_adata)
 scvi.model.SCVI.setup_anndata(query_adata, batch_key="batch")
 
 # Transfer learning
-query_model = scvi.model.SCVI.load_query_data(
-    query_adata,
-    "reference_model"
-)
+query_model = scvi.model.SCVI.load_query_data(query_adata, "reference_model")
 
 # Fine-tune on query (optional)
 query_model.train(max_epochs=200)
@@ -382,12 +365,7 @@ mini_model = scvi.model.SCVI.load("minified_model", adata=minified)
 from scvi.data import AnnDataLoader
 
 # For very large datasets
-dataloader = AnnDataLoader(
-    adata,
-    batch_size=128,
-    shuffle=True,
-    drop_last=False
-)
+dataloader = AnnDataLoader(adata, batch_size=128, shuffle=True, drop_last=False)
 
 # Custom training loop (advanced)
 for batch in dataloader:
@@ -399,7 +377,7 @@ for batch in dataloader:
 
 ```python
 # For data too large for memory
-adata = sc.read_h5ad("huge_dataset.h5ad", backed='r')
+adata = sc.read_h5ad("huge_dataset.h5ad", backed="r")
 
 # scvi-tools works with backed mode
 scvi.model.SCVI.setup_anndata(adata)
@@ -426,13 +404,11 @@ shap.summary_plot(shap_values, feature_names=adata.var_names)
 
 ```python
 # Get gene-gene correlation matrix
-correlation = model.get_feature_correlation_matrix(
-    adata,
-    transform_batch="batch1"
-)
+correlation = model.get_feature_correlation_matrix(adata, transform_batch="batch1")
 
 # Visualize top correlated genes
 import seaborn as sns
+
 sns.heatmap(correlation[:50, :50], cmap="coolwarm")
 ```
 
@@ -466,7 +442,7 @@ model = scvi.model.SCVI(adata, gene_likelihood="nb")
 model = scvi.model.SCVI(
     adata,
     encode_covariates=True,  # Encode batch in encoder
-    deeply_inject_covariates=False
+    deeply_inject_covariates=False,
 )
 
 # Or try opposite
@@ -504,7 +480,7 @@ model.train(precision=16)
 model = scvi.model.SCVI(adata, n_latent=10, n_hidden=64)
 
 # Use backed AnnData
-adata = sc.read_h5ad("data.h5ad", backed='r')
+adata = sc.read_h5ad("data.h5ad", backed="r")
 ```
 
 ## Performance Benchmarking
@@ -527,6 +503,7 @@ print(f"Inference time: {inference_time:.2f}s")
 # Memory usage
 import psutil
 import os
+
 process = psutil.Process(os.getpid())
 memory_gb = process.memory_info().rss / 1024**3
 print(f"Memory usage: {memory_gb:.2f} GB")

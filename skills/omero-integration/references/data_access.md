@@ -40,13 +40,16 @@ my_exp_id = conn.getUser().getId()
 default_group_id = conn.getEventContext().groupId
 
 # List projects with filters
-for project in conn.getObjects("Project", opts={
-    'owner': my_exp_id,                    # Filter by owner
-    'group': default_group_id,             # Filter by group
-    'order_by': 'lower(obj.name)',         # Sort alphabetically
-    'limit': 10,                           # Limit results
-    'offset': 0                            # Pagination offset
-}):
+for project in conn.getObjects(
+    "Project",
+    opts={
+        "owner": my_exp_id,  # Filter by owner
+        "group": default_group_id,  # Filter by group
+        "order_by": "lower(obj.name)",  # Sort alphabetically
+        "limit": 10,  # Limit results
+        "offset": 0,  # Pagination offset
+    },
+):
     print(f"Project: {project.getName()}")
 ```
 
@@ -58,7 +61,7 @@ for dataset in conn.getObjects("Dataset"):
     print(f"Dataset: {dataset.getName()} (ID: {dataset.getId()})")
 
 # List orphaned datasets (not in any project)
-for dataset in conn.getObjects("Dataset", opts={'orphaned': True}):
+for dataset in conn.getObjects("Dataset", opts={"orphaned": True}):
     print(f"Orphaned Dataset: {dataset.getName()}")
 ```
 
@@ -71,11 +74,11 @@ for image in conn.getObjects("Image"):
 
 # List images in specific dataset
 dataset_id = 123
-for image in conn.getObjects("Image", opts={'dataset': dataset_id}):
+for image in conn.getObjects("Image", opts={"dataset": dataset_id}):
     print(f"Image: {image.getName()}")
 
 # List orphaned images
-for image in conn.getObjects("Image", opts={'orphaned': True}):
+for image in conn.getObjects("Image", opts={"orphaned": True}):
     print(f"Orphaned Image: {image.getName()}")
 ```
 
@@ -143,15 +146,13 @@ datasets = conn.getObjects("Dataset", attributes={"name": "Control Group"})
 
 ```python
 # Find tags with specific text value
-tags = conn.getObjects("TagAnnotation",
-                      attributes={"textValue": "experiment_tag"})
+tags = conn.getObjects("TagAnnotation", attributes={"textValue": "experiment_tag"})
 
 for tag in tags:
     print(f"Tag: {tag.getValue()}")
 
 # Find map annotations
-map_anns = conn.getObjects("MapAnnotation",
-                          attributes={"ns": "custom.namespace"})
+map_anns = conn.getObjects("MapAnnotation", attributes={"ns": "custom.namespace"})
 ```
 
 ## Navigating Hierarchies
@@ -190,7 +191,7 @@ if dataset:
 
 ```python
 # Traverse complete project hierarchy
-for project in conn.getObjects("Project", opts={'order_by': 'lower(obj.name)'}):
+for project in conn.getObjects("Project", opts={"order_by": "lower(obj.name)"}):
     print(f"Project: {project.getName()} (ID: {project.getId()})")
 
     for dataset in project.listChildren():
@@ -362,7 +363,7 @@ print(f"Group: {group.getName()} (ID: {group.getId()})")
 ```python
 # Get objects for specific user
 user_id = 5
-datasets = conn.getObjects("Dataset", opts={'owner': user_id})
+datasets = conn.getObjects("Dataset", opts={"owner": user_id})
 
 for dataset in datasets:
     print(f"Dataset: {dataset.getName()}")
@@ -378,11 +379,9 @@ page_size = 50
 offset = 0
 
 while True:
-    images = list(conn.getObjects("Image", opts={
-        'limit': page_size,
-        'offset': offset,
-        'order_by': 'obj.id'
-    }))
+    images = list(
+        conn.getObjects("Image", opts={"limit": page_size, "offset": offset, "order_by": "obj.id"})
+    )
 
     if not images:
         break
@@ -397,19 +396,13 @@ while True:
 
 ```python
 # Sort by name (case-insensitive)
-projects = conn.getObjects("Project", opts={
-    'order_by': 'lower(obj.name)'
-})
+projects = conn.getObjects("Project", opts={"order_by": "lower(obj.name)"})
 
 # Sort by ID (ascending)
-datasets = conn.getObjects("Dataset", opts={
-    'order_by': 'obj.id'
-})
+datasets = conn.getObjects("Dataset", opts={"order_by": "obj.id"})
 
 # Sort by name (descending)
-images = conn.getObjects("Image", opts={
-    'order_by': 'lower(obj.name) desc'
-})
+images = conn.getObjects("Image", opts={"order_by": "lower(obj.name) desc"})
 ```
 
 ### Combining Filters
@@ -419,14 +412,17 @@ images = conn.getObjects("Image", opts={
 my_exp_id = conn.getUser().getId()
 default_group_id = conn.getEventContext().groupId
 
-images = conn.getObjects("Image", opts={
-    'owner': my_exp_id,
-    'group': default_group_id,
-    'dataset': dataset_id,
-    'order_by': 'lower(obj.name)',
-    'limit': 100,
-    'offset': 0
-})
+images = conn.getObjects(
+    "Image",
+    opts={
+        "owner": my_exp_id,
+        "group": default_group_id,
+        "dataset": dataset_id,
+        "order_by": "lower(obj.name)",
+        "limit": 100,
+        "offset": 0,
+    },
+)
 ```
 
 ## Counting Objects
@@ -460,7 +456,7 @@ print(f"Image has {annotation_count} annotations")
 
 ```python
 # Datasets not linked to any project
-orphaned_datasets = conn.getObjects("Dataset", opts={'orphaned': True})
+orphaned_datasets = conn.getObjects("Dataset", opts={"orphaned": True})
 
 print("Orphaned Datasets:")
 for dataset in orphaned_datasets:
@@ -473,7 +469,7 @@ for dataset in orphaned_datasets:
 
 ```python
 # Images not in any dataset
-orphaned_images = conn.getObjects("Image", opts={'orphaned': True})
+orphaned_images = conn.getObjects("Image", opts={"orphaned": True})
 
 print("Orphaned Images:")
 for image in orphaned_images:
@@ -484,7 +480,7 @@ for image in orphaned_images:
 
 ```python
 # Plates not in any screen
-orphaned_plates = conn.getObjects("Plate", opts={'orphaned': True})
+orphaned_plates = conn.getObjects("Plate", opts={"orphaned": True})
 
 for plate in orphaned_plates:
     print(f"Orphaned Plate: {plate.getName()}")
@@ -496,10 +492,10 @@ for plate in orphaned_plates:
 from omero.gateway import BlitzGateway
 
 # Connection details
-HOST = 'omero.example.com'
+HOST = "omero.example.com"
 PORT = 4064
-USERNAME = 'user'
-PASSWORD = 'pass'
+USERNAME = "user"
+PASSWORD = "pass"
 
 # Connect and query data
 with BlitzGateway(USERNAME, PASSWORD, host=HOST, port=PORT) as conn:
@@ -511,7 +507,7 @@ with BlitzGateway(USERNAME, PASSWORD, host=HOST, port=PORT) as conn:
     print()
 
     # List projects with datasets and images
-    for project in conn.getObjects("Project", opts={'limit': 5}):
+    for project in conn.getObjects("Project", opts={"limit": 5}):
         print(f"Project: {project.getName()} (ID: {project.getId()})")
 
         for dataset in project.listChildren():

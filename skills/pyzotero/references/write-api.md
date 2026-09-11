@@ -6,17 +6,17 @@ Always use `item_template()` to get a valid template before creating items.
 
 ```python
 # Get a template for a specific item type
-template = zot.item_template('journalArticle')
+template = zot.item_template("journalArticle")
 
 # Fill in fields
-template['title'] = 'Deep Learning for Genomics'
-template['date'] = '2024'
-template['publicationTitle'] = 'Nature Methods'
-template['volume'] = '21'
-template['DOI'] = '10.1038/s41592-024-02233-6'
-template['creators'] = [
-    {'creatorType': 'author', 'firstName': 'Jane', 'lastName': 'Doe'},
-    {'creatorType': 'author', 'firstName': 'John', 'lastName': 'Smith'},
+template["title"] = "Deep Learning for Genomics"
+template["date"] = "2024"
+template["publicationTitle"] = "Nature Methods"
+template["volume"] = "21"
+template["DOI"] = "10.1038/s41592-024-02233-6"
+template["creators"] = [
+    {"creatorType": "author", "firstName": "Jane", "lastName": "Doe"},
+    {"creatorType": "author", "firstName": "John", "lastName": "Smith"},
 ]
 
 # Validate fields before creating (raises InvalidItemFields if invalid)
@@ -25,7 +25,7 @@ zot.check_items([template])
 # Create the item
 resp = zot.create_items([template])
 # resp: {'success': {'0': 'NEWITEMKEY'}, 'failed': {}, 'unchanged': {}}
-new_key = resp['success']['0']
+new_key = resp["success"]["0"]
 ```
 
 ### Create Multiple Items at Once
@@ -33,9 +33,9 @@ new_key = resp['success']['0']
 ```python
 templates = []
 for data in paper_data_list:
-    t = zot.item_template('journalArticle')
-    t['title'] = data['title']
-    t['DOI'] = data['doi']
+    t = zot.item_template("journalArticle")
+    t["title"] = data["title"]
+    t["DOI"] = data["doi"]
     templates.append(t)
 
 resp = zot.create_items(templates)
@@ -45,24 +45,24 @@ resp = zot.create_items(templates)
 
 ```python
 # Create a note as a child of an existing item
-note_template = zot.item_template('note')
-note_template['note'] = '<p>My annotation here</p>'
-zot.create_items([note_template], parentid='PARENTKEY')
+note_template = zot.item_template("note")
+note_template["note"] = "<p>My annotation here</p>"
+zot.create_items([note_template], parentid="PARENTKEY")
 ```
 
 ## Updating Items
 
 ```python
 # Retrieve, modify, update
-item = zot.item('ITEMKEY')
-item['data']['title'] = 'Updated Title'
-item['data']['abstractNote'] = 'New abstract text.'
+item = zot.item("ITEMKEY")
+item["data"]["title"] = "Updated Title"
+item["data"]["abstractNote"] = "New abstract text."
 success = zot.update_item(item)  # returns True or raises error
 
 # Update many items at once (auto-chunked at 50)
 items = zot.items(limit=10)
 for item in items:
-    item['data']['extra'] += '\nProcessed'
+    item["data"]["extra"] += "\nProcessed"
 zot.update_items(items)
 ```
 
@@ -70,11 +70,11 @@ zot.update_items(items)
 
 ```python
 # Must retrieve item first (version field is required)
-item = zot.item('ITEMKEY')
+item = zot.item("ITEMKEY")
 zot.delete_item([item])
 
 # Delete multiple items
-items = zot.items(tag='to-delete')
+items = zot.items(tag="to-delete")
 zot.delete_item(items)
 ```
 
@@ -89,10 +89,10 @@ item_types = zot.item_types()
 fields = zot.item_fields()
 
 # Valid fields for a specific item type
-journal_fields = zot.item_type_fields('journalArticle')
+journal_fields = zot.item_type_fields("journalArticle")
 
 # Valid creator types for an item type
-creator_types = zot.item_creator_types('journalArticle')
+creator_types = zot.item_creator_types("journalArticle")
 # [{'creatorType': 'author', 'localized': 'Author'}, ...]
 
 # All localised creator field names
@@ -102,7 +102,7 @@ creator_fields = zot.creator_fields()
 link_modes = zot.item_attachment_link_modes()
 
 # Template for an attachment
-attach_template = zot.item_template('attachment', linkmode='imported_file')
+attach_template = zot.item_template("attachment", linkmode="imported_file")
 ```
 
 ## Optimistic Locking

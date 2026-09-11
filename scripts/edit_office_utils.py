@@ -5,12 +5,11 @@ Unified editing utilities for DOCX files to prevent code duplication in future s
 
 from __future__ import annotations
 
-from docx.text.paragraph import Paragraph
-from docx.table import _Cell
-from docx.oxml.text.paragraph import CT_P
-from docx.oxml.table import CT_Tbl
 from docx.document import Document
-from docx.table import Table
+from docx.oxml.table import CT_Tbl
+from docx.oxml.text.paragraph import CT_P
+from docx.table import Table, _Cell
+from docx.text.paragraph import Paragraph
 
 
 def make_run(
@@ -33,6 +32,7 @@ def make_run(
         run.font.size = font_size
     return run
 
+
 def set_cell_text(cell: _Cell, text: str):
     """Set the text of a cell, clearing any existing paragraphs."""
     cell.text = ""  # Clears all paragraphs except the first empty one
@@ -40,6 +40,7 @@ def set_cell_text(cell: _Cell, text: str):
         cell.paragraphs[0].text = text
     else:
         cell.add_paragraph(text)
+
 
 def iter_paragraphs(parent: Document | _Cell):
     """Yield all paragraphs in a document, including those in tables and nested tables."""
@@ -59,6 +60,7 @@ def iter_paragraphs(parent: Document | _Cell):
                 for cell in row.cells:
                     yield from iter_paragraphs(cell)
 
+
 def replace_across_runs(paragraph: Paragraph, search_text: str, replace_text: str) -> bool:
     """
     Naively replaces search_text with replace_text within a paragraph's text.
@@ -71,6 +73,7 @@ def replace_across_runs(paragraph: Paragraph, search_text: str, replace_text: st
         paragraph.add_run(new_text)
         return True
     return False
+
 
 def clear_cell(cell: _Cell):
     """Clears all content from a cell."""

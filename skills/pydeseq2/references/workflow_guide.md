@@ -49,12 +49,7 @@ counts_df = counts_df.loc[samples_to_keep]
 metadata = metadata.loc[samples_to_keep]
 
 # Initialize DeseqDataSet
-dds = DeseqDataSet(
-    counts=counts_df,
-    metadata=metadata,
-    design="~condition",
-    refit_cooks=True
-)
+dds = DeseqDataSet(counts=counts_df, metadata=metadata, design="~condition", refit_cooks=True)
 
 # Run normalization and fitting
 dds.deseq2()
@@ -65,7 +60,7 @@ ds = DeseqStats(
     contrast=["condition", "treated", "control"],
     alpha=0.05,
     cooks_filter=True,
-    independent_filter=True
+    independent_filter=True,
 )
 ds.summary()
 
@@ -122,11 +117,7 @@ with open("metadata.pkl", "rb") as f:
 import anndata as ad
 
 adata = ad.read_h5ad("data.h5ad")
-counts_df = pd.DataFrame(
-    adata.X,
-    index=adata.obs_names,
-    columns=adata.var_names
-)
+counts_df = pd.DataFrame(adata.X, index=adata.obs_names, columns=adata.var_names)
 metadata = adata.obs
 ```
 
@@ -151,9 +142,7 @@ metadata = metadata.loc[samples_to_keep]
 ```python
 # Keep only samples that meet all criteria
 mask = (
-    ~metadata.condition.isna() &
-    (metadata.batch.isin(["batch1", "batch2"])) &
-    (metadata.age >= 18)
+    ~metadata.condition.isna() & (metadata.batch.isin(["batch1", "batch2"])) & (metadata.age >= 18)
 )
 counts_df = counts_df.loc[mask]
 metadata = metadata.loc[mask]
@@ -187,19 +176,12 @@ from pydeseq2.dds import DeseqDataSet
 from pydeseq2.ds import DeseqStats
 
 # Design: model expression as a function of condition
-dds = DeseqDataSet(
-    counts=counts_df,
-    metadata=metadata,
-    design="~condition"
-)
+dds = DeseqDataSet(counts=counts_df, metadata=metadata, design="~condition")
 
 dds.deseq2()
 
 # Test treated vs control
-ds = DeseqStats(
-    dds,
-    contrast=["condition", "treated", "control"]
-)
+ds = DeseqStats(dds, contrast=["condition", "treated", "control"])
 ds.summary()
 
 # Results
@@ -218,10 +200,7 @@ treatments = ["treated_A", "treated_B", "treated_C"]
 all_results = {}
 
 for treatment in treatments:
-    ds = DeseqStats(
-        dds,
-        contrast=["condition", treatment, "control"]
-    )
+    ds = DeseqStats(dds, contrast=["condition", treatment, "control"])
     ds.summary()
     all_results[treatment] = ds.results_df
 
@@ -241,19 +220,12 @@ Account for batch effects while testing condition:
 
 ```python
 # Design includes both batch and condition
-dds = DeseqDataSet(
-    counts=counts_df,
-    metadata=metadata,
-    design="~batch + condition"
-)
+dds = DeseqDataSet(counts=counts_df, metadata=metadata, design="~batch + condition")
 
 dds.deseq2()
 
 # Test condition effect while controlling for batch
-ds = DeseqStats(
-    dds,
-    contrast=["condition", "treated", "control"]
-)
+ds = DeseqStats(dds, contrast=["condition", "treated", "control"])
 ds.summary()
 ```
 
@@ -264,9 +236,7 @@ Test whether treatment effect differs between groups:
 ```python
 # Design includes interaction term
 dds = DeseqDataSet(
-    counts=counts_df,
-    metadata=metadata,
-    design="~group + condition + group:condition"
+    counts=counts_df, metadata=metadata, design="~group + condition + group:condition"
 )
 
 dds.deseq2()
@@ -284,11 +254,7 @@ Include continuous variables like age:
 # Ensure age is numeric in metadata
 metadata["age"] = pd.to_numeric(metadata["age"])
 
-dds = DeseqDataSet(
-    counts=counts_df,
-    metadata=metadata,
-    design="~age + condition"
-)
+dds = DeseqDataSet(counts=counts_df, metadata=metadata, design="~age + condition")
 
 dds.deseq2()
 ```
@@ -344,15 +310,10 @@ results["-log10(padj)"] = -np.log10(results.padj)
 
 # Plot
 plt.figure(figsize=(10, 6))
-plt.scatter(
-    results.log2FoldChange,
-    results["-log10(padj)"],
-    alpha=0.5,
-    s=10
-)
-plt.axhline(-np.log10(0.05), color='red', linestyle='--', label='padj=0.05')
-plt.axvline(1, color='gray', linestyle='--')
-plt.axvline(-1, color='gray', linestyle='--')
+plt.scatter(results.log2FoldChange, results["-log10(padj)"], alpha=0.5, s=10)
+plt.axhline(-np.log10(0.05), color="red", linestyle="--", label="padj=0.05")
+plt.axvline(1, color="gray", linestyle="--")
+plt.axvline(-1, color="gray", linestyle="--")
 plt.xlabel("Log2 Fold Change")
 plt.ylabel("-Log10(Adjusted P-value)")
 plt.title("Volcano Plot")
@@ -369,7 +330,7 @@ plt.scatter(
     alpha=0.5,
     s=10,
     c=(results.padj < 0.05),
-    cmap='bwr'
+    cmap="bwr",
 )
 plt.xlabel("Log10(Base Mean + 1)")
 plt.ylabel("Log2 Fold Change")
@@ -456,7 +417,7 @@ dds = DeseqDataSet(
     counts=counts_df,
     metadata=metadata,
     design="~condition",
-    n_cpus=4  # Adjust based on available cores
+    n_cpus=4,  # Adjust based on available cores
 )
 
 # Process in batches if needed
@@ -514,6 +475,7 @@ print(counts_df.sum(axis=0).describe())
 
 # Visualize
 import matplotlib.pyplot as plt
+
 plt.hist(counts_df.sum(axis=0), bins=50, log=True)
 plt.xlabel("Total counts per gene")
 plt.ylabel("Frequency")
@@ -553,6 +515,7 @@ design = "~condition + batch + condition:batch"  # Add interaction
 ```python
 # Check dispersion estimates
 import matplotlib.pyplot as plt
+
 dispersions = dds.varm["dispersions"]
 plt.hist(dispersions, bins=50)
 plt.xlabel("Dispersion")

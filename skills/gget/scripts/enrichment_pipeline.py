@@ -88,7 +88,7 @@ def enrichment_pipeline(
                         "adjusted_p_value",
                         row.get("p_value", row.get("Adjusted P-value", 1)),
                     )
-                    print(f"  {i+1}. {term}")
+                    print(f"  {i + 1}. {term}")
                     print(f"     P-value: {p_val:.2e}")
 
                 results[db_key] = enrichment
@@ -181,9 +181,7 @@ def main():
         default="human",
         help="Species (human, mouse, fly, yeast, worm, fish)",
     )
-    parser.add_argument(
-        "-b", "--background", help="Background gene list file (optional)"
-    )
+    parser.add_argument("-b", "--background", help="Background gene list file (optional)")
     parser.add_argument(
         "-o",
         "--output",

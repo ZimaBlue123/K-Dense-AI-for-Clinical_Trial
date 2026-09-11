@@ -11,6 +11,7 @@ import lightning as L
 import torch
 import torch.nn.functional as F
 
+
 class MyModel(L.LightningModule):
     def __init__(self, learning_rate=0.001):
         super().__init__()
@@ -42,13 +43,10 @@ class MyModel(L.LightningModule):
 
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(self.parameters(), lr=self.hparams.learning_rate)
-        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min')
+        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode="min")
         return {
             "optimizer": optimizer,
-            "lr_scheduler": {
-                "scheduler": scheduler,
-                "monitor": "val_loss"
-            }
+            "lr_scheduler": {"scheduler": scheduler, "monitor": "val_loss"},
         }
 ```
 
@@ -74,7 +72,7 @@ def training_step(self, batch, batch_idx):
 
     # Log training metrics
     self.log("train_loss", loss, on_step=True, on_epoch=True, prog_bar=True)
-    self.log("learning_rate", self.optimizers().param_groups[0]['lr'])
+    self.log("learning_rate", self.optimizers().param_groups[0]["lr"])
 
     return loss
 ```
@@ -157,10 +155,10 @@ def configure_optimizers(self):
         "lr_scheduler": {
             "scheduler": scheduler,
             "monitor": "val_loss",  # Metric to monitor
-            "interval": "epoch",     # When to update (epoch/step)
-            "frequency": 1,          # How often to update
-            "strict": True           # Crash if monitored metric not found
-        }
+            "interval": "epoch",  # When to update (epoch/step)
+            "frequency": 1,  # How often to update
+            "strict": True,  # Crash if monitored metric not found
+        },
     }
 ```
 
@@ -179,6 +177,7 @@ Standard PyTorch forward method. Use for inference or as part of training_step.
 ```python
 def forward(self, x):
     return self.model(x)
+
 
 def training_step(self, batch, batch_idx):
     x, y = batch
@@ -297,10 +296,10 @@ Called at the beginning of fit, validate, test, or predict. Useful for stage-spe
 **Example:**
 ```python
 def setup(self, stage):
-    if stage == 'fit':
+    if stage == "fit":
         # Setup training-specific components
         self.train_dataset = load_train_data()
-    elif stage == 'test':
+    elif stage == "test":
         # Setup test-specific components
         self.test_dataset = load_test_data()
 ```
@@ -353,7 +352,7 @@ Customize checkpoint saving. Add extra state to save.
 **Example:**
 ```python
 def on_save_checkpoint(self, checkpoint):
-    checkpoint['custom_state'] = self.custom_data
+    checkpoint["custom_state"] = self.custom_data
 ```
 
 #### `on_load_checkpoint(checkpoint)`
@@ -362,7 +361,7 @@ Customize checkpoint loading. Restore extra state.
 **Example:**
 ```python
 def on_load_checkpoint(self, checkpoint):
-    self.custom_data = checkpoint.get('custom_state', default_value)
+    self.custom_data = checkpoint.get("custom_state", default_value)
 ```
 
 ## Best Practices
@@ -403,6 +402,7 @@ Use `self.log()` for automatic cross-device reduction rather than manual collect
 ```python
 self.validation_outputs.append(loss)
 
+
 def on_validation_epoch_end(self):
     avg_loss = torch.stack(self.validation_outputs).mean()
 ```
@@ -421,6 +421,7 @@ def __init__(self, learning_rate, hidden_dim):
     super().__init__()
     self.save_hyperparameters()
 
+
 # Later: Load from checkpoint
 model = MyModel.load_from_checkpoint("checkpoint.ckpt")
 print(model.hparams.learning_rate)
@@ -438,7 +439,7 @@ model = MyModel.load_from_checkpoint("path/to/checkpoint.ckpt")
 # Override hyperparameters if needed
 model = MyModel.load_from_checkpoint(
     "path/to/checkpoint.ckpt",
-    learning_rate=0.0001  # Override saved value
+    learning_rate=0.0001,  # Override saved value
 )
 
 # Use for inference
@@ -477,11 +478,9 @@ def configure_optimizers(self):
     optimizer = torch.optim.Adam(self.parameters(), lr=0.001)
     scheduler = {
         "scheduler": torch.optim.lr_scheduler.OneCycleLR(
-            optimizer,
-            max_lr=0.01,
-            total_steps=self.trainer.estimated_stepping_batches
+            optimizer, max_lr=0.01, total_steps=self.trainer.estimated_stepping_batches
         ),
-        "interval": "step"
+        "interval": "step",
     }
     return [optimizer], [scheduler]
 ```

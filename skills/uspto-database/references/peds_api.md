@@ -143,9 +143,11 @@ print(f"Current status: {app['app_status']}")
 print(f"Status date: {app['app_status_date']}")
 
 # Check for recent office actions
-recent_oas = [t for t in app['transactions']
-              if t['code'] in ['CTNF', 'CTFR', 'AOPF']
-              and t['date'] > '2024-01-01']
+recent_oas = [
+    t
+    for t in app["transactions"]
+    if t["code"] in ["CTNF", "CTFR", "AOPF"] and t["date"] > "2024-01-01"
+]
 ```
 
 ### 2. Portfolio Analysis
@@ -159,9 +161,9 @@ apps = client.search_by_customer_number("12345")
 # Calculate average pendency
 pendencies = []
 for app in apps:
-    if app['patent_issue_date']:
-        filing = datetime.strptime(app['filing_date'], '%Y-%m-%d')
-        issue = datetime.strptime(app['patent_issue_date'], '%Y-%m-%d')
+    if app["patent_issue_date"]:
+        filing = datetime.strptime(app["filing_date"], "%Y-%m-%d")
+        issue = datetime.strptime(app["patent_issue_date"], "%Y-%m-%d")
         pendencies.append((issue - filing).days)
 
 avg_pendency = sum(pendencies) / len(pendencies)
@@ -175,9 +177,9 @@ Analyze types of rejections received.
 ```python
 # Count rejection types
 rejections = {}
-for trans in app['transactions']:
-    if 'rejection' in trans['description'].lower():
-        code = trans['code']
+for trans in app["transactions"]:
+    if "rejection" in trans["description"].lower():
+        code = trans["code"]
         rejections[code] = rejections.get(code, 0) + 1
 ```
 

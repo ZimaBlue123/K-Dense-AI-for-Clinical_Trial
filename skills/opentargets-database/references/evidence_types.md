@@ -265,7 +265,7 @@ query = """
 variables = {
     "ensemblId": "ENSG00000157764",
     "efoId": "EFO_0000249",
-    "dataTypes": ["genetic_association", "somatic_mutation"]
+    "dataTypes": ["genetic_association", "somatic_mutation"],
 }
 ```
 

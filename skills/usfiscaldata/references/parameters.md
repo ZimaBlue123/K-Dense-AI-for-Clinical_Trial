@@ -21,9 +21,7 @@ When the `fields=` parameter excludes some non-numeric fields, the API automatic
 
 ```python
 # Returns sum of transaction amounts grouped by record_date and transaction_type
-params = {
-    "fields": "record_date,transaction_type,transaction_today_amt"
-}
+params = {"fields": "record_date,transaction_type,transaction_today_amt"}
 ```
 
 ## `filter=` — Filter Records
@@ -115,25 +113,26 @@ Controls how many records per page and which page to return.
 import requests
 import pandas as pd
 
+
 def fetch_all(endpoint, params=None):
     """Fetch all pages and return as DataFrame."""
     params = dict(params or {})
     params["page[size]"] = 10000
     params["page[number]"] = 1
-    
+
     base = "https://api.fiscaldata.treasury.gov/services/api/fiscal_service"
     all_data = []
-    
+
     while True:
         resp = requests.get(f"{base}{endpoint}", params=params)
         result = resp.json()
         all_data.extend(result["data"])
-        
+
         meta = result["meta"]
         if params["page[number]"] >= meta["total-pages"]:
             break
         params["page[number]"] += 1
-    
+
     return pd.DataFrame(all_data)
 ```
 
@@ -146,10 +145,10 @@ params = {
     "sort": "-record_date",
     "format": "json",
     "page[size]": 100,
-    "page[number]": 1
+    "page[number]": 1,
 }
 resp = requests.get(
     "https://api.fiscaldata.treasury.gov/services/api/fiscal_service/v1/accounting/od/rates_of_exchange",
-    params=params
+    params=params,
 )
 ```

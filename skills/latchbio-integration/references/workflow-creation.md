@@ -34,6 +34,7 @@ This generates a workflow directory with:
 from latch import workflow
 from latch.types import LatchFile, LatchDir
 
+
 @workflow
 def my_workflow(input_file: LatchFile, output_dir: LatchDir) -> LatchFile:
     """
@@ -52,6 +53,7 @@ Tasks are the individual computation steps within workflows:
 
 ```python
 from latch import small_task, large_task
+
 
 @small_task
 def process_task(input_file: LatchFile, output_dir: LatchDir) -> LatchFile:
@@ -132,10 +134,7 @@ from latch.executions import execute_workflow
 account = Account.current()
 execution = execute_workflow(
     workflow_name="my_workflow",
-    parameters={
-        "input_file": "/path/to/file",
-        "output_dir": "/path/to/output"
-    }
+    parameters={"input_file": "/path/to/file", "output_dir": "/path/to/output"},
 )
 ```
 
@@ -150,10 +149,7 @@ from latch.resources.launch_plan import LaunchPlan
 launch_plan = LaunchPlan.create(
     workflow_name="my_workflow",
     name="default_config",
-    default_inputs={
-        "input_file": "/data/sample.fastq",
-        "output_dir": "/results"
-    }
+    default_inputs={"input_file": "/data/sample.fastq", "output_dir": "/results"},
 )
 ```
 
@@ -165,12 +161,11 @@ Create dynamic UIs with conditional parameter sections:
 from latch.types import LatchParameter
 from latch.resources.conditional import conditional_section
 
+
 @workflow
 def my_workflow(
     mode: str,
-    advanced_param: str = conditional_section(
-        condition=lambda inputs: inputs.mode == "advanced"
-    )
+    advanced_param: str = conditional_section(condition=lambda inputs: inputs.mode == "advanced"),
 ):
     """Workflow with conditional parameters"""
     pass
@@ -195,15 +190,18 @@ def my_workflow(
 from latch import workflow, small_task
 from latch.types import LatchFile
 
+
 @small_task
 def quality_control(input_file: LatchFile) -> LatchFile:
     """QC step"""
     return qc_output
 
+
 @small_task
 def alignment(qc_file: LatchFile) -> LatchFile:
     """Alignment step"""
     return aligned_output
+
 
 @workflow
 def rnaseq_pipeline(input_fastq: LatchFile) -> LatchFile:
@@ -220,10 +218,12 @@ from typing import List
 from latch import workflow, small_task, map_task
 from latch.types import LatchFile
 
+
 @small_task
 def process_sample(sample: LatchFile) -> LatchFile:
     """Process individual sample"""
     return processed_sample
+
 
 @workflow
 def batch_pipeline(samples: List[LatchFile]) -> List[LatchFile]:

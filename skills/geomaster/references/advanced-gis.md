@@ -17,10 +17,11 @@ point_3d = Point(0, 0, 100)  # x, y, elevation
 line_3d = LineString([(0, 0, 0), (100, 100, 50)])
 
 # Load 3D data
-gdf_3d = gpd.read_file('buildings_3d.geojson')
+gdf_3d = gpd.read_file("buildings_3d.geojson")
 
 # Access Z coordinates
-gdf_3d['height'] = gdf_3d.geometry.apply(lambda g: g.coords[0][2] if g.has_z else None)
+gdf_3d["height"] = gdf_3d.geometry.apply(lambda g: g.coords[0][2] if g.has_z else None)
+
 
 # 3D buffer (cylinder)
 def buffer_3d(point, radius, height):
@@ -28,6 +29,7 @@ def buffer_3d(point, radius, height):
     base = Point(point.x, point.y).buffer(radius)
     # Extrude to 3D (conceptual)
     return base, point.z, point.z + height
+
 
 # 3D distance (Euclidean in 3D space)
 def distance_3d(point1, point2):
@@ -43,6 +45,7 @@ def distance_3d(point1, point2):
 ```python
 import rasterio
 import numpy as np
+
 
 # Voxel-based analysis
 def voxel_analysis(dem_path, dsm_path):
@@ -67,8 +70,9 @@ def voxel_analysis(dem_path, dsm_path):
 
     for i in range(len(height_bins) - 1):
         mask = (height >= height_bins[i]) & (height < height_bins[i + 1])
-        volume_by_class[f'{height_bins[i]}-{height_bins[i+1]}m'] = \
-            np.sum(height[mask]) * abs(pixel_area)
+        volume_by_class[f"{height_bins[i]}-{height_bins[i + 1]}m"] = np.sum(height[mask]) * abs(
+            pixel_area
+        )
 
     return volume, volume_by_class
 ```
@@ -91,7 +95,7 @@ def viewshed(dem, observer_x, observer_y, observer_height=1.7, max_distance=5000
     observer_z = dem[observer_row, observer_col] + observer_height
 
     # For each direction
-    for angle in np.linspace(0, 2*np.pi, 360):
+    for angle in np.linspace(0, 2 * np.pi, 360):
         # Cast ray
         for r in range(1, int(max_distance / cell_size)):
             row = observer_row + int(r * np.sin(angle))
@@ -124,13 +128,13 @@ import geopandas as gpd
 import pandas as pd
 
 # Create trajectory from point data
-gdf = gpd.read_file('gps_points.gpkg')
+gdf = gpd.read_file("gps_points.gpkg")
 
 # Convert to trajectory
-traj_collection = mpd.TrajectoryCollection(gdf, 'track_id', t='timestamp')
+traj_collection = mpd.TrajectoryCollection(gdf, "track_id", t="timestamp")
 
 # Split trajectories (e.g., by time gap)
-traj_collection = mpd.SplitByObservationGap(traj_collection, gap=pd.Timedelta('1 hour'))
+traj_collection = mpd.SplitByObservationGap(traj_collection, gap=pd.Timedelta("1 hour"))
 
 # Trajectory statistics
 for traj in traj_collection:
@@ -143,7 +147,7 @@ for traj in traj_collection:
 stops = mpd.stop_detection(
     traj_collection,
     max_diameter=100,  # meters
-    min_duration=pd.Timedelta('5 minutes')
+    min_duration=pd.Timedelta("5 minutes"),
 )
 
 # Generalization (simplify trajectories)
@@ -156,22 +160,23 @@ traj_moving, stops = mpd.StopSplitter(traj_collection).split()
 ### Space-Time Cube
 
 ```python
-def create_space_time_cube(gdf, time_column='timestamp', grid_size=100, time_step='1H'):
+def create_space_time_cube(gdf, time_column="timestamp", grid_size=100, time_step="1H"):
     """
     Create a 3D space-time cube for hotspot analysis.
     """
 
     # 1. Spatial binning
-    gdf['x_bin'] = (gdf.geometry.x // grid_size).astype(int)
-    gdf['y_bin'] = (gdf.geometry.y // grid_size).astype(int)
+    gdf["x_bin"] = (gdf.geometry.x // grid_size).astype(int)
+    gdf["y_bin"] = (gdf.geometry.y // grid_size).astype(int)
 
     # 2. Temporal binning
-    gdf['t_bin'] = gdf[time_column].dt.floor(time_step)
+    gdf["t_bin"] = gdf[time_column].dt.floor(time_step)
 
     # 3. Create cube (x, y, time)
-    cube = gdf.groupby(['x_bin', 'y_bin', 't_bin']).size().unstack(fill_value=0)
+    cube = gdf.groupby(["x_bin", "y_bin", "t_bin"]).size().unstack(fill_value=0)
 
     return cube
+
 
 def emerging_hot_spot_analysis(cube, k=8):
     """
@@ -198,6 +203,7 @@ def emerging_hot_spot_analysis(cube, k=8):
 from shapely.geometry import Point, LineString, Polygon
 from shapely.ops import unary_union
 
+
 # Planar graph
 def build_planar_graph(lines_gdf):
     """Build a planar graph from line features."""
@@ -216,11 +222,10 @@ def build_planar_graph(lines_gdf):
     # Add edges
     for _, line in lines_gdf.iterrows():
         coords = list(line.geometry.coords)
-        G.add_edge(coords[0], coords[-1],
-                   weight=line.geometry.length,
-                   geometry=line.geometry)
+        G.add_edge(coords[0], coords[-1], weight=line.geometry.length, geometry=line.geometry)
 
     return G
+
 
 # Topology validation
 def validate_topology(gdf):
@@ -229,7 +234,7 @@ def validate_topology(gdf):
     errors = []
 
     # 1. Check for gaps
-    if gdf.geom_type.iloc[0] == 'Polygon':
+    if gdf.geom_type.iloc[0] == "Polygon":
         dissolved = unary_union(gdf.geometry)
         for i, geom in enumerate(gdf.geometry):
             if not geom.touches(dissolved - geom):
@@ -258,12 +263,13 @@ import osmnx as ox
 import networkx as nx
 
 # Download and prepare network
-G = ox.graph_from_place('Portland, Maine, USA', network_type='drive')
+G = ox.graph_from_place("Portland, Maine, USA", network_type="drive")
 G = ox.add_edge_speeds(G)
 G = ox.add_edge_travel_times(G)
 
+
 # Multi-criteria routing
-def multi_criteria_routing(G, orig, dest, weights=['length', 'travel_time']):
+def multi_criteria_routing(G, orig, dest, weights=["length", "travel_time"]):
     """
     Find routes optimizing for multiple criteria.
     """
@@ -272,15 +278,16 @@ def multi_criteria_routing(G, orig, dest, weights=['length', 'travel_time']):
         values = [G.edges[e][w] for e in G.edges]
         min_val, max_val = min(values), max(values)
         for e in G.edges:
-            G.edges[e][f'{w}_norm'] = (G.edges[e][w] - min_val) / (max_val - min_val)
+            G.edges[e][f"{w}_norm"] = (G.edges[e][w] - min_val) / (max_val - min_val)
 
     # Combined weight
     for e in G.edges:
-        G.edges[e]['combined'] = sum(G.edges[e][f'{w}_norm'] for w in weights) / len(weights)
+        G.edges[e]["combined"] = sum(G.edges[e][f"{w}_norm"] for w in weights) / len(weights)
 
     # Find path
-    route = nx.shortest_path(G, orig, dest, weight='combined')
+    route = nx.shortest_path(G, orig, dest, weight="combined")
     return route
+
 
 # Isochrone (accessibility area)
 def isochrone(G, center_node, time_limit=600):
@@ -288,30 +295,30 @@ def isochrone(G, center_node, time_limit=600):
     Calculate accessible area within time limit.
     """
     # Get subgraph of reachable nodes
-    subgraph = nx.ego_graph(G, center_node,
-                            radius=time_limit,
-                            distance='travel_time')
+    subgraph = nx.ego_graph(G, center_node, radius=time_limit, distance="travel_time")
 
     # Get node geometries
     nodes = ox.graph_to_gdfs(subgraph, edges=False)
 
     # Create polygon of accessible area
     from shapely.geometry import MultiPoint
+
     points = MultiPoint(nodes.geometry.tolist())
     isochrone_polygon = points.convex_hull
 
     return isochrone_polygon, subgraph
+
 
 # Betweenness centrality (importance of nodes)
 def calculate_centrality(G):
     """
     Calculate betweenness centrality for network analysis.
     """
-    centrality = nx.betweenness_centrality(G, weight='length')
+    centrality = nx.betweenness_centrality(G, weight="length")
 
     # Add to nodes
     for node, value in centrality.items():
-        G.nodes[node]['betweenness'] = value
+        G.nodes[node]["betweenness"] = value
 
     return centrality
 ```
@@ -331,19 +338,18 @@ def service_area(G, facilities, max_distance=1000):
         node = ox.distance.nearest_nodes(G, facility.x, facility.y)
 
         # Get nodes within distance
-        subgraph = nx.ego_graph(G, node, radius=max_distance, distance='length')
+        subgraph = nx.ego_graph(G, node, radius=max_distance, distance="length")
 
         # Create convex hull
         nodes = ox.graph_to_gdfs(subgraph, edges=False)
         service_area = nodes.geometry.unary_union.convex_hull
 
-        service_areas.append({
-            'facility': facility,
-            'area': service_area,
-            'nodes_served': len(subgraph.nodes())
-        })
+        service_areas.append(
+            {"facility": facility, "area": service_area, "nodes_served": len(subgraph.nodes())}
+        )
 
     return service_areas
+
 
 # Location-allocation (facility location)
 def location_allocation(demand_points, candidate_sites, n_facilities=5):

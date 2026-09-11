@@ -53,8 +53,8 @@ print(f"Z-stack shape: {z_stack.shape}")
 # Get subset of 5D data (Z, C, T)
 zct_list = []
 for z in range(size_z // 2, size_z):  # Second half of Z
-    for c in range(size_c):           # All channels
-        for t in range(size_t):       # All timepoints
+    for c in range(size_c):  # All channels
+        for t in range(size_t):  # All timepoints
             zct_list.append((z, c, t))
 
 # Get planes
@@ -70,7 +70,7 @@ for i, plane in enumerate(planes):
 
 ```python
 # Define tile coordinates
-x, y = 50, 50          # Top-left corner
+x, y = 50, 50  # Top-left corner
 width, height = 100, 100  # Tile size
 tile = (x, y, width, height)
 
@@ -216,12 +216,12 @@ image.setActiveChannels([2])
 ```python
 # Set channel colors (hex format)
 channels = [1, 2, 3]
-colors = ['FF0000', '00FF00', '0000FF']  # Red, Green, Blue
+colors = ["FF0000", "00FF00", "0000FF"]  # Red, Green, Blue
 
 image.setActiveChannels(channels, colors=colors)
 
 # Use None to keep existing color
-colors = ['FF0000', None, '0000FF']  # Keep channel 2's color
+colors = ["FF0000", None, "0000FF"]  # Keep channel 2's color
 image.setActiveChannels(channels, colors=colors)
 ```
 
@@ -232,7 +232,7 @@ image.setActiveChannels(channels, colors=colors)
 channels = [1, 2]
 windows = [
     [100.0, 500.0],  # Channel 1: 100-500
-    [50.0, 300.0]    # Channel 2: 50-300
+    [50.0, 300.0],  # Channel 2: 50-300
 ]
 
 image.setActiveChannels(channels, windows=windows)
@@ -278,7 +278,7 @@ for c in range(1, image.getSizeC() + 1):
 # Color composite of first 3 channels
 image.setColorRenderingModel()
 channels = [1, 2, 3]
-colors = ['FF0000', '00FF00', '0000FF']  # RGB
+colors = ["FF0000", "00FF00", "0000FF"]  # RGB
 
 image.setActiveChannels(channels, colors=colors)
 rendered = image.renderImage(z, t)
@@ -291,7 +291,7 @@ rendered.save("rgb_composite.jpg")
 
 ```python
 # Set projection type
-image.setProjection('intmax')
+image.setProjection("intmax")
 
 # Render (projects across all Z)
 z, t = 0, 0  # Z is ignored for projections
@@ -299,16 +299,16 @@ rendered = image.renderImage(z, t)
 rendered.save("max_projection.jpg")
 
 # Reset to normal rendering
-image.setProjection('normal')
+image.setProjection("normal")
 ```
 
 ### Mean Intensity Projection
 
 ```python
-image.setProjection('intmean')
+image.setProjection("intmean")
 rendered = image.renderImage(z, t)
 rendered.save("mean_projection.jpg")
-image.setProjection('normal')
+image.setProjection("normal")
 ```
 
 ### Available Projection Types
@@ -349,6 +349,7 @@ import numpy as np
 size_x, size_y = 512, 512
 size_z, size_c, size_t = 10, 2, 1
 
+
 # Generate planes
 def plane_generator():
     """Generator that yields planes"""
@@ -359,13 +360,16 @@ def plane_generator():
                 plane = np.random.randint(0, 255, (size_y, size_x), dtype=np.uint8)
                 yield plane
 
+
 # Create image
 image = conn.createImageFromNumpySeq(
     plane_generator(),
     "Test Image",
-    size_z, size_c, size_t,
+    size_z,
+    size_c,
+    size_t,
     description="Image created from NumPy arrays",
-    dataset=None
+    dataset=None,
 )
 
 print(f"Created image ID: {image.getId()}")
@@ -381,36 +385,22 @@ size_x, size_y = 5, 4
 size_z, size_c, size_t = 1, 2, 1
 
 # Create planes
-plane1 = array(
-    [[0, 1, 2, 3, 4],
-     [5, 6, 7, 8, 9],
-     [0, 1, 2, 3, 4],
-     [5, 6, 7, 8, 9]],
-    dtype=int8
-)
+plane1 = array([[0, 1, 2, 3, 4], [5, 6, 7, 8, 9], [0, 1, 2, 3, 4], [5, 6, 7, 8, 9]], dtype=int8)
 
-plane2 = array(
-    [[5, 6, 7, 8, 9],
-     [0, 1, 2, 3, 4],
-     [5, 6, 7, 8, 9],
-     [0, 1, 2, 3, 4]],
-    dtype=int8
-)
+plane2 = array([[5, 6, 7, 8, 9], [0, 1, 2, 3, 4], [5, 6, 7, 8, 9], [0, 1, 2, 3, 4]], dtype=int8)
 
 planes = [plane1, plane2]
+
 
 def plane_gen():
     for p in planes:
         yield p
 
+
 # Create image
 desc = "Image created from hard-coded arrays"
 image = conn.createImageFromNumpySeq(
-    plane_gen(),
-    "numpy_image",
-    size_z, size_c, size_t,
-    description=desc,
-    dataset=None
+    plane_gen(), "numpy_image", size_z, size_c, size_t, description=desc, dataset=None
 )
 
 print(f"Created image: {image.getName()} (ID: {image.getId()})")
@@ -426,9 +416,11 @@ dataset = conn.getObject("Dataset", dataset_id)
 image = conn.createImageFromNumpySeq(
     plane_generator(),
     "New Analysis Result",
-    size_z, size_c, size_t,
+    size_z,
+    size_c,
+    size_t,
     description="Result from analysis pipeline",
-    dataset=dataset  # Add to dataset
+    dataset=dataset,  # Add to dataset
 )
 ```
 
@@ -445,6 +437,7 @@ dataset = source.getParent()
 pixels = source.getPrimaryPixels()
 new_size_c = 1  # Average channels
 
+
 def plane_gen():
     """Average channels together"""
     for z in range(size_z):
@@ -460,14 +453,17 @@ def plane_gen():
 
                 yield new_plane
 
+
 # Create new image
 desc = "Averaged channels from source image"
 derived = conn.createImageFromNumpySeq(
     plane_gen(),
     f"{source.getName()}_averaged",
-    size_z, new_size_c, size_t,
+    size_z,
+    new_size_c,
+    size_t,
     description=desc,
-    dataset=dataset
+    dataset=dataset,
 )
 
 print(f"Created derived image: {derived.getId()}")
@@ -522,9 +518,7 @@ import omero.model
 
 # Create image
 image = conn.createImageFromNumpySeq(
-    plane_generator(),
-    "New Image with Dimensions",
-    size_z, size_c, size_t
+    plane_generator(), "New Image with Dimensions", size_z, size_c, size_t
 )
 
 # Set pixel sizes
@@ -545,10 +539,10 @@ conn.getUpdateService().saveObject(pixels)
 from omero.gateway import BlitzGateway
 import numpy as np
 
-HOST = 'omero.example.com'
+HOST = "omero.example.com"
 PORT = 4064
-USERNAME = 'user'
-PASSWORD = 'pass'
+USERNAME = "user"
+PASSWORD = "pass"
 
 with BlitzGateway(USERNAME, PASSWORD, host=HOST, port=PORT) as conn:
     # Get source image
@@ -582,9 +576,11 @@ with BlitzGateway(USERNAME, PASSWORD, host=HOST, port=PORT) as conn:
     result = conn.createImageFromNumpySeq(
         plane_gen(),
         f"{source.getName()}_MIP",
-        1, size_c, size_t,  # Z=1 for projection
+        1,
+        size_c,
+        size_t,  # Z=1 for projection
         description="Maximum intensity projection",
-        dataset=source.getParent()
+        dataset=source.getParent(),
     )
 
     print(f"Created MIP image: {result.getId()}")

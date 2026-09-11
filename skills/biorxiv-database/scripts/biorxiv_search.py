@@ -290,9 +290,7 @@ class BioRxivSearcher:
             "title": paper.get("title", ""),
             "authors": paper.get("authors", ""),
             "author_corresponding": paper.get("author_corresponding", ""),
-            "author_corresponding_institution": paper.get(
-                "author_corresponding_institution", ""
-            ),
+            "author_corresponding_institution": paper.get("author_corresponding_institution", ""),
             "date": paper.get("date", ""),
             "version": paper.get("version", ""),
             "type": paper.get("type", ""),
@@ -324,15 +322,11 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
 
-    parser.add_argument(
-        "--verbose", "-v", action="store_true", help="Enable verbose logging"
-    )
+    parser.add_argument("--verbose", "-v", action="store_true", help="Enable verbose logging")
 
     # Search type arguments
     search_group = parser.add_argument_group("Search options")
-    search_group.add_argument(
-        "--keywords", "-k", nargs="+", help="Keywords to search for"
-    )
+    search_group.add_argument("--keywords", "-k", nargs="+", help="Keywords to search for")
     search_group.add_argument("--author", "-a", help="Author name to search for")
     search_group.add_argument("--doi", help="Get details for specific DOI")
 
@@ -340,9 +334,7 @@ def main():
     date_group = parser.add_argument_group("Date range options")
     date_group.add_argument("--start-date", help="Start date (YYYY-MM-DD)")
     date_group.add_argument("--end-date", help="End date (YYYY-MM-DD)")
-    date_group.add_argument(
-        "--days-back", type=int, help="Search N days back from today"
-    )
+    date_group.add_argument("--days-back", type=int, help="Search N days back from today")
 
     # Filter arguments
     filter_group = parser.add_argument_group("Filter options")
@@ -382,9 +374,7 @@ def main():
     # Handle date range
     end_date = args.end_date or datetime.now().strftime("%Y-%m-%d")
     if args.days_back:
-        start_date = (datetime.now() - timedelta(days=args.days_back)).strftime(
-            "%Y-%m-%d"
-        )
+        start_date = (datetime.now() - timedelta(days=args.days_back)).strftime("%Y-%m-%d")
     else:
         start_date = args.start_date
 
@@ -438,9 +428,7 @@ def main():
         results = results[: args.limit]
 
     # Format results
-    formatted_results = [
-        searcher.format_result(paper, args.include_abstract) for paper in results
-    ]
+    formatted_results = [searcher.format_result(paper, args.include_abstract) for paper in results]
 
     # Output results
     output_data = {

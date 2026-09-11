@@ -23,6 +23,7 @@ pip install --upgrade idc-index
 
 ```python
 from idc_index import IDCClient
+
 client = IDCClient()
 ```
 

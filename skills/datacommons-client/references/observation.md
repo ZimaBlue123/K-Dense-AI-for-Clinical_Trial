@@ -43,21 +43,19 @@ client = DataCommonsClient()
 response = client.observation.fetch(
     variable_dcids=["Count_Person"],
     entity_dcids=["geoId/06", "geoId/48"],  # California and Texas
-    date="latest"
+    date="latest",
 )
 
 # Get complete time series
 response = client.observation.fetch(
-    variable_dcids=["Count_Person"],
-    entity_dcids=["country/USA"],
-    date="all"
+    variable_dcids=["Count_Person"], entity_dcids=["country/USA"], date="all"
 )
 
 # Use relation expressions to query hierarchies
 response = client.observation.fetch(
     variable_dcids=["Count_Person"],
     entity_expression="geoId/06<-containedInPlace+{typeOf:County}",
-    date="2020"
+    date="2020",
 )
 ```
 
@@ -71,9 +69,7 @@ Discovers which statistical variables contain data for given entities.
 **Example Usage:**
 ```python
 # Check what variables are available for California
-available = client.observation.fetch_available_statistical_variables(
-    entity_dcids=["geoId/06"]
-)
+available = client.observation.fetch_available_statistical_variables(entity_dcids=["geoId/06"])
 ```
 
 ### 3. fetch_observations_by_entity_dcid()
@@ -95,10 +91,7 @@ Retrieves observations for multiple entities grouped by parent and type—useful
 ```python
 # Get population for all counties in California
 response = client.observation.fetch_observations_by_entity_type(
-    parent_entity="geoId/06",
-    entity_type="County",
-    variable_dcids=["Count_Person"],
-    date="2020"
+    parent_entity="geoId/06", entity_type="County", variable_dcids=["Count_Person"], date="2020"
 )
 ```
 
@@ -117,9 +110,7 @@ All response objects support:
 Use `select=["entity", "variable"]` to confirm entities have observations without retrieving actual data:
 ```python
 response = client.observation.fetch(
-    variable_dcids=["Count_Person"],
-    entity_dcids=["geoId/06"],
-    select=["entity", "variable"]
+    variable_dcids=["Count_Person"], entity_dcids=["geoId/06"], select=["entity", "variable"]
 )
 ```
 
@@ -130,7 +121,7 @@ Request `date="all"` to obtain complete historical observations for trend analys
 response = client.observation.fetch(
     variable_dcids=["Count_Person", "UnemploymentRate_Person"],
     entity_dcids=["country/USA"],
-    date="all"
+    date="all",
 )
 ```
 
@@ -141,7 +132,7 @@ Specify `filter_facet_domains` to retrieve data from specific sources for consis
 response = client.observation.fetch(
     variable_dcids=["Count_Person"],
     entity_dcids=["country/USA"],
-    filter_facet_domains=["census.gov"]
+    filter_facet_domains=["census.gov"],
 )
 ```
 
@@ -153,7 +144,7 @@ Use relation expressions to fetch observations for related entities:
 response = client.observation.fetch(
     variable_dcids=["MedianIncome_Household"],
     entity_expression="geoId/06<-containedInPlace+{typeOf:County}",
-    date="2020"
+    date="2020",
 )
 ```
 
@@ -167,9 +158,7 @@ pip install "datacommons-client[Pandas]"
 Response objects can be converted to DataFrames for analysis:
 ```python
 response = client.observation.fetch(
-    variable_dcids=["Count_Person"],
-    entity_dcids=["geoId/06", "geoId/48"],
-    date="all"
+    variable_dcids=["Count_Person"], entity_dcids=["geoId/06", "geoId/48"], date="all"
 )
 
 # Convert to DataFrame

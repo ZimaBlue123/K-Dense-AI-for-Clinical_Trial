@@ -168,23 +168,23 @@ After running detection, read the generated `.claude_resources.json` file to inf
 # Example: Use recommendations in code
 import json
 
-with open('.claude_resources.json', 'r') as f:
+with open(".claude_resources.json", "r") as f:
     resources = json.load(f)
 
 # Check parallel processing strategy
-if resources['recommendations']['parallel_processing']['strategy'] == 'high_parallelism':
-    n_jobs = resources['recommendations']['parallel_processing']['suggested_workers']
+if resources["recommendations"]["parallel_processing"]["strategy"] == "high_parallelism":
+    n_jobs = resources["recommendations"]["parallel_processing"]["suggested_workers"]
     # Use joblib, Dask, or multiprocessing with n_jobs workers
 
 # Check memory strategy
-if resources['recommendations']['memory_strategy']['strategy'] == 'memory_constrained':
+if resources["recommendations"]["memory_strategy"]["strategy"] == "memory_constrained":
     # Use Dask, Zarr, or H5py for out-of-core processing
     import dask.array as da
     # Load data in chunks
 
 # Check GPU availability
-if resources['recommendations']['gpu_acceleration']['available']:
-    backends = resources['recommendations']['gpu_acceleration']['backends']
+if resources["recommendations"]["gpu_acceleration"]["available"]:
+    backends = resources["recommendations"]["gpu_acceleration"]["backends"]
     # Use appropriate GPU library based on available backend
 ```
 
@@ -194,40 +194,40 @@ Use the resource information and recommendations to make strategic choices:
 
 **For data loading:**
 ```python
-memory_available_gb = resources['memory']['available_gb']
+memory_available_gb = resources["memory"]["available_gb"]
 dataset_size_gb = 10
 
 if dataset_size_gb > memory_available_gb * 0.5:
     # Dataset is large relative to memory, use Dask
     import dask.dataframe as dd
-    df = dd.read_csv('large_file.csv')
+
+    df = dd.read_csv("large_file.csv")
 else:
     # Dataset fits in memory, use pandas
     import pandas as pd
-    df = pd.read_csv('large_file.csv')
+
+    df = pd.read_csv("large_file.csv")
 ```
 
 **For parallel processing:**
 ```python
 from joblib import Parallel, delayed
 
-n_jobs = resources['recommendations']['parallel_processing'].get('suggested_workers', 1)
+n_jobs = resources["recommendations"]["parallel_processing"].get("suggested_workers", 1)
 
-results = Parallel(n_jobs=n_jobs)(
-    delayed(process_function)(item) for item in data
-)
+results = Parallel(n_jobs=n_jobs)(delayed(process_function)(item) for item in data)
 ```
 
 **For GPU acceleration:**
 ```python
 import torch
 
-if 'CUDA' in resources['gpu']['available_backends']:
-    device = torch.device('cuda')
-elif 'Metal' in resources['gpu']['available_backends']:
-    device = torch.device('mps')
+if "CUDA" in resources["gpu"]["available_backends"]:
+    device = torch.device("cuda")
+elif "Metal" in resources["gpu"]["available_backends"]:
+    device = torch.device("mps")
 else:
-    device = torch.device('cpu')
+    device = torch.device("cpu")
 
 model = model.to(device)
 ```

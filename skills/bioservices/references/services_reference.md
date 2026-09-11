@@ -11,6 +11,7 @@ Protein sequence and functional information database.
 **Initialization:**
 ```python
 from bioservices import UniProt
+
 u = UniProt(verbose=False)
 ```
 
@@ -54,6 +55,7 @@ Metabolic pathways, genes, and organisms database.
 **Initialization:**
 ```python
 from bioservices import KEGG
+
 k = KEGG()
 k.organism = "hsa"  # Set default organism
 ```
@@ -121,6 +123,7 @@ Official human gene naming authority.
 **Initialization:**
 ```python
 from bioservices import HGNC
+
 h = HGNC()
 ```
 
@@ -141,6 +144,7 @@ Gene annotation and query service.
 **Initialization:**
 ```python
 from bioservices import MyGeneInfo
+
 m = MyGeneInfo()
 ```
 
@@ -163,6 +167,7 @@ Dictionary of molecular entities.
 **Initialization:**
 ```python
 from bioservices import ChEBI
+
 c = ChEBI()
 ```
 
@@ -185,6 +190,7 @@ Bioactive drug-like compound database.
 **Initialization:**
 ```python
 from bioservices import ChEMBL
+
 c = ChEMBL()
 ```
 
@@ -209,6 +215,7 @@ Chemical identifier mapping service.
 **Initialization:**
 ```python
 from bioservices import UniChem
+
 u = UniChem()
 ```
 
@@ -238,6 +245,7 @@ Chemical compound database from NIH.
 **Initialization:**
 ```python
 from bioservices import PubChem
+
 p = PubChem()
 ```
 
@@ -260,6 +268,7 @@ Sequence similarity searching.
 **Initialization:**
 ```python
 from bioservices import NCBIblast
+
 s = NCBIblast(verbose=False)
 ```
 
@@ -298,6 +307,7 @@ Pathway database.
 **Initialization:**
 ```python
 from bioservices import Reactome
+
 r = Reactome()
 ```
 
@@ -318,6 +328,7 @@ Protein interaction query service (federates 30+ databases).
 **Initialization:**
 ```python
 from bioservices import PSICQUIC
+
 s = PSICQUIC()
 ```
 
@@ -349,6 +360,7 @@ Protein complex database.
 **Initialization:**
 ```python
 from bioservices import IntactComplex
+
 i = IntactComplex()
 ```
 
@@ -369,6 +381,7 @@ Integrated signaling pathway database.
 **Initialization:**
 ```python
 from bioservices import OmniPath
+
 o = OmniPath()
 ```
 
@@ -391,6 +404,7 @@ Gene Ontology annotation service.
 **Initialization:**
 ```python
 from bioservices import QuickGO
+
 g = QuickGO()
 ```
 
@@ -424,6 +438,7 @@ Data mining tool for genomic data.
 **Initialization:**
 ```python
 from bioservices import BioMart
+
 b = BioMart()
 ```
 
@@ -446,6 +461,7 @@ Gene expression database.
 **Initialization:**
 ```python
 from bioservices import ArrayExpress
+
 a = ArrayExpress()
 ```
 
@@ -467,6 +483,7 @@ Nucleotide sequence database.
 **Initialization:**
 ```python
 from bioservices import ENA
+
 e = ENA()
 ```
 
@@ -489,6 +506,7 @@ e = ENA()
 **Initialization:**
 ```python
 from bioservices import PDB
+
 p = PDB()
 ```
 
@@ -512,6 +530,7 @@ Protein family database.
 **Initialization:**
 ```python
 from bioservices import Pfam
+
 p = Pfam()
 ```
 
@@ -535,6 +554,7 @@ Systems biology model repository.
 **Initialization:**
 ```python
 from bioservices import BioModels
+
 b = BioModels()
 ```
 
@@ -554,6 +574,7 @@ Orthologous gene classification.
 **Initialization:**
 ```python
 from bioservices import COG
+
 c = COG()
 ```
 
@@ -570,6 +591,7 @@ Metabolic network models.
 **Initialization:**
 ```python
 from bioservices import BiGG
+
 b = BiGG()
 ```
 
@@ -611,7 +633,7 @@ service = Service(verbose=False)  # Suppress HTTP logs
 Services have timeouts and rate limits:
 ```python
 service.TIMEOUT = 30  # Adjust timeout
-service.DELAY = 1     # Delay between requests (if supported)
+service.DELAY = 1  # Delay between requests (if supported)
 ```
 
 ### Output Formats

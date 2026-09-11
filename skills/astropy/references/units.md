@@ -15,14 +15,14 @@ distance = 42.0 * u.meter
 velocity = 100 * u.km / u.s
 
 # Array quantities
-distances = np.array([1., 2., 3.]) * u.m
+distances = np.array([1.0, 2.0, 3.0]) * u.m
 wavelengths = [500, 600, 700] * u.nm
 ```
 
 Access components via `.value` and `.unit` attributes:
 ```python
 distance.value  # 42.0
-distance.unit   # Unit("m")
+distance.unit  # Unit("m")
 ```
 
 ## Unit Conversions
@@ -50,7 +50,7 @@ area = (5 * u.m) * (3 * u.m)  # <Quantity 15. m2>
 ratio = (10 * u.m) / (5 * u.m)  # <Quantity 2. (dimensionless)>
 
 # Decompose complex units
-time = (3.0 * u.kilometer / (130.51 * u.meter / u.second))
+time = 3.0 * u.kilometer / (130.51 * u.meter / u.second)
 time.decompose()  # <Quantity 22.986744310780782 s>
 ```
 
@@ -64,7 +64,7 @@ pressure = 1.0 * u.Pa
 pressure.cgs  # <Quantity 10. Ba>
 
 # Find equivalent representations
-(u.s ** -1).compose()  # [Unit("Bq"), Unit("Hz"), ...]
+(u.s**-1).compose()  # [Unit("Bq"), Unit("Hz"), ...]
 ```
 
 ## Equivalencies
@@ -79,11 +79,11 @@ wavelength.to(u.Hz, equivalencies=u.spectral())
 
 # Doppler equivalencies
 velocity = 1000 * u.km / u.s
-velocity.to(u.Hz, equivalencies=u.doppler_optical(500*u.nm))
+velocity.to(u.Hz, equivalencies=u.doppler_optical(500 * u.nm))
 
 # Other equivalencies
-u.brightness_temperature(500*u.GHz)
-u.doppler_radio(1.4*u.GHz)
+u.brightness_temperature(500 * u.GHz)
+u.doppler_radio(1.4 * u.GHz)
 u.mass_energy()
 u.parallax()
 ```
@@ -151,16 +151,16 @@ Format quantities with standard Python syntax:
 
 ```python
 velocity = 15.1 * u.meter / (32.0 * u.second)
-f"{velocity:0.03f}"     # '0.472 m / s'
-f"{velocity:.2e}"       # '4.72e-01 m / s'
-f"{velocity.unit:FITS}" # 'm s-1'
+f"{velocity:0.03f}"  # '0.472 m / s'
+f"{velocity:.2e}"  # '4.72e-01 m / s'
+f"{velocity.unit:FITS}"  # 'm s-1'
 ```
 
 ## Defining Custom Units
 
 ```python
 # Create new unit
-bakers_fortnight = u.def_unit('bakers_fortnight', 13 * u.day)
+bakers_fortnight = u.def_unit("bakers_fortnight", 13 * u.day)
 
 # Enable in string parsing
 u.add_enabled_units([bakers_fortnight])
@@ -173,6 +173,6 @@ Access physical constants with units:
 ```python
 from astropy.constants import c, G, M_sun, h, k_B
 
-speed_of_light = c.to(u.km/u.s)
+speed_of_light = c.to(u.km / u.s)
 gravitational_constant = G.to(u.m**3 / u.kg / u.s**2)
 ```

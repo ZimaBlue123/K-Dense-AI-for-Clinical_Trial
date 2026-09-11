@@ -101,9 +101,11 @@ Load the environment file in Python:
 
 ```python
 from dotenv import load_dotenv
+
 load_dotenv()
 
 from denario import Denario
+
 den = Denario(project_dir="./project")
 ```
 
@@ -171,10 +173,12 @@ docker run -p 8501:8501 \
 6. **Configure denario to use Vertex AI**
    ```python
    import os
-   os.environ['GOOGLE_CLOUD_PROJECT'] = 'YOUR_PROJECT_ID'
-   os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = '/path/to/credentials.json'
+
+   os.environ["GOOGLE_CLOUD_PROJECT"] = "YOUR_PROJECT_ID"
+   os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/path/to/credentials.json"
 
    from denario import Denario
+
    den = Denario(project_dir="./research")
    ```
 

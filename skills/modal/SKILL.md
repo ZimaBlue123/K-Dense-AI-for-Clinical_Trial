@@ -47,6 +47,7 @@ import modal
 
 app = modal.App("test-app")
 
+
 @app.function()
 def hello():
     print("Modal is working!")
@@ -66,9 +67,8 @@ Specify dependencies and environment for functions using Modal Images.
 import modal
 
 # Basic image with Python packages
-image = (
-    modal.Image.debian_slim(python_version="3.12")
-    .uv_pip_install("torch", "transformers", "numpy")
+image = modal.Image.debian_slim(python_version="3.12").uv_pip_install(
+    "torch", "transformers", "numpy"
 )
 
 app = modal.App("ml-app", image=image)
@@ -90,6 +90,7 @@ Define functions that run in the cloud with the `@app.function()` decorator.
 @app.function()
 def process_data(file_path: str):
     import pandas as pd
+
     df = pd.read_csv(file_path)
     return df.describe()
 ```
@@ -115,6 +116,7 @@ Attach GPUs to functions for accelerated computation.
 @app.function(gpu="H100")
 def train_model():
     import torch
+
     assert torch.cuda.is_available()
     # GPU-accelerated code here
 ```
@@ -141,9 +143,9 @@ Request CPU cores, memory, and disk for functions.
 
 ```python
 @app.function(
-    cpu=8.0,           # 8 physical cores
-    memory=32768,      # 32 GiB RAM
-    ephemeral_disk=10240  # 10 GiB disk
+    cpu=8.0,  # 8 physical cores
+    memory=32768,  # 32 GiB RAM
+    ephemeral_disk=10240,  # 10 GiB disk
 )
 def memory_intensive_task():
     pass
@@ -164,6 +166,7 @@ def analyze_sample(sample_id: int):
     # Process single sample
     return result
 
+
 @app.local_entrypoint()
 def main():
     sample_ids = range(1000)
@@ -174,9 +177,9 @@ def main():
 **Configure autoscaling:**
 ```python
 @app.function(
-    max_containers=100,      # Upper limit
-    min_containers=2,        # Keep warm
-    buffer_containers=5      # Idle buffer for bursts
+    max_containers=100,  # Upper limit
+    min_containers=2,  # Keep warm
+    buffer_containers=5,  # Idle buffer for bursts
 )
 def inference():
     pass
@@ -190,6 +193,7 @@ Use Volumes for persistent storage across function invocations.
 
 ```python
 volume = modal.Volume.from_name("my-data", create_if_missing=True)
+
 
 @app.function(volumes={"/data": volume})
 def save_results(data):
@@ -210,6 +214,7 @@ Store API keys and credentials securely using Modal Secrets.
 @app.function(secrets=[modal.Secret.from_name("huggingface")])
 def download_model():
     import os
+
     token = os.environ["HF_TOKEN"]
     # Use token for authentication
 ```
@@ -253,6 +258,7 @@ def daily_backup():
     # Backup data
     pass
 
+
 @app.function(schedule=modal.Period(hours=4))  # Every 4 hours
 def refresh_cache():
     # Update cache
@@ -274,11 +280,14 @@ import modal
 image = modal.Image.debian_slim().uv_pip_install("torch", "transformers")
 app = modal.App("llm-inference", image=image)
 
+
 # Download model at build time
 @app.function()
 def download_model():
     from transformers import AutoModel
+
     AutoModel.from_pretrained("bert-base-uncased")
+
 
 # Serve model
 @app.cls(gpu="L40S")
@@ -286,11 +295,13 @@ class Model:
     @modal.enter()
     def load_model(self):
         from transformers import pipeline
+
         self.pipe = pipeline("text-classification", device="cuda")
 
     @modal.method()
     def predict(self, text: str):
         return self.pipe(text)
+
 
 @app.local_entrypoint()
 def main():
@@ -305,9 +316,11 @@ def main():
 @app.function(cpu=2.0, memory=4096)
 def process_file(file_path: str):
     import pandas as pd
+
     df = pd.read_csv(file_path)
     # Process data
     return df.shape[0]
+
 
 @app.local_entrypoint()
 def main():
@@ -321,11 +334,12 @@ def main():
 
 ```python
 @app.function(
-    gpu="A100:2",      # 2x A100 GPUs
-    timeout=3600       # 1 hour timeout
+    gpu="A100:2",  # 2x A100 GPUs
+    timeout=3600,  # 1 hour timeout
 )
 def train_model(config: dict):
     import torch
+
     # Multi-GPU training code
     model = create_model(config)
     train(model)

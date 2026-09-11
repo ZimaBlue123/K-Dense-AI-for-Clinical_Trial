@@ -18,11 +18,7 @@ q = cirq.LineQubit(0)
 noisy_op = depol_channel(q)
 
 # Add to circuit
-circuit = cirq.Circuit(
-    cirq.H(q),
-    depol_channel(q),
-    cirq.measure(q, key='m')
-)
+circuit = cirq.Circuit(cirq.H(q), depol_channel(q), cirq.measure(q, key="m"))
 ```
 
 ### Amplitude Damping
@@ -33,10 +29,7 @@ gamma = 0.1
 amp_damp = cirq.amplitude_damp(gamma)
 
 # Apply after gate
-circuit = cirq.Circuit(
-    cirq.X(q),
-    amp_damp(q)
-)
+circuit = cirq.Circuit(cirq.X(q), amp_damp(q))
 ```
 
 ### Phase Damping
@@ -46,10 +39,7 @@ circuit = cirq.Circuit(
 gamma = 0.1
 phase_damp = cirq.phase_damp(gamma)
 
-circuit = cirq.Circuit(
-    cirq.H(q),
-    phase_damp(q)
-)
+circuit = cirq.Circuit(cirq.H(q), phase_damp(q))
 ```
 
 ### Bit Flip Noise
@@ -59,10 +49,7 @@ circuit = cirq.Circuit(
 bit_flip_prob = 0.01
 bit_flip = cirq.bit_flip(bit_flip_prob)
 
-circuit = cirq.Circuit(
-    cirq.H(q),
-    bit_flip(q)
-)
+circuit = cirq.Circuit(cirq.H(q), bit_flip(q))
 ```
 
 ### Phase Flip Noise
@@ -72,10 +59,7 @@ circuit = cirq.Circuit(
 phase_flip_prob = 0.01
 phase_flip = cirq.phase_flip(phase_flip_prob)
 
-circuit = cirq.Circuit(
-    cirq.H(q),
-    phase_flip(q)
-)
+circuit = cirq.Circuit(cirq.H(q), phase_flip(q))
 ```
 
 ### Generalized Amplitude Damping
@@ -94,10 +78,7 @@ gen_amp_damp = cirq.generalized_amplitude_damp(p=p, gamma=gamma)
 reset_to_zero = cirq.reset(q)
 
 # Reset appears as measurement followed by conditional flip
-circuit = cirq.Circuit(
-    cirq.H(q),
-    reset_to_zero
-)
+circuit = cirq.Circuit(cirq.H(q), reset_to_zero)
 ```
 
 ## Noise Models
@@ -106,9 +87,7 @@ circuit = cirq.Circuit(
 
 ```python
 # Apply same noise to all qubits
-noise = cirq.ConstantQubitNoiseModel(
-    qubit_noise_gate=cirq.depolarize(0.01)
-)
+noise = cirq.ConstantQubitNoiseModel(qubit_noise_gate=cirq.depolarize(0.01))
 
 # Simulate with noise
 simulator = cirq.DensityMatrixSimulator(noise=noise)
@@ -128,13 +107,10 @@ class CustomNoiseModel(cirq.NoiseModel):
 
         # Two-qubit gates: higher depolarizing noise
         elif len(op.qubits) == 2:
-            return [
-                op,
-                cirq.depolarize(0.01)(op.qubits[0]),
-                cirq.depolarize(0.01)(op.qubits[1])
-            ]
+            return [op, cirq.depolarize(0.01)(op.qubits[0]), cirq.depolarize(0.01)(op.qubits[1])]
 
         return op
+
 
 # Use custom noise model
 noise_model = CustomNoiseModel()
@@ -158,13 +134,10 @@ class QubitSpecificNoise(cirq.NoiseModel):
                 noise_ops.append(noise(qubit))
         return noise_ops
 
+
 # Define per-qubit noise
 q0, q1, q2 = cirq.LineQubit.range(3)
-noise_map = {
-    q0: cirq.depolarize(0.001),
-    q1: cirq.depolarize(0.005),
-    q2: cirq.depolarize(0.002)
-}
+noise_map = {q0: cirq.depolarize(0.001), q1: cirq.depolarize(0.005), q2: cirq.depolarize(0.002)}
 
 noise_model = QubitSpecificNoise(noise_map)
 ```
@@ -191,6 +164,7 @@ class ThermalNoise(cirq.NoiseModel):
             noise_ops.append(cirq.phase_damp(p_phase)(qubit))
 
         return noise_ops
+
 
 # Typical superconducting qubit parameters
 T1 = 50e-6  # 50 μs
@@ -253,6 +227,7 @@ class ReadoutNoiseModel(cirq.NoiseModel):
             return noise_ops
         return op
 
+
 # Typical readout errors
 readout_noise = ReadoutNoiseModel(p0_given_1=0.02, p1_given_0=0.01)
 ```
@@ -263,6 +238,7 @@ readout_noise = ReadoutNoiseModel(p0_given_1=0.02, p1_given_0=0.01)
 
 ```python
 import cirq
+
 
 def generate_rb_circuit(qubits, depth):
     """Generate randomized benchmarking circuit."""
@@ -278,8 +254,9 @@ def generate_rb_circuit(qubits, depth):
     # Add inverse to return to initial state (ideally)
     # (simplified - proper RB requires tracking full sequence)
 
-    circuit.append(cirq.measure(*qubits, key='result'))
+    circuit.append(cirq.measure(*qubits, key="result"))
     return circuit
+
 
 # Run RB experiment
 def run_rb_experiment(qubits, depths, repetitions=1000):
@@ -296,7 +273,7 @@ def run_rb_experiment(qubits, depths, repetitions=1000):
         for circuit in circuits:
             result = simulator.run(circuit, repetitions=repetitions)
             # Calculate survival probability (returned to |0⟩)
-            counts = result.histogram(key='result')
+            counts = result.histogram(key="result")
             survival = counts.get(0, 0) / repetitions
             total_survival += survival
 
@@ -304,6 +281,7 @@ def run_rb_experiment(qubits, depths, repetitions=1000):
         survival_probs.append(avg_survival)
 
     return survival_probs
+
 
 # Fit to extract error rate
 # p_survival = A * p^depth + B
@@ -318,7 +296,7 @@ def xeb_fidelity(circuit, simulator, ideal_probs, repetitions=10000):
 
     # Run noisy simulation
     result = simulator.run(circuit, repetitions=repetitions)
-    measured_probs = result.histogram(key='result')
+    measured_probs = result.histogram(key="result")
 
     # Normalize
     for key in measured_probs:
@@ -344,6 +322,7 @@ def xeb_fidelity(circuit, simulator, ideal_probs, repetitions=10000):
 ```python
 import matplotlib.pyplot as plt
 
+
 def plot_noise_heatmap(device, noise_metric):
     """Plot noise characteristics across 2D grid device."""
 
@@ -362,12 +341,13 @@ def plot_noise_heatmap(device, noise_metric):
 
     # Plot
     plt.figure(figsize=(10, 8))
-    plt.imshow(heatmap, cmap='RdYlGn_r', interpolation='nearest')
-    plt.colorbar(label='Error Rate')
-    plt.title('Qubit Error Rates')
-    plt.xlabel('Column')
-    plt.ylabel('Row')
+    plt.imshow(heatmap, cmap="RdYlGn_r", interpolation="nearest")
+    plt.colorbar(label="Error Rate")
+    plt.title("Qubit Error Rates")
+    plt.xlabel("Column")
+    plt.ylabel("Row")
     plt.show()
+
 
 # Example usage
 noise_metric = {q: np.random.random() * 0.01 for q in device.metadata.qubit_set}
@@ -384,22 +364,22 @@ def plot_gate_fidelities(calibration_data):
     tq_fidelities = []
 
     for qubit, metrics in calibration_data.items():
-        if 'single_qubit_rb_fidelity' in metrics:
-            sq_fidelities.append(metrics['single_qubit_rb_fidelity'])
-        if 'two_qubit_rb_fidelity' in metrics:
-            tq_fidelities.append(metrics['two_qubit_rb_fidelity'])
+        if "single_qubit_rb_fidelity" in metrics:
+            sq_fidelities.append(metrics["single_qubit_rb_fidelity"])
+        if "two_qubit_rb_fidelity" in metrics:
+            tq_fidelities.append(metrics["two_qubit_rb_fidelity"])
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
 
     ax1.hist(sq_fidelities, bins=20)
-    ax1.set_xlabel('Single-Qubit Gate Fidelity')
-    ax1.set_ylabel('Count')
-    ax1.set_title('Single-Qubit Gate Fidelities')
+    ax1.set_xlabel("Single-Qubit Gate Fidelity")
+    ax1.set_ylabel("Count")
+    ax1.set_title("Single-Qubit Gate Fidelities")
 
     ax2.hist(tq_fidelities, bins=20)
-    ax2.set_xlabel('Two-Qubit Gate Fidelity')
-    ax2.set_ylabel('Count')
-    ax2.set_title('Two-Qubit Gate Fidelities')
+    ax2.set_xlabel("Two-Qubit Gate Fidelity")
+    ax2.set_ylabel("Count")
+    ax2.set_title("Two-Qubit Gate Fidelities")
 
     plt.tight_layout()
     plt.show()
@@ -417,9 +397,7 @@ def zero_noise_extrapolation(circuit, noise_levels, simulator):
 
     for noise_level in noise_levels:
         # Scale noise
-        noisy_circuit = circuit.with_noise(
-            cirq.depolarize(p=noise_level)
-        )
+        noisy_circuit = circuit.with_noise(cirq.depolarize(p=noise_level))
 
         # Measure expectation
         result = simulator.simulate(noisy_circuit)
@@ -465,19 +443,19 @@ def mitigate_readout_errors(results, confusion_matrix):
     inv_confusion = np.linalg.inv(confusion_matrix)
 
     # Get measured counts
-    counts = results.histogram(key='result')
+    counts = results.histogram(key="result")
 
     # Convert to probability vector
     total_counts = sum(counts.values())
-    measured_probs = np.array([counts.get(i, 0) / total_counts
-                               for i in range(len(confusion_matrix))])
+    measured_probs = np.array(
+        [counts.get(i, 0) / total_counts for i in range(len(confusion_matrix))]
+    )
 
     # Apply inverse
     corrected_probs = inv_confusion @ measured_probs
 
     # Convert back to counts
-    corrected_counts = {i: int(p * total_counts)
-                       for i, p in enumerate(corrected_probs) if p > 0}
+    corrected_counts = {i: int(p * total_counts) for i, p in enumerate(corrected_probs) if p > 0}
 
     return corrected_counts
 ```
@@ -490,7 +468,7 @@ def mitigate_readout_errors(results, confusion_matrix):
 import cirq_google
 
 # Get calibration data
-processor = cirq_google.get_engine().get_processor('weber')
+processor = cirq_google.get_engine().get_processor("weber")
 noise_props = processor.get_device_specification()
 
 # Create noise model from calibration

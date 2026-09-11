@@ -114,24 +114,21 @@ import requests
 BASE_URL = "http://localhost:5055/api"
 
 # 1. Create credential
-cred = requests.post(f"{BASE_URL}/credentials", json={
-    "provider": "anthropic",
-    "name": "Anthropic Production",
-    "api_key": "sk-ant-..."
-}).json()
+cred = requests.post(
+    f"{BASE_URL}/credentials",
+    json={"provider": "anthropic", "name": "Anthropic Production", "api_key": "sk-ant-..."},
+).json()
 
 # 2. Test connection
 test = requests.post(f"{BASE_URL}/credentials/{cred['id']}/test").json()
 assert test["success"]
 
 # 3. Discover and register models
-discovered = requests.post(
-    f"{BASE_URL}/credentials/{cred['id']}/discover"
-).json()
+discovered = requests.post(f"{BASE_URL}/credentials/{cred['id']}/discover").json()
 
 requests.post(
     f"{BASE_URL}/credentials/{cred['id']}/register-models",
-    json={"model_ids": [m["id"] for m in discovered["models"]]}
+    json={"model_ids": [m["id"] for m in discovered["models"]]},
 )
 
 # 4. Auto-assign defaults

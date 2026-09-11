@@ -476,6 +476,7 @@ https://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi?
 **Best practice**:
 ```python
 import time
+
 time.sleep(0.34)  # ~3 requests/second
 # or
 time.sleep(0.11)  # ~10 requests/second with API key

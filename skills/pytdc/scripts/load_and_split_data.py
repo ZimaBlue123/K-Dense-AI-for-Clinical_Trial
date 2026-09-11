@@ -180,9 +180,9 @@ def custom_split_example():
     for frac, description in custom_fracs:
         split = data.get_split(method="scaffold", seed=42, frac=frac)
         print(f"\n{description}:")
-        print(f"  Train: {len(split['train'])} ({frac[0]*100:.0f}%)")
-        print(f"  Valid: {len(split['valid'])} ({frac[1]*100:.0f}%)")
-        print(f"  Test: {len(split['test'])} ({frac[2]*100:.0f}%)")
+        print(f"  Train: {len(split['train'])} ({frac[0] * 100:.0f}%)")
+        print(f"  Valid: {len(split['valid'])} ({frac[1] * 100:.0f}%)")
+        print(f"  Test: {len(split['test'])} ({frac[2] * 100:.0f}%)")
 
 
 def main():

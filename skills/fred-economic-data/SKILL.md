@@ -35,6 +35,7 @@ export FRED_API_KEY="your_32_character_key_here"
 Or in Python:
 ```python
 import os
+
 os.environ["FRED_API_KEY"] = "your_key_here"
 ```
 
@@ -75,11 +76,7 @@ BASE_URL = "https://api.stlouisfed.org/fred"
 # Get series observations
 response = requests.get(
     f"{BASE_URL}/series/observations",
-    params={
-        "api_key": API_KEY,
-        "series_id": "GDP",
-        "file_type": "json"
-    }
+    params={"api_key": API_KEY, "series_id": "GDP", "file_type": "json"},
 )
 data = response.json()
 ```
@@ -119,15 +116,11 @@ obs = fred.get_observations(
     series_id="GDP",
     units="pch",  # percent change
     frequency="q",  # quarterly
-    observation_start="2020-01-01"
+    observation_start="2020-01-01",
 )
 
 # Search with filters
-results = fred.search_series(
-    "unemployment",
-    filter_variable="frequency",
-    filter_value="Monthly"
-)
+results = fred.search_series("unemployment", filter_variable="frequency", filter_value="Monthly")
 ```
 
 **Reference:** See `references/series.md` for all 10 series endpoints
@@ -210,7 +203,7 @@ regional = fred.get_regional_data(
     region_type="state",
     date="2023-01-01",
     units="Percent",
-    season="NSA"
+    season="NSA",
 )
 
 # Get GeoJSON shapes
@@ -256,11 +249,7 @@ Aggregation methods: `avg` (average), `sum`, `eop` (end of period)
 
 ```python
 # Convert daily to monthly average
-monthly = fred.get_observations(
-    "DGS10",
-    frequency="m",
-    aggregation_method="avg"
-)
+monthly = fred.get_observations("DGS10", frequency="m", aggregation_method="avg")
 ```
 
 ## Real-Time (Vintage) Data
@@ -269,11 +258,7 @@ Access historical vintages of data via ALFRED:
 
 ```python
 # Get GDP as it was reported on a specific date
-vintage_gdp = fred.get_observations(
-    "GDP",
-    realtime_start="2020-01-01",
-    realtime_end="2020-01-01"
-)
+vintage_gdp = fred.get_observations("GDP", realtime_start="2020-01-01", realtime_end="2020-01-01")
 
 # Get all vintage dates for a series
 vintages = fred.get_vintage_dates("GDP")
@@ -293,10 +278,7 @@ def get_economic_snapshot(fred):
         obs = fred.get_observations(series_id, limit=1, sort_order="desc")
         if obs.get("observations"):
             latest = obs["observations"][0]
-            snapshot[series_id] = {
-                "value": latest["value"],
-                "date": latest["date"]
-            }
+            snapshot[series_id] = {"value": latest["value"], "date": latest["date"]}
 
     return snapshot
 ```
@@ -313,13 +295,9 @@ def compare_series(fred, series_ids, start_date):
         obs = fred.get_observations(
             sid,
             observation_start=start_date,
-            units="pc1"  # Normalize as percent change
+            units="pc1",  # Normalize as percent change
         )
-        data[sid] = {
-            o["date"]: float(o["value"])
-            for o in obs["observations"]
-            if o["value"] != "."
-        }
+        data[sid] = {o["date"]: float(o["value"]) for o in obs["observations"] if o["value"] != "."}
 
     return pd.DataFrame(data)
 ```
@@ -336,7 +314,7 @@ def get_upcoming_releases(fred, days=7):
     releases = fred.get_release_dates(
         realtime_start=datetime.now().strftime("%Y-%m-%d"),
         realtime_end=end_date.strftime("%Y-%m-%d"),
-        include_release_dates_with_no_data="true"
+        include_release_dates_with_no_data="true",
     )
 
     return releases
@@ -353,7 +331,7 @@ def map_state_unemployment(fred, date):
         date=date,
         units="Percent",
         frequency="a",
-        season="NSA"
+        season="NSA",
     )
 
     # Get GeoJSON for mapping

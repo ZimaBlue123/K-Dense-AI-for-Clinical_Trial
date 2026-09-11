@@ -64,18 +64,15 @@ from Bio import Entrez
 # Configure Entrez (required)
 Entrez.email = "your.email@example.com"
 
+
 # Search for datasets
 def search_geo_datasets(query, retmax=20):
     """Search GEO DataSets database"""
-    handle = Entrez.esearch(
-        db="gds",
-        term=query,
-        retmax=retmax,
-        usehistory="y"
-    )
+    handle = Entrez.esearch(db="gds", term=query, retmax=retmax, usehistory="y")
     results = Entrez.read(handle)
     handle.close()
     return results
+
 
 # Example searches
 results = search_geo_datasets("breast cancer[MeSH] AND Homo sapiens[Organism]")
@@ -97,14 +94,11 @@ Find gene-specific expression patterns:
 def search_geo_profiles(gene_name, organism="Homo sapiens", retmax=100):
     """Search GEO Profiles for a specific gene"""
     query = f"{gene_name}[Gene Name] AND {organism}[Organism]"
-    handle = Entrez.esearch(
-        db="geoprofiles",
-        term=query,
-        retmax=retmax
-    )
+    handle = Entrez.esearch(db="geoprofiles", term=query, retmax=retmax)
     results = Entrez.read(handle)
     handle.close()
     return results
+
 
 # Find TP53 expression across studies
 tp53_results = search_geo_profiles("TP53", organism="Homo sapiens")
@@ -120,19 +114,13 @@ def advanced_geo_search(terms, operator="AND"):
     query = f" {operator} ".join(terms)
     return search_geo_datasets(query)
 
+
 # Find recent high-throughput studies
-search_terms = [
-    "RNA-seq[DataSet Type]",
-    "Homo sapiens[Organism]",
-    "2024[Publication Date]"
-]
+search_terms = ["RNA-seq[DataSet Type]", "Homo sapiens[Organism]", "2024[Publication Date]"]
 results = advanced_geo_search(search_terms)
 
 # Search by author and condition
-search_terms = [
-    "Smith[Author]",
-    "diabetes[Disease]"
-]
+search_terms = ["Smith[Author]", "diabetes[Disease]"]
 results = advanced_geo_search(search_terms)
 ```
 
@@ -154,9 +142,9 @@ import GEOparse
 gse = GEOparse.get_GEO(geo="GSE123456", destdir="./data")
 
 # Access series metadata
-print(gse.metadata['title'])
-print(gse.metadata['summary'])
-print(gse.metadata['overall_design'])
+print(gse.metadata["title"])
+print(gse.metadata["summary"])
+print(gse.metadata["overall_design"])
 
 # Access sample information
 for gsm_name, gsm in gse.gsms.items():
@@ -183,15 +171,15 @@ gse = GEOparse.get_GEO(geo="GSE123456", destdir="./data")
 
 # Extract expression matrix
 # Method 1: From series matrix file (fastest)
-if hasattr(gse, 'pivot_samples'):
-    expression_df = gse.pivot_samples('VALUE')
+if hasattr(gse, "pivot_samples"):
+    expression_df = gse.pivot_samples("VALUE")
     print(expression_df.shape)  # genes x samples
 
 # Method 2: From individual samples
 expression_data = {}
 for gsm_name, gsm in gse.gsms.items():
-    if hasattr(gsm, 'table'):
-        expression_data[gsm_name] = gsm.table['VALUE']
+    if hasattr(gsm, "table"):
+        expression_data[gsm_name] = gsm.table["VALUE"]
 
 expression_df = pd.DataFrame(expression_data)
 print(f"Expression matrix: {expression_df.shape}")
@@ -207,14 +195,14 @@ gse = GEOparse.get_GEO(geo="GSE123456", destdir="./data")
 # Download supplementary files
 gse.download_supplementary_files(
     directory="./data/GSE123456_suppl",
-    download_sra=False  # Set to True to download SRA files
+    download_sra=False,  # Set to True to download SRA files
 )
 
 # List available supplementary files
 for gsm_name, gsm in gse.gsms.items():
-    if hasattr(gsm, 'supplementary_files'):
+    if hasattr(gsm, "supplementary_files"):
         print(f"Sample {gsm_name}:")
-        for file_url in gsm.metadata.get('supplementary_file', []):
+        for file_url in gsm.metadata.get("supplementary_file", []):
             print(f"  {file_url}")
 ```
 
@@ -227,20 +215,22 @@ gse = GEOparse.get_GEO(geo="GSE123456", destdir="./data")
 
 # Filter samples by metadata
 control_samples = [
-    gsm_name for gsm_name, gsm in gse.gsms.items()
-    if 'control' in gsm.metadata.get('title', [''])[0].lower()
+    gsm_name
+    for gsm_name, gsm in gse.gsms.items()
+    if "control" in gsm.metadata.get("title", [""])[0].lower()
 ]
 
 treatment_samples = [
-    gsm_name for gsm_name, gsm in gse.gsms.items()
-    if 'treatment' in gsm.metadata.get('title', [''])[0].lower()
+    gsm_name
+    for gsm_name, gsm in gse.gsms.items()
+    if "treatment" in gsm.metadata.get("title", [""])[0].lower()
 ]
 
 print(f"Control samples: {len(control_samples)}")
 print(f"Treatment samples: {len(treatment_samples)}")
 
 # Extract subset expression matrix
-expression_df = gse.pivot_samples('VALUE')
+expression_df = gse.pivot_samples("VALUE")
 control_expr = expression_df[control_samples]
 treatment_expr = expression_df[treatment_samples]
 ```
@@ -257,18 +247,15 @@ import time
 
 Entrez.email = "your.email@example.com"
 
+
 # Step 1: Search for GEO entries
 def search_geo(query, db="gds", retmax=100):
     """Search GEO using E-utilities"""
-    handle = Entrez.esearch(
-        db=db,
-        term=query,
-        retmax=retmax,
-        usehistory="y"
-    )
+    handle = Entrez.esearch(db=db, term=query, retmax=retmax, usehistory="y")
     results = Entrez.read(handle)
     handle.close()
     return results
+
 
 # Step 2: Fetch summaries
 def fetch_geo_summaries(id_list, db="gds"):
@@ -279,6 +266,7 @@ def fetch_geo_summaries(id_list, db="gds"):
     handle.close()
     return summaries
 
+
 # Step 3: Fetch full records
 def fetch_geo_records(id_list, db="gds"):
     """Fetch full GEO records"""
@@ -288,9 +276,10 @@ def fetch_geo_records(id_list, db="gds"):
     handle.close()
     return records
 
+
 # Example workflow
 search_results = search_geo("breast cancer AND Homo sapiens")
-id_list = search_results['IdList'][:5]
+id_list = search_results["IdList"][:5]
 
 summaries = fetch_geo_summaries(id_list)
 for summary in summaries:
@@ -308,12 +297,13 @@ import time
 
 Entrez.email = "your.email@example.com"
 
+
 def batch_fetch_geo_metadata(accessions, batch_size=100):
     """Fetch metadata for multiple GEO accessions"""
     results = {}
 
     for i in range(0, len(accessions), batch_size):
-        batch = accessions[i:i + batch_size]
+        batch = accessions[i : i + batch_size]
 
         # Search for each accession
         for accession in batch:
@@ -323,12 +313,9 @@ def batch_fetch_geo_metadata(accessions, batch_size=100):
                 search_results = Entrez.read(search_handle)
                 search_handle.close()
 
-                if search_results['IdList']:
+                if search_results["IdList"]:
                     # Fetch summary
-                    summary_handle = Entrez.esummary(
-                        db="gds",
-                        id=search_results['IdList'][0]
-                    )
+                    summary_handle = Entrez.esummary(db="gds", id=search_results["IdList"][0])
                     summary = Entrez.read(summary_handle)
                     summary_handle.close()
                     results[accession] = summary[0]
@@ -340,6 +327,7 @@ def batch_fetch_geo_metadata(accessions, batch_size=100):
                 print(f"Error fetching {accession}: {e}")
 
     return results
+
 
 # Fetch metadata for multiple datasets
 gse_list = ["GSE100001", "GSE100002", "GSE100003"]
@@ -355,6 +343,7 @@ GEO data can be downloaded directly via FTP:
 ```python
 import ftplib
 import os
+
 
 def download_geo_ftp(accession, file_type="matrix", dest_dir="./data"):
     """Download GEO files via FTP"""
@@ -381,12 +370,13 @@ def download_geo_ftp(accession, file_type="matrix", dest_dir="./data"):
     os.makedirs(dest_dir, exist_ok=True)
     local_file = os.path.join(dest_dir, filename)
 
-    with open(local_file, 'wb') as f:
-        ftp.retrbinary(f'RETR {filename}', f.write)
+    with open(local_file, "wb") as f:
+        ftp.retrbinary(f"RETR {filename}", f.write)
 
     ftp.quit()
     print(f"Downloaded: {local_file}")
     return local_file
+
 
 # Download series matrix file
 download_geo_ftp("GSE123456", file_type="matrix")
@@ -420,7 +410,7 @@ import matplotlib.pyplot as plt
 
 # Load dataset
 gse = GEOparse.get_GEO(geo="GSE123456", destdir="./data")
-expression_df = gse.pivot_samples('VALUE')
+expression_df = gse.pivot_samples("VALUE")
 
 # Check for missing values
 print(f"Missing values: {expression_df.isnull().sum().sum()}")
@@ -445,7 +435,7 @@ plt.title("Gene Expression Distribution")
 plt.xlabel("Average Expression")
 
 plt.tight_layout()
-plt.savefig("geo_qc.png", dpi=300, bbox_inches='tight')
+plt.savefig("geo_qc.png", dpi=300, bbox_inches="tight")
 ```
 
 **Differential Expression Analysis:**
@@ -457,7 +447,7 @@ import numpy as np
 from scipy import stats
 
 gse = GEOparse.get_GEO(geo="GSE123456", destdir="./data")
-expression_df = gse.pivot_samples('VALUE')
+expression_df = gse.pivot_samples("VALUE")
 
 # Define sample groups
 control_samples = ["GSM1", "GSM2", "GSM3"]
@@ -473,28 +463,27 @@ for gene in expression_df.index:
     fold_change = treatment_expr.mean() - control_expr.mean()
     t_stat, p_value = stats.ttest_ind(treatment_expr, control_expr)
 
-    results.append({
-        'gene': gene,
-        'log2_fold_change': fold_change,
-        'p_value': p_value,
-        'control_mean': control_expr.mean(),
-        'treatment_mean': treatment_expr.mean()
-    })
+    results.append(
+        {
+            "gene": gene,
+            "log2_fold_change": fold_change,
+            "p_value": p_value,
+            "control_mean": control_expr.mean(),
+            "treatment_mean": treatment_expr.mean(),
+        }
+    )
 
 # Create results DataFrame
 de_results = pd.DataFrame(results)
 
 # Multiple testing correction (Benjamini-Hochberg)
 from statsmodels.stats.multitest import multipletests
-_, de_results['q_value'], _, _ = multipletests(
-    de_results['p_value'],
-    method='fdr_bh'
-)
+
+_, de_results["q_value"], _, _ = multipletests(de_results["p_value"], method="fdr_bh")
 
 # Filter significant genes
 significant_genes = de_results[
-    (de_results['q_value'] < 0.05) &
-    (abs(de_results['log2_fold_change']) > 1)
+    (de_results["q_value"] < 0.05) & (abs(de_results["log2_fold_change"]) > 1)
 ]
 
 print(f"Significant genes: {len(significant_genes)}")
@@ -511,21 +500,20 @@ from scipy.cluster import hierarchy
 from scipy.spatial.distance import pdist
 
 gse = GEOparse.get_GEO(geo="GSE123456", destdir="./data")
-expression_df = gse.pivot_samples('VALUE')
+expression_df = gse.pivot_samples("VALUE")
 
 # Sample correlation heatmap
 sample_corr = expression_df.corr()
 
 plt.figure(figsize=(10, 8))
-sns.heatmap(sample_corr, cmap='coolwarm', center=0,
-            square=True, linewidths=0.5)
+sns.heatmap(sample_corr, cmap="coolwarm", center=0, square=True, linewidths=0.5)
 plt.title("Sample Correlation Matrix")
 plt.tight_layout()
-plt.savefig("sample_correlation.png", dpi=300, bbox_inches='tight')
+plt.savefig("sample_correlation.png", dpi=300, bbox_inches="tight")
 
 # Hierarchical clustering
-distances = pdist(expression_df.T, metric='correlation')
-linkage = hierarchy.linkage(distances, method='average')
+distances = pdist(expression_df.T, metric="correlation")
+linkage = hierarchy.linkage(distances, method="average")
 
 plt.figure(figsize=(12, 6))
 hierarchy.dendrogram(linkage, labels=expression_df.columns)
@@ -534,7 +522,7 @@ plt.xlabel("Samples")
 plt.ylabel("Distance")
 plt.xticks(rotation=90)
 plt.tight_layout()
-plt.savefig("sample_clustering.png", dpi=300, bbox_inches='tight')
+plt.savefig("sample_clustering.png", dpi=300, bbox_inches="tight")
 ```
 
 ### 7. Batch Processing Multiple Datasets
@@ -545,6 +533,7 @@ plt.savefig("sample_clustering.png", dpi=300, bbox_inches='tight')
 import GEOparse
 import pandas as pd
 import os
+
 
 def batch_download_geo(gse_list, destdir="./geo_data"):
     """Download multiple GEO series"""
@@ -557,28 +546,29 @@ def batch_download_geo(gse_list, destdir="./geo_data"):
 
             # Extract key information
             results[gse_id] = {
-                'title': gse.metadata.get('title', ['N/A'])[0],
-                'organism': gse.metadata.get('organism', ['N/A'])[0],
-                'platform': list(gse.gpls.keys())[0] if gse.gpls else 'N/A',
-                'num_samples': len(gse.gsms),
-                'submission_date': gse.metadata.get('submission_date', ['N/A'])[0]
+                "title": gse.metadata.get("title", ["N/A"])[0],
+                "organism": gse.metadata.get("organism", ["N/A"])[0],
+                "platform": list(gse.gpls.keys())[0] if gse.gpls else "N/A",
+                "num_samples": len(gse.gsms),
+                "submission_date": gse.metadata.get("submission_date", ["N/A"])[0],
             }
 
             # Save expression data
-            if hasattr(gse, 'pivot_samples'):
-                expr_df = gse.pivot_samples('VALUE')
+            if hasattr(gse, "pivot_samples"):
+                expr_df = gse.pivot_samples("VALUE")
                 expr_df.to_csv(f"{destdir}/{gse_id}_expression.csv")
-                results[gse_id]['num_genes'] = len(expr_df)
+                results[gse_id]["num_genes"] = len(expr_df)
 
         except Exception as e:
             print(f"Error processing {gse_id}: {e}")
-            results[gse_id] = {'error': str(e)}
+            results[gse_id] = {"error": str(e)}
 
     # Save summary
     summary_df = pd.DataFrame(results).T
     summary_df.to_csv(f"{destdir}/batch_summary.csv")
 
     return results
+
 
 # Process multiple datasets
 gse_list = ["GSE100001", "GSE100002", "GSE100003"]
@@ -592,6 +582,7 @@ import GEOparse
 import pandas as pd
 import numpy as np
 
+
 def meta_analysis_geo(gse_list, gene_of_interest):
     """Perform meta-analysis of gene expression across studies"""
     results = []
@@ -604,34 +595,33 @@ def meta_analysis_geo(gse_list, gene_of_interest):
             gpl = list(gse.gpls.values())[0]
 
             # Find gene in platform
-            if hasattr(gpl, 'table'):
+            if hasattr(gpl, "table"):
                 gene_probes = gpl.table[
-                    gpl.table['Gene Symbol'].str.contains(
-                        gene_of_interest,
-                        case=False,
-                        na=False
-                    )
+                    gpl.table["Gene Symbol"].str.contains(gene_of_interest, case=False, na=False)
                 ]
 
                 if not gene_probes.empty:
-                    expr_df = gse.pivot_samples('VALUE')
+                    expr_df = gse.pivot_samples("VALUE")
 
-                    for probe_id in gene_probes['ID']:
+                    for probe_id in gene_probes["ID"]:
                         if probe_id in expr_df.index:
                             expr_values = expr_df.loc[probe_id]
 
-                            results.append({
-                                'study': gse_id,
-                                'probe': probe_id,
-                                'mean_expression': expr_values.mean(),
-                                'std_expression': expr_values.std(),
-                                'num_samples': len(expr_values)
-                            })
+                            results.append(
+                                {
+                                    "study": gse_id,
+                                    "probe": probe_id,
+                                    "mean_expression": expr_values.mean(),
+                                    "std_expression": expr_values.std(),
+                                    "num_samples": len(expr_values),
+                                }
+                            )
 
         except Exception as e:
             print(f"Error in {gse_id}: {e}")
 
     return pd.DataFrame(results)
+
 
 # Meta-analysis for TP53
 gse_studies = ["GSE100001", "GSE100002", "GSE100003"]

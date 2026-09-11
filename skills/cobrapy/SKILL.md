@@ -24,11 +24,12 @@ from cobra.io import load_model
 
 # Load bundled test models
 model = load_model("textbook")  # E. coli core model
-model = load_model("ecoli")     # Full E. coli model
+model = load_model("ecoli")  # Full E. coli model
 model = load_model("salmonella")
 
 # Load from files
 from cobra.io import read_sbml_model, load_json_model, load_yaml_model
+
 model = read_sbml_model("path/to/model.xml")
 model = load_json_model("path/to/model.json")
 model = load_yaml_model("path/to/model.yml")
@@ -37,9 +38,10 @@ model = load_yaml_model("path/to/model.yml")
 Save models in various formats:
 ```python
 from cobra.io import write_sbml_model, save_json_model, save_yaml_model
+
 write_sbml_model(model, "output.xml")  # Preferred format
 save_json_model(model, "output.json")  # For Escher compatibility
-save_yaml_model(model, "output.yml")   # Human-readable
+save_yaml_model(model, "output.yml")  # Human-readable
 ```
 
 ### 2. Model Structure and Components
@@ -47,20 +49,20 @@ save_yaml_model(model, "output.yml")   # Human-readable
 Access and inspect model components:
 ```python
 # Access components
-model.reactions      # DictList of all reactions
-model.metabolites    # DictList of all metabolites
-model.genes          # DictList of all genes
+model.reactions  # DictList of all reactions
+model.metabolites  # DictList of all metabolites
+model.genes  # DictList of all genes
 
 # Get specific items by ID or index
 reaction = model.reactions.get_by_id("PFK")
 metabolite = model.metabolites[0]
 
 # Inspect properties
-print(reaction.reaction)        # Stoichiometric equation
-print(reaction.bounds)          # Flux constraints
+print(reaction.reaction)  # Stoichiometric equation
+print(reaction.bounds)  # Flux constraints
 print(reaction.gene_reaction_rule)  # GPR logic
-print(metabolite.formula)       # Chemical formula
-print(metabolite.compartment)   # Cellular location
+print(metabolite.formula)  # Chemical formula
+print(metabolite.compartment)  # Cellular location
 ```
 
 ### 3. Flux Balance Analysis (FBA)
@@ -87,12 +89,14 @@ solution = model.optimize()
 Parsimonious FBA (minimize total flux):
 ```python
 from cobra.flux_analysis import pfba
+
 solution = pfba(model)
 ```
 
 Geometric FBA (find central solution):
 ```python
 from cobra.flux_analysis import geometric_fba
+
 solution = geometric_fba(model)
 ```
 
@@ -112,10 +116,7 @@ fva_result = flux_variability_analysis(model, fraction_of_optimum=0.9)
 fva_result = flux_variability_analysis(model, loopless=True)
 
 # FVA for specific reactions
-fva_result = flux_variability_analysis(
-    model,
-    reaction_list=["PFK", "FBA", "PGI"]
-)
+fva_result = flux_variability_analysis(model, reaction_list=["PFK", "FBA", "PGI"])
 ```
 
 ### 5. Gene and Reaction Deletion Studies
@@ -126,7 +127,7 @@ from cobra.flux_analysis import (
     single_gene_deletion,
     single_reaction_deletion,
     double_gene_deletion,
-    double_reaction_deletion
+    double_reaction_deletion,
 )
 
 # Single deletions
@@ -136,7 +137,7 @@ reaction_results = single_reaction_deletion(model)
 # Double deletions (uses multiprocessing)
 double_gene_results = double_gene_deletion(
     model,
-    processes=4  # Number of CPU cores
+    processes=4,  # Number of CPU cores
 )
 
 # Manual knockout using context manager
@@ -157,7 +158,7 @@ print(model.medium)
 # Modify medium (must reassign entire dict)
 medium = model.medium
 medium["EX_glc__D_e"] = 10.0  # Set glucose uptake
-medium["EX_o2_e"] = 0.0       # Anaerobic conditions
+medium["EX_o2_e"] = 0.0  # Anaerobic conditions
 model.medium = medium
 
 # Calculate minimal media
@@ -167,11 +168,7 @@ from cobra.medium import minimal_medium
 min_medium = minimal_medium(model, minimize_components=False)
 
 # Minimize number of components (uses MILP, slower)
-min_medium = minimal_medium(
-    model,
-    minimize_components=True,
-    open_exchanges=True
-)
+min_medium = minimal_medium(model, minimize_components=True, open_exchanges=True)
 ```
 
 ### 7. Flux Sampling
@@ -188,6 +185,7 @@ samples = sample(model, n=1000, method="achr")
 
 # Validate samples
 from cobra.sampling import OptGPSampler
+
 sampler = OptGPSampler(model, processes=4)
 sampler.sample(1000)
 validation = sampler.validate(sampler.samples)
@@ -204,18 +202,17 @@ from cobra.flux_analysis import production_envelope
 envelope = production_envelope(
     model,
     reactions=["EX_glc__D_e", "EX_o2_e"],
-    objective="EX_ac_e"  # Acetate production
+    objective="EX_ac_e",  # Acetate production
 )
 
 # With carbon yield
 envelope = production_envelope(
-    model,
-    reactions=["EX_glc__D_e", "EX_o2_e"],
-    carbon_sources="EX_glc__D_e"
+    model, reactions=["EX_glc__D_e", "EX_o2_e"], carbon_sources="EX_glc__D_e"
 )
 
 # Visualize (use matplotlib or pandas plotting)
 import matplotlib.pyplot as plt
+
 envelope.plot(x="EX_glc__D_e", y="EX_o2_e", kind="scatter")
 plt.show()
 ```
@@ -249,12 +246,9 @@ from cobra import Model, Reaction, Metabolite
 model = Model("my_model")
 
 # Create metabolites
-atp_c = Metabolite("atp_c", formula="C10H12N5O13P3",
-                   name="ATP", compartment="c")
-adp_c = Metabolite("adp_c", formula="C10H12N5O10P2",
-                   name="ADP", compartment="c")
-pi_c = Metabolite("pi_c", formula="HO4P",
-                  name="Phosphate", compartment="c")
+atp_c = Metabolite("atp_c", formula="C10H12N5O13P3", name="ATP", compartment="c")
+adp_c = Metabolite("adp_c", formula="C10H12N5O10P2", name="ADP", compartment="c")
+pi_c = Metabolite("pi_c", formula="HO4P", name="Phosphate", compartment="c")
 
 # Create reaction
 reaction = Reaction("ATPASE")
@@ -264,11 +258,7 @@ reaction.lower_bound = 0.0
 reaction.upper_bound = 1000.0
 
 # Add metabolites with stoichiometry
-reaction.add_metabolites({
-    atp_c: -1.0,
-    adp_c: 1.0,
-    pi_c: 1.0
-})
+reaction.add_metabolites({atp_c: -1.0, adp_c: 1.0, pi_c: 1.0})
 
 # Add gene-reaction rule
 reaction.gene_reaction_rule = "(gene1 and gene2) or gene3"
@@ -333,11 +323,7 @@ model = load_model("ecoli")
 
 # Calculate minimal medium for 50% of max growth
 target_growth = model.slim_optimize() * 0.5
-min_medium = minimal_medium(
-    model,
-    target_growth,
-    minimize_components=True
-)
+min_medium = minimal_medium(model, target_growth, minimize_components=True)
 
 print(f"Minimal medium components: {len(min_medium)}")
 print(min_medium)
@@ -362,6 +348,7 @@ samples = sample(model, n=1000)
 # Analyze specific reaction
 reaction_id = "PFK"
 import matplotlib.pyplot as plt
+
 samples[reaction_id].hist(bins=50)
 plt.xlabel(f"Flux through {reaction_id}")
 plt.ylabel("Frequency")

@@ -167,9 +167,7 @@ def create_style_preview(style_dict=None):
 
     # Bar chart
     ax3 = fig.add_subplot(gs[1, 0])
-    bars = ax3.bar(
-        data["categories"], data["bar_values"], edgecolor="black", linewidth=1
-    )
+    bars = ax3.bar(data["categories"], data["bar_values"], edgecolor="black", linewidth=1)
     # Color bars with gradient
     colors = plt.cm.viridis(np.linspace(0.2, 0.8, len(bars)))
     for bar, color in zip(bars, colors):
@@ -182,9 +180,7 @@ def create_style_preview(style_dict=None):
     # Multiple line plot with fills
     ax4 = fig.add_subplot(gs[1, 1])
     ax4.plot(data["x"], data["y1"], label="Signal 1", linewidth=2)
-    ax4.fill_between(
-        data["x"], data["y1"] - 0.2, data["y1"] + 0.2, alpha=0.3, label="±1 std"
-    )
+    ax4.fill_between(data["x"], data["y1"] - 0.2, data["y1"] + 0.2, alpha=0.3, label="±1 std")
     ax4.plot(data["x"], data["y2"], label="Signal 2", linewidth=2)
     ax4.fill_between(data["x"], data["y2"] - 0.2, data["y2"] + 0.2, alpha=0.3)
     ax4.set_xlabel("X axis")
@@ -220,9 +216,7 @@ def save_style_file(style_dict, filename):
 
         for category, prefixes in categories.items():
             category_items = {
-                k: v
-                for k, v in style_dict.items()
-                if any(k.startswith(p) for p in prefixes)
+                k: v for k, v in style_dict.items() if any(k.startswith(p) for p in prefixes)
             }
             if category_items:
                 f.write(f"# {category}\n")
@@ -257,9 +251,7 @@ def print_style_info(style_dict):
 
     for category, prefixes in categories.items():
         category_items = {
-            k: v
-            for k, v in style_dict.items()
-            if any(k.startswith(p) for p in prefixes)
+            k: v for k, v in style_dict.items() if any(k.startswith(p) for p in prefixes)
         }
         if category_items:
             print(f"\n{category}:")
@@ -293,11 +285,7 @@ def interactive_mode():
 
     list_available_presets()
 
-    preset = (
-        input("Choose a preset to start from (or 'custom' for default): ")
-        .strip()
-        .lower()
-    )
+    preset = input("Choose a preset to start from (or 'custom' for default): ").strip().lower()
 
     if preset in STYLE_PRESETS:
         style_dict = STYLE_PRESETS[preset].copy()
@@ -336,9 +324,7 @@ def interactive_mode():
             grid = input("  Enable grid? (y/n): ").strip().lower()
             style_dict["axes.grid"] = grid == "y"
             if style_dict["axes.grid"]:
-                alpha = (
-                    input("  Grid transparency (0-1, default 0.3): ").strip() or "0.3"
-                )
+                alpha = input("  Grid transparency (0-1, default 0.3): ").strip() or "0.3"
                 style_dict["grid.alpha"] = float(alpha)
 
         elif choice == "5":
@@ -382,9 +368,7 @@ Examples:
     parser.add_argument("--output", type=str, help="Save style to .mplstyle file")
     parser.add_argument("--preview", action="store_true", help="Show style preview")
     parser.add_argument("--list", action="store_true", help="List available presets")
-    parser.add_argument(
-        "--interactive", action="store_true", help="Run in interactive mode"
-    )
+    parser.add_argument("--interactive", action="store_true", help="Run in interactive mode")
 
     args = parser.parse_args()
 

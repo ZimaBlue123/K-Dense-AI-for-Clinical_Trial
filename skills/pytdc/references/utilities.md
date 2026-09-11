@@ -19,18 +19,14 @@ Dataset splitting is crucial for evaluating model generalization. TDC provides m
 ```python
 from tdc.single_pred import ADME
 
-data = ADME(name='Caco2_Wang')
+data = ADME(name="Caco2_Wang")
 
 # Get split with default parameters
 split = data.get_split()
 # Returns: {'train': DataFrame, 'valid': DataFrame, 'test': DataFrame}
 
 # Customize split parameters
-split = data.get_split(
-    method='scaffold',
-    seed=42,
-    frac=[0.7, 0.1, 0.2]
-)
+split = data.get_split(method="scaffold", seed=42, frac=[0.7, 0.1, 0.2])
 ```
 
 ### Split Methods
@@ -39,7 +35,7 @@ split = data.get_split(
 Random shuffling of data - suitable for general ML tasks.
 
 ```python
-split = data.get_split(method='random', seed=1)
+split = data.get_split(method="random", seed=1)
 ```
 
 **When to use:**
@@ -55,7 +51,7 @@ split = data.get_split(method='random', seed=1)
 Splits based on molecular scaffolds (Bemis-Murcko scaffolds) - ensures test molecules are structurally distinct from training.
 
 ```python
-split = data.get_split(method='scaffold', seed=1)
+split = data.get_split(method="scaffold", seed=1)
 ```
 
 **When to use:**
@@ -75,22 +71,23 @@ For multi-instance prediction, cold splits ensure test set contains unseen drugs
 **Cold Drug Split:**
 ```python
 from tdc.multi_pred import DTI
-data = DTI(name='BindingDB_Kd')
-split = data.get_split(method='cold_drug', seed=1)
+
+data = DTI(name="BindingDB_Kd")
+split = data.get_split(method="cold_drug", seed=1)
 ```
 - Test set contains drugs not seen during training
 - Evaluates generalization to new compounds
 
 **Cold Target Split:**
 ```python
-split = data.get_split(method='cold_target', seed=1)
+split = data.get_split(method="cold_target", seed=1)
 ```
 - Test set contains targets not seen during training
 - Evaluates generalization to new proteins
 
 **Cold Drug-Target Split:**
 ```python
-split = data.get_split(method='cold_drug_target', seed=1)
+split = data.get_split(method="cold_drug_target", seed=1)
 ```
 - Test set contains novel drug-target pairs
 - Most challenging evaluation scenario
@@ -99,7 +96,7 @@ split = data.get_split(method='cold_drug_target', seed=1)
 For datasets with temporal information - ensures test data is from later time points.
 
 ```python
-split = data.get_split(method='temporal', seed=1)
+split = data.get_split(method="temporal", seed=1)
 ```
 
 **When to use:**
@@ -111,10 +108,10 @@ split = data.get_split(method='temporal', seed=1)
 
 ```python
 # 80% train, 10% valid, 10% test
-split = data.get_split(method='scaffold', frac=[0.8, 0.1, 0.1])
+split = data.get_split(method="scaffold", frac=[0.8, 0.1, 0.1])
 
 # 70% train, 15% valid, 15% test
-split = data.get_split(method='scaffold', frac=[0.7, 0.15, 0.15])
+split = data.get_split(method="scaffold", frac=[0.7, 0.15, 0.15])
 ```
 
 ### Stratified Splits
@@ -122,7 +119,7 @@ split = data.get_split(method='scaffold', frac=[0.7, 0.15, 0.15])
 For classification tasks with imbalanced labels:
 
 ```python
-split = data.get_split(method='scaffold', stratified=True)
+split = data.get_split(method="scaffold", stratified=True)
 ```
 
 Maintains label distribution across train/valid/test sets.
@@ -137,7 +134,7 @@ TDC provides standardized evaluation metrics for different task types.
 from tdc import Evaluator
 
 # Initialize evaluator
-evaluator = Evaluator(name='ROC-AUC')
+evaluator = Evaluator(name="ROC-AUC")
 
 # Evaluate predictions
 score = evaluator(y_true, y_pred)
@@ -149,7 +146,7 @@ score = evaluator(y_true, y_pred)
 Receiver Operating Characteristic - Area Under Curve
 
 ```python
-evaluator = Evaluator(name='ROC-AUC')
+evaluator = Evaluator(name="ROC-AUC")
 score = evaluator(y_true, y_pred_proba)
 ```
 
@@ -164,7 +161,7 @@ score = evaluator(y_true, y_pred_proba)
 Precision-Recall Area Under Curve
 
 ```python
-evaluator = Evaluator(name='PR-AUC')
+evaluator = Evaluator(name="PR-AUC")
 score = evaluator(y_true, y_pred_proba)
 ```
 
@@ -179,7 +176,7 @@ score = evaluator(y_true, y_pred_proba)
 Harmonic mean of precision and recall
 
 ```python
-evaluator = Evaluator(name='F1')
+evaluator = Evaluator(name="F1")
 score = evaluator(y_true, y_pred_binary)
 ```
 
@@ -193,7 +190,7 @@ score = evaluator(y_true, y_pred_binary)
 Fraction of correct predictions
 
 ```python
-evaluator = Evaluator(name='Accuracy')
+evaluator = Evaluator(name="Accuracy")
 score = evaluator(y_true, y_pred_binary)
 ```
 
@@ -207,7 +204,7 @@ score = evaluator(y_true, y_pred_binary)
 Agreement between predictions and ground truth, accounting for chance
 
 ```python
-evaluator = Evaluator(name='Kappa')
+evaluator = Evaluator(name="Kappa")
 score = evaluator(y_true, y_pred_binary)
 ```
 
@@ -217,7 +214,7 @@ score = evaluator(y_true, y_pred_binary)
 
 #### RMSE - Root Mean Squared Error
 ```python
-evaluator = Evaluator(name='RMSE')
+evaluator = Evaluator(name="RMSE")
 score = evaluator(y_true, y_pred)
 ```
 
@@ -229,7 +226,7 @@ score = evaluator(y_true, y_pred)
 
 #### MAE - Mean Absolute Error
 ```python
-evaluator = Evaluator(name='MAE')
+evaluator = Evaluator(name="MAE")
 score = evaluator(y_true, y_pred)
 ```
 
@@ -241,7 +238,7 @@ score = evaluator(y_true, y_pred)
 
 #### R² - Coefficient of Determination
 ```python
-evaluator = Evaluator(name='R2')
+evaluator = Evaluator(name="R2")
 score = evaluator(y_true, y_pred)
 ```
 
@@ -253,7 +250,7 @@ score = evaluator(y_true, y_pred)
 
 #### MSE - Mean Squared Error
 ```python
-evaluator = Evaluator(name='MSE')
+evaluator = Evaluator(name="MSE")
 score = evaluator(y_true, y_pred)
 ```
 
@@ -265,7 +262,7 @@ score = evaluator(y_true, y_pred)
 Rank correlation coefficient
 
 ```python
-evaluator = Evaluator(name='Spearman')
+evaluator = Evaluator(name="Spearman")
 score = evaluator(y_true, y_pred)
 ```
 
@@ -280,7 +277,7 @@ score = evaluator(y_true, y_pred)
 Linear correlation coefficient
 
 ```python
-evaluator = Evaluator(name='Pearson')
+evaluator = Evaluator(name="Pearson")
 score = evaluator(y_true, y_pred)
 ```
 
@@ -293,7 +290,7 @@ score = evaluator(y_true, y_pred)
 ### Multi-Label Classification
 
 ```python
-evaluator = Evaluator(name='Micro-F1')
+evaluator = Evaluator(name="Micro-F1")
 score = evaluator(y_true_multilabel, y_pred_multilabel)
 ```
 
@@ -306,8 +303,8 @@ For benchmark groups, evaluation requires multiple seeds:
 ```python
 from tdc.benchmark_group import admet_group
 
-group = admet_group(path='data/')
-benchmark = group.get('Caco2_Wang')
+group = admet_group(path="data/")
+benchmark = group.get("Caco2_Wang")
 
 # Predictions must be dict with seeds as keys
 predictions = {}
@@ -332,16 +329,16 @@ Convert between ~15 molecular representations.
 from tdc.chem_utils import MolConvert
 
 # SMILES to PyTorch Geometric
-converter = MolConvert(src='SMILES', dst='PyG')
-pyg_graph = converter('CC(C)Cc1ccc(cc1)C(C)C(O)=O')
+converter = MolConvert(src="SMILES", dst="PyG")
+pyg_graph = converter("CC(C)Cc1ccc(cc1)C(C)C(O)=O")
 
 # SMILES to DGL
-converter = MolConvert(src='SMILES', dst='DGL')
-dgl_graph = converter('CC(C)Cc1ccc(cc1)C(C)C(O)=O')
+converter = MolConvert(src="SMILES", dst="DGL")
+dgl_graph = converter("CC(C)Cc1ccc(cc1)C(C)C(O)=O")
 
 # SMILES to Morgan Fingerprint (ECFP)
-converter = MolConvert(src='SMILES', dst='ECFP')
-fingerprint = converter('CC(C)Cc1ccc(cc1)C(C)C(O)=O')
+converter = MolConvert(src="SMILES", dst="ECFP")
+fingerprint = converter("CC(C)Cc1ccc(cc1)C(C)C(O)=O")
 ```
 
 **Available formats:**
@@ -352,8 +349,8 @@ fingerprint = converter('CC(C)Cc1ccc(cc1)C(C)C(O)=O')
 
 **Batch conversion:**
 ```python
-converter = MolConvert(src='SMILES', dst='PyG')
-graphs = converter(['SMILES1', 'SMILES2', 'SMILES3'])
+converter = MolConvert(src="SMILES", dst="PyG")
+graphs = converter(["SMILES1", "SMILES2", "SMILES3"])
 ```
 
 ### Molecule Filters
@@ -365,13 +362,13 @@ from tdc.chem_utils import MolFilter
 
 # Initialize filter with rules
 mol_filter = MolFilter(
-    rules=['PAINS', 'BMS'],  # Chemical filter rules
+    rules=["PAINS", "BMS"],  # Chemical filter rules
     property_filters_dict={
-        'MW': (150, 500),      # Molecular weight range
-        'LogP': (-0.4, 5.6),   # Lipophilicity range
-        'HBD': (0, 5),         # H-bond donors
-        'HBA': (0, 10)         # H-bond acceptors
-    }
+        "MW": (150, 500),  # Molecular weight range
+        "LogP": (-0.4, 5.6),  # Lipophilicity range
+        "HBD": (0, 5),  # H-bond donors
+        "HBA": (0, 10),  # H-bond acceptors
+    },
 )
 
 # Filter molecules
@@ -406,7 +403,7 @@ Convert continuous labels to binary using threshold.
 from tdc.utils import binarize
 
 # Binarize with threshold
-binary_labels = binarize(y_continuous, threshold=5.0, order='ascending')
+binary_labels = binarize(y_continuous, threshold=5.0, order="ascending")
 # order='ascending': values >= threshold become 1
 # order='descending': values <= threshold become 1
 ```
@@ -419,10 +416,10 @@ Transform between measurement units.
 from tdc.chem_utils import label_transform
 
 # Convert nM to pKd
-y_pkd = label_transform(y_nM, from_unit='nM', to_unit='p')
+y_pkd = label_transform(y_nM, from_unit="nM", to_unit="p")
 
 # Convert μM to nM
-y_nM = label_transform(y_uM, from_unit='uM', to_unit='nM')
+y_nM = label_transform(y_uM, from_unit="uM", to_unit="nM")
 ```
 
 **Available conversions:**
@@ -436,7 +433,7 @@ Get interpretable descriptions for labels.
 
 ```python
 # Get label mapping
-label_map = data.get_label_map(name='DrugBank')
+label_map = data.get_label_map(name="DrugBank")
 print(label_map)
 # {0: 'No interaction', 1: 'Increased effect', 2: 'Decreased effect', ...}
 ```
@@ -449,10 +446,10 @@ Handle class imbalance via over/under-sampling.
 from tdc.utils import balance
 
 # Oversample minority class
-X_balanced, y_balanced = balance(X, y, method='oversample')
+X_balanced, y_balanced = balance(X, y, method="oversample")
 
 # Undersample majority class
-X_balanced, y_balanced = balance(X, y, method='undersample')
+X_balanced, y_balanced = balance(X, y, method="undersample")
 ```
 
 ### Graph Transformation for Pair Data
@@ -465,7 +462,7 @@ from tdc.utils import create_graph_from_pairs
 # Create graph from drug-drug pairs
 graph = create_graph_from_pairs(
     pairs=ddi_pairs,  # [(drug1, drug2, label), ...]
-    format='edge_list'  # or 'PyG', 'DGL'
+    format="edge_list",  # or 'PyG', 'DGL'
 )
 ```
 
@@ -481,7 +478,7 @@ negative_pairs = negative_sample(
     positive_pairs=known_interactions,
     all_drugs=drug_list,
     all_targets=target_list,
-    ratio=1.0  # Negative:positive ratio
+    ratio=1.0,  # Negative:positive ratio
 )
 ```
 
@@ -506,7 +503,7 @@ smiles = cid2smiles(2244)  # Aspirin
 ```python
 from tdc.utils import uniprot2seq
 
-sequence = uniprot2seq('P12345')
+sequence = uniprot2seq("P12345")
 # Returns: 'MVKVYAPASS...'
 ```
 
@@ -516,7 +513,7 @@ sequence = uniprot2seq('P12345')
 smiles_list = [cid2smiles(cid) for cid in [2244, 5090, 6323]]
 
 # Multiple UniProt IDs
-sequences = [uniprot2seq(uid) for uid in ['P12345', 'Q9Y5S9']]
+sequences = [uniprot2seq(uid) for uid in ["P12345", "Q9Y5S9"]]
 ```
 
 ## 4. Advanced Utilities
@@ -527,9 +524,9 @@ sequences = [uniprot2seq(uid) for uid in ['P12345', 'Q9Y5S9']]
 from tdc.utils import retrieve_dataset_names
 
 # Get all datasets for a task
-adme_datasets = retrieve_dataset_names('ADME')
-dti_datasets = retrieve_dataset_names('DTI')
-tox_datasets = retrieve_dataset_names('Tox')
+adme_datasets = retrieve_dataset_names("ADME")
+dti_datasets = retrieve_dataset_names("DTI")
+tox_datasets = retrieve_dataset_names("Tox")
 
 print(f"ADME datasets: {adme_datasets}")
 ```
@@ -542,25 +539,25 @@ TDC supports fuzzy matching for dataset names:
 from tdc.single_pred import ADME
 
 # These all work (typo-tolerant)
-data = ADME(name='Caco2_Wang')
-data = ADME(name='caco2_wang')
-data = ADME(name='Caco2')  # Partial match
+data = ADME(name="Caco2_Wang")
+data = ADME(name="caco2_wang")
+data = ADME(name="Caco2")  # Partial match
 ```
 
 ### Data Format Options
 
 ```python
 # Pandas DataFrame (default)
-df = data.get_data(format='df')
+df = data.get_data(format="df")
 
 # Dictionary
-data_dict = data.get_data(format='dict')
+data_dict = data.get_data(format="dict")
 
 # DeepPurpose format (for DeepPurpose library)
-dp_format = data.get_data(format='DeepPurpose')
+dp_format = data.get_data(format="DeepPurpose")
 
 # PyG/DGL graphs (if applicable)
-graphs = data.get_data(format='PyG')
+graphs = data.get_data(format="PyG")
 ```
 
 ### Data Loader Utilities
@@ -589,28 +586,26 @@ from tdc import Evaluator
 from tdc.chem_utils import MolConvert, MolFilter
 
 # 1. Load data
-data = ADME(name='Caco2_Wang')
+data = ADME(name="Caco2_Wang")
 
 # 2. Filter molecules
-mol_filter = MolFilter(rules=['PAINS'])
+mol_filter = MolFilter(rules=["PAINS"])
 filtered_data = data.get_data()
-filtered_data = filtered_data[
-    filtered_data['Drug'].apply(lambda x: mol_filter([x]))
-]
+filtered_data = filtered_data[filtered_data["Drug"].apply(lambda x: mol_filter([x]))]
 
 # 3. Split data
-split = data.get_split(method='scaffold', seed=42)
-train, valid, test = split['train'], split['valid'], split['test']
+split = data.get_split(method="scaffold", seed=42)
+train, valid, test = split["train"], split["valid"], split["test"]
 
 # 4. Convert to graph representations
-converter = MolConvert(src='SMILES', dst='PyG')
-train_graphs = converter(train['Drug'].tolist())
+converter = MolConvert(src="SMILES", dst="PyG")
+train_graphs = converter(train["Drug"].tolist())
 
 # 5. Train model (user implements)
 # model.fit(train_graphs, train['Y'])
 
 # 6. Evaluate
-evaluator = Evaluator(name='MAE')
+evaluator = Evaluator(name="MAE")
 # score = evaluator(test['Y'], predictions)
 ```
 
@@ -621,10 +616,10 @@ from tdc.benchmark_group import admet_group
 from tdc.chem_utils import MolConvert
 
 # Load benchmark group
-group = admet_group(path='data/')
+group = admet_group(path="data/")
 
 # Get multiple datasets
-datasets = ['Caco2_Wang', 'HIA_Hou', 'Bioavailability_Ma']
+datasets = ["Caco2_Wang", "HIA_Hou", "Bioavailability_Ma"]
 all_data = {}
 
 for dataset_name in datasets:
@@ -632,7 +627,7 @@ for dataset_name in datasets:
     all_data[dataset_name] = benchmark
 
 # Prepare for multi-task learning
-converter = MolConvert(src='SMILES', dst='ECFP')
+converter = MolConvert(src="SMILES", dst="ECFP")
 # Process each dataset...
 ```
 
@@ -643,20 +638,20 @@ from tdc.multi_pred import DTI
 from tdc import Evaluator
 
 # Load DTI data
-data = DTI(name='BindingDB_Kd')
+data = DTI(name="BindingDB_Kd")
 
 # Cold drug split
-split = data.get_split(method='cold_drug', seed=42)
-train, test = split['train'], split['test']
+split = data.get_split(method="cold_drug", seed=42)
+train, test = split["train"], split["test"]
 
 # Verify no drug overlap
-train_drugs = set(train['Drug_ID'])
-test_drugs = set(test['Drug_ID'])
+train_drugs = set(train["Drug_ID"])
+test_drugs = set(test["Drug_ID"])
 assert len(train_drugs & test_drugs) == 0, "Drug leakage detected!"
 
 # Train and evaluate
 # model.fit(train)
-evaluator = Evaluator(name='RMSE')
+evaluator = Evaluator(name="RMSE")
 # score = evaluator(test['Y'], predictions)
 ```
 

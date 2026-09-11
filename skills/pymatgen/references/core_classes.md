@@ -98,13 +98,10 @@ Defines unit cell geometry for crystal structures.
 from pymatgen.core import Lattice
 
 # From lattice parameters
-lattice = Lattice.from_parameters(a=3.84, b=3.84, c=3.84,
-                                  alpha=120, beta=90, gamma=60)
+lattice = Lattice.from_parameters(a=3.84, b=3.84, c=3.84, alpha=120, beta=90, gamma=60)
 
 # From matrix (row vectors are lattice vectors)
-lattice = Lattice([[3.84, 0, 0],
-                   [0, 3.84, 0],
-                   [0, 0, 3.84]])
+lattice = Lattice([[3.84, 0, 0], [0, 3.84, 0], [0, 0, 3.84]])
 
 # Cubic lattice
 lattice = Lattice.cubic(3.84)
@@ -165,8 +162,7 @@ from pymatgen.core import Structure, Lattice
 
 # From scratch
 coords = [[0, 0, 0], [0.75, 0.5, 0.75]]
-lattice = Lattice.from_parameters(a=3.84, b=3.84, c=3.84,
-                                  alpha=120, beta=90, gamma=60)
+lattice = Lattice.from_parameters(a=3.84, b=3.84, c=3.84, alpha=120, beta=90, gamma=60)
 struct = Structure(lattice, ["Si", "Si"], coords)
 
 # From file (automatic format detection)
@@ -174,8 +170,7 @@ struct = Structure.from_file("POSCAR")
 struct = Structure.from_file("structure.cif")
 
 # From spacegroup
-struct = Structure.from_spacegroup("Fm-3m", Lattice.cubic(3.5),
-                                   ["Si"], [[0, 0, 0]])
+struct = Structure.from_spacegroup("Fm-3m", Lattice.cubic(3.5), ["Si"], [[0, 0, 0]])
 ```
 
 ### File I/O
@@ -232,8 +227,7 @@ Represents non-periodic collections of atoms. `Molecule` is mutable, while `IMol
 from pymatgen.core import Molecule
 
 # From scratch
-coords = [[0.00, 0.00, 0.00],
-          [0.00, 0.00, 1.08]]
+coords = [[0.00, 0.00, 0.00], [0.00, 0.00, 1.08]]
 mol = Molecule(["C", "O"], coords)
 
 # From file
@@ -266,6 +260,7 @@ struct_dict = struct.as_dict()
 
 # Write to JSON
 import json
+
 with open("structure.json", "w") as f:
     json.dump(struct_dict, f)
 

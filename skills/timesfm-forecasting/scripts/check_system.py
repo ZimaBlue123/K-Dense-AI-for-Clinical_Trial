@@ -180,9 +180,7 @@ def _get_available_ram_gb() -> float:
             import subprocess
 
             # Use vm_stat for available memory on macOS
-            result = subprocess.run(
-                ["vm_stat"], capture_output=True, text=True, check=True
-            )
+            result = subprocess.run(["vm_stat"], capture_output=True, text=True, check=True)
             free = 0
             page_size = 4096
             for line in result.stdout.split("\n"):
@@ -455,12 +453,8 @@ def run_checks(model_version: str = "v2.5") -> SystemReport:
 
     # Verdict
     if report.passed:
-        report.verdict = (
-            f"✅ System is ready for {profile['name']} ({report.mode.upper()} mode)"
-        )
-        report.verdict_detail = (
-            f"Recommended: per_core_batch_size={report.recommended_batch_size}"
-        )
+        report.verdict = f"✅ System is ready for {profile['name']} ({report.mode.upper()} mode)"
+        report.verdict_detail = f"Recommended: per_core_batch_size={report.recommended_batch_size}"
     else:
         failed = [c for c in report.checks if c.status == "fail"]
         report.verdict = f"🛑 System does NOT meet requirements for {profile['name']}"
@@ -487,9 +481,7 @@ def print_report(report: SystemReport) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(
-        description="Check system requirements for TimesFM."
-    )
+    parser = argparse.ArgumentParser(description="Check system requirements for TimesFM.")
     parser.add_argument(
         "--model",
         choices=list(MODEL_PROFILES.keys()),

@@ -276,17 +276,17 @@ Build a protocol discovery workflow:
 ```python
 # Search for relevant protocols
 response = requests.get(
-    'https://protocols.io/api/v3/publications',
-    headers={'Authorization': f'Bearer {token}'},
-    params={'key': 'CRISPR', 'category': 'molecular-biology'}
+    "https://protocols.io/api/v3/publications",
+    headers={"Authorization": f"Bearer {token}"},
+    params={"key": "CRISPR", "category": "molecular-biology"},
 )
 
 # For each interesting protocol
-for protocol in response.json()['items']:
+for protocol in response.json()["items"]:
     # Get full details
     details = requests.get(
-        f'https://protocols.io/api/v3/protocols/{protocol["id"]}',
-        headers={'Authorization': f'Bearer {token}'}
+        f"https://protocols.io/api/v3/protocols/{protocol['id']}",
+        headers={"Authorization": f"Bearer {token}"},
     )
     # Import to local system
     import_protocol(details.json())

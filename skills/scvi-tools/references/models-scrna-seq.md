@@ -24,11 +24,7 @@ This document covers core models for analyzing single-cell RNA sequencing data i
 import scvi
 
 # Setup data
-scvi.model.SCVI.setup_anndata(
-    adata,
-    layer="counts",
-    batch_key="batch"
-)
+scvi.model.SCVI.setup_anndata(adata, layer="counts", batch_key="batch")
 
 # Train model
 model = scvi.model.SCVI(adata, n_latent=30)
@@ -73,11 +69,7 @@ normalized = model.get_normalized_expression()
 ```python
 # Option 1: Train from scratch
 scvi.model.SCANVI.setup_anndata(
-    adata,
-    layer="counts",
-    batch_key="batch",
-    labels_key="cell_type",
-    unlabeled_category="Unknown"
+    adata, layer="counts", batch_key="batch", labels_key="cell_type", unlabeled_category="Unknown"
 )
 model = scvi.model.SCANVI(adata)
 model.train()
@@ -85,10 +77,7 @@ model.train()
 # Option 2: Initialize from pretrained scVI
 scvi_model = scvi.model.SCVI(adata)
 scvi_model.train()
-scanvi_model = scvi.model.SCANVI.from_scvi_model(
-    scvi_model,
-    unlabeled_category="Unknown"
-)
+scanvi_model = scvi.model.SCANVI.from_scvi_model(scvi_model, unlabeled_category="Unknown")
 scanvi_model.train()
 
 # Predict cell types
@@ -185,13 +174,13 @@ scvi.model.CONTRASTIVEVI.setup_anndata(
     adata,
     layer="counts",
     batch_key="batch",
-    categorical_covariate_keys=["condition"]  # control vs treated
+    categorical_covariate_keys=["condition"],  # control vs treated
 )
 
 model = scvi.model.CONTRASTIVEVI(
     adata,
-    n_latent=10,        # Shared variation
-    n_latent_target=5   # Target-specific variation
+    n_latent=10,  # Shared variation
+    n_latent_target=5,  # Target-specific variation
 )
 model.train()
 
@@ -218,11 +207,14 @@ target_specific = model.get_latent_representation(representation="target")
 **Basic Usage**:
 ```python
 # Create marker gene matrix (cell types x genes)
-marker_gene_mat = pd.DataFrame({
-    "CD4 T cells": [1, 1, 0, 0],  # CD3D, CD4, CD8A, CD19
-    "CD8 T cells": [1, 0, 1, 0],
-    "B cells": [0, 0, 0, 1]
-}, index=["CD3D", "CD4", "CD8A", "CD19"])
+marker_gene_mat = pd.DataFrame(
+    {
+        "CD4 T cells": [1, 1, 0, 0],  # CD3D, CD4, CD8A, CD19
+        "CD8 T cells": [1, 0, 1, 0],
+        "B cells": [0, 0, 0, 1],
+    },
+    index=["CD3D", "CD4", "CD8A", "CD19"],
+)
 
 scvi.model.CELLASSIGN.setup_anndata(adata, layer="counts")
 model = scvi.model.CELLASSIGN(adata, marker_gene_mat)

@@ -13,6 +13,7 @@ import torch
 import torch.nn as nn
 from pufferlib.pytorch import layer_init
 
+
 class BasicPolicy(nn.Module):
     def __init__(self, observation_space, action_space):
         super().__init__()
@@ -25,7 +26,7 @@ class BasicPolicy(nn.Module):
             layer_init(nn.Linear(observation_space.shape[0], 256)),
             nn.ReLU(),
             layer_init(nn.Linear(256, 256)),
-            nn.ReLU()
+            nn.ReLU(),
         )
 
         # Policy head (actor)
@@ -95,7 +96,7 @@ class CNNPolicy(nn.Module):
             nn.ReLU(),
             nn.Flatten(),
             layer_init(nn.Linear(64 * 7 * 7, 512)),
-            nn.ReLU()
+            nn.ReLU(),
         )
 
         self.actor = layer_init(nn.Linear(512, action_space.n), std=0.01)
@@ -130,7 +131,7 @@ class EfficientCNN(nn.Module):
             nn.ReLU(),
             layer_init(nn.Conv2d(64, 64, 3, stride=1)),
             nn.ReLU(),
-            nn.Flatten()
+            nn.Flatten(),
         )
 
         # Calculate feature size
@@ -157,14 +158,14 @@ PufferLib provides optimized LSTM integration with automatic recurrence handling
 ```python
 from pufferlib.pytorch import LSTMWrapper
 
+
 class RecurrentPolicy(nn.Module):
     def __init__(self, observation_space, action_space, hidden_size=256):
         super().__init__()
 
         # Observation encoder
         self.encoder = nn.Sequential(
-            layer_init(nn.Linear(observation_space.shape[0], 128)),
-            nn.ReLU()
+            layer_init(nn.Linear(observation_space.shape[0], 128)), nn.ReLU()
         )
 
         # LSTM layer
@@ -219,8 +220,7 @@ class OptimizedLSTMPolicy(nn.Module):
         super().__init__()
 
         self.encoder = nn.Sequential(
-            layer_init(nn.Linear(observation_space.shape[0], 128)),
-            nn.ReLU()
+            layer_init(nn.Linear(observation_space.shape[0], 128)), nn.ReLU()
         )
 
         # Use LSTMCell for step-by-step inference
@@ -293,28 +293,24 @@ class MultiInputPolicy(nn.Module):
             nn.ReLU(),
             layer_init(nn.Conv2d(32, 64, 4, stride=2)),
             nn.ReLU(),
-            nn.Flatten()
+            nn.Flatten(),
         )
 
         self.vector_encoder = nn.Sequential(
-            layer_init(nn.Linear(observation_space['vector'].shape[0], 128)),
-            nn.ReLU()
+            layer_init(nn.Linear(observation_space["vector"].shape[0], 128)), nn.ReLU()
         )
 
         # Combine features
         combined_size = 64 * 9 * 9 + 128  # Image features + vector features
-        self.combiner = nn.Sequential(
-            layer_init(nn.Linear(combined_size, 512)),
-            nn.ReLU()
-        )
+        self.combiner = nn.Sequential(layer_init(nn.Linear(combined_size, 512)), nn.ReLU())
 
         self.actor = layer_init(nn.Linear(512, action_space.n), std=0.01)
         self.critic = layer_init(nn.Linear(512, 1), std=1.0)
 
     def forward(self, observations):
         # Process each observation type
-        image_features = self.image_encoder(observations['image'].float() / 255.0)
-        vector_features = self.vector_encoder(observations['vector'])
+        image_features = self.image_encoder(observations["image"].float() / 255.0)
+        vector_features = self.vector_encoder(observations["vector"])
 
         # Combine
         combined = torch.cat([image_features, vector_features], dim=-1)
@@ -336,7 +332,7 @@ class ContinuousPolicy(nn.Module):
             layer_init(nn.Linear(observation_space.shape[0], 256)),
             nn.ReLU(),
             layer_init(nn.Linear(256, 256)),
-            nn.ReLU()
+            nn.ReLU(),
         )
 
         # Mean of action distribution
@@ -376,6 +372,7 @@ PufferLib provides utilities for unflattening observations:
 ```python
 from pufferlib.pytorch import unflatten_observations
 
+
 class PolicyWithUnflatten(nn.Module):
     def __init__(self, observation_space, action_space):
         super().__init__()
@@ -383,23 +380,19 @@ class PolicyWithUnflatten(nn.Module):
         self.observation_space = observation_space
 
         # Define encoders for each observation component
-        self.encoders = nn.ModuleDict({
-            'image': self._make_image_encoder(),
-            'vector': self._make_vector_encoder()
-        })
+        self.encoders = nn.ModuleDict(
+            {"image": self._make_image_encoder(), "vector": self._make_vector_encoder()}
+        )
 
         # ... rest of policy ...
 
     def forward(self, flat_observations):
         # Unflatten observations into structured format
-        observations = unflatten_observations(
-            flat_observations,
-            self.observation_space
-        )
+        observations = unflatten_observations(flat_observations, self.observation_space)
 
         # Process each component
-        image_features = self.encoders['image'](observations['image'])
-        vector_features = self.encoders['vector'](observations['vector'])
+        image_features = self.encoders["image"](observations["image"])
+        vector_features = self.encoders["vector"](observations["vector"])
 
         # Combine and continue...
 ```
@@ -419,8 +412,7 @@ class SharedMultiAgentPolicy(nn.Module):
 
         # Single policy shared across all agents
         self.encoder = nn.Sequential(
-            layer_init(nn.Linear(observation_space.shape[0], 256)),
-            nn.ReLU()
+            layer_init(nn.Linear(observation_space.shape[0], 256)), nn.ReLU()
         )
 
         self.actor = layer_init(nn.Linear(256, action_space.n), std=0.01)
@@ -450,17 +442,16 @@ class IndependentMultiAgentPolicy(nn.Module):
         self.num_agents = num_agents
 
         # Separate policy for each agent
-        self.policies = nn.ModuleList([
-            self._make_policy(observation_space, action_space)
-            for _ in range(num_agents)
-        ])
+        self.policies = nn.ModuleList(
+            [self._make_policy(observation_space, action_space) for _ in range(num_agents)]
+        )
 
     def _make_policy(self, observation_space, action_space):
         return nn.Sequential(
             layer_init(nn.Linear(observation_space.shape[0], 256)),
             nn.ReLU(),
             layer_init(nn.Linear(256, 256)),
-            nn.ReLU()
+            nn.ReLU(),
         )
 
     def forward(self, observations, agent_ids):
@@ -515,13 +506,12 @@ class ResidualBlock(nn.Module):
     def __init__(self, dim):
         super().__init__()
         self.block = nn.Sequential(
-            layer_init(nn.Linear(dim, dim)),
-            nn.ReLU(),
-            layer_init(nn.Linear(dim, dim))
+            layer_init(nn.Linear(dim, dim)), nn.ReLU(), layer_init(nn.Linear(dim, dim))
         )
 
     def forward(self, x):
         return x + self.block(x)
+
 
 class ResidualPolicy(nn.Module):
     def __init__(self, observation_space, action_space, num_blocks=4):
@@ -531,9 +521,7 @@ class ResidualPolicy(nn.Module):
 
         self.encoder = layer_init(nn.Linear(observation_space.shape[0], dim))
 
-        self.blocks = nn.Sequential(
-            *[ResidualBlock(dim) for _ in range(num_blocks)]
-        )
+        self.blocks = nn.Sequential(*[ResidualBlock(dim) for _ in range(num_blocks)])
 
         self.actor = layer_init(nn.Linear(dim, action_space.n), std=0.01)
         self.critic = layer_init(nn.Linear(dim, 1), std=1.0)
@@ -592,7 +580,7 @@ class NormalizedPolicy(nn.Module):
 trainer = PuffeRL(
     env=env,
     policy=policy,
-    max_grad_norm=0.5  # Clip gradients to this norm
+    max_grad_norm=0.5,  # Clip gradients to this norm
 )
 ```
 
@@ -603,7 +591,7 @@ trainer = PuffeRL(
 policy = MyPolicy(observation_space, action_space)
 
 # Compile the model
-policy = torch.compile(policy, mode='reduce-overhead')
+policy = torch.compile(policy, mode="reduce-overhead")
 
 # Use with trainer
 trainer = PuffeRL(env=env, policy=policy, compile=True)

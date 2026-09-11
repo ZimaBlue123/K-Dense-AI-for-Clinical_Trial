@@ -73,7 +73,7 @@ result = translator("Hello, how are you?")
 classifier = pipeline("zero-shot-classification", model="facebook/bart-large-mnli")
 result = classifier(
     "This is a course about Python programming",
-    candidate_labels=["education", "politics", "business"]
+    candidate_labels=["education", "politics", "business"],
 )
 ```
 
@@ -91,6 +91,7 @@ classifier = pipeline("image-classification", model="google/vit-base-patch16-224
 result = classifier("path/to/image.jpg")
 # Or use PIL Image or URL
 from PIL import Image
+
 result = classifier(Image.open("image.jpg"))
 ```
 
@@ -180,6 +181,7 @@ pipe = pipeline("task", model="large-model", device_map="auto")
 **dtype**: Model precision (reduces memory)
 ```python
 import torch
+
 pipe = pipeline("task", torch_dtype=torch.float16)
 ```
 
@@ -231,6 +233,7 @@ pipe = pipeline("task", device=0)
 Use float16 for 2x speedup on supported GPUs:
 ```python
 import torch
+
 pipe = pipeline("task", torch_dtype=torch.float16, device=0)
 ```
 
@@ -275,10 +278,12 @@ Use custom pipeline classes:
 ```python
 from transformers import TextClassificationPipeline
 
+
 class CustomPipeline(TextClassificationPipeline):
     def postprocess(self, model_outputs, **kwargs):
         # Custom post-processing
         return super().postprocess(model_outputs, **kwargs)
+
 
 pipe = pipeline("text-classification", model="model-id", pipeline_class=CustomPipeline)
 ```

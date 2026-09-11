@@ -10,9 +10,11 @@ import modal
 image = modal.Image.debian_slim().pip_install("torch")
 app = modal.App(image=image)
 
+
 @app.function(gpu="A100")
 def run():
     import torch
+
     assert torch.cuda.is_available()
 ```
 
@@ -82,8 +84,7 @@ Hopper architecture GPUs with excellent software support:
 
 ```python
 @app.function(gpu="H100")
-def train():
-    ...
+def train(): ...
 ```
 
 ### Automatic H200 Upgrades
@@ -95,8 +96,7 @@ Modal may upgrade `gpu="H100"` to H200 at no extra cost. H200 provides:
 To avoid automatic upgrades (e.g., for benchmarking):
 ```python
 @app.function(gpu="H100!")
-def benchmark():
-    ...
+def benchmark(): ...
 ```
 
 ## A100 GPUs
@@ -106,17 +106,16 @@ Ampere architecture with 40GB or 80GB variants:
 ```python
 # May be automatically upgraded to 80GB
 @app.function(gpu="A100")
-def qwen_7b():
-    ...
+def qwen_7b(): ...
+
 
 # Specific variants
 @app.function(gpu="A100-40GB")
-def model_40gb():
-    ...
+def model_40gb(): ...
+
 
 @app.function(gpu="A100-80GB")
-def llama_70b():
-    ...
+def llama_70b(): ...
 ```
 
 ## GPU Fallbacks
@@ -145,6 +144,7 @@ For frameworks that re-execute entrypoints, use subprocess or specific strategie
 def train():
     import subprocess
     import sys
+
     subprocess.run(
         ["python", "train.py"],
         stdout=sys.stdout,

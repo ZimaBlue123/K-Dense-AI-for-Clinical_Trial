@@ -76,16 +76,17 @@ from labarchivespy.client import Client
 client = Client(api_url, access_key_id, access_password)
 
 # Get user access info
-login_params = {'login_or_email': user_email, 'password': auth_token}
-response = client.make_call('users', 'user_access_info', params=login_params)
+login_params = {"login_or_email": user_email, "password": auth_token}
+response = client.make_call("users", "user_access_info", params=login_params)
 
 # Extract UID from response
 import xml.etree.ElementTree as ET
+
 uid = ET.fromstring(response.content)[0].text
 
 # Get detailed user info
-params = {'uid': uid}
-user_info = client.make_call('users', 'user_info_via_id', params=params)
+params = {"uid": uid}
+user_info = client.make_call("users", "user_info_via_id", params=params)
 ```
 
 ### 3. Notebook Operations
@@ -163,8 +164,11 @@ Generate institutional reports on notebook usage, activity, and compliance (Ente
 
 ```python
 # Generate detailed usage report
-response = client.make_call('site_reports', 'detailed_usage_report',
-                           params={'start_date': '2025-01-01', 'end_date': '2025-10-20'})
+response = client.make_call(
+    "site_reports",
+    "detailed_usage_report",
+    params={"start_date": "2025-01-01", "end_date": "2025-10-20"},
+)
 ```
 
 ### 6. Third-Party Integrations

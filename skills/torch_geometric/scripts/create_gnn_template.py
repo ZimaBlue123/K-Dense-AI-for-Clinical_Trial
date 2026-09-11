@@ -495,9 +495,7 @@ Examples:
         """,
     )
 
-    parser.add_argument(
-        "--model", type=str, help="Model type (gcn, gat, graphsage, gin)"
-    )
+    parser.add_argument("--model", type=str, help="Model type (gcn, gat, graphsage, gin)")
     parser.add_argument(
         "--task", type=str, help="Task type (node_classification, graph_classification)"
     )
@@ -507,9 +505,7 @@ Examples:
         default="gnn_model.py",
         help="Output file path (default: gnn_model.py)",
     )
-    parser.add_argument(
-        "--list", action="store_true", help="List all available templates"
-    )
+    parser.add_argument("--list", action="store_true", help="List all available templates")
 
     args = parser.parse_args()
 

@@ -148,10 +148,10 @@ response = requests.get(url, headers={"Content-Type": "application/json"})
 associations = response.json()
 
 # Process results
-for assoc in associations.get('_embedded', {}).get('associations', []):
-    variant = assoc.get('rsId')
-    pvalue = assoc.get('pvalue')
-    risk_allele = assoc.get('strongestAllele')
+for assoc in associations.get("_embedded", {}).get("associations", []):
+    variant = assoc.get("rsId")
+    pvalue = assoc.get("pvalue")
+    risk_allele = assoc.get("strongestAllele")
     print(f"{variant}: p={pvalue}, risk allele={risk_allele}")
 ```
 
@@ -174,9 +174,9 @@ response = requests.get(url, params=params, headers={"Content-Type": "applicatio
 associations = response.json()
 
 # Extract trait names and p-values
-for assoc in associations.get('_embedded', {}).get('associations', []):
-    trait = assoc.get('efoTrait')
-    pvalue = assoc.get('pvalue')
+for assoc in associations.get("_embedded", {}).get("associations", []):
+    trait = assoc.get("efoTrait")
+    pvalue = assoc.get("pvalue")
     print(f"Trait: {trait}, p-value: {pvalue}")
 ```
 
@@ -193,17 +193,17 @@ p_upper = "0.000000001"  # p < 1e-9
 url = f"{base_url}/traits/{trait}/associations"
 params = {
     "p_upper": p_upper,
-    "size": 100  # Number of results
+    "size": 100,  # Number of results
 }
 response = requests.get(url, params=params)
 results = response.json()
 
 # Process genome-wide significant hits
-for hit in results.get('_embedded', {}).get('associations', []):
-    variant_id = hit.get('variant_id')
-    chromosome = hit.get('chromosome')
-    position = hit.get('base_pair_location')
-    pvalue = hit.get('p_value')
+for hit in results.get("_embedded", {}).get("associations", []):
+    variant_id = hit.get("variant_id")
+    chromosome = hit.get("chromosome")
+    position = hit.get("base_pair_location")
+    pvalue = hit.get("p_value")
     print(f"{chromosome}:{position} ({variant_id}): p={pvalue}")
 ```
 
@@ -218,11 +218,7 @@ end_pos = 115000000
 
 base_url = "https://www.ebi.ac.uk/gwas/rest/api"
 url = f"{base_url}/singleNucleotidePolymorphisms/search/findByChromBpLocationRange"
-params = {
-    "chrom": chromosome,
-    "bpStart": start_pos,
-    "bpEnd": end_pos
-}
+params = {"chrom": chromosome, "bpStart": start_pos, "bpEnd": end_pos}
 response = requests.get(url, params=params, headers={"Content-Type": "application/json"})
 variants_in_region = response.json()
 ```
@@ -286,7 +282,7 @@ response = requests.get("https://www.ebi.ac.uk/gwas/rest/api/studies/GCST001234"
 study = response.json()
 
 # Follow link to associations
-associations_url = study['_links']['associations']['href']
+associations_url = study["_links"]["associations"]["href"]
 associations_response = requests.get(associations_url)
 ```
 
@@ -485,6 +481,7 @@ import requests
 import pandas as pd
 from time import sleep
 
+
 def query_gwas_catalog(trait_id, p_threshold=5e-8):
     """
     Query GWAS Catalog for trait associations
@@ -511,30 +508,33 @@ def query_gwas_catalog(trait_id, p_threshold=5e-8):
             break
 
         data = response.json()
-        associations = data.get('_embedded', {}).get('associations', [])
+        associations = data.get("_embedded", {}).get("associations", [])
 
         if not associations:
             break
 
         for assoc in associations:
-            pvalue = assoc.get('pvalue')
+            pvalue = assoc.get("pvalue")
             if pvalue and float(pvalue) <= p_threshold:
-                results.append({
-                    'variant': assoc.get('rsId'),
-                    'pvalue': pvalue,
-                    'risk_allele': assoc.get('strongestAllele'),
-                    'or_beta': assoc.get('orPerCopyNum') or assoc.get('betaNum'),
-                    'trait': assoc.get('efoTrait'),
-                    'pubmed_id': assoc.get('pubmedId')
-                })
+                results.append(
+                    {
+                        "variant": assoc.get("rsId"),
+                        "pvalue": pvalue,
+                        "risk_allele": assoc.get("strongestAllele"),
+                        "or_beta": assoc.get("orPerCopyNum") or assoc.get("betaNum"),
+                        "trait": assoc.get("efoTrait"),
+                        "pubmed_id": assoc.get("pubmedId"),
+                    }
+                )
 
         page += 1
         sleep(0.1)  # Rate limiting
 
     return pd.DataFrame(results)
 
+
 # Example usage
-df = query_gwas_catalog('EFO_0001360')  # Type 2 diabetes
+df = query_gwas_catalog("EFO_0001360")  # Type 2 diabetes
 print(df.head())
 print(f"\nTotal associations: {len(df)}")
 print(f"Unique variants: {df['variant'].nunique()}")

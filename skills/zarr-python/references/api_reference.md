@@ -6,8 +6,16 @@ This reference provides a concise overview of commonly used Zarr functions, para
 
 ### `zarr.zeros()` / `zarr.ones()` / `zarr.empty()`
 ```python
-zarr.zeros(shape, chunks=None, dtype='f8', store=None, compressor='default',
-           fill_value=0, order='C', filters=None)
+zarr.zeros(
+    shape,
+    chunks=None,
+    dtype="f8",
+    store=None,
+    compressor="default",
+    fill_value=0,
+    order="C",
+    filters=None,
+)
 ```
 Create arrays filled with zeros, ones, or empty (uninitialized) values.
 
@@ -20,28 +28,39 @@ Create arrays filled with zeros, ones, or empty (uninitialized) values.
 
 ### `zarr.create_array()` / `zarr.create()`
 ```python
-zarr.create_array(store, shape, chunks, dtype='f8', compressor='default',
-                  fill_value=0, order='C', filters=None, overwrite=False)
+zarr.create_array(
+    store,
+    shape,
+    chunks,
+    dtype="f8",
+    compressor="default",
+    fill_value=0,
+    order="C",
+    filters=None,
+    overwrite=False,
+)
 ```
 Create a new array with explicit control over all parameters.
 
 ### `zarr.array()`
 ```python
-zarr.array(data, chunks=None, dtype=None, compressor='default', store=None)
+zarr.array(data, chunks=None, dtype=None, compressor="default", store=None)
 ```
 Create array from existing data (NumPy array, list, etc.).
 
 **Example:**
 ```python
 import numpy as np
+
 data = np.random.random((1000, 1000))
-z = zarr.array(data, chunks=(100, 100), store='data.zarr')
+z = zarr.array(data, chunks=(100, 100), store="data.zarr")
 ```
 
 ### `zarr.open_array()` / `zarr.open()`
 ```python
-zarr.open_array(store, mode='a', shape=None, chunks=None, dtype=None,
-                compressor='default', fill_value=0)
+zarr.open_array(
+    store, mode="a", shape=None, chunks=None, dtype=None, compressor="default", fill_value=0
+)
 ```
 Open existing array or create new one.
 
@@ -58,8 +77,8 @@ Open existing array or create new one.
 ```python
 from zarr.storage import LocalStore
 
-store = LocalStore('path/to/data.zarr')
-z = zarr.open_array(store=store, mode='w', shape=(1000, 1000), chunks=(100, 100))
+store = LocalStore("path/to/data.zarr")
+z = zarr.open_array(store=store, mode="w", shape=(1000, 1000), chunks=(100, 100))
 ```
 
 ### MemoryStore
@@ -67,7 +86,7 @@ z = zarr.open_array(store=store, mode='w', shape=(1000, 1000), chunks=(100, 100)
 from zarr.storage import MemoryStore
 
 store = MemoryStore()  # Data only in memory
-z = zarr.open_array(store=store, mode='w', shape=(1000, 1000), chunks=(100, 100))
+z = zarr.open_array(store=store, mode="w", shape=(1000, 1000), chunks=(100, 100))
 ```
 
 ### ZipStore
@@ -75,13 +94,13 @@ z = zarr.open_array(store=store, mode='w', shape=(1000, 1000), chunks=(100, 100)
 from zarr.storage import ZipStore
 
 # Write
-store = ZipStore('data.zip', mode='w')
-z = zarr.open_array(store=store, mode='w', shape=(1000, 1000), chunks=(100, 100))
+store = ZipStore("data.zip", mode="w")
+z = zarr.open_array(store=store, mode="w", shape=(1000, 1000), chunks=(100, 100))
 z[:] = data
 store.close()  # MUST close
 
 # Read
-store = ZipStore('data.zip', mode='r')
+store = ZipStore("data.zip", mode="r")
 z = zarr.open_array(store=store)
 data = z[:]
 store.close()
@@ -91,13 +110,15 @@ store.close()
 ```python
 # S3
 import s3fs
+
 s3 = s3fs.S3FileSystem(anon=False)
-store = s3fs.S3Map(root='bucket/path/data.zarr', s3=s3)
+store = s3fs.S3Map(root="bucket/path/data.zarr", s3=s3)
 
 # GCS
 import gcsfs
-gcs = gcsfs.GCSFileSystem(project='my-project')
-store = gcsfs.GCSMap(root='bucket/path/data.zarr', gcs=gcs)
+
+gcs = gcsfs.GCSFileSystem(project="my-project")
+store = gcsfs.GCSMap(root="bucket/path/data.zarr", gcs=gcs)
 ```
 
 ## Compression Codecs
@@ -107,13 +128,14 @@ store = gcsfs.GCSMap(root='bucket/path/data.zarr', gcs=gcs)
 from zarr.codecs.blosc import BloscCodec
 
 codec = BloscCodec(
-    cname='zstd',      # Compressor: 'blosclz', 'lz4', 'lz4hc', 'snappy', 'zlib', 'zstd'
-    clevel=5,          # Compression level: 0-9
-    shuffle='shuffle'  # Shuffle filter: 'noshuffle', 'shuffle', 'bitshuffle'
+    cname="zstd",  # Compressor: 'blosclz', 'lz4', 'lz4hc', 'snappy', 'zlib', 'zstd'
+    clevel=5,  # Compression level: 0-9
+    shuffle="shuffle",  # Shuffle filter: 'noshuffle', 'shuffle', 'bitshuffle'
 )
 
-z = zarr.create_array(store='data.zarr', shape=(1000, 1000), chunks=(100, 100),
-                      dtype='f4', codecs=[codec])
+z = zarr.create_array(
+    store="data.zarr", shape=(1000, 1000), chunks=(100, 100), dtype="f4", codecs=[codec]
+)
 ```
 
 **Blosc compressor characteristics:**
@@ -145,10 +167,10 @@ BytesCodec()
 z = zarr.zeros((1000, 1000), chunks=(100, 100))
 
 # Read
-row = z[0, :]           # Single row
-col = z[:, 0]           # Single column
-block = z[10:20, 50:60] # Slice
-element = z[5, 10]      # Single element
+row = z[0, :]  # Single row
+col = z[:, 0]  # Single column
+block = z[10:20, 50:60]  # Slice
+element = z[5, 10]  # Single element
 
 # Write
 z[0, :] = 42
@@ -173,27 +195,26 @@ z.blocks[0:2, 0:2]  # First four chunks
 ### Creating Groups
 ```python
 # Create root group
-root = zarr.group(store='data.zarr')
+root = zarr.group(store="data.zarr")
 
 # Create nested groups
-grp1 = root.create_group('group1')
-grp2 = grp1.create_group('subgroup')
+grp1 = root.create_group("group1")
+grp2 = grp1.create_group("subgroup")
 
 # Create arrays in groups
-arr = grp1.create_array(name='data', shape=(1000, 1000),
-                        chunks=(100, 100), dtype='f4')
+arr = grp1.create_array(name="data", shape=(1000, 1000), chunks=(100, 100), dtype="f4")
 
 # Access by path
-arr2 = root['group1/data']
+arr2 = root["group1/data"]
 ```
 
 ### Group Methods
 ```python
-root = zarr.group('data.zarr')
+root = zarr.group("data.zarr")
 
 # h5py-compatible methods
-dataset = root.create_dataset('data', shape=(1000, 1000), chunks=(100, 100))
-subgrp = root.require_group('subgroup')  # Create if doesn't exist
+dataset = root.create_dataset("data", shape=(1000, 1000), chunks=(100, 100))
+subgrp = root.require_group("subgroup")  # Create if doesn't exist
 
 # Visualize structure
 print(root.tree())
@@ -211,19 +232,19 @@ print(list(root.arrays()))
 z = zarr.zeros((1000, 1000), chunks=(100, 100))
 
 # Set attributes
-z.attrs['units'] = 'meters'
-z.attrs['description'] = 'Temperature data'
-z.attrs['created'] = '2024-01-15'
-z.attrs['version'] = 1.2
-z.attrs['tags'] = ['climate', 'temperature']
+z.attrs["units"] = "meters"
+z.attrs["description"] = "Temperature data"
+z.attrs["created"] = "2024-01-15"
+z.attrs["version"] = 1.2
+z.attrs["tags"] = ["climate", "temperature"]
 
 # Read attributes
-print(z.attrs['units'])
+print(z.attrs["units"])
 print(dict(z.attrs))  # All attributes as dict
 
 # Update/delete
-z.attrs['version'] = 2.0
-del z.attrs['tags']
+z.attrs["version"] = 2.0
+del z.attrs["tags"]
 ```
 
 **Note:** Attributes must be JSON-serializable.
@@ -232,16 +253,16 @@ del z.attrs['tags']
 
 ### Properties
 ```python
-z = zarr.zeros((1000, 1000), chunks=(100, 100), dtype='f4')
+z = zarr.zeros((1000, 1000), chunks=(100, 100), dtype="f4")
 
-z.shape          # (1000, 1000)
-z.chunks         # (100, 100)
-z.dtype          # dtype('float32')
-z.size           # 1000000
-z.nbytes         # 4000000 (uncompressed size in bytes)
+z.shape  # (1000, 1000)
+z.chunks  # (100, 100)
+z.dtype  # dtype('float32')
+z.size  # 1000000
+z.nbytes  # 4000000 (uncompressed size in bytes)
 z.nbytes_stored  # Actual compressed size on disk
-z.nchunks        # 100 (number of chunks)
-z.cdata_shape    # Shape in terms of chunks: (10, 10)
+z.nchunks  # 100 (number of chunks)
+z.cdata_shape  # Shape in terms of chunks: (10, 10)
 ```
 
 ### Methods
@@ -257,7 +278,7 @@ z.resize(1500, 1500)  # Change dimensions
 z.append(new_data, axis=0)  # Add data along axis
 
 # Copying
-z2 = z.copy(store='new_location.zarr')
+z2 = z.copy(store="new_location.zarr")
 ```
 
 ## Chunking Guidelines
@@ -269,8 +290,8 @@ z2 = z.copy(store='new_location.zarr')
 # 10 MB = 2,621,440 elements
 
 # Examples for 1 MB chunks:
-(512, 512)      # For 2D: 512 × 512 × 4 = 1,048,576 bytes
-(128, 128, 128) # For 3D: 128 × 128 × 128 × 4 = 8,388,608 bytes ≈ 8 MB
+(512, 512)  # For 2D: 512 × 512 × 4 = 1,048,576 bytes
+(128, 128, 128)  # For 3D: 128 × 128 × 128 × 4 = 8,388,608 bytes ≈ 8 MB
 (64, 256, 256)  # For 3D: 64 × 256 × 256 × 4 = 16,777,216 bytes ≈ 16 MB
 ```
 
@@ -278,27 +299,27 @@ z2 = z.copy(store='new_location.zarr')
 
 **Time series (sequential access along first dimension):**
 ```python
-chunks=(1, 720, 1440)  # One time step per chunk
+chunks = (1, 720, 1440)  # One time step per chunk
 ```
 
 **Row-wise access:**
 ```python
-chunks=(10, 10000)  # Small rows, span columns
+chunks = (10, 10000)  # Small rows, span columns
 ```
 
 **Column-wise access:**
 ```python
-chunks=(10000, 10)  # Span rows, small columns
+chunks = (10000, 10)  # Span rows, small columns
 ```
 
 **Random access:**
 ```python
-chunks=(500, 500)  # Balanced square chunks
+chunks = (500, 500)  # Balanced square chunks
 ```
 
 **3D volumetric data:**
 ```python
-chunks=(64, 64, 64)  # Cubic chunks for isotropic access
+chunks = (64, 64, 64)  # Cubic chunks for isotropic access
 ```
 
 ## Integration APIs
@@ -323,14 +344,14 @@ arr = z[:]  # Loads entire array into memory
 import dask.array as da
 
 # Load Zarr as Dask array
-dask_array = da.from_zarr('data.zarr')
+dask_array = da.from_zarr("data.zarr")
 
 # Compute operations in parallel
 result = dask_array.mean(axis=0).compute()
 
 # Write Dask array to Zarr
 large_array = da.random.random((100000, 100000), chunks=(1000, 1000))
-da.to_zarr(large_array, 'output.zarr')
+da.to_zarr(large_array, "output.zarr")
 ```
 
 ### Xarray Integration
@@ -338,21 +359,21 @@ da.to_zarr(large_array, 'output.zarr')
 import xarray as xr
 
 # Open Zarr as Xarray Dataset
-ds = xr.open_zarr('data.zarr')
+ds = xr.open_zarr("data.zarr")
 
 # Write Xarray to Zarr
-ds.to_zarr('output.zarr')
+ds.to_zarr("output.zarr")
 
 # Create with coordinates
 ds = xr.Dataset(
-    {'temperature': (['time', 'lat', 'lon'], data)},
+    {"temperature": (["time", "lat", "lon"], data)},
     coords={
-        'time': pd.date_range('2024-01-01', periods=365),
-        'lat': np.arange(-90, 91, 1),
-        'lon': np.arange(-180, 180, 1)
-    }
+        "time": pd.date_range("2024-01-01", periods=365),
+        "lat": np.arange(-90, 91, 1),
+        "lon": np.arange(-180, 180, 1),
+    },
 )
-ds.to_zarr('climate.zarr')
+ds.to_zarr("climate.zarr")
 ```
 
 ## Parallel Computing
@@ -363,11 +384,11 @@ from zarr import ThreadSynchronizer, ProcessSynchronizer
 
 # Multi-threaded writes
 sync = ThreadSynchronizer()
-z = zarr.open_array('data.zarr', mode='r+', synchronizer=sync)
+z = zarr.open_array("data.zarr", mode="r+", synchronizer=sync)
 
 # Multi-process writes
-sync = ProcessSynchronizer('sync.sync')
-z = zarr.open_array('data.zarr', mode='r+', synchronizer=sync)
+sync = ProcessSynchronizer("sync.sync")
+z = zarr.open_array("data.zarr", mode="r+", synchronizer=sync)
 ```
 
 **Note:** Synchronization only needed for:
@@ -379,10 +400,10 @@ z = zarr.open_array('data.zarr', mode='r+', synchronizer=sync)
 
 ```python
 # Consolidate metadata (after creating all arrays/groups)
-zarr.consolidate_metadata('data.zarr')
+zarr.consolidate_metadata("data.zarr")
 
 # Open with consolidated metadata (faster, especially on cloud)
-root = zarr.open_consolidated('data.zarr')
+root = zarr.open_consolidated("data.zarr")
 ```
 
 **Benefits:**
@@ -400,10 +421,7 @@ root = zarr.open_consolidated('data.zarr')
 ### Time Series with Growing Data
 ```python
 # Start with empty first dimension
-z = zarr.open('timeseries.zarr', mode='a',
-              shape=(0, 720, 1440),
-              chunks=(1, 720, 1440),
-              dtype='f4')
+z = zarr.open("timeseries.zarr", mode="a", shape=(0, 720, 1440), chunks=(1, 720, 1440), dtype="f4")
 
 # Append new time steps
 for new_timestep in data_stream:
@@ -412,11 +430,11 @@ for new_timestep in data_stream:
 
 ### Processing Large Arrays in Chunks
 ```python
-z = zarr.open('large_data.zarr', mode='r')
+z = zarr.open("large_data.zarr", mode="r")
 
 # Process without loading entire array
 for i in range(0, z.shape[0], 1000):
-    chunk = z[i:i+1000, :]
+    chunk = z[i : i + 1000, :]
     result = process(chunk)
     save(result)
 ```
@@ -425,16 +443,17 @@ for i in range(0, z.shape[0], 1000):
 ```python
 # HDF5 → Zarr
 import h5py
-with h5py.File('data.h5', 'r') as h5:
-    z = zarr.array(h5['dataset'][:], chunks=(1000, 1000), store='data.zarr')
+
+with h5py.File("data.h5", "r") as h5:
+    z = zarr.array(h5["dataset"][:], chunks=(1000, 1000), store="data.zarr")
 
 # Zarr → NumPy file
-z = zarr.open('data.zarr', mode='r')
-np.save('data.npy', z[:])
+z = zarr.open("data.zarr", mode="r")
+np.save("data.npy", z[:])
 
 # Zarr → NetCDF (via Xarray)
-ds = xr.open_zarr('data.zarr')
-ds.to_netcdf('data.nc')
+ds = xr.open_zarr("data.zarr")
+ds.to_netcdf("data.nc")
 ```
 
 ## Performance Optimization Quick Checklist
@@ -455,7 +474,7 @@ ds.to_netcdf('data.nc')
 ## Debugging and Profiling
 
 ```python
-z = zarr.open('data.zarr', mode='r')
+z = zarr.open("data.zarr", mode="r")
 
 # Detailed information
 print(z.info)
@@ -475,17 +494,17 @@ print(f"Chunk grid: {z.cdata_shape}")
 
 ```python
 # Integers
-'i1', 'i2', 'i4', 'i8'  # Signed: 8, 16, 32, 64-bit
-'u1', 'u2', 'u4', 'u8'  # Unsigned: 8, 16, 32, 64-bit
+"i1", "i2", "i4", "i8"  # Signed: 8, 16, 32, 64-bit
+"u1", "u2", "u4", "u8"  # Unsigned: 8, 16, 32, 64-bit
 
 # Floats
-'f2', 'f4', 'f8'  # 16, 32, 64-bit (half, single, double precision)
+"f2", "f4", "f8"  # 16, 32, 64-bit (half, single, double precision)
 
 # Others
-'bool'     # Boolean
-'c8', 'c16'  # Complex: 64, 128-bit
-'S10'      # Fixed-length string (10 bytes)
-'U10'      # Unicode string (10 characters)
+"bool"  # Boolean
+"c8", "c16"  # Complex: 64, 128-bit
+"S10"  # Fixed-length string (10 bytes)
+"U10"  # Unicode string (10 characters)
 ```
 
 ## Version Compatibility
@@ -497,7 +516,7 @@ Zarr-Python version 3.x supports both:
 Check format version:
 ```python
 # Zarr automatically detects format version
-z = zarr.open('data.zarr', mode='r')
+z = zarr.open("data.zarr", mode="r")
 # Format info available in metadata
 ```
 
@@ -505,7 +524,7 @@ z = zarr.open('data.zarr', mode='r')
 
 ```python
 try:
-    z = zarr.open_array('data.zarr', mode='r')
+    z = zarr.open_array("data.zarr", mode="r")
 except zarr.errors.PathNotFoundError:
     print("Array does not exist")
 except zarr.errors.ReadOnlyError:

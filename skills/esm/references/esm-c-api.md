@@ -99,11 +99,7 @@ Process multiple sequences efficiently:
 import torch
 
 # Multiple proteins
-sequences = [
-    "MPRTKEINDAGLIVHSP",
-    "AGKWFYLTQSNHERVPM",
-    "DEIFKRNAVWGSLTPQY"
-]
+sequences = ["MPRTKEINDAGLIVHSP", "AGKWFYLTQSNHERVPM", "DEIFKRNAVWGSLTPQY"]
 
 proteins = [ESMProtein(sequence=seq) for seq in sequences]
 
@@ -140,9 +136,7 @@ def batch_encode_variable_length(model, sequences, max_batch_size=32):
         batch_indices.append(idx)
 
         # Process batch when full or length changes significantly
-        if (len(batch) >= max_batch_size or
-            (len(batch) > 0 and abs(len(seq) - len(batch[0])) > 10)):
-
+        if len(batch) >= max_batch_size or (len(batch) > 0 and abs(len(seq) - len(batch[0])) > 10):
             # Process current batch
             proteins = [ESMProtein(sequence=s) for s in batch]
             embeddings = [model.forward(model.encode(p)) for p in proteins]
@@ -174,6 +168,7 @@ Compute similarity between proteins using embeddings:
 import torch
 import torch.nn.functional as F
 
+
 def get_sequence_embedding(model, sequence):
     """Get mean-pooled sequence embedding."""
     protein = ESMProtein(sequence=sequence)
@@ -182,6 +177,7 @@ def get_sequence_embedding(model, sequence):
 
     # Mean pooling over sequence length
     return embedding.mean(dim=1)
+
 
 # Get embeddings
 seq1_emb = get_sequence_embedding(model, "MPRTKEINDAGLIVHSP")
@@ -205,6 +201,7 @@ import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 
+
 # Generate embeddings for training set
 def embed_dataset(model, sequences):
     embeddings = []
@@ -215,16 +212,15 @@ def embed_dataset(model, sequences):
         embeddings.append(emb.cpu().detach().numpy().flatten())
     return np.array(embeddings)
 
+
 # Example: Classify proteins by function
 train_sequences = [...]  # Your sequences
-train_labels = [...]      # Your labels
+train_labels = [...]  # Your labels
 
 embeddings = embed_dataset(model, train_sequences)
 
 # Train classifier
-X_train, X_test, y_train, y_test = train_test_split(
-    embeddings, train_labels, test_size=0.2
-)
+X_train, X_test, y_train, y_test = train_test_split(embeddings, train_labels, test_size=0.2)
 
 classifier = LogisticRegression(max_iter=1000)
 classifier.fit(X_train, y_train)
@@ -266,6 +262,7 @@ import torch
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
+
 def build_sequence_index(model, database_sequences):
     """Build searchable index of sequence embeddings."""
     embeddings = []
@@ -274,8 +271,8 @@ def build_sequence_index(model, database_sequences):
         embeddings.append(emb.cpu().detach().numpy().flatten())
     return np.array(embeddings)
 
-def search_similar_sequences(model, query_seq, database_embeddings,
-                            database_sequences, top_k=10):
+
+def search_similar_sequences(model, query_seq, database_embeddings, database_sequences, top_k=10):
     """Find top-k most similar sequences."""
     query_emb = get_sequence_embedding(model, query_seq)
     query_emb_np = query_emb.cpu().detach().numpy().flatten().reshape(1, -1)
@@ -286,11 +283,9 @@ def search_similar_sequences(model, query_seq, database_embeddings,
     # Get top-k
     top_indices = np.argsort(similarities)[-top_k:][::-1]
 
-    results = [
-        (database_sequences[idx], similarities[idx])
-        for idx in top_indices
-    ]
+    results = [(database_sequences[idx], similarities[idx]) for idx in top_indices]
     return results
+
 
 # Example usage
 database_seqs = [...]  # Large sequence database
@@ -309,6 +304,7 @@ Use ESM C embeddings as input to custom neural networks:
 
 ```python
 import torch.nn as nn
+
 
 class ProteinPropertyPredictor(nn.Module):
     """Example: Predict protein properties from ESM C embeddings."""
@@ -333,6 +329,7 @@ class ProteinPropertyPredictor(nn.Module):
         x = self.fc3(x)
         return x
 
+
 # Use ESM C as frozen feature extractor
 esm_model = ESMC.from_pretrained("esmc-600m").to("cuda")
 esm_model.eval()  # Freeze
@@ -341,7 +338,7 @@ esm_model.eval()  # Freeze
 predictor = ProteinPropertyPredictor(
     embedding_dim=1152,  # esmc-600m dimension
     hidden_dim=512,
-    output_dim=1  # e.g., stability score
+    output_dim=1,  # e.g., stability score
 ).to("cuda")
 
 # Training loop
@@ -368,6 +365,7 @@ def get_per_residue_embeddings(model, sequence):
 
     # embeddings shape: (1, seq_len, hidden_dim)
     return embeddings.squeeze(0)  # (seq_len, hidden_dim)
+
 
 # Analyze specific positions
 sequence = "MPRTKEINDAGLIVHSPQWFYK"
@@ -411,7 +409,7 @@ def efficient_batch_processing(model, sequences, batch_size=32):
     results = []
 
     for i in range(0, len(sequences), batch_size):
-        batch = sequences[i:i + batch_size]
+        batch = sequences[i : i + batch_size]
 
         # Process batch
         batch_embeddings = []
@@ -435,9 +433,11 @@ def efficient_batch_processing(model, sequences, batch_size=32):
 import pickle
 import hashlib
 
+
 def get_cache_key(sequence):
     """Generate cache key for sequence."""
     return hashlib.md5(sequence.encode()).hexdigest()
+
 
 class EmbeddingCache:
     """Cache for protein embeddings."""
@@ -445,7 +445,7 @@ class EmbeddingCache:
     def __init__(self, cache_file="embeddings_cache.pkl"):
         self.cache_file = cache_file
         try:
-            with open(cache_file, 'rb') as f:
+            with open(cache_file, "rb") as f:
                 self.cache = pickle.load(f)
         except FileNotFoundError:
             self.cache = {}
@@ -459,11 +459,13 @@ class EmbeddingCache:
         self.cache[key] = embedding
 
     def save(self):
-        with open(self.cache_file, 'wb') as f:
+        with open(self.cache_file, "wb") as f:
             pickle.dump(self.cache, f)
+
 
 # Usage
 cache = EmbeddingCache()
+
 
 def get_embedding_cached(model, sequence):
     cached = cache.get(sequence)
@@ -476,6 +478,7 @@ def get_embedding_cached(model, sequence):
     cache.set(sequence, embedding)
 
     return embedding
+
 
 # Don't forget to save cache
 cache.save()
@@ -499,10 +502,12 @@ ESM C is designed as a drop-in replacement:
 ```python
 # Old ESM2 code
 from esm import pretrained
+
 model, alphabet = pretrained.esm2_t33_650M_UR50D()
 
 # New ESM C code (similar API)
 from esm.models.esmc import ESMC
+
 model = ESMC.from_pretrained("esmc-600m")
 ```
 
@@ -561,6 +566,7 @@ def get_attention_weights(model, sequence):
     output = model.forward(tensor, output_attentions=True)
 
     return output.attentions  # List of attention tensors per layer
+
 
 # Visualize attention
 attentions = get_attention_weights(model, "MPRTKEINDAGLIVHSP")

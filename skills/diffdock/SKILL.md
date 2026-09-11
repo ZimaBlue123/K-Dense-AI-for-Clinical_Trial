@@ -269,7 +269,7 @@ data = {
     "complex_name": [f"ensemble_{i}" for i in range(len(conformations))],
     "protein_path": conformations,
     "ligand_description": [ligand] * len(conformations),
-    "protein_sequence": [""] * len(conformations)
+    "protein_sequence": [""] * len(conformations),
 }
 
 pd.DataFrame(data).to_csv("ensemble_input.csv", index=False)

@@ -13,6 +13,7 @@ Tissue masks are binary representations that identify tissue regions within whol
 ```python
 from histolab.masks import BinaryMask
 
+
 class CustomMask(BinaryMask):
     def _mask(self, obj):
         # Implement custom masking logic
@@ -95,7 +96,7 @@ custom_mask = TissueMask(
         RgbToGrayscale(),
         OtsuThreshold(),
         BinaryDilation(disk_size=5),
-        RemoveSmallHoles(area_threshold=500)
+        RemoveSmallHoles(area_threshold=500),
     ]
 )
 ```
@@ -134,11 +135,11 @@ fig, axes = plt.subplots(1, 2, figsize=(15, 7))
 
 axes[0].imshow(slide.thumbnail)
 axes[0].set_title("Original Slide")
-axes[0].axis('off')
+axes[0].axis("off")
 
-axes[1].imshow(mask_array, cmap='gray')
+axes[1].imshow(mask_array, cmap="gray")
 axes[1].set_title("Tissue Mask")
-axes[1].axis('off')
+axes[1].axis("off")
 
 plt.show()
 ```
@@ -151,6 +152,7 @@ Define specific regions of interest:
 from histolab.masks import BinaryMask
 import numpy as np
 
+
 class RectangularMask(BinaryMask):
     def __init__(self, x_start, y_start, width, height):
         self.x_start = x_start
@@ -162,9 +164,11 @@ class RectangularMask(BinaryMask):
         # Create mask with specified rectangular region
         thumb = obj.thumbnail
         mask = np.zeros(thumb.shape[:2], dtype=bool)
-        mask[self.y_start:self.y_start+self.height,
-             self.x_start:self.x_start+self.width] = True
+        mask[
+            self.y_start : self.y_start + self.height, self.x_start : self.x_start + self.width
+        ] = True
         return mask
+
 
 # Use custom mask
 roi_mask = RectangularMask(x_start=1000, y_start=500, width=2000, height=1500)
@@ -178,6 +182,7 @@ Pathology slides often contain pen markings or digital annotations. Exclude them
 from histolab.masks import TissueMask
 from histolab.filters.image_filters import RgbToGrayscale, OtsuThreshold
 from histolab.filters.morphological_filters import BinaryDilation
+
 
 class AnnotationExclusionMask(BinaryMask):
     def _mask(self, obj):
@@ -215,7 +220,7 @@ random_tiler = RandomTiler(
     tile_size=(512, 512),
     n_tiles=100,
     level=0,
-    extraction_mask=TissueMask()  # Extract from all tissue regions
+    extraction_mask=TissueMask(),  # Extract from all tissue regions
 )
 
 # Or use default BiggestTissueBoxMask
@@ -223,7 +228,7 @@ random_tiler = RandomTiler(
     tile_size=(512, 512),
     n_tiles=100,
     level=0,
-    extraction_mask=BiggestTissueBoxMask()  # Default behavior
+    extraction_mask=BiggestTissueBoxMask(),  # Default behavior
 )
 ```
 

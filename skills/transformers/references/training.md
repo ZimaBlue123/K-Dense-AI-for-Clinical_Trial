@@ -21,13 +21,10 @@ from transformers import AutoTokenizer
 
 tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
 
+
 def tokenize_function(examples):
-    return tokenizer(
-        examples["text"],
-        padding="max_length",
-        truncation=True,
-        max_length=512
-    )
+    return tokenizer(examples["text"], padding="max_length", truncation=True, max_length=512)
+
 
 train_dataset = train_dataset.map(tokenize_function, batched=True)
 eval_dataset = eval_dataset.map(tokenize_function, batched=True)
@@ -40,7 +37,7 @@ from transformers import AutoModelForSequenceClassification
 
 model = AutoModelForSequenceClassification.from_pretrained(
     "bert-base-uncased",
-    num_labels=5  # Number of classes
+    num_labels=5,  # Number of classes
 )
 ```
 
@@ -51,6 +48,7 @@ import evaluate
 import numpy as np
 
 metric = evaluate.load("accuracy")
+
 
 def compute_metrics(eval_pred):
     logits, labels = eval_pred
@@ -116,126 +114,126 @@ trainer.push_to_hub("username/my-finetuned-model")
 
 **output_dir**: Directory for checkpoints and logs
 ```python
-output_dir="./results"
+output_dir = "./results"
 ```
 
 **num_train_epochs**: Number of training epochs
 ```python
-num_train_epochs=3
+num_train_epochs = 3
 ```
 
 **per_device_train_batch_size**: Batch size per GPU/CPU
 ```python
-per_device_train_batch_size=8
+per_device_train_batch_size = 8
 ```
 
 **learning_rate**: Optimizer learning rate
 ```python
-learning_rate=2e-5  # Common for BERT-style models
-learning_rate=5e-5  # Common for smaller models
+learning_rate = 2e-5  # Common for BERT-style models
+learning_rate = 5e-5  # Common for smaller models
 ```
 
 **weight_decay**: L2 regularization
 ```python
-weight_decay=0.01
+weight_decay = 0.01
 ```
 
 ### Evaluation and Saving
 
 **eval_strategy**: When to evaluate ("no", "steps", "epoch")
 ```python
-eval_strategy="epoch"  # Evaluate after each epoch
-eval_strategy="steps"  # Evaluate every eval_steps
+eval_strategy = "epoch"  # Evaluate after each epoch
+eval_strategy = "steps"  # Evaluate every eval_steps
 ```
 
 **save_strategy**: When to save checkpoints
 ```python
-save_strategy="epoch"
-save_strategy="steps"
-save_steps=500
+save_strategy = "epoch"
+save_strategy = "steps"
+save_steps = 500
 ```
 
 **load_best_model_at_end**: Load best checkpoint after training
 ```python
-load_best_model_at_end=True
-metric_for_best_model="accuracy"  # Metric to compare
+load_best_model_at_end = True
+metric_for_best_model = "accuracy"  # Metric to compare
 ```
 
 ### Optimization
 
 **gradient_accumulation_steps**: Accumulate gradients over multiple steps
 ```python
-gradient_accumulation_steps=4  # Effective batch size = batch_size * 4
+gradient_accumulation_steps = 4  # Effective batch size = batch_size * 4
 ```
 
 **fp16**: Enable mixed precision (NVIDIA GPUs)
 ```python
-fp16=True
+fp16 = True
 ```
 
 **bf16**: Enable bfloat16 (newer GPUs)
 ```python
-bf16=True
+bf16 = True
 ```
 
 **gradient_checkpointing**: Trade compute for memory
 ```python
-gradient_checkpointing=True  # Slower but uses less memory
+gradient_checkpointing = True  # Slower but uses less memory
 ```
 
 **optim**: Optimizer choice
 ```python
-optim="adamw_torch"  # Default
-optim="adamw_8bit"    # 8-bit Adam (requires bitsandbytes)
-optim="adafactor"     # Memory-efficient alternative
+optim = "adamw_torch"  # Default
+optim = "adamw_8bit"  # 8-bit Adam (requires bitsandbytes)
+optim = "adafactor"  # Memory-efficient alternative
 ```
 
 ### Learning Rate Scheduling
 
 **lr_scheduler_type**: Learning rate schedule
 ```python
-lr_scheduler_type="linear"       # Linear decay
-lr_scheduler_type="cosine"       # Cosine annealing
-lr_scheduler_type="constant"     # No decay
-lr_scheduler_type="constant_with_warmup"
+lr_scheduler_type = "linear"  # Linear decay
+lr_scheduler_type = "cosine"  # Cosine annealing
+lr_scheduler_type = "constant"  # No decay
+lr_scheduler_type = "constant_with_warmup"
 ```
 
 **warmup_steps** or **warmup_ratio**: Warmup period
 ```python
-warmup_steps=500
+warmup_steps = 500
 # Or
-warmup_ratio=0.1  # 10% of total steps
+warmup_ratio = 0.1  # 10% of total steps
 ```
 
 ### Logging
 
 **logging_dir**: TensorBoard logs directory
 ```python
-logging_dir="./logs"
+logging_dir = "./logs"
 ```
 
 **logging_steps**: Log every N steps
 ```python
-logging_steps=10
+logging_steps = 10
 ```
 
 **report_to**: Logging integrations
 ```python
-report_to=["tensorboard"]
-report_to=["wandb"]
-report_to=["tensorboard", "wandb"]
+report_to = ["tensorboard"]
+report_to = ["wandb"]
+report_to = ["tensorboard", "wandb"]
 ```
 
 ### Distributed Training
 
 **ddp_backend**: Distributed backend
 ```python
-ddp_backend="nccl"  # For multi-GPU
+ddp_backend = "nccl"  # For multi-GPU
 ```
 
 **deepspeed**: DeepSpeed config file
 ```python
-deepspeed="ds_config.json"
+deepspeed = "ds_config.json"
 ```
 
 ## Data Collators
@@ -264,11 +262,7 @@ For masked language modeling:
 ```python
 from transformers import DataCollatorForLanguageModeling
 
-data_collator = DataCollatorForLanguageModeling(
-    tokenizer=tokenizer,
-    mlm=True,
-    mlm_probability=0.15
-)
+data_collator = DataCollatorForLanguageModeling(tokenizer=tokenizer, mlm=True, mlm_probability=0.15)
 ```
 
 ### DataCollatorForSeq2Seq
@@ -277,11 +271,7 @@ For sequence-to-sequence tasks:
 ```python
 from transformers import DataCollatorForSeq2Seq
 
-data_collator = DataCollatorForSeq2Seq(
-    tokenizer=tokenizer,
-    model=model,
-    padding=True
-)
+data_collator = DataCollatorForSeq2Seq(tokenizer=tokenizer, model=model, padding=True)
 ```
 
 ## Custom Training
@@ -292,6 +282,7 @@ Override methods for custom behavior:
 
 ```python
 from transformers import Trainer
+
 
 class CustomTrainer(Trainer):
     def compute_loss(self, model, inputs, return_outputs=False):
@@ -313,11 +304,13 @@ Monitor and control training:
 ```python
 from transformers import TrainerCallback
 
+
 class CustomCallback(TrainerCallback):
     def on_epoch_end(self, args, state, control, **kwargs):
         print(f"Epoch {state.epoch} completed")
         # Custom logic here
         return control
+
 
 trainer = Trainer(
     model=model,
@@ -384,20 +377,11 @@ For very large models:
 ```python
 # ds_config.json
 {
-  "train_batch_size": 16,
-  "gradient_accumulation_steps": 1,
-  "optimizer": {
-    "type": "AdamW",
-    "params": {
-      "lr": 2e-5
-    }
-  },
-  "fp16": {
-    "enabled": true
-  },
-  "zero_optimization": {
-    "stage": 2
-  }
+    "train_batch_size": 16,
+    "gradient_accumulation_steps": 1,
+    "optimizer": {"type": "AdamW", "params": {"lr": 2e-5}},
+    "fp16": {"enabled": true},
+    "zero_optimization": {"stage": 2},
 }
 ```
 

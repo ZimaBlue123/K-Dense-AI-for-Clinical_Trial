@@ -37,9 +37,9 @@ u = UniProt()
 
 # Map single ID
 result = u.mapping(
-    fr="UniProtKB_AC-ID",    # Source database
-    to="KEGG",                # Target database
-    query="P43403"            # Identifier to convert
+    fr="UniProtKB_AC-ID",  # Source database
+    to="KEGG",  # Target database
+    query="P43403",  # Identifier to convert
 )
 
 print(result)
@@ -51,11 +51,7 @@ print(result)
 ```python
 # Map multiple IDs (comma-separated)
 ids = ["P43403", "P04637", "P53779"]
-result = u.mapping(
-    fr="UniProtKB_AC-ID",
-    to="KEGG",
-    query=",".join(ids)
-)
+result = u.mapping(fr="UniProtKB_AC-ID", to="KEGG", query=",".join(ids))
 
 for uniprot_id, kegg_ids in result.items():
     print(f"{uniprot_id} → {kegg_ids}")
@@ -275,8 +271,8 @@ print(chembl_id)  # CHEMBL278315
 all_ids = u.get_all_compound_ids("CHEMBL278315", src_id=1)  # 1 = ChEMBL
 
 for mapping in all_ids:
-    src_name = mapping['src_name']
-    src_compound_id = mapping['src_compound_id']
+    src_name = mapping["src_name"]
+    src_compound_id = mapping["src_compound_id"]
     print(f"{src_name}: {src_compound_id}")
 ```
 
@@ -304,7 +300,7 @@ print(f"ChEMBL: {chembl_id}")
 ```python
 result = u.get_src_compound_ids("CHEMBL278315", from_src_id=1, to_src_id=22)
 if result:
-    pubchem_id = result[0]['src_compound_id']
+    pubchem_id = result[0]["src_compound_id"]
     print(f"PubChem: {pubchem_id}")
 ```
 
@@ -313,7 +309,7 @@ if result:
 ```python
 result = u.get_src_compound_ids("5292", from_src_id=7, to_src_id=2)
 if result:
-    drugbank_id = result[0]['src_compound_id']
+    drugbank_id = result[0]["src_compound_id"]
     print(f"DrugBank: {drugbank_id}")
 ```
 
@@ -364,7 +360,7 @@ kegg_id = "hsa:7535"
 organism, gene_id = kegg_id.split(":")
 
 print(f"Organism: {organism}")  # hsa (human)
-print(f"Gene ID: {gene_id}")    # 7535
+print(f"Gene ID: {gene_id}")  # 7535
 ```
 
 ### KEGG Pathway to Genes
@@ -404,6 +400,7 @@ print(f"Found {len(genes)} genes")
 ```python
 from bioservices import UniProt
 
+
 def gene_symbol_to_ids(gene_symbol, organism="9606"):
     """Convert gene symbol to multiple database IDs."""
     u = UniProt()
@@ -420,14 +417,15 @@ def gene_symbol_to_ids(gene_symbol, organism="9606"):
 
     # Map to multiple databases
     ids = {
-        'uniprot': uniprot_id,
-        'kegg': u.mapping(fr="UniProtKB_AC-ID", to="KEGG", query=uniprot_id),
-        'ensembl': u.mapping(fr="UniProtKB_AC-ID", to="Ensembl", query=uniprot_id),
-        'refseq': u.mapping(fr="UniProtKB_AC-ID", to="RefSeq_Protein", query=uniprot_id),
-        'pdb': u.mapping(fr="UniProtKB_AC-ID", to="PDB", query=uniprot_id)
+        "uniprot": uniprot_id,
+        "kegg": u.mapping(fr="UniProtKB_AC-ID", to="KEGG", query=uniprot_id),
+        "ensembl": u.mapping(fr="UniProtKB_AC-ID", to="Ensembl", query=uniprot_id),
+        "refseq": u.mapping(fr="UniProtKB_AC-ID", to="RefSeq_Protein", query=uniprot_id),
+        "pdb": u.mapping(fr="UniProtKB_AC-ID", to="PDB", query=uniprot_id),
     }
 
     return ids
+
 
 # Usage
 ids = gene_symbol_to_ids("ZAP70")
@@ -438,6 +436,7 @@ print(ids)
 
 ```python
 from bioservices import KEGG, UniChem, ChEBI
+
 
 def compound_name_to_ids(compound_name):
     """Search compound and get all database IDs."""
@@ -468,11 +467,8 @@ def compound_name_to_ids(compound_name):
     except:
         chembl_id = None
 
-    return {
-        'kegg': kegg_id,
-        'chebi': chebi_id,
-        'chembl': chembl_id
-    }
+    return {"kegg": kegg_id, "chebi": chebi_id, "chembl": chembl_id}
+
 
 # Usage
 ids = compound_name_to_ids("Geldanamycin")
@@ -484,19 +480,20 @@ print(ids)
 ```python
 from bioservices import UniProt
 
+
 def safe_batch_mapping(ids, from_db, to_db, chunk_size=100):
     """Safely map IDs with error handling and chunking."""
     u = UniProt()
     all_results = {}
 
     for i in range(0, len(ids), chunk_size):
-        chunk = ids[i:i+chunk_size]
+        chunk = ids[i : i + chunk_size]
         query = ",".join(chunk)
 
         try:
             results = u.mapping(fr=from_db, to=to_db, query=query)
             all_results.update(results)
-            print(f"✓ Processed {min(i+chunk_size, len(ids))}/{len(ids)}")
+            print(f"✓ Processed {min(i + chunk_size, len(ids))}/{len(ids)}")
 
         except Exception as e:
             print(f"✗ Error at chunk {i}: {e}")
@@ -511,6 +508,7 @@ def safe_batch_mapping(ids, from_db, to_db, chunk_size=100):
 
     return all_results
 
+
 # Usage
 uniprot_ids = ["P43403", "P04637", "P53779", "INVALID123"]
 mapping = safe_batch_mapping(uniprot_ids, "UniProtKB_AC-ID", "KEGG")
@@ -522,6 +520,7 @@ Sometimes you need to map through intermediate databases:
 
 ```python
 from bioservices import UniProt
+
 
 def multi_hop_mapping(gene_symbol, organism="9606"):
     """Gene symbol → UniProt → KEGG → Pathways."""
@@ -549,12 +548,8 @@ def multi_hop_mapping(gene_symbol, organism="9606"):
     organism_code, gene_id = kegg_id.split(":")
     pathways = k.get_pathway_by_gene(gene_id, organism_code)
 
-    return {
-        'gene': gene_symbol,
-        'uniprot': uniprot_id,
-        'kegg': kegg_id,
-        'pathways': pathways
-    }
+    return {"gene": gene_symbol, "uniprot": uniprot_id, "kegg": kegg_id, "pathways": pathways}
+
 
 # Usage
 result = multi_hop_mapping("TP53")
@@ -578,7 +573,7 @@ print(result)
 ```python
 result = u.mapping(fr="UniProtKB_AC-ID", to="KEGG", query="P43403")
 
-if not result or 'P43403' not in result:
+if not result or "P43403" not in result:
     print("No mapping found. Try:")
     print("1. Verify ID exists: u.search('P43403')")
     print("2. Check if protein has KEGG annotation")
@@ -595,7 +590,7 @@ def chunked_mapping(ids, from_db, to_db, chunk_size=50):
     all_results = {}
 
     for i in range(0, len(ids), chunk_size):
-        chunk = ids[i:i+chunk_size]
+        chunk = ids[i : i + chunk_size]
         result = u.mapping(fr=from_db, to=to_db, query=",".join(chunk))
         all_results.update(result)
 
@@ -612,7 +607,7 @@ def chunked_mapping(ids, from_db, to_db, chunk_size=50):
 result = u.mapping(fr="UniProtKB_AC-ID", to="PDB", query="P04637")
 # Result: {'P04637': ['1A1U', '1AIE', '1C26', ...]}
 
-pdb_ids = result['P04637']
+pdb_ids = result["P04637"]
 print(f"Found {len(pdb_ids)} PDB structures")
 
 for pdb_id in pdb_ids:
@@ -664,12 +659,13 @@ for line in entry.split("\n"):
 ```python
 import time
 
+
 def polite_batch_mapping(ids, from_db, to_db):
     """Batch mapping with rate limiting."""
     results = {}
 
     for i in range(0, len(ids), 50):
-        chunk = ids[i:i+50]
+        chunk = ids[i : i + 50]
         result = u.mapping(fr=from_db, to=to_db, query=",".join(chunk))
         results.update(result)
 

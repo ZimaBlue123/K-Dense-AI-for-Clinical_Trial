@@ -222,11 +222,14 @@ This document provides a comprehensive reference of all filtering functions avai
 - Example:
 ```python
 from matchms import SpectrumProcessor
-processor = SpectrumProcessor([
-    default_filters,
-    normalize_intensities,
-    lambda s: select_by_relative_intensity(s, intensity_from=0.01)
-])
+
+processor = SpectrumProcessor(
+    [
+        default_filters,
+        normalize_intensities,
+        lambda s: select_by_relative_intensity(s, intensity_from=0.01),
+    ]
+)
 processed = processor(spectrum)
 ```
 
@@ -234,9 +237,12 @@ processed = processor(spectrum)
 
 ### Standard Preprocessing Pipeline
 ```python
-from matchms.filtering import (default_filters, normalize_intensities,
-                               select_by_relative_intensity,
-                               require_minimum_number_of_peaks)
+from matchms.filtering import (
+    default_filters,
+    normalize_intensities,
+    select_by_relative_intensity,
+    require_minimum_number_of_peaks,
+)
 
 spectrum = default_filters(spectrum)
 spectrum = normalize_intensities(spectrum)
@@ -246,8 +252,11 @@ spectrum = require_minimum_number_of_peaks(spectrum, n_required=5)
 
 ### Quality Control Pipeline
 ```python
-from matchms.filtering import (require_precursor_mz, require_minimum_number_of_peaks,
-                               require_minimum_number_of_high_peaks)
+from matchms.filtering import (
+    require_precursor_mz,
+    require_minimum_number_of_peaks,
+    require_minimum_number_of_high_peaks,
+)
 
 spectrum = require_precursor_mz(spectrum, minimum_accepted_mz=50.0)
 if spectrum is None:
@@ -259,8 +268,12 @@ spectrum = require_minimum_number_of_high_peaks(spectrum, n_required=5)
 
 ### Chemical Annotation Pipeline
 ```python
-from matchms.filtering import (derive_inchi_from_smiles, derive_inchikey_from_inchi,
-                               add_fingerprint, require_valid_annotation)
+from matchms.filtering import (
+    derive_inchi_from_smiles,
+    derive_inchikey_from_inchi,
+    add_fingerprint,
+    require_valid_annotation,
+)
 
 spectrum = derive_inchi_from_smiles(spectrum)
 spectrum = derive_inchikey_from_inchi(spectrum)
@@ -270,8 +283,12 @@ spectrum = require_valid_annotation(spectrum)
 
 ### Peak Cleaning Pipeline
 ```python
-from matchms.filtering import (normalize_intensities, remove_peaks_around_precursor_mz,
-                               select_by_relative_intensity, reduce_to_number_of_peaks)
+from matchms.filtering import (
+    normalize_intensities,
+    remove_peaks_around_precursor_mz,
+    select_by_relative_intensity,
+    reduce_to_number_of_peaks,
+)
 
 spectrum = normalize_intensities(spectrum)
 spectrum = remove_peaks_around_precursor_mz(spectrum, mz_tolerance=17)

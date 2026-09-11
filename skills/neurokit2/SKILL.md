@@ -86,10 +86,10 @@ Analyze electroencephalography signals for frequency power, complexity, and micr
 **Key functions:**
 ```python
 # Power analysis across frequency bands
-power = nk.eeg_power(eeg_data, sampling_rate=250, channels=['Fz', 'Cz', 'Pz'])
+power = nk.eeg_power(eeg_data, sampling_rate=250, channels=["Fz", "Cz", "Pz"])
 
 # Microstate analysis
-microstates = nk.microstates_segment(eeg_data, n_microstates=4, method='kmod')
+microstates = nk.microstates_segment(eeg_data, n_microstates=4, method="kmod")
 static = nk.microstates_static(microstates)
 dynamic = nk.microstates_dynamic(microstates)
 ```
@@ -148,7 +148,7 @@ Process muscle activity signals for activation detection and amplitude analysis.
 signals, info = nk.emg_process(emg_signal, sampling_rate=1000)
 
 # Muscle activation detection
-activation = nk.emg_activation(signals, sampling_rate=1000, method='threshold')
+activation = nk.emg_activation(signals, sampling_rate=1000, method="threshold")
 ```
 
 ### 7. Electrooculography (EOG)
@@ -226,8 +226,7 @@ Create epochs around stimulus events and analyze physiological responses. See `r
 events = nk.events_find(trigger_signal, threshold=0.5)
 
 # Create epochs around events
-epochs = nk.epochs_create(signals, events, sampling_rate=1000,
-                          epochs_start=-0.5, epochs_end=2.0)
+epochs = nk.epochs_create(signals, events, sampling_rate=1000, epochs_start=-0.5, epochs_end=2.0)
 
 # Average across epochs
 grand_average = nk.epochs_average(epochs)
@@ -241,11 +240,7 @@ Process multiple physiological signals simultaneously with unified output. See `
 ```python
 # Process multiple signals at once
 bio_signals, bio_info = nk.bio_process(
-    ecg=ecg_signal,
-    rsp=rsp_signal,
-    eda=eda_signal,
-    emg=emg_signal,
-    sampling_rate=1000
+    ecg=ecg_signal, rsp=rsp_signal, eda=eda_signal, emg=emg_signal, sampling_rate=1000
 )
 
 # Analyze all processed signals
@@ -292,7 +287,7 @@ ecg = nk.ecg_simulate(duration=60, sampling_rate=1000)
 signals, info = nk.ecg_process(ecg, sampling_rate=1000)
 
 # Analyze HRV
-hrv = nk.hrv(info['ECG_R_Peaks'], sampling_rate=1000)
+hrv = nk.hrv(info["ECG_R_Peaks"], sampling_rate=1000)
 
 # Visualize
 nk.ecg_plot(signals, info)
@@ -302,10 +297,7 @@ nk.ecg_plot(signals, info)
 ```python
 # Process multiple signals
 bio_signals, bio_info = nk.bio_process(
-    ecg=ecg_signal,
-    rsp=rsp_signal,
-    eda=eda_signal,
-    sampling_rate=1000
+    ecg=ecg_signal, rsp=rsp_signal, eda=eda_signal, sampling_rate=1000
 )
 
 # Analyze all signals
@@ -318,9 +310,9 @@ results = nk.bio_analyze(bio_signals, sampling_rate=1000)
 events = nk.events_find(trigger_channel, threshold=0.5)
 
 # Create epochs
-epochs = nk.epochs_create(processed_signals, events,
-                          sampling_rate=1000,
-                          epochs_start=-0.5, epochs_end=2.0)
+epochs = nk.epochs_create(
+    processed_signals, events, sampling_rate=1000, epochs_start=-0.5, epochs_end=2.0
+)
 
 # Event-related analysis for each signal type
 ecg_epochs = nk.ecg_eventrelated(epochs)

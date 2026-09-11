@@ -21,36 +21,31 @@ from spikeinterface.sortingcomponents.peak_detection import detect_peaks
 from spikeinterface.sortingcomponents.peak_localization import localize_peaks
 
 # Preprocess first (don't whiten - affects peak localization)
-rec = si.highpass_filter(recording, freq_min=400.)
-rec = si.common_reference(rec, operator='median', reference='global')
+rec = si.highpass_filter(recording, freq_min=400.0)
+rec = si.common_reference(rec, operator="median", reference="global")
 
 # Detect peaks
 noise_levels = si.get_noise_levels(rec, return_in_uV=False)
 peaks = detect_peaks(
     rec,
-    method='locally_exclusive',
+    method="locally_exclusive",
     noise_levels=noise_levels,
     detect_threshold=5,
-    radius_um=50.,
+    radius_um=50.0,
     n_jobs=8,
-    chunk_duration='1s',
-    progress_bar=True
+    chunk_duration="1s",
+    progress_bar=True,
 )
 
 # Localize peaks
-peak_locations = localize_peaks(
-    rec, peaks,
-    method='center_of_mass',
-    n_jobs=8,
-    chunk_duration='1s'
-)
+peak_locations = localize_peaks(rec, peaks, method="center_of_mass", n_jobs=8, chunk_duration="1s")
 
 # Visualize drift
 si.plot_drift_raster_map(
     peaks=peaks,
     peak_locations=peak_locations,
     recording=rec,
-    clim=(-200, 0)  # Adjust color limits
+    clim=(-200, 0),  # Adjust color limits
 )
 ```
 
@@ -69,10 +64,7 @@ si.plot_drift_raster_map(
 
 ```python
 # Simple one-liner with preset
-rec_corrected = si.correct_motion(
-    recording=rec,
-    preset='nonrigid_fast_and_accurate'
-)
+rec_corrected = si.correct_motion(recording=rec, preset="nonrigid_fast_and_accurate")
 ```
 
 ### Available Presets
@@ -89,32 +81,24 @@ rec_corrected = si.correct_motion(
 ### Full Control Pipeline
 
 ```python
-from spikeinterface.sortingcomponents.motion import (
-    estimate_motion,
-    interpolate_motion
-)
+from spikeinterface.sortingcomponents.motion import estimate_motion, interpolate_motion
 
 # Step 1: Estimate motion
 motion, temporal_bins, spatial_bins = estimate_motion(
     rec,
     peaks,
     peak_locations,
-    method='decentralized',
-    direction='y',
-    rigid=False,          # Non-rigid for Neuropixels
-    win_step_um=50,       # Spatial window step
-    win_sigma_um=150,     # Spatial smoothing
-    bin_s=2.0,            # Temporal bin size
-    progress_bar=True
+    method="decentralized",
+    direction="y",
+    rigid=False,  # Non-rigid for Neuropixels
+    win_step_um=50,  # Spatial window step
+    win_sigma_um=150,  # Spatial smoothing
+    bin_s=2.0,  # Temporal bin size
+    progress_bar=True,
 )
 
 # Step 2: Visualize motion estimate
-si.plot_motion(
-    motion,
-    temporal_bins,
-    spatial_bins,
-    recording=rec
-)
+si.plot_motion(motion, temporal_bins, spatial_bins, recording=rec)
 
 # Step 3: Apply correction via interpolation
 rec_corrected = interpolate_motion(
@@ -122,7 +106,7 @@ rec_corrected = interpolate_motion(
     motion=motion,
     temporal_bins=temporal_bins,
     spatial_bins=spatial_bins,
-    border_mode='force_extrapolate'
+    border_mode="force_extrapolate",
 )
 ```
 
@@ -131,16 +115,16 @@ rec_corrected = interpolate_motion(
 ```python
 # Save for later use
 import numpy as np
-np.savez('motion_estimate.npz',
-         motion=motion,
-         temporal_bins=temporal_bins,
-         spatial_bins=spatial_bins)
+
+np.savez(
+    "motion_estimate.npz", motion=motion, temporal_bins=temporal_bins, spatial_bins=spatial_bins
+)
 
 # Load later
-data = np.load('motion_estimate.npz')
-motion = data['motion']
-temporal_bins = data['temporal_bins']
-spatial_bins = data['spatial_bins']
+data = np.load("motion_estimate.npz")
+motion = data["motion"]
+temporal_bins = data["temporal_bins"]
+spatial_bins = data["spatial_bins"]
 ```
 
 ## DREDge: State-of-the-Art Method
@@ -151,15 +135,11 @@ DREDge (Decentralized Registration of Electrophysiology Data) is currently the b
 
 ```python
 # AP-band motion estimation
-rec_corrected = si.correct_motion(rec, preset='dredge')
+rec_corrected = si.correct_motion(rec, preset="dredge")
 
 # Or compute explicitly
 motion, motion_info = si.compute_motion(
-    rec,
-    preset='dredge',
-    output_motion_info=True,
-    folder='motion_output/',
-    **job_kwargs
+    rec, preset="dredge", output_motion_info=True, folder="motion_output/", **job_kwargs
 )
 ```
 
@@ -169,21 +149,17 @@ For very fast drift or when AP-band estimation fails:
 
 ```python
 # Load LFP stream
-lfp = si.read_spikeglx('/path/to/data', stream_name='imec0.lf')
+lfp = si.read_spikeglx("/path/to/data", stream_name="imec0.lf")
 
 # Estimate motion from LFP (faster, handles rapid drift)
-motion_lfp, motion_info = si.compute_motion(
-    lfp,
-    preset='dredge_lfp',
-    output_motion_info=True
-)
+motion_lfp, motion_info = si.compute_motion(lfp, preset="dredge_lfp", output_motion_info=True)
 
 # Apply to AP recording
 rec_corrected = interpolate_motion(
     recording=rec,  # AP recording
     motion=motion_lfp,
-    temporal_bins=motion_info['temporal_bins'],
-    spatial_bins=motion_info['spatial_bins']
+    temporal_bins=motion_info["temporal_bins"],
+    spatial_bins=motion_info["spatial_bins"],
 )
 ```
 
@@ -193,14 +169,15 @@ rec_corrected = interpolate_motion(
 
 ```python
 # Correct before sorting
-rec_corrected = si.correct_motion(rec, preset='nonrigid_fast_and_accurate')
+rec_corrected = si.correct_motion(rec, preset="nonrigid_fast_and_accurate")
 
 # Save corrected recording
-rec_corrected = rec_corrected.save(folder='preprocessed_motion_corrected/',
-                                    format='binary', n_jobs=8)
+rec_corrected = rec_corrected.save(
+    folder="preprocessed_motion_corrected/", format="binary", n_jobs=8
+)
 
 # Run spike sorting on corrected data
-sorting = si.run_sorter('kilosort4', rec_corrected, output_folder='ks4/')
+sorting = si.run_sorter("kilosort4", rec_corrected, output_folder="ks4/")
 ```
 
 ### Option 2: Let Kilosort Handle It
@@ -209,11 +186,11 @@ Kilosort 2.5+ has built-in drift correction:
 
 ```python
 sorting = si.run_sorter(
-    'kilosort4',
+    "kilosort4",
     rec,  # Not motion corrected
-    output_folder='ks4/',
+    output_folder="ks4/",
     nblocks=5,  # Non-rigid blocks for drift correction
-    do_correction=True  # Enable Kilosort's drift correction
+    do_correction=True,  # Enable Kilosort's drift correction
 )
 ```
 
@@ -221,7 +198,7 @@ sorting = si.run_sorter(
 
 ```python
 # Sort first
-sorting = si.run_sorter('kilosort4', rec, output_folder='ks4/')
+sorting = si.run_sorter("kilosort4", rec, output_folder="ks4/")
 
 # Then estimate motion from sorted spikes
 # (More accurate as it uses actual spike times)
@@ -237,11 +214,11 @@ motion = estimate_motion_from_sorting(sorting, rec)
 ```python
 peaks = detect_peaks(
     rec,
-    method='locally_exclusive',  # Best for dense probes
+    method="locally_exclusive",  # Best for dense probes
     noise_levels=noise_levels,
-    detect_threshold=5,          # Lower = more peaks (noisier estimate)
-    radius_um=50.,               # Exclusion radius
-    exclude_sweep_ms=0.1,        # Temporal exclusion
+    detect_threshold=5,  # Lower = more peaks (noisier estimate)
+    radius_um=50.0,  # Exclusion radius
+    exclude_sweep_ms=0.1,  # Temporal exclusion
 )
 ```
 
@@ -249,15 +226,17 @@ peaks = detect_peaks(
 
 ```python
 motion = estimate_motion(
-    rec, peaks, peak_locations,
-    method='decentralized',      # 'decentralized' or 'iterative_template'
-    direction='y',               # Along probe axis
-    rigid=False,                 # False for non-rigid
-    bin_s=2.0,                   # Temporal resolution (seconds)
-    win_step_um=50,              # Spatial window step
-    win_sigma_um=150,            # Spatial smoothing sigma
-    margin_um=0,                 # Margin at probe edges
-    win_scale_um=150,            # Window scale for weights
+    rec,
+    peaks,
+    peak_locations,
+    method="decentralized",  # 'decentralized' or 'iterative_template'
+    direction="y",  # Along probe axis
+    rigid=False,  # False for non-rigid
+    bin_s=2.0,  # Temporal resolution (seconds)
+    win_step_um=50,  # Spatial window step
+    win_sigma_um=150,  # Spatial smoothing sigma
+    margin_um=0,  # Margin at probe edges
+    win_scale_um=150,  # Window scale for weights
 )
 ```
 
@@ -287,9 +266,12 @@ peaks = detect_peaks(..., detect_threshold=4)  # Lower threshold
 
 ```python
 rec_corrected = interpolate_motion(
-    rec, motion, temporal_bins, spatial_bins,
-    border_mode='force_extrapolate',  # or 'remove_channels'
-    spatial_interpolation_method='kriging'
+    rec,
+    motion,
+    temporal_bins,
+    spatial_bins,
+    border_mode="force_extrapolate",  # or 'remove_channels'
+    spatial_interpolation_method="kriging",
 )
 ```
 
@@ -307,12 +289,11 @@ fig, axes = plt.subplots(1, 2, figsize=(14, 6))
 
 # Before
 si.plot_drift_raster_map(peaks, peak_locations, rec, ax=axes[0])
-axes[0].set_title('Before Correction')
+axes[0].set_title("Before Correction")
 
 # After
-si.plot_drift_raster_map(peaks_corrected, peak_locations_corrected,
-                         rec_corrected, ax=axes[1])
-axes[1].set_title('After Correction')
+si.plot_drift_raster_map(peaks_corrected, peak_locations_corrected, rec_corrected, ax=axes[1])
+axes[1].set_title("After Correction")
 ```
 
 ## References

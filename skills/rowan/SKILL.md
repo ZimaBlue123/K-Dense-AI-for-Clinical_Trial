@@ -42,6 +42,7 @@ Generate an API key at [labs.rowansci.com/account/api-keys](https://labs.rowansc
 **Option 1: Direct assignment**
 ```python
 import rowan
+
 rowan.api_key = "your_api_key_here"
 ```
 
@@ -77,10 +78,7 @@ import stjames
 mol = stjames.Molecule.from_smiles("c1ccccc1O")  # Phenol
 
 # Submit pKa workflow
-workflow = rowan.submit_pka_workflow(
-    initial_molecule=mol,
-    name="phenol pKa calculation"
-)
+workflow = rowan.submit_pka_workflow(initial_molecule=mol, name="phenol pKa calculation")
 
 # Wait for completion
 workflow.wait_for_result()
@@ -101,15 +99,14 @@ import stjames
 mol = stjames.Molecule.from_smiles("CCCC")  # Butane
 
 workflow = rowan.submit_conformer_search_workflow(
-    initial_molecule=mol,
-    name="butane conformer search"
+    initial_molecule=mol, name="butane conformer search"
 )
 
 workflow.wait_for_result()
 workflow.fetch_latest(in_place=True)
 
 # Access conformer ensemble
-conformers = workflow.data['conformers']
+conformers = workflow.data["conformers"]
 for i, conf in enumerate(conformers):
     print(f"Conformer {i}: Energy = {conf['energy']:.4f} Hartree")
 ```
@@ -125,16 +122,14 @@ import stjames
 mol = stjames.Molecule.from_smiles("CC(=O)O")  # Acetic acid
 
 workflow = rowan.submit_basic_calculation_workflow(
-    initial_molecule=mol,
-    name="acetic acid optimization",
-    workflow_type="optimization"
+    initial_molecule=mol, name="acetic acid optimization", workflow_type="optimization"
 )
 
 workflow.wait_for_result()
 workflow.fetch_latest(in_place=True)
 
 # Get optimized structure
-optimized_mol = workflow.data['final_molecule']
+optimized_mol = workflow.data["final_molecule"]
 print(f"Final energy: {optimized_mol.energy} Hartree")
 ```
 
@@ -146,30 +141,24 @@ Dock small molecules to protein targets:
 import rowan
 
 # First, upload or create protein
-protein = rowan.create_protein_from_pdb_id(
-    name="EGFR kinase",
-    code="1M17"
-)
+protein = rowan.create_protein_from_pdb_id(name="EGFR kinase", code="1M17")
 
 # Define binding pocket (from crystal structure or manual)
-pocket = {
-    "center": [10.0, 20.0, 30.0],
-    "size": [20.0, 20.0, 20.0]
-}
+pocket = {"center": [10.0, 20.0, 30.0], "size": [20.0, 20.0, 20.0]}
 
 # Submit docking
 workflow = rowan.submit_docking_workflow(
     protein=protein.uuid,
     pocket=pocket,
     initial_molecule=stjames.Molecule.from_smiles("Cc1ccc(NC(=O)c2ccc(CN3CCN(C)CC3)cc2)cc1"),
-    name="EGFR docking"
+    name="EGFR docking",
 )
 
 workflow.wait_for_result()
 workflow.fetch_latest(in_place=True)
 
 # Access docking results
-docking_score = workflow.data['docking_score']
+docking_score = workflow.data["docking_score"]
 print(f"Docking score: {docking_score}")
 ```
 
@@ -191,7 +180,7 @@ workflow = rowan.submit_protein_cofolding_workflow(
     initial_protein_sequences=[protein_seq],
     initial_smiles_list=[ligand],
     name="kinase-ligand cofolding",
-    model="chai_1r"  # or "boltz_1x", "boltz_2"
+    model="chai_1r",  # or "boltz_1x", "boltz_2"
 )
 
 workflow.wait_for_result()
@@ -256,9 +245,7 @@ workflow = rowan.retrieve_workflow("workflow-uuid")
 ```python
 # Submit multiple workflows
 workflows = rowan.batch_submit_workflow(
-    molecules=[mol1, mol2, mol3],
-    workflow_type="pka",
-    workflow_data={}
+    molecules=[mol1, mol2, mol3], workflow_type="pka", workflow_data={}
 )
 
 # Poll status of multiple workflows
@@ -273,9 +260,7 @@ folder = rowan.create_folder(name="Drug Discovery Project")
 
 # Submit workflow to folder
 workflow = rowan.submit_pka_workflow(
-    initial_molecule=mol,
-    name="compound pKa",
-    folder_uuid=folder.uuid
+    initial_molecule=mol, name="compound pKa", folder_uuid=folder.uuid
 )
 
 # List workflows in folder
@@ -324,10 +309,7 @@ smiles_list = ["CCO", "c1ccccc1O", "CC(=O)O"]
 workflows = []
 for smi in smiles_list:
     mol = stjames.Molecule.from_smiles(smi)
-    wf = rowan.submit_pka_workflow(
-        initial_molecule=mol,
-        name=f"pKa: {smi}"
-    )
+    wf = rowan.submit_pka_workflow(initial_molecule=mol, name=f"pKa: {smi}")
     workflows.append(wf)
 
 # Wait for all to complete
@@ -353,10 +335,7 @@ pocket = {"center": [x, y, z], "size": [20, 20, 20]}
 for smiles in compound_library:
     mol = stjames.Molecule.from_smiles(smiles)
     workflow = rowan.submit_docking_workflow(
-        protein=protein.uuid,
-        pocket=pocket,
-        initial_molecule=mol,
-        name=f"Dock: {smiles[:20]}"
+        protein=protein.uuid, pocket=pocket, initial_molecule=mol, name=f"Dock: {smiles[:20]}"
     )
 ```
 
@@ -369,15 +348,12 @@ import stjames
 mol = stjames.Molecule.from_smiles("complex_molecule_smiles")
 
 # Generate conformers
-conf_wf = rowan.submit_conformer_search_workflow(
-    initial_molecule=mol,
-    name="conformer search"
-)
+conf_wf = rowan.submit_conformer_search_workflow(initial_molecule=mol, name="conformer search")
 conf_wf.wait_for_result()
 conf_wf.fetch_latest(in_place=True)
 
 # Analyze lowest energy conformers
-conformers = sorted(conf_wf.data['conformers'], key=lambda x: x['energy'])
+conformers = sorted(conf_wf.data["conformers"], key=lambda x: x["energy"])
 print(f"Found {len(conformers)} unique conformers")
 print(f"Energy range: {conformers[0]['energy']:.4f} to {conformers[-1]['energy']:.4f} Hartree")
 ```
@@ -397,10 +373,7 @@ print(f"Energy range: {conformers[0]['energy']:.4f} to {conformers[-1]['energy']
 import rowan
 
 try:
-    workflow = rowan.submit_pka_workflow(
-        initial_molecule=mol,
-        name="calculation"
-    )
+    workflow = rowan.submit_pka_workflow(initial_molecule=mol, name="calculation")
     workflow.wait_for_result(timeout=3600)  # 1 hour timeout
 
     if workflow.status == "completed":

@@ -498,11 +498,7 @@ See the `assets/` directory for LaTeX templates:
 
 See the `scripts/` directory for analysis and visualization tools:
 - `generate_survival_analysis.py` - Kaplan-Meier curve generation with log-rank tests, hazard ratios, 95% CI
-- `create_waterfall_plot.py` - Best response visualization for cohort analyses
-- `create_forest_plot.py` - Subgroup analysis visualization with confidence intervals
 - `create_cohort_tables.py` - Demographics, biomarker frequency, and outcomes tables
 - `build_decision_tree.py` - TikZ flowchart generation for treatment algorithms
 - `biomarker_classifier.py` - Patient stratification algorithms by molecular subtype
-- `calculate_statistics.py` - Hazard ratios, Cox regression, log-rank tests, Fisher's exact
 - `validate_cds_document.py` - Quality and compliance checks (HIPAA, statistical reporting standards)
-- `grade_evidence.py` - Automated GRADE assessment helper for treatment recommendations

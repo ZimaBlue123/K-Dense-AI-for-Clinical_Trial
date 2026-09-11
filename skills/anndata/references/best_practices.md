@@ -27,10 +27,10 @@ else:
 ### Convert strings to categoricals
 ```python
 # Inefficient: string columns use lots of memory
-adata.obs['cell_type'] = ['Type_A', 'Type_B', 'Type_C'] * 333 + ['Type_A']
+adata.obs["cell_type"] = ["Type_A", "Type_B", "Type_C"] * 333 + ["Type_A"]
 
 # Efficient: convert to categorical
-adata.obs['cell_type'] = adata.obs['cell_type'].astype('category')
+adata.obs["cell_type"] = adata.obs["cell_type"].astype("category")
 
 # Convert all string columns
 adata.strings_to_categoricals()
@@ -41,10 +41,10 @@ adata.strings_to_categoricals()
 ### Use backed mode for large datasets
 ```python
 # Don't load entire dataset into memory
-adata = ad.read_h5ad('large_dataset.h5ad', backed='r')
+adata = ad.read_h5ad("large_dataset.h5ad", backed="r")
 
 # Work with metadata
-filtered = adata[adata.obs['quality'] > 0.8]
+filtered = adata[adata.obs["quality"] > 0.8]
 
 # Load only filtered subset
 adata_subset = filtered.to_memory()
@@ -71,7 +71,7 @@ if adata.is_view:
 ### When to use views
 ```python
 # Good: Read-only operations on subsets
-mean_expr = adata[adata.obs['cell_type'] == 'T cell'].X.mean()
+mean_expr = adata[adata.obs["cell_type"] == "T cell"].X.mean()
 
 # Good: Temporary analysis
 temp_subset = adata[:100, :]
@@ -84,7 +84,7 @@ result = analyze(temp_subset.X)
 adata_filtered = adata[keep_cells, :].copy()
 
 # Safe to modify without affecting original
-adata_filtered.obs['new_column'] = values
+adata_filtered.obs["new_column"] = values
 
 # Always copy when:
 # - Storing subset for later use
@@ -98,7 +98,7 @@ adata_filtered.obs['new_column'] = values
 
 **H5AD (HDF5) - Default choice**
 ```python
-adata.write_h5ad('data.h5ad', compression='gzip')
+adata.write_h5ad("data.h5ad", compression="gzip")
 ```
 - Fast random access
 - Supports backed mode
@@ -107,7 +107,7 @@ adata.write_h5ad('data.h5ad', compression='gzip')
 
 **Zarr - Cloud and parallel access**
 ```python
-adata.write_zarr('data.zarr', chunks=(100, 100))
+adata.write_zarr("data.zarr", chunks=(100, 100))
 ```
 - Excellent for cloud storage (S3, GCS)
 - Supports parallel I/O
@@ -116,7 +116,7 @@ adata.write_zarr('data.zarr', chunks=(100, 100))
 
 **CSV - Interoperability**
 ```python
-adata.write_csvs('output_dir/')
+adata.write_csvs("output_dir/")
 ```
 - Human readable
 - Compatible with all tools
@@ -129,6 +129,7 @@ adata.write_csvs('output_dir/')
 
 # 1. Convert to sparse if appropriate
 from scipy.sparse import csr_matrix, issparse
+
 if not issparse(adata.X):
     density = np.count_nonzero(adata.X) / adata.X.size
     if density < 0.5:
@@ -138,7 +139,7 @@ if not issparse(adata.X):
 adata.strings_to_categoricals()
 
 # 3. Use compression
-adata.write_h5ad('data.h5ad', compression='gzip', compression_opts=9)
+adata.write_h5ad("data.h5ad", compression="gzip", compression_opts=9)
 
 # Typical results: 5-20x file size reduction
 ```
@@ -148,10 +149,10 @@ adata.write_h5ad('data.h5ad', compression='gzip', compression_opts=9)
 ### Read-only analysis
 ```python
 # Open in read-only backed mode
-adata = ad.read_h5ad('data.h5ad', backed='r')
+adata = ad.read_h5ad("data.h5ad", backed="r")
 
 # Perform filtering without loading data
-high_quality = adata[adata.obs['quality_score'] > 0.8]
+high_quality = adata[adata.obs["quality_score"] > 0.8]
 
 # Load only filtered data
 adata_filtered = high_quality.to_memory()
@@ -160,10 +161,10 @@ adata_filtered = high_quality.to_memory()
 ### Read-write modifications
 ```python
 # Open in read-write backed mode
-adata = ad.read_h5ad('data.h5ad', backed='r+')
+adata = ad.read_h5ad("data.h5ad", backed="r+")
 
 # Modify metadata (written to disk)
-adata.obs['new_annotation'] = values
+adata.obs["new_annotation"] = values
 
 # X remains on disk, modifications saved immediately
 ```
@@ -171,13 +172,13 @@ adata.obs['new_annotation'] = values
 ### Chunked processing
 ```python
 # Process large dataset in chunks
-adata = ad.read_h5ad('huge_dataset.h5ad', backed='r')
+adata = ad.read_h5ad("huge_dataset.h5ad", backed="r")
 
 results = []
 chunk_size = 1000
 
 for i in range(0, adata.n_obs, chunk_size):
-    chunk = adata[i:i+chunk_size, :].to_memory()
+    chunk = adata[i : i + chunk_size, :].to_memory()
     result = process(chunk)
     results.append(result)
 
@@ -189,26 +190,26 @@ final_result = combine(results)
 ### Subsetting performance
 ```python
 # Fast: Boolean indexing with arrays
-mask = np.array(adata.obs['quality'] > 0.5)
+mask = np.array(adata.obs["quality"] > 0.5)
 subset = adata[mask, :]
 
 # Slow: Boolean indexing with Series (creates view chain)
-subset = adata[adata.obs['quality'] > 0.5, :]
+subset = adata[adata.obs["quality"] > 0.5, :]
 
 # Fastest: Integer indices
-indices = np.where(adata.obs['quality'] > 0.5)[0]
+indices = np.where(adata.obs["quality"] > 0.5)[0]
 subset = adata[indices, :]
 ```
 
 ### Avoid repeated subsetting
 ```python
 # Inefficient: Multiple subset operations
-for cell_type in ['A', 'B', 'C']:
-    subset = adata[adata.obs['cell_type'] == cell_type]
+for cell_type in ["A", "B", "C"]:
+    subset = adata[adata.obs["cell_type"] == cell_type]
     process(subset)
 
 # Efficient: Group and process
-groups = adata.obs.groupby('cell_type').groups
+groups = adata.obs.groupby("cell_type").groups
 for cell_type, indices in groups.items():
     subset = adata[indices, :]
     process(subset)
@@ -234,7 +235,7 @@ adata = ad.AnnData(X=counts)
 adata.raw = adata.copy()
 
 # Filter to highly variable genes
-adata = adata[:, adata.var['highly_variable']]
+adata = adata[:, adata.var["highly_variable"]]
 
 # Later: access original data
 original_expression = adata.raw.X
@@ -250,9 +251,9 @@ all_genes = adata.raw.var_names
 
 # Access raw data
 if adata.raw is not None:
-    gene_expr = adata.raw[:, 'GENE_NAME'].X
+    gene_expr = adata.raw[:, "GENE_NAME"].X
 else:
-    gene_expr = adata[:, 'GENE_NAME'].X
+    gene_expr = adata[:, "GENE_NAME"].X
 ```
 
 ## Metadata Management
@@ -282,18 +283,18 @@ else:
 ### Document metadata
 ```python
 # Store metadata descriptions in uns
-adata.uns['metadata_descriptions'] = {
-    'cell_type': 'Cell type annotation from automated clustering',
-    'quality_score': 'QC score from scrublet (0-1, higher is better)',
-    'batch': 'Experimental batch identifier'
+adata.uns["metadata_descriptions"] = {
+    "cell_type": "Cell type annotation from automated clustering",
+    "quality_score": "QC score from scrublet (0-1, higher is better)",
+    "batch": "Experimental batch identifier",
 }
 
 # Store processing history
-adata.uns['processing_steps'] = [
-    'Raw counts loaded from 10X',
-    'Filtered: n_genes > 200, n_counts < 50000',
-    'Normalized to 10000 counts per cell',
-    'Log transformed'
+adata.uns["processing_steps"] = [
+    "Raw counts loaded from 10X",
+    "Filtered: n_genes > 200, n_counts < 50000",
+    "Normalized to 10000 counts per cell",
+    "Log transformed",
 ]
 ```
 
@@ -307,24 +308,15 @@ import numpy as np
 np.random.seed(42)
 
 # Document in uns
-adata.uns['random_seed'] = 42
+adata.uns["random_seed"] = 42
 ```
 
 ### Store parameters
 ```python
 # Store analysis parameters in uns
-adata.uns['pca'] = {
-    'n_comps': 50,
-    'svd_solver': 'arpack',
-    'random_state': 42
-}
+adata.uns["pca"] = {"n_comps": 50, "svd_solver": "arpack", "random_state": 42}
 
-adata.uns['neighbors'] = {
-    'n_neighbors': 15,
-    'n_pcs': 50,
-    'metric': 'euclidean',
-    'method': 'umap'
-}
+adata.uns["neighbors"] = {"n_neighbors": 15, "n_pcs": 50, "metric": "euclidean", "method": "umap"}
 ```
 
 ### Version tracking
@@ -334,11 +326,11 @@ import scanpy
 import numpy
 
 # Store versions
-adata.uns['versions'] = {
-    'anndata': anndata.__version__,
-    'scanpy': scanpy.__version__,
-    'numpy': numpy.__version__,
-    'python': sys.version
+adata.uns["versions"] = {
+    "anndata": anndata.__version__,
+    "scanpy": scanpy.__version__,
+    "numpy": numpy.__version__,
+    "python": sys.version,
 }
 ```
 
@@ -439,11 +431,11 @@ subset.X = new_data  # Independent copy
 ### Pitfall 2: Index misalignment
 ```python
 # Wrong: Assuming order matches
-external_data = pd.read_csv('data.csv')
-adata.obs['new_col'] = external_data['values']  # May misalign!
+external_data = pd.read_csv("data.csv")
+adata.obs["new_col"] = external_data["values"]  # May misalign!
 
 # Correct: Align on index
-adata.obs['new_col'] = external_data.set_index('cell_id').loc[adata.obs_names, 'values']
+adata.obs["new_col"] = external_data.set_index("cell_id").loc[adata.obs_names, "values"]
 ```
 
 ### Pitfall 3: Mixing sparse and dense
@@ -453,6 +445,7 @@ result = adata.X + 1  # Converts sparse to dense!
 
 # Correct: Use sparse operations
 from scipy.sparse import issparse
+
 if issparse(adata.X):
     result = adata.X.copy()
     result.data += 1
@@ -472,11 +465,11 @@ del adata  # subset remains valid
 ### Pitfall 5: Ignoring memory constraints
 ```python
 # Wrong: Loading huge dataset into memory
-adata = ad.read_h5ad('100GB_file.h5ad')  # OOM error!
+adata = ad.read_h5ad("100GB_file.h5ad")  # OOM error!
 
 # Correct: Use backed mode
-adata = ad.read_h5ad('100GB_file.h5ad', backed='r')
-subset = adata[adata.obs['keep']].to_memory()
+adata = ad.read_h5ad("100GB_file.h5ad", backed="r")
+subset = adata[adata.obs["keep"]].to_memory()
 ```
 
 ## Workflow Example
@@ -489,13 +482,13 @@ import numpy as np
 from scipy.sparse import csr_matrix
 
 # 1. Load with backed mode if large
-adata = ad.read_h5ad('data.h5ad', backed='r')
+adata = ad.read_h5ad("data.h5ad", backed="r")
 
 # 2. Quick metadata check without loading data
 print(f"Dataset: {adata.n_obs} cells × {adata.n_vars} genes")
 
 # 3. Filter based on metadata
-high_quality = adata[adata.obs['quality_score'] > 0.8]
+high_quality = adata[adata.obs["quality_score"] > 0.8]
 
 # 4. Load filtered subset to memory
 adata = high_quality.to_memory()
@@ -511,15 +504,15 @@ if not issparse(adata.X):
 adata.raw = adata.copy()
 
 # 7. Filter to highly variable genes
-adata = adata[:, adata.var['highly_variable']].copy()
+adata = adata[:, adata.var["highly_variable"]].copy()
 
 # 8. Document processing
-adata.uns['processing'] = {
-    'filtered': 'quality_score > 0.8',
-    'n_hvg': adata.n_vars,
-    'date': '2025-11-03'
+adata.uns["processing"] = {
+    "filtered": "quality_score > 0.8",
+    "n_hvg": adata.n_vars,
+    "date": "2025-11-03",
 }
 
 # 9. Save optimized
-adata.write_h5ad('processed.h5ad', compression='gzip')
+adata.write_h5ad("processed.h5ad", compression="gzip")
 ```

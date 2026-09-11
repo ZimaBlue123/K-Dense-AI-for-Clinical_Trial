@@ -41,6 +41,7 @@ from qiskit import QuantumCircuit
 from qiskit.circuit import Parameter
 import numpy as np
 
+
 # Example: Parameterized circuit for VQE
 def create_ansatz(num_qubits, depth):
     qc = QuantumCircuit(num_qubits)
@@ -49,7 +50,7 @@ def create_ansatz(num_qubits, depth):
     for d in range(depth):
         # Rotation layer
         for i in range(num_qubits):
-            theta = Parameter(f'θ_{d}_{i}')
+            theta = Parameter(f"θ_{d}_{i}")
             params.append(theta)
             qc.ry(theta, i)
 
@@ -58,6 +59,7 @@ def create_ansatz(num_qubits, depth):
             qc.cx(i, i + 1)
 
     return qc, params
+
 
 ansatz, params = create_ansatz(num_qubits=4, depth=2)
 ```
@@ -76,7 +78,7 @@ from qiskit_nature.second_q.drivers import PySCFDriver
 from qiskit_nature.second_q.mappers import JordanWignerMapper
 
 # Define molecule
-driver = PySCFDriver(atom='H 0 0 0; H 0 0 0.735', basis='sto3g')
+driver = PySCFDriver(atom="H 0 0 0; H 0 0 0.735", basis="sto3g")
 problem = driver.run()
 
 # Map to qubit Hamiltonian
@@ -88,6 +90,7 @@ hamiltonian = mapper.map(problem.hamiltonian)
 ```python
 from qiskit.circuit import QuantumCircuit, Parameter
 
+
 def qaoa_circuit(graph, p):
     """Create QAOA circuit for MaxCut problem"""
     num_qubits = len(graph.nodes())
@@ -97,8 +100,8 @@ def qaoa_circuit(graph, p):
     qc.h(range(num_qubits))
 
     # Alternating layers
-    betas = [Parameter(f'β_{i}') for i in range(p)]
-    gammas = [Parameter(f'γ_{i}') for i in range(p)]
+    betas = [Parameter(f"β_{i}") for i in range(p)]
+    gammas = [Parameter(f"γ_{i}") for i in range(p)]
 
     for i in range(p):
         # Problem Hamiltonian
@@ -132,7 +135,7 @@ qc_isa = transpile(
     backend=backend,
     optimization_level=3,
     initial_layout=[0, 2, 4, 6],  # Map to specific physical qubits
-    seed_transpiler=42  # Reproducibility
+    seed_transpiler=42,  # Reproducibility
 )
 ```
 
@@ -269,7 +272,7 @@ counts = result[0].data.meas.get_counts()
 
 # Convert to probabilities
 total_shots = sum(counts.values())
-probabilities = {state: count/total_shots for state, count in counts.items()}
+probabilities = {state: count / total_shots for state, count in counts.items()}
 
 # Find most probable state
 max_state = max(counts, key=counts.get)
@@ -299,6 +302,7 @@ def post_process_chemistry(result, nuclear_repulsion):
 ```python
 def post_process_maxcut(counts, graph):
     """Find best cut from measurement results"""
+
     def compute_cut_value(bitstring, graph):
         cut_value = 0
         for edge in graph.edges():
@@ -335,6 +339,7 @@ marginal = marginal_counts(counts, indices=relevant_qubits)
 ```python
 import numpy as np
 
+
 def analyze_results(results_list):
     """Analyze multiple runs for statistics"""
     energies = [r[0].data.evs for r in results_list]
@@ -344,9 +349,9 @@ def analyze_results(results_list):
     confidence_interval = 1.96 * std_energy / np.sqrt(len(energies))
 
     return {
-        'mean': mean_energy,
-        'std': std_energy,
-        '95% CI': (mean_energy - confidence_interval, mean_energy + confidence_interval)
+        "mean": mean_energy,
+        "std": std_energy,
+        "95% CI": (mean_energy - confidence_interval, mean_energy + confidence_interval),
     }
 ```
 
@@ -370,13 +375,14 @@ from qiskit.quantum_info import SparsePauliOp
 from scipy.optimize import minimize
 import numpy as np
 
+
 # 1. MAP: Create parameterized circuit
 def create_ansatz(num_qubits):
     qc = QuantumCircuit(num_qubits)
     params = []
 
     for i in range(num_qubits):
-        theta = f'θ_{i}'
+        theta = f"θ_{i}"
         params.append(theta)
         qc.ry(theta, i)
 
@@ -384,6 +390,7 @@ def create_ansatz(num_qubits):
         qc.cx(i, i + 1)
 
     return qc, params
+
 
 # Define Hamiltonian (example: H2 molecule)
 hamiltonian = SparsePauliOp(["IIZZ", "ZZII", "XXII", "IIXX"], coeffs=[0.3, 0.3, 0.1, 0.1])
@@ -394,10 +401,13 @@ backend = service.backend("ibm_brisbane")
 
 ansatz, param_names = create_ansatz(num_qubits=4)
 
+
 # 3. EXECUTE: Run VQE
 def cost_function(params):
     # Bind parameters
-    bound_circuit = ansatz.assign_parameters({param_names[i]: params[i] for i in range(len(params))})
+    bound_circuit = ansatz.assign_parameters(
+        {param_names[i]: params[i] for i in range(len(params))}
+    )
 
     # Transpile
     qc_isa = transpile(bound_circuit, backend=backend, optimization_level=3)
@@ -409,12 +419,13 @@ def cost_function(params):
 
     return energy
 
+
 with Session(backend=backend) as session:
     estimator = Estimator(session=session)
 
     # Classical optimization loop
     initial_params = np.random.random(len(param_names)) * 2 * np.pi
-    result = minimize(cost_function, initial_params, method='COBYLA')
+    result = minimize(cost_function, initial_params, method="COBYLA")
 
 # 4. POST-PROCESS: Extract ground state energy
 ground_state_energy = result.fun
@@ -446,6 +457,7 @@ VQE, QAOA, and other variational algorithms benefit from sessions.
 ```python
 energies = []
 
+
 def cost_function_with_tracking(params):
     energy = cost_function(params)
     energies.append(energy)
@@ -458,13 +470,13 @@ def cost_function_with_tracking(params):
 import json
 
 results_data = {
-    'energy': float(ground_state_energy),
-    'parameters': optimized_params.tolist(),
-    'iterations': len(energies),
-    'backend': backend.name
+    "energy": float(ground_state_energy),
+    "parameters": optimized_params.tolist(),
+    "iterations": len(energies),
+    "backend": backend.name,
 }
 
-with open('vqe_results.json', 'w') as f:
+with open("vqe_results.json", "w") as f:
     json.dump(results_data, f, indent=2)
 ```
 
@@ -477,11 +489,13 @@ from qiskit_serverless import ServerlessClient, QiskitFunction
 
 client = ServerlessClient()
 
+
 # Define serverless function
 @QiskitFunction()
 def run_vqe_serverless(hamiltonian, ansatz):
     # Your VQE implementation
     pass
+
 
 # Execute remotely
 job = run_vqe_serverless(hamiltonian, ansatz)

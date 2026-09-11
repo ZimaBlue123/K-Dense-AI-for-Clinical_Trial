@@ -92,7 +92,7 @@ key_value_data = [
     ["Drug Name", "Monastrol"],
     ["Concentration", "5 mg/ml"],
     ["Treatment Time", "24 hours"],
-    ["Temperature", "37C"]
+    ["Temperature", "37C"],
 ]
 
 # Create map annotation
@@ -115,11 +115,7 @@ dataset.linkAnnotation(map_ann)
 
 ```python
 # Use custom namespace for organization-specific metadata
-key_value_data = [
-    ["Microscope", "Zeiss LSM 880"],
-    ["Objective", "63x Oil"],
-    ["Laser Power", "10%"]
-]
+key_value_data = [["Microscope", "Zeiss LSM 880"], ["Objective", "63x Oil"], ["Laser Power", "10%"]]
 
 map_ann = omero.gateway.MapAnnotationWrapper(conn)
 map_ann.setNs("mylab.microscopy.settings")
@@ -159,10 +155,7 @@ file_path = "analysis_results.csv"
 # Create file annotation
 namespace = "mylab.analysis.results"
 file_ann = conn.createFileAnnfromLocalFile(
-    file_path,
-    mimetype="text/csv",
-    ns=namespace,
-    desc="Cell segmentation results"
+    file_path, mimetype="text/csv", ns=namespace, desc="Cell segmentation results"
 )
 
 # Link to dataset
@@ -192,7 +185,7 @@ for file_path in files:
         file_path,
         mimetype="application/octet-stream",
         ns=namespace,
-        desc=f"Supplementary file: {os.path.basename(file_path)}"
+        desc=f"Supplementary file: {os.path.basename(file_path)}",
     )
     dataset.linkAnnotation(file_ann)
 ```
@@ -220,7 +213,7 @@ for ann in image.listAnnotations(ns=namespace):
         print(f"Downloading: {file_name}")
 
         # Download file in chunks
-        with open(file_path, 'wb') as f:
+        with open(file_path, "wb") as f:
             for chunk in ann.getFileInChunks():
                 f.write(chunk)
 
@@ -362,7 +355,7 @@ else:
 # Get all tag annotations linked to image IDs
 image_ids = [1, 2, 3, 4, 5]
 
-for link in conn.getAnnotationLinks('Image', parent_ids=image_ids):
+for link in conn.getAnnotationLinks("Image", parent_ids=image_ids):
     ann = link.getChild()
 
     if isinstance(ann._obj, omero.model.TagAnnotationI):
@@ -374,12 +367,12 @@ for link in conn.getAnnotationLinks('Image', parent_ids=image_ids):
 ```python
 # Count annotations on project
 project_id = 123
-count = conn.countAnnotations('Project', [project_id])
+count = conn.countAnnotations("Project", [project_id])
 print(f"Project has {count[project_id]} annotations")
 
 # Count annotations on multiple images
 image_ids = [1, 2, 3]
-counts = conn.countAnnotations('Image', image_ids)
+counts = conn.countAnnotations("Image", image_ids)
 
 for image_id, count in counts.items():
     print(f"Image {image_id}: {count} annotations")
@@ -410,7 +403,7 @@ conn.getUpdateService().saveAndReturnObject(link)
 annotation_ids = [1, 2, 3]
 new_tag_id = 5
 
-for link in conn.getAnnotationLinks('Image', ann_ids=annotation_ids):
+for link in conn.getAnnotationLinks("Image", ann_ids=annotation_ids):
     print(f"Image ID: {link.getParent().id}")
 
     # Change linked annotation
@@ -435,7 +428,7 @@ for ann in image.listAnnotations(ns=namespace):
 
 # Delete annotations
 if to_delete:
-    conn.deleteObjects('Annotation', to_delete, wait=True)
+    conn.deleteObjects("Annotation", to_delete, wait=True)
     print(f"Deleted {len(to_delete)} annotations")
 ```
 
@@ -471,7 +464,7 @@ for ann in image.listAnnotations():
     if isinstance(ann, omero.gateway.MapAnnotationWrapper):
         to_delete.append(ann.getId())
 
-conn.deleteObjects('Annotation', to_delete, wait=True)
+conn.deleteObjects("Annotation", to_delete, wait=True)
 ```
 
 ## Annotation Ownership
@@ -546,7 +539,7 @@ for image in dataset.listChildren():
 image_metadata = {
     101: [["Quality", "Good"], ["Reviewed", "Yes"]],
     102: [["Quality", "Excellent"], ["Reviewed", "Yes"]],
-    103: [["Quality", "Poor"], ["Reviewed", "No"]]
+    103: [["Quality", "Poor"], ["Reviewed", "No"]],
 }
 
 # Add annotations
@@ -610,10 +603,7 @@ metadataService = conn.getMetadataService()
 
 # Load all file annotations with namespace
 annotations = metadataService.loadSpecifiedAnnotations(
-    'omero.model.FileAnnotation',
-    ns_to_include,
-    ns_to_exclude,
-    None
+    "omero.model.FileAnnotation", ns_to_include, ns_to_exclude, None
 )
 
 for ann in annotations:
@@ -629,10 +619,10 @@ from omero.gateway import BlitzGateway
 import omero.gateway
 import omero.constants.metadata
 
-HOST = 'omero.example.com'
+HOST = "omero.example.com"
 PORT = 4064
-USERNAME = 'user'
-PASSWORD = 'pass'
+USERNAME = "user"
+PASSWORD = "pass"
 
 with BlitzGateway(USERNAME, PASSWORD, host=HOST, port=PORT) as conn:
     # Get dataset
@@ -648,7 +638,7 @@ with BlitzGateway(USERNAME, PASSWORD, host=HOST, port=PORT) as conn:
     metadata = [
         ["Analysis Date", "2024-10-20"],
         ["Software", "CellProfiler 4.2"],
-        ["Pipeline", "cell_segmentation_v3"]
+        ["Pipeline", "cell_segmentation_v3"],
     ]
     map_ann = omero.gateway.MapAnnotationWrapper(conn)
     map_ann.setNs(omero.constants.metadata.NSCLIENTMAPANNOTATION)
@@ -661,7 +651,7 @@ with BlitzGateway(USERNAME, PASSWORD, host=HOST, port=PORT) as conn:
         "analysis_summary.pdf",
         mimetype="application/pdf",
         ns="mylab.reports",
-        desc="Analysis summary report"
+        desc="Analysis summary report",
     )
     dataset.linkAnnotation(file_ann)
 

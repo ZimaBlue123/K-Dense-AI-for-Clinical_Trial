@@ -632,6 +632,7 @@ gget mutate sequences.fasta -m mutations.csv -o mutated.fasta
 ```python
 # Python
 import pandas as pd
+
 mutations_df = pd.DataFrame({"seq_ID": ["seq1"], "mutation": ["c.4G>T"]})
 gget.mutate(["ATCGCTAAGCT"], mutations=mutations_df)
 ```

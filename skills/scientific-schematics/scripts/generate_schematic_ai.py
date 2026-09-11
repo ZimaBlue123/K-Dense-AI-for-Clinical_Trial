@@ -283,13 +283,9 @@ IMPORTANT - NO FIGURE NUMBERS:
                                 base64_str = url.split(",", 1)[1]
                                 # Clean whitespace
                                 base64_str = (
-                                    base64_str.replace("\n", "")
-                                    .replace("\r", "")
-                                    .replace(" ", "")
+                                    base64_str.replace("\n", "").replace("\r", "").replace(" ", "")
                                 )
-                                self._log(
-                                    f"Extracted base64 data (length: {len(base64_str)})"
-                                )
+                                self._log(f"Extracted base64 data (length: {len(base64_str)})")
                                 return base64.b64decode(base64_str)
 
             # Fallback: check content field (for other models or future changes)
@@ -306,15 +302,8 @@ IMPORTANT - NO FIGURE NUMBERS:
                     r"data:image/[^;]+;base64,([A-Za-z0-9+/=\n\r]+)", content, re.DOTALL
                 )
                 if match:
-                    base64_str = (
-                        match.group(1)
-                        .replace("\n", "")
-                        .replace("\r", "")
-                        .replace(" ", "")
-                    )
-                    self._log(
-                        f"Found image in content field (length: {len(base64_str)})"
-                    )
+                    base64_str = match.group(1).replace("\n", "").replace("\r", "").replace(" ", "")
+                    self._log(f"Found image in content field (length: {len(base64_str)})")
                     return base64.b64decode(base64_str)
 
             # Handle list content
@@ -401,9 +390,7 @@ IMPORTANT - NO FIGURE NUMBERS:
                     # Show content preview without printing huge base64 data
                     content = msg.get("content", "")
                     if isinstance(content, str):
-                        preview = (
-                            content[:200] + "..." if len(content) > 200 else content
-                        )
+                        preview = content[:200] + "..." if len(content) > 200 else content
                         self._log(f"Content preview: {preview}")
                     elif isinstance(content, list):
                         self._log(f"Content is list with {len(content)} items")
@@ -424,7 +411,9 @@ IMPORTANT - NO FIGURE NUMBERS:
             if image_data:
                 self._log(f"✓ Generated image ({len(image_data)} bytes)")
             else:
-                self._last_error = "No image data in API response - model may not support image generation"
+                self._last_error = (
+                    "No image data in API response - model may not support image generation"
+                )
                 self._log(f"✗ {self._last_error}")
                 # Additional debug info when image extraction fails
                 if self.verbose and "choices" in response:
@@ -587,12 +576,8 @@ If score < {threshold}, mark as NEEDS_IMPROVEMENT with specific suggestions."""
             if "NEEDS_IMPROVEMENT" in content.upper() or score < threshold:
                 needs_improvement = True
 
-            self._log(
-                f"✓ Review complete (Score: {score}/10, Threshold: {threshold}/10)"
-            )
-            self._log(
-                f"  Verdict: {'Needs improvement' if needs_improvement else 'Acceptable'}"
-            )
+            self._log(f"✓ Review complete (Score: {score}/10, Threshold: {threshold}/10)")
+            self._log(f"  Verdict: {'Needs improvement' if needs_improvement else 'Acceptable'}")
 
             return (
                 content if content else "Image generated successfully",
@@ -604,9 +589,7 @@ If score < {threshold}, mark as NEEDS_IMPROVEMENT with specific suggestions."""
             # Don't fail the whole process if review fails - assume acceptable
             return "Image generated successfully (review skipped)", 7.5, False
 
-    def improve_prompt(
-        self, original_prompt: str, critique: str, iteration: int
-    ) -> str:
+    def improve_prompt(self, original_prompt: str, critique: str, iteration: int) -> str:
         """
         Improve the generation prompt based on critique.
 
@@ -682,15 +665,15 @@ USER REQUEST: {user_prompt}
 
 Generate a publication-quality scientific diagram that meets all the guidelines above."""
 
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print("Generating Scientific Schematic")
-        print(f"{'='*60}")
+        print(f"{'=' * 60}")
         print(f"Description: {user_prompt}")
         print(f"Document Type: {doc_type}")
         print(f"Quality Threshold: {threshold}/10")
         print(f"Max Iterations: {iterations}")
         print(f"Output: {output_path}")
-        print(f"{'='*60}\n")
+        print(f"{'=' * 60}\n")
 
         for i in range(1, iterations + 1):
             print(f"\n[Iteration {i}/{iterations}]")
@@ -707,9 +690,7 @@ Generate a publication-quality scientific diagram that meets all the guidelines 
                     "Image generation failed - no image data returned",
                 )
                 print(f"✗ Generation failed: {error_msg}")
-                results["iterations"].append(
-                    {"iteration": i, "success": False, "error": error_msg}
-                )
+                results["iterations"].append({"iteration": i, "success": False, "error": error_msg})
                 continue
 
             # Save iteration image
@@ -739,9 +720,7 @@ Generate a publication-quality scientific diagram that meets all the guidelines 
 
             # Check if quality is acceptable - STOP EARLY if so
             if not needs_improvement:
-                print(
-                    f"\n✓ Quality meets {doc_type} threshold ({score} >= {threshold})"
-                )
+                print(f"\n✓ Quality meets {doc_type} threshold ({score} >= {threshold})")
                 print("  No further iterations needed!")
                 results["final_image"] = str(iter_path)
                 results["final_score"] = score
@@ -780,14 +759,14 @@ Generate a publication-quality scientific diagram that meets all the guidelines 
             json.dump(results, f, indent=2)
         print(f"✓ Review log: {log_path}")
 
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print("Generation Complete!")
         print(f"Final Score: {results['final_score']}/10")
         if results["early_stop"]:
             print(
                 f"Iterations Used: {len([r for r in results['iterations'] if r.get('success')])}/{iterations} (early stop)"
             )
-        print(f"{'='*60}\n")
+        print(f"{'=' * 60}\n")
 
         return results
 
@@ -856,9 +835,7 @@ Environment:
         ],
         help="Document type for quality threshold (default: default)",
     )
-    parser.add_argument(
-        "--api-key", help="OpenRouter API key (or set OPENROUTER_API_KEY)"
-    )
+    parser.add_argument("--api-key", help="OpenRouter API key (or set OPENROUTER_API_KEY)")
     parser.add_argument("-v", "--verbose", action="store_true", help="Verbose output")
 
     args = parser.parse_args()

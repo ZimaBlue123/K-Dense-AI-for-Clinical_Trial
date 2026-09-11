@@ -11,7 +11,7 @@ Electrooculography (EOG) measures eye movements and blinks by detecting electric
 Automated EOG signal processing pipeline.
 
 ```python
-signals, info = nk.eog_process(eog_signal, sampling_rate=500, method='neurokit')
+signals, info = nk.eog_process(eog_signal, sampling_rate=500, method="neurokit")
 ```
 
 **Pipeline steps:**
@@ -40,7 +40,7 @@ signals, info = nk.eog_process(eog_signal, sampling_rate=500, method='neurokit')
 Prepare raw EOG signal for blink detection.
 
 ```python
-cleaned_eog = nk.eog_clean(eog_signal, sampling_rate=500, method='neurokit')
+cleaned_eog = nk.eog_clean(eog_signal, sampling_rate=500, method="neurokit")
 ```
 
 **Methods:**
@@ -68,8 +68,7 @@ cleaned_eog = nk.eog_clean(eog_signal, sampling_rate=500, method='neurokit')
 Detect eye blinks in EOG signal.
 
 ```python
-blinks, info = nk.eog_peaks(cleaned_eog, sampling_rate=500, method='neurokit',
-                            threshold=0.33)
+blinks, info = nk.eog_peaks(cleaned_eog, sampling_rate=500, method="neurokit", threshold=0.33)
 ```
 
 **Methods:**
@@ -98,7 +97,7 @@ blinks, info = nk.eog_peaks(cleaned_eog, sampling_rate=500, method='neurokit',
 Low-level blink detection with multiple algorithms.
 
 ```python
-blinks_dict = nk.eog_findpeaks(cleaned_eog, sampling_rate=500, method='neurokit')
+blinks_dict = nk.eog_findpeaks(cleaned_eog, sampling_rate=500, method="neurokit")
 ```
 
 **Use cases:**
@@ -279,10 +278,10 @@ nk.eog_plot(signals, info)
 **Standard workflow:**
 ```python
 # 1. Clean signal
-cleaned = nk.eog_clean(eog_raw, sampling_rate=500, method='neurokit')
+cleaned = nk.eog_clean(eog_raw, sampling_rate=500, method="neurokit")
 
 # 2. Detect blinks
-blinks, info = nk.eog_peaks(cleaned, sampling_rate=500, method='neurokit')
+blinks, info = nk.eog_peaks(cleaned, sampling_rate=500, method="neurokit")
 
 # 3. Extract features
 features = nk.eog_features(signals, sampling_rate=500)

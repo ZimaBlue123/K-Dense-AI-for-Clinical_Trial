@@ -89,9 +89,7 @@ def main():
         default="kilosort4",
         choices=["kilosort4", "kilosort3", "spykingcircus2", "mountainsort5"],
     )
-    parser.add_argument(
-        "--n-jobs", type=int, default=-1, help="Number of parallel jobs"
-    )
+    parser.add_argument("--n-jobs", type=int, default=-1, help="Number of parallel jobs")
 
     args = parser.parse_args()
 

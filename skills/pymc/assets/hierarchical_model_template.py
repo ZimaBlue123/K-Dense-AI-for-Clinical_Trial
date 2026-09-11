@@ -71,9 +71,7 @@ with pm.Model(coords=coords) as hierarchical_model:
     # Group-level parameters (non-centered parameterization)
     # Non-centered parameterization improves sampling efficiency
     alpha_offset = pm.Normal("alpha_offset", mu=0, sigma=1, dims="groups")
-    alpha = pm.Deterministic(
-        "alpha", mu_alpha + sigma_alpha * alpha_offset, dims="groups"
-    )
+    alpha = pm.Deterministic("alpha", mu_alpha + sigma_alpha * alpha_offset, dims="groups")
 
     beta_offset = pm.Normal("beta_offset", mu=0, sigma=1, dims="groups")
     beta = pm.Deterministic("beta", mu_beta + sigma_beta * beta_offset, dims="groups")
@@ -214,9 +212,7 @@ print("POPULATION-LEVEL (HYPERPARAMETER) ESTIMATES")
 print("=" * 60)
 
 # Population-level estimates
-hyper_summary = summary.loc[
-    ["mu_alpha", "sigma_alpha", "mu_beta", "sigma_beta", "sigma"]
-]
+hyper_summary = summary.loc[["mu_alpha", "sigma_alpha", "mu_beta", "sigma_beta", "sigma"]]
 print(hyper_summary[["mean", "sd", "hdi_3%", "hdi_97%"]])
 
 # Forest plot for group-level parameters
@@ -302,22 +298,16 @@ new_X = np.array([-2, -1, 0, 1, 2])
 new_groups = np.array([0, 2, 4, 6, 8])  # Select some groups
 
 with hierarchical_model:
-    pm.set_data(
-        {"X_data": new_X, "groups_data": new_groups, "obs": np.arange(len(new_X))}
-    )
+    pm.set_data({"X_data": new_X, "groups_data": new_groups, "obs": np.arange(len(new_X))})
 
-    post_pred = pm.sample_posterior_predictive(
-        idata.posterior, var_names=["y_obs"], random_seed=42
-    )
+    post_pred = pm.sample_posterior_predictive(idata.posterior, var_names=["y_obs"], random_seed=42)
 
 y_pred_samples = post_pred.posterior_predictive["y_obs"]
 y_pred_mean = y_pred_samples.mean(dim=["chain", "draw"]).values
 y_pred_hdi = az.hdi(y_pred_samples, hdi_prob=0.95).values
 
 print("Predictions for existing groups:")
-print(
-    f"{'Group':<10} {'X':<10} {'Mean':<15} {'95% HDI Lower':<15} {'95% HDI Upper':<15}"
-)
+print(f"{'Group':<10} {'X':<10} {'Mean':<15} {'95% HDI Lower':<15} {'95% HDI Upper':<15}")
 print("-" * 65)
 for i, g in enumerate(new_groups):
     print(

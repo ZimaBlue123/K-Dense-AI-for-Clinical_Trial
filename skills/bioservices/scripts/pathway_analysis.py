@@ -210,9 +210,9 @@ def save_detailed_pathway_info(results, output_dir):
 
 def print_statistics(results):
     """Print analysis statistics."""
-    print(f"\n{'='*70}")
+    print(f"\n{'=' * 70}")
     print("PATHWAY ANALYSIS STATISTICS")
-    print(f"{'='*70}")
+    print(f"{'=' * 70}")
 
     # Total stats
     total_pathways = len(results)
@@ -233,9 +233,7 @@ def print_statistics(results):
 
     # Most connected pathways
     print("\nMost connected pathways (by interactions):")
-    sorted_by_connections = sorted(
-        results, key=lambda x: x["num_relations"], reverse=True
-    )
+    sorted_by_connections = sorted(results, key=lambda x: x["num_relations"], reverse=True)
     for i, result in enumerate(sorted_by_connections[:10], 1):
         print(f"  {i}. {result['pathway_id']}: {result['num_relations']} interactions")
         print(f"     {result['pathway_name']}")
@@ -315,13 +313,13 @@ Organism codes:
     save_detailed_pathway_info(results, args.output_dir)
 
     # Final summary
-    print(f"\n{'='*70}")
+    print(f"\n{'=' * 70}")
     print("OUTPUT FILES")
-    print(f"{'='*70}")
+    print(f"{'=' * 70}")
     print(f"  Summary: {summary_file}")
     print(f"  Interactions: {sif_file}")
     print(f"  Detailed: {args.output_dir}/pathways/")
-    print(f"{'='*70}")
+    print(f"{'=' * 70}")
 
 
 if __name__ == "__main__":

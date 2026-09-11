@@ -29,15 +29,10 @@ PufferLib's vectorization system enables high-performance parallel environment s
 import pufferlib
 
 # Automatic vectorization
-env = pufferlib.make('environment_name', num_envs=256)
+env = pufferlib.make("environment_name", num_envs=256)
 
 # With explicit configuration
-env = pufferlib.make(
-    'environment_name',
-    num_envs=256,
-    num_workers=8,
-    envs_per_worker=32
-)
+env = pufferlib.make("environment_name", num_envs=256, num_workers=8, envs_per_worker=32)
 ```
 
 ### Manual Vectorization
@@ -47,17 +42,10 @@ from pufferlib import PufferEnv
 from pufferlib.vectorization import Serial, Multiprocessing
 
 # Serial vectorization (single process)
-vec_env = Serial(
-    env_creator=lambda: MyEnvironment(),
-    num_envs=16
-)
+vec_env = Serial(env_creator=lambda: MyEnvironment(), num_envs=16)
 
 # Multiprocessing vectorization
-vec_env = Multiprocessing(
-    env_creator=lambda: MyEnvironment(),
-    num_envs=256,
-    num_workers=8
-)
+vec_env = Multiprocessing(env_creator=lambda: MyEnvironment(), num_envs=256, num_workers=8)
 ```
 
 ## Vectorization Modes
@@ -69,10 +57,7 @@ Best for debugging and lightweight environments:
 ```python
 from pufferlib.vectorization import Serial
 
-vec_env = Serial(
-    env_creator=env_creator_fn,
-    num_envs=16
-)
+vec_env = Serial(env_creator=env_creator_fn, num_envs=16)
 
 # All environments run in main process
 # No multiprocessing overhead
@@ -93,10 +78,7 @@ Best for most production use cases:
 from pufferlib.vectorization import Multiprocessing
 
 vec_env = Multiprocessing(
-    env_creator=env_creator_fn,
-    num_envs=256,
-    num_workers=8,
-    envs_per_worker=32
+    env_creator=env_creator_fn, num_envs=256, num_workers=8, envs_per_worker=32
 )
 
 # Parallel execution across workers
@@ -119,8 +101,8 @@ vec_env = Multiprocessing(
     env_creator=env_creator_fn,
     num_envs=256,
     num_workers=8,
-    mode='async',
-    surplus_envs=32  # Simulate extra environments
+    mode="async",
+    surplus_envs=32,  # Simulate extra environments
 )
 
 # Returns batches as soon as ready
@@ -201,12 +183,13 @@ PufferLib uses shared memory for zero-copy observation passing:
 import numpy as np
 from multiprocessing import shared_memory
 
+
 class OptimizedEnv(PufferEnv):
     def __init__(self, buf=None):
         super().__init__(buf)
 
         # Environment will use provided shared buffer
-        self.observation_space = self.make_space({'obs': (84, 84, 3)})
+        self.observation_space = self.make_space({"obs": (84, 84, 3)})
 
         # Observations written directly to shared memory
         self._obs_buffer = None
@@ -217,14 +200,14 @@ class OptimizedEnv(PufferEnv):
             self._obs_buffer = np.zeros((84, 84, 3), dtype=np.uint8)
 
         self._render_to_buffer(self._obs_buffer)
-        return {'obs': self._obs_buffer}
+        return {"obs": self._obs_buffer}
 
     def step(self, action):
         # In-place updates only
         self._update_state(action)
         self._render_to_buffer(self._obs_buffer)
 
-        return {'obs': self._obs_buffer}, reward, done, info
+        return {"obs": self._obs_buffer}, reward, done, info
 ```
 
 ### Zero-Copy Patterns
@@ -236,17 +219,20 @@ def get_observation(self):
     # ... fill obs ...
     return obs.copy()  # Unnecessary copy!
 
+
 # GOOD: Reuses buffer
 def get_observation(self):
     # Use pre-allocated buffer
     self._render_to_buffer(self._obs_buffer)
     return self._obs_buffer  # No copy
 
+
 # BAD: Allocates new arrays
 def step(self, action):
     new_state = self.state + action  # Allocates
     self.state = new_state
     return obs, reward, done, info
+
 
 # GOOD: In-place operations
 def step(self, action):
@@ -260,6 +246,7 @@ def step(self, action):
 
 ```python
 from pufferlib.vectorization import VectorEnv
+
 
 class CustomVectorEnv(VectorEnv):
     """Custom vectorization implementation."""
@@ -281,12 +268,7 @@ class CustomVectorEnv(VectorEnv):
 
         obs, rewards, dones, infos = zip(*results)
 
-        return (
-            self._stack_obs(obs),
-            np.array(rewards),
-            np.array(dones),
-            list(infos)
-        )
+        return (self._stack_obs(obs), np.array(rewards), np.array(dones), list(infos))
 
     def _stack_obs(self, observations):
         """Stack observations into batch."""
@@ -302,16 +284,15 @@ For very large-scale parallelism:
 # Inner: Each worker runs serial vectorization (32 envs)
 # Total: 256 parallel environments
 
+
 def create_serial_vec_env():
-    return Serial(
-        env_creator=lambda: MyEnvironment(),
-        num_envs=32
-    )
+    return Serial(env_creator=lambda: MyEnvironment(), num_envs=32)
+
 
 outer_vec_env = Multiprocessing(
     env_creator=create_serial_vec_env,
     num_envs=8,  # 8 serial vec envs
-    num_workers=8
+    num_workers=8,
 )
 
 # Total environments: 8 * 32 = 256
@@ -325,11 +306,7 @@ PufferLib treats multi-agent environments as first-class citizens:
 
 ```python
 # Multi-agent environment automatically vectorized
-env = pufferlib.make(
-    'pettingzoo-knights-archers-zombies',
-    num_envs=128,
-    num_agents=4
-)
+env = pufferlib.make("pettingzoo-knights-archers-zombies", num_envs=128, num_agents=4)
 
 # Observations: {agent_id: [batch_obs]} for each agent
 # Actions: {agent_id: [batch_actions]} for each agent
@@ -368,6 +345,7 @@ class MultiAgentVectorEnv(VectorEnv):
 ```python
 import time
 
+
 def profile_vectorization(vec_env, num_steps=10000):
     """Profile vectorization performance."""
     start = time.time()
@@ -382,7 +360,7 @@ def profile_vectorization(vec_env, num_steps=10000):
     sps = (num_steps * vec_env.num_envs) / elapsed
 
     print(f"Steps per second: {sps:,.0f}")
-    print(f"Time per step: {elapsed/num_steps*1000:.2f}ms")
+    print(f"Time per step: {elapsed / num_steps * 1000:.2f}ms")
 
     return sps
 ```
@@ -392,6 +370,7 @@ def profile_vectorization(vec_env, num_steps=10000):
 ```python
 import cProfile
 import pstats
+
 
 def analyze_bottlenecks(vec_env):
     """Identify vectorization bottlenecks."""
@@ -407,7 +386,7 @@ def analyze_bottlenecks(vec_env):
     profiler.disable()
 
     stats = pstats.Stats(profiler)
-    stats.sort_stats('cumulative')
+    stats.sort_stats("cumulative")
     stats.print_stats(20)
 ```
 
@@ -436,7 +415,7 @@ class MonitoredVectorEnv(VectorEnv):
         if self.step_count % 1000 == 0:
             mean_time = np.mean(self.step_times[-1000:])
             sps = self.num_envs / mean_time
-            print(f"SPS: {sps:,.0f} | Step time: {mean_time*1000:.2f}ms")
+            print(f"SPS: {sps:,.0f} | Step time: {mean_time * 1000:.2f}ms")
 
         return result
 ```
@@ -481,6 +460,7 @@ vec_env = Serial(env_creator, num_envs=16)
 # Ensure thread-safe operations
 import threading
 
+
 class ThreadSafeEnv(PufferEnv):
     def __init__(self, buf=None):
         super().__init__(buf)
@@ -497,17 +477,13 @@ class ThreadSafeEnv(PufferEnv):
 
 ```python
 # Start conservative
-config = {
-    'num_envs': 64,
-    'num_workers': 4,
-    'envs_per_worker': 16
-}
+config = {"num_envs": 64, "num_workers": 4, "envs_per_worker": 16}
 
 # Scale up iteratively
 config = {
-    'num_envs': 256,     # 4x increase
-    'num_workers': 8,     # 2x increase
-    'envs_per_worker': 32 # 2x increase
+    "num_envs": 256,  # 4x increase
+    "num_workers": 8,  # 2x increase
+    "envs_per_worker": 32,  # 2x increase
 }
 
 # Monitor and adjust

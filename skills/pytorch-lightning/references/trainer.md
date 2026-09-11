@@ -272,17 +272,9 @@ List of callbacks to use during training.
 ```python
 from lightning.pytorch.callbacks import ModelCheckpoint, EarlyStopping
 
-checkpoint_callback = ModelCheckpoint(
-    monitor="val_loss",
-    save_top_k=3,
-    mode="min"
-)
+checkpoint_callback = ModelCheckpoint(monitor="val_loss", save_top_k=3, mode="min")
 
-early_stop_callback = EarlyStopping(
-    monitor="val_loss",
-    patience=5,
-    mode="min"
-)
+early_stop_callback = EarlyStopping(monitor="val_loss", patience=5, mode="min")
 
 trainer = L.Trainer(callbacks=[checkpoint_callback, early_stop_callback])
 ```
@@ -408,22 +400,14 @@ trainer = L.Trainer(profiler="advanced")
 
 ### Basic Training
 ```python
-trainer = L.Trainer(
-    max_epochs=100,
-    accelerator="auto",
-    devices="auto"
-)
+trainer = L.Trainer(max_epochs=100, accelerator="auto", devices="auto")
 trainer.fit(model, train_loader, val_loader)
 ```
 
 ### Multi-GPU Training
 ```python
 trainer = L.Trainer(
-    max_epochs=100,
-    accelerator="gpu",
-    devices=4,
-    strategy="ddp",
-    precision="16-mixed"
+    max_epochs=100, accelerator="gpu", devices=4, strategy="ddp", precision="16-mixed"
 )
 trainer.fit(model, datamodule=dm)
 ```
@@ -438,14 +422,10 @@ checkpoint_callback = ModelCheckpoint(
     monitor="val_loss",
     mode="min",
     save_top_k=3,
-    save_last=True
+    save_last=True,
 )
 
-early_stop = EarlyStopping(
-    monitor="val_loss",
-    patience=10,
-    mode="min"
-)
+early_stop = EarlyStopping(monitor="val_loss", patience=10, mode="min")
 
 lr_monitor = LearningRateMonitor(logging_interval="step")
 
@@ -457,7 +437,7 @@ trainer = L.Trainer(
     precision="16-mixed",
     callbacks=[checkpoint_callback, early_stop, lr_monitor],
     log_every_n_steps=10,
-    gradient_clip_val=1.0
+    gradient_clip_val=1.0,
 )
 
 trainer.fit(model, datamodule=dm)
@@ -466,11 +446,11 @@ trainer.fit(model, datamodule=dm)
 ### Debug Configuration
 ```python
 trainer = L.Trainer(
-    fast_dev_run=True,          # Run 1 batch
+    fast_dev_run=True,  # Run 1 batch
     accelerator="cpu",
     enable_progress_bar=True,
     log_every_n_steps=1,
-    detect_anomaly=True
+    detect_anomaly=True,
 )
 trainer.fit(model, train_loader, val_loader)
 ```
@@ -487,7 +467,7 @@ trainer = L.Trainer(
     devices=1,
     deterministic=True,
     benchmark=False,
-    precision="32-true"
+    precision="32-true",
 )
 trainer.fit(model, datamodule=dm)
 ```
@@ -497,7 +477,7 @@ trainer.fit(model, datamodule=dm)
 trainer = L.Trainer(
     max_time={"hours": 23, "minutes": 30},  # SLURM time limit
     max_epochs=1000,
-    callbacks=[ModelCheckpoint(save_last=True)]
+    callbacks=[ModelCheckpoint(save_last=True)],
 )
 trainer.fit(model, datamodule=dm)
 
@@ -514,11 +494,10 @@ trainer = L.Trainer(
     accelerator="gpu",
     devices=8,
     strategy=FSDPStrategy(
-        activation_checkpointing_policy={nn.TransformerEncoderLayer},
-        cpu_offload=False
+        activation_checkpointing_policy={nn.TransformerEncoderLayer}, cpu_offload=False
     ),
     precision="bf16-mixed",
-    accumulate_grad_batches=4
+    accumulate_grad_batches=4,
 )
 trainer.fit(model, datamodule=dm)
 ```
@@ -608,11 +587,7 @@ trainer = L.Trainer(precision="16-mixed")  # or "bf16-mixed" for A100+
 Always save the last checkpoint for resuming:
 
 ```python
-checkpoint_callback = ModelCheckpoint(
-    save_top_k=3,
-    save_last=True,
-    monitor="val_loss"
-)
+checkpoint_callback = ModelCheckpoint(save_top_k=3, save_last=True, monitor="val_loss")
 ```
 
 ### 5. Monitor Learning Rate

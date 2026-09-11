@@ -291,21 +291,17 @@ from hypogenic import BaseTask
 
 # Load your task with custom extract_label function
 task = BaseTask(
-    config_path="./data/your_task/config.yaml",
-    extract_label=lambda text: extract_your_label(text)
+    config_path="./data/your_task/config.yaml", extract_label=lambda text: extract_your_label(text)
 )
 
 # Generate hypotheses
 task.generate_hypotheses(
-    method="hypogenic",
-    num_hypotheses=20,
-    output_path="./output/hypotheses.json"
+    method="hypogenic", num_hypotheses=20, output_path="./output/hypotheses.json"
 )
 
 # Run inference
 results = task.inference(
-    hypothesis_bank="./output/hypotheses.json",
-    test_data="./data/your_task/your_task_test.json"
+    hypothesis_bank="./output/hypotheses.json", test_data="./data/your_task/your_task_test.json"
 )
 ```
 
@@ -320,7 +316,7 @@ task.generate_hypotheses(
     method="hyporefine",
     num_hypotheses=15,
     literature_path="./literature/your_task/",
-    output_path="./output/"
+    output_path="./output/",
 )
 # This generates 3 hypothesis banks:
 # - HypoRefine (integrated approach)
@@ -337,7 +333,7 @@ from examples.multi_hyp_inference import run_multi_hypothesis_inference
 results = run_multi_hypothesis_inference(
     config_path="./data/your_task/config.yaml",
     hypothesis_bank="./output/hypotheses.json",
-    test_data="./data/your_task/your_task_test.json"
+    test_data="./data/your_task/your_task_test.json",
 )
 ```
 
@@ -348,12 +344,13 @@ The `extract_label()` function is critical for parsing LLM outputs. Implement it
 ```python
 def extract_label(llm_output: str) -> str:
     """Extract predicted label from LLM inference text.
-    
+
     Default behavior: searches for 'final answer:\s+(.*)' pattern.
     Customize for your domain-specific output format.
     """
     import re
-    match = re.search(r'final answer:\s+(.*)', llm_output, re.IGNORECASE)
+
+    match = re.search(r"final answer:\s+(.*)", llm_output, re.IGNORECASE)
     if match:
         return match.group(1).strip()
     return llm_output.strip()
@@ -466,25 +463,25 @@ Create a custom label extraction function that parses LLM outputs for your domai
 ```python
 from hypogenic import BaseTask
 
+
 def extract_my_label(llm_output: str) -> str:
     """Custom label extraction for your task.
-    
+
     Must return labels in same format as dataset 'label' field.
     """
     # Example: Extract from specific format
     if "Final prediction:" in llm_output:
         return llm_output.split("Final prediction:")[-1].strip()
-    
+
     # Fallback to default pattern
     import re
-    match = re.search(r'final answer:\s+(.*)', llm_output, re.IGNORECASE)
+
+    match = re.search(r"final answer:\s+(.*)", llm_output, re.IGNORECASE)
     return match.group(1).strip() if match else llm_output.strip()
 
+
 # Use your custom task
-task = BaseTask(
-    config_path="./your_task/config.yaml",
-    extract_label=extract_my_label
-)
+task = BaseTask(config_path="./your_task/config.yaml", extract_label=extract_my_label)
 ```
 
 ### Step 4: (Optional) Process Literature

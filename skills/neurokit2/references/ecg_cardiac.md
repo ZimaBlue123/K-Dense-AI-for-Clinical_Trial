@@ -11,7 +11,7 @@ Process electrocardiogram (ECG) and photoplethysmography (PPG) signals for cardi
 Complete automated ECG processing pipeline that orchestrates multiple steps.
 
 ```python
-signals, info = nk.ecg_process(ecg_signal, sampling_rate=1000, method='neurokit')
+signals, info = nk.ecg_process(ecg_signal, sampling_rate=1000, method="neurokit")
 ```
 
 **Pipeline steps:**
@@ -39,7 +39,7 @@ signals, info = nk.ecg_process(ecg_signal, sampling_rate=1000, method='neurokit'
 Remove noise from raw ECG signals using method-specific filtering.
 
 ```python
-cleaned_ecg = nk.ecg_clean(ecg_signal, sampling_rate=1000, method='neurokit')
+cleaned_ecg = nk.ecg_clean(ecg_signal, sampling_rate=1000, method="neurokit")
 ```
 
 **Methods:**
@@ -58,7 +58,9 @@ cleaned_ecg = nk.ecg_clean(ecg_signal, sampling_rate=1000, method='neurokit')
 Detect R-peaks in ECG signals with optional artifact correction.
 
 ```python
-peaks_dict, info = nk.ecg_peaks(cleaned_ecg, sampling_rate=1000, method='neurokit', correct_artifacts=False)
+peaks_dict, info = nk.ecg_peaks(
+    cleaned_ecg, sampling_rate=1000, method="neurokit", correct_artifacts=False
+)
 ```
 
 **Available methods (13+ algorithms):**
@@ -85,7 +87,7 @@ Set `correct_artifacts=True` to apply Lipponen & Tarvainen (2019) correction:
 Identify P, Q, S, T waves and their onsets/offsets.
 
 ```python
-waves, waves_peak = nk.ecg_delineate(cleaned_ecg, rpeaks, sampling_rate=1000, method='dwt')
+waves, waves_peak = nk.ecg_delineate(cleaned_ecg, rpeaks, sampling_rate=1000, method="dwt")
 ```
 
 **Methods:**
@@ -109,7 +111,7 @@ waves, waves_peak = nk.ecg_delineate(cleaned_ecg, rpeaks, sampling_rate=1000, me
 Assess ECG signal integrity and quality.
 
 ```python
-quality = nk.ecg_quality(ecg_signal, rpeaks=None, sampling_rate=1000, method='averageQRS')
+quality = nk.ecg_quality(ecg_signal, rpeaks=None, sampling_rate=1000, method="averageQRS")
 ```
 
 **Methods:**
@@ -130,7 +132,7 @@ quality = nk.ecg_quality(ecg_signal, rpeaks=None, sampling_rate=1000, method='av
 High-level analysis that automatically selects event-related or interval-related mode.
 
 ```python
-analysis = nk.ecg_analyze(signals, sampling_rate=1000, method='auto')
+analysis = nk.ecg_analyze(signals, sampling_rate=1000, method="auto")
 ```
 
 **Mode selection:**
@@ -242,7 +244,7 @@ corrected_ecg, is_inverted = nk.ecg_invert(ecg_signal, sampling_rate=1000)
 Extract ECG-derived respiration (EDR) as respiratory proxy signal.
 
 ```python
-edr_signal = nk.ecg_rsp(ecg_cleaned, sampling_rate=1000, method='vangent2019')
+edr_signal = nk.ecg_rsp(ecg_cleaned, sampling_rate=1000, method="vangent2019")
 ```
 
 **Methods:**
@@ -261,7 +263,9 @@ edr_signal = nk.ecg_rsp(ecg_cleaned, sampling_rate=1000, method='vangent2019')
 Generate synthetic ECG signals for testing and validation.
 
 ```python
-synthetic_ecg = nk.ecg_simulate(duration=10, sampling_rate=1000, heart_rate=70, method='ecgsyn', noise=0.01)
+synthetic_ecg = nk.ecg_simulate(
+    duration=10, sampling_rate=1000, heart_rate=70, method="ecgsyn", noise=0.01
+)
 ```
 
 **Methods:**
@@ -333,17 +337,14 @@ ecg_signals, ecg_info = nk.ecg_process(ecg, sampling_rate=1000)
 rsp_signals, rsp_info = nk.rsp_process(rsp, sampling_rate=1000)
 
 # Compute RSA
-rsa = nk.hrv_rsa(ecg_info['ECG_R_Peaks'], rsp_signals['RSP_Clean'], sampling_rate=1000)
+rsa = nk.hrv_rsa(ecg_info["ECG_R_Peaks"], rsp_signals["RSP_Clean"], sampling_rate=1000)
 ```
 
 ### Multi-modal Integration
 ```python
 # Process multiple signals at once
 bio_signals, bio_info = nk.bio_process(
-    ecg=ecg_signal,
-    rsp=rsp_signal,
-    eda=eda_signal,
-    sampling_rate=1000
+    ecg=ecg_signal, rsp=rsp_signal, eda=eda_signal, sampling_rate=1000
 )
 ```
 

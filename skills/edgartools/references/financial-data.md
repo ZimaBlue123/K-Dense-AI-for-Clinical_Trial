@@ -37,10 +37,10 @@ income = quarterly.income_statement()
 ```python
 financials = company.get_financials()
 
-income     = financials.income_statement()
-balance    = financials.balance_sheet()
-cashflow   = financials.cashflow_statement()   # note: no underscore
-equity     = financials.statement_of_equity()
+income = financials.income_statement()
+balance = financials.balance_sheet()
+cashflow = financials.cashflow_statement()  # note: no underscore
+equity = financials.statement_of_equity()
 comprehensive = financials.comprehensive_income()
 ```
 
@@ -61,16 +61,16 @@ Get single values directly:
 ```python
 financials = company.get_financials()
 
-revenue     = financials.get_revenue()
-net_income  = financials.get_net_income()
+revenue = financials.get_revenue()
+net_income = financials.get_net_income()
 total_assets = financials.get_total_assets()
-total_liabs  = financials.get_total_liabilities()
-equity       = financials.get_stockholders_equity()
+total_liabs = financials.get_total_liabilities()
+equity = financials.get_stockholders_equity()
 op_cash_flow = financials.get_operating_cash_flow()
 free_cash_flow = financials.get_free_cash_flow()
-capex        = financials.get_capital_expenditures()
+capex = financials.get_capital_expenditures()
 current_assets = financials.get_current_assets()
-current_liabs  = financials.get_current_liabilities()
+current_liabs = financials.get_current_liabilities()
 
 # All key metrics at once
 metrics = financials.get_financial_metrics()  # dict
@@ -178,19 +178,13 @@ For research or custom calculations:
 xbrl = filing.xbrl()
 
 # Find revenue facts
-revenue_facts = xbrl.facts.query()\
-    .by_concept("Revenue")\
-    .to_dataframe()
+revenue_facts = xbrl.facts.query().by_concept("Revenue").to_dataframe()
 
 # Search by label
-rd_facts = xbrl.facts.query()\
-    .by_label("Research", exact=False)\
-    .to_dataframe()
+rd_facts = xbrl.facts.query().by_label("Research", exact=False).to_dataframe()
 
 # Filter by value range
-large_items = xbrl.facts.query()\
-    .by_value(min_value=1_000_000_000)\
-    .to_dataframe()
+large_items = xbrl.facts.query().by_value(min_value=1_000_000_000).to_dataframe()
 ```
 
 ---

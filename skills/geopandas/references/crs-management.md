@@ -62,6 +62,7 @@ gdf.to_crs("+proj=longlat +datum=WGS84")
 
 # pyproj.CRS object
 from pyproj import CRS
+
 crs_obj = CRS.from_epsg(4326)
 gdf.to_crs(crs_obj)
 ```
@@ -199,7 +200,7 @@ GeoPandas 0.8+ supports different CRS per geometry column:
 gdf = gdf.set_crs("EPSG:4326", allow_override=True)
 
 # Active geometry determines operations
-gdf = gdf.set_geometry('other_geom_column')
+gdf = gdf.set_geometry("other_geom_column")
 
 # Check CRS mismatch
 try:

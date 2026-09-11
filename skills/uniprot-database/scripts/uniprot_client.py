@@ -257,9 +257,7 @@ Examples:
     group.add_argument("--get", "-g", help="Get protein by accession number")
     group.add_argument("--map", "-m", help="Map IDs (comma-separated)")
     group.add_argument("--stream", help="Stream large result sets")
-    group.add_argument(
-        "--list-fields", action="store_true", help="List all available query fields"
-    )
+    group.add_argument("--list-fields", action="store_true", help="List all available query fields")
     group.add_argument(
         "--list-databases", action="store_true", help="List all ID mapping databases"
     )
@@ -323,9 +321,7 @@ Examples:
 
         elif args.stream:
             fields_list = args.fields.split(",") if args.fields else None
-            for chunk in stream_results(
-                args.stream, format=args.format, fields=fields_list
-            ):
+            for chunk in stream_results(args.stream, format=args.format, fields=fields_list):
                 print(chunk, end="")
 
     except Exception as e:

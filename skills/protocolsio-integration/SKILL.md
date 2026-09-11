@@ -258,12 +258,7 @@ headers = {"Authorization": f"Bearer {token}"}
 response = requests.get(
     "https://protocols.io/api/v3/protocols",
     headers=headers,
-    params={
-        "filter": "public",
-        "key": "CRISPR",
-        "page_size": 10,
-        "content_format": "html"
-    }
+    params={"filter": "public", "key": "CRISPR", "page_size": 10, "content_format": "html"},
 )
 
 protocols = response.json()
@@ -277,23 +272,16 @@ for protocol in protocols["items"]:
 import requests
 
 token = "YOUR_ACCESS_TOKEN"
-headers = {
-    "Authorization": f"Bearer {token}",
-    "Content-Type": "application/json"
-}
+headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
 
 # Create protocol
 data = {
     "title": "CRISPR-Cas9 Gene Editing Protocol",
     "description": "Comprehensive protocol for CRISPR gene editing",
-    "tags": ["CRISPR", "gene editing", "molecular biology"]
+    "tags": ["CRISPR", "gene editing", "molecular biology"],
 }
 
-response = requests.post(
-    "https://protocols.io/api/v3/protocols",
-    headers=headers,
-    json=data
-)
+response = requests.post("https://protocols.io/api/v3/protocols", headers=headers, json=data)
 
 protocol_id = response.json()["item"]["id"]
 print(f"Created protocol: {protocol_id}")
@@ -313,14 +301,14 @@ with open("data.csv", "rb") as f:
     data = {
         "folder_id": "root",
         "description": "Experimental results",
-        "tags": "experiment,data,2025"
+        "tags": "experiment,data,2025",
     }
 
     response = requests.post(
         "https://protocols.io/api/v3/workspaces/12345/files/upload",
         headers=headers,
         files=files,
-        data=data
+        data=data,
     )
 
 file_id = response.json()["item"]["id"]
@@ -335,6 +323,7 @@ Implement robust error handling for API requests:
 import requests
 import time
 
+
 def make_request_with_retry(url, headers, max_retries=3):
     for attempt in range(max_retries):
         try:
@@ -343,11 +332,11 @@ def make_request_with_retry(url, headers, max_retries=3):
             if response.status_code == 200:
                 return response.json()
             elif response.status_code == 429:  # Rate limit
-                retry_after = int(response.headers.get('Retry-After', 60))
+                retry_after = int(response.headers.get("Retry-After", 60))
                 time.sleep(retry_after)
                 continue
             elif response.status_code >= 500:  # Server error
-                time.sleep(2 ** attempt)  # Exponential backoff
+                time.sleep(2**attempt)  # Exponential backoff
                 continue
             else:
                 response.raise_for_status()
@@ -355,7 +344,7 @@ def make_request_with_retry(url, headers, max_retries=3):
         except requests.exceptions.RequestException as e:
             if attempt == max_retries - 1:
                 raise
-            time.sleep(2 ** attempt)
+            time.sleep(2**attempt)
 
     raise Exception("Max retries exceeded")
 ```

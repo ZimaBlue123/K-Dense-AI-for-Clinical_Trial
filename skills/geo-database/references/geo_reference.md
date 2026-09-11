@@ -38,15 +38,11 @@ https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi
 **Example:**
 ```python
 from Bio import Entrez
+
 Entrez.email = "your@email.com"
 
 # Basic search
-handle = Entrez.esearch(
-    db="gds",
-    term="breast cancer AND Homo sapiens",
-    retmax=100,
-    usehistory="y"
-)
+handle = Entrez.esearch(db="gds", term="breast cancer AND Homo sapiens", retmax=100, usehistory="y")
 results = Entrez.read(handle)
 handle.close()
 
@@ -77,15 +73,11 @@ https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi
 **Example:**
 ```python
 from Bio import Entrez
+
 Entrez.email = "your@email.com"
 
 # Get summaries for multiple IDs
-handle = Entrez.esummary(
-    db="gds",
-    id="200000001,200000002",
-    retmode="xml",
-    version="2.0"
-)
+handle = Entrez.esummary(db="gds", id="200000001,200000002", retmode="xml", version="2.0")
 summaries = Entrez.read(handle)
 handle.close()
 
@@ -117,14 +109,11 @@ https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi
 **Example:**
 ```python
 from Bio import Entrez
+
 Entrez.email = "your@email.com"
 
 # Fetch full records
-handle = Entrez.efetch(
-    db="gds",
-    id="200000001",
-    retmode="xml"
-)
+handle = Entrez.efetch(db="gds", id="200000001", retmode="xml")
 records = Entrez.read(handle)
 handle.close()
 ```
@@ -152,14 +141,11 @@ https://eutils.ncbi.nlm.nih.gov/entrez/eutils/elink.fcgi
 **Example:**
 ```python
 from Bio import Entrez
+
 Entrez.email = "your@email.com"
 
 # Find PubMed articles linked to a GEO dataset
-handle = Entrez.elink(
-    dbfrom="gds",
-    db="pubmed",
-    id="200000001"
-)
+handle = Entrez.elink(dbfrom="gds", db="pubmed", id="200000001")
 links = Entrez.read(handle)
 handle.close()
 ```
@@ -180,6 +166,7 @@ https://eutils.ncbi.nlm.nih.gov/entrez/eutils/epost.fcgi
 **Example:**
 ```python
 from Bio import Entrez
+
 Entrez.email = "your@email.com"
 
 # Post large list of IDs
@@ -209,6 +196,7 @@ https://eutils.ncbi.nlm.nih.gov/entrez/eutils/einfo.fcgi
 **Example:**
 ```python
 from Bio import Entrez
+
 Entrez.email = "your@email.com"
 
 # Get information about gds database
@@ -373,6 +361,7 @@ for gpl_name, gpl in gse.gpls.items():
 ```python
 import gzip
 
+
 def parse_soft_file(filename):
     """Basic SOFT file parser"""
     sections = {}
@@ -381,28 +370,28 @@ def parse_soft_file(filename):
     current_table = []
     in_table = False
 
-    with gzip.open(filename, 'rt') as f:
+    with gzip.open(filename, "rt") as f:
         for line in f:
             line = line.strip()
 
             # New section
-            if line.startswith('^'):
+            if line.startswith("^"):
                 if current_section:
                     sections[current_section] = {
-                        'metadata': current_metadata,
-                        'table': current_table
+                        "metadata": current_metadata,
+                        "table": current_table,
                     }
-                parts = line[1:].split(' = ')
+                parts = line[1:].split(" = ")
                 current_section = parts[1] if len(parts) > 1 else parts[0]
                 current_metadata = {}
                 current_table = []
                 in_table = False
 
             # Metadata
-            elif line.startswith('!'):
+            elif line.startswith("!"):
                 if in_table:
                     in_table = False
-                key_value = line[1:].split(' = ', 1)
+                key_value = line[1:].split(" = ", 1)
                 if len(key_value) == 2:
                     key, value = key_value
                     if key in current_metadata:
@@ -414,7 +403,7 @@ def parse_soft_file(filename):
                         current_metadata[key] = value
 
             # Table data
-            elif line.startswith('#') or in_table:
+            elif line.startswith("#") or in_table:
                 in_table = True
                 current_table.append(line)
 
@@ -577,24 +566,24 @@ gse = GEOparse.get_GEO(
     silent=False,  # Show progress
     how="full",  # Parse mode: "full", "quick", "brief"
     annotate_gpl=True,  # Include platform annotation
-    geotype="GSE"  # Explicit type
+    geotype="GSE",  # Explicit type
 )
 
 # Access specific sample
-gsm = gse.gsms['GSM1234567']
+gsm = gse.gsms["GSM1234567"]
 
 # Get expression values for specific probe
 probe_id = "1007_s_at"
-if hasattr(gsm, 'table'):
-    probe_data = gsm.table[gsm.table['ID_REF'] == probe_id]
+if hasattr(gsm, "table"):
+    probe_data = gsm.table[gsm.table["ID_REF"] == probe_id]
 
 # Get all characteristics
 characteristics = {}
 for key, values in gsm.metadata.items():
-    if key.startswith('characteristics'):
-        for value in (values if isinstance(values, list) else [values]):
-            if ':' in value:
-                char_key, char_value = value.split(':', 1)
+    if key.startswith("characteristics"):
+        for value in values if isinstance(values, list) else [values]:
+            if ":" in value:
+                char_key, char_value = value.split(":", 1)
                 characteristics[char_key.strip()] = char_value.strip()
 ```
 
@@ -610,7 +599,7 @@ gse = GEOparse.get_GEO(geo="GSE123456", destdir="./data")
 gpl = list(gse.gpls.values())[0]
 
 # Extract annotation table
-if hasattr(gpl, 'table'):
+if hasattr(gpl, "table"):
     annotation = gpl.table
 
     # Common annotation columns:
@@ -623,15 +612,12 @@ if hasattr(gpl, 'table'):
     # - UniGene: UniGene cluster
 
     # Map probes to genes
-    probe_to_gene = dict(zip(
-        annotation['ID'],
-        annotation['Gene Symbol']
-    ))
+    probe_to_gene = dict(zip(annotation["ID"], annotation["Gene Symbol"]))
 
     # Handle multiple probes per gene
     gene_to_probes = {}
     for probe, gene in probe_to_gene.items():
-        if gene and gene != '---':
+        if gene and gene != "---":
             if gene not in gene_to_probes:
                 gene_to_probes[gene] = []
             gene_to_probes[gene].append(probe)
@@ -644,6 +630,7 @@ import GEOparse
 import pandas as pd
 import numpy as np
 
+
 def process_large_gse(gse_id, chunk_size=1000):
     """Process large GEO series in chunks"""
     gse = GEOparse.get_GEO(geo=gse_id, destdir="./data")
@@ -653,22 +640,22 @@ def process_large_gse(gse_id, chunk_size=1000):
 
     # Process in chunks
     for i in range(0, len(sample_list), chunk_size):
-        chunk_samples = sample_list[i:i+chunk_size]
+        chunk_samples = sample_list[i : i + chunk_size]
 
         # Extract data for chunk
         chunk_data = {}
         for gsm_id in chunk_samples:
             gsm = gse.gsms[gsm_id]
-            if hasattr(gsm, 'table'):
-                chunk_data[gsm_id] = gsm.table['VALUE']
+            if hasattr(gsm, "table"):
+                chunk_data[gsm_id] = gsm.table["VALUE"]
 
         # Process chunk
         chunk_df = pd.DataFrame(chunk_data)
 
         # Save chunk results
-        chunk_df.to_csv(f"chunk_{i//chunk_size}.csv")
+        chunk_df.to_csv(f"chunk_{i // chunk_size}.csv")
 
-        print(f"Processed {i+len(chunk_samples)}/{len(sample_list)} samples")
+        print(f"Processed {i + len(chunk_samples)}/{len(sample_list)} samples")
 ```
 
 ## Troubleshooting Common Issues
@@ -696,8 +683,8 @@ gse = GEOparse.get_GEO(filepath="./local/GSE123456_family.soft.gz")
 ```python
 expression_data = {}
 for gsm_name, gsm in gse.gsms.items():
-    if hasattr(gsm, 'table') and 'VALUE' in gsm.table.columns:
-        expression_data[gsm_name] = gsm.table.set_index('ID_REF')['VALUE']
+    if hasattr(gsm, "table") and "VALUE" in gsm.table.columns:
+        expression_data[gsm_name] = gsm.table.set_index("ID_REF")["VALUE"]
 
 expression_df = pd.DataFrame(expression_data)
 ```
@@ -713,14 +700,14 @@ expression_df = pd.DataFrame(expression_data)
 # Get common probe set
 all_probes = set()
 for gsm in gse.gsms.values():
-    if hasattr(gsm, 'table'):
-        all_probes.update(gsm.table['ID_REF'].values)
+    if hasattr(gsm, "table"):
+        all_probes.update(gsm.table["ID_REF"].values)
 
 # Create standardized matrix
 standardized_data = {}
 for gsm_name, gsm in gse.gsms.items():
-    if hasattr(gsm, 'table'):
-        sample_data = gsm.table.set_index('ID_REF')['VALUE']
+    if hasattr(gsm, "table"):
+        sample_data = gsm.table.set_index("ID_REF")["VALUE"]
         standardized_data[gsm_name] = sample_data.reindex(all_probes)
 
 expression_df = pd.DataFrame(standardized_data)
@@ -737,6 +724,7 @@ expression_df = pd.DataFrame(standardized_data)
 import time
 from functools import wraps
 
+
 def rate_limit(calls_per_second=3):
     min_interval = 1.0 / calls_per_second
 
@@ -752,8 +740,11 @@ def rate_limit(calls_per_second=3):
             result = func(*args, **kwargs)
             last_called[0] = time.time()
             return result
+
         return wrapper
+
     return decorator
+
 
 @rate_limit(calls_per_second=3)
 def safe_esearch(query):
@@ -778,11 +769,12 @@ import pandas as pd
 # Read with specific dtypes
 expression_df = pd.read_csv(
     "expression_matrix.csv",
-    dtype={'ID': str, 'GSM1': np.float32}  # Use float32 instead of float64
+    dtype={"ID": str, "GSM1": np.float32},  # Use float32 instead of float64
 )
 
 # Or use sparse format for mostly-zero data
 import scipy.sparse as sp
+
 sparse_matrix = sp.csr_matrix(expression_df.values)
 ```
 

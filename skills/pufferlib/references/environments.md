@@ -21,15 +21,13 @@ import numpy as np
 import pufferlib
 from pufferlib import PufferEnv
 
+
 class MyEnvironment(PufferEnv):
     def __init__(self, buf=None):
         super().__init__(buf)
 
         # Define observation and action spaces
-        self.observation_space = self.make_space({
-            'image': (84, 84, 3),
-            'vector': (10,)
-        })
+        self.observation_space = self.make_space({"image": (84, 84, 3), "vector": (10,)})
 
         self.action_space = self.make_discrete(4)  # 4 discrete actions
 
@@ -44,8 +42,8 @@ class MyEnvironment(PufferEnv):
 
         # Return initial observation
         obs = {
-            'image': np.zeros((84, 84, 3), dtype=np.uint8),
-            'vector': np.zeros(10, dtype=np.float32)
+            "image": np.zeros((84, 84, 3), dtype=np.uint8),
+            "vector": np.zeros(10, dtype=np.float32),
         }
 
         return obs
@@ -65,7 +63,7 @@ class MyEnvironment(PufferEnv):
         obs = self._get_observation()
 
         # Additional info
-        info = {'episode': {'r': reward, 'l': self.step_count}} if done else {}
+        info = {"episode": {"r": reward, "l": self.step_count}} if done else {}
 
         return obs, reward, done, info
 
@@ -76,8 +74,8 @@ class MyEnvironment(PufferEnv):
     def _get_observation(self):
         """Generate observation from current state."""
         return {
-            'image': np.random.randint(0, 256, (84, 84, 3), dtype=np.uint8),
-            'vector': np.random.randn(10).astype(np.float32)
+            "image": np.random.randint(0, 256, (84, 84, 3), dtype=np.uint8),
+            "vector": np.random.randn(10).astype(np.float32),
         }
 ```
 
@@ -90,21 +88,25 @@ class MyEnvironment(PufferEnv):
 self.observation_space = self.make_discrete(10)  # Values 0-9
 
 # Dict with discrete values
-self.observation_space = self.make_space({
-    'position': (1,),  # Continuous
-    'type': self.make_discrete(5)  # Discrete
-})
+self.observation_space = self.make_space(
+    {
+        "position": (1,),  # Continuous
+        "type": self.make_discrete(5),  # Discrete
+    }
+)
 ```
 
 #### Continuous Spaces
 
 ```python
 # Box space (continuous)
-self.observation_space = self.make_space({
-    'image': (84, 84, 3),      # Image
-    'vector': (10,),            # Vector
-    'scalar': (1,)              # Single value
-})
+self.observation_space = self.make_space(
+    {
+        "image": (84, 84, 3),  # Image
+        "vector": (10,),  # Vector
+        "scalar": (1,),  # Single value
+    }
+)
 ```
 
 #### Multi-Discrete Spaces
@@ -141,11 +143,9 @@ class MultiAgentEnv(PufferEnv):
         self.num_agents = num_agents
 
         # Per-agent observation space
-        self.single_observation_space = self.make_space({
-            'position': (2,),
-            'velocity': (2,),
-            'global': (10,)
-        })
+        self.single_observation_space = self.make_space(
+            {"position": (2,), "velocity": (2,), "global": (10,)}
+        )
 
         # Per-agent action space
         self.single_action_space = self.make_discrete(5)
@@ -154,13 +154,10 @@ class MultiAgentEnv(PufferEnv):
 
     def reset(self):
         """Reset all agents."""
-        self.agents = {f'agent_{i}': Agent(i) for i in range(self.num_agents)}
+        self.agents = {f"agent_{i}": Agent(i) for i in range(self.num_agents)}
 
         # Return observations for all agents
-        return {
-            agent_id: self._get_obs(agent)
-            for agent_id, agent in self.agents.items()
-        }
+        return {agent_id: self._get_obs(agent) for agent_id, agent in self.agents.items()}
 
     def step(self, actions):
         """Step all agents."""
@@ -183,7 +180,7 @@ class MultiAgentEnv(PufferEnv):
             infos[agent_id] = {}
 
         # Check for global done condition
-        dones['__all__'] = all(dones.values())
+        dones["__all__"] = all(dones.values())
 
         return observations, rewards, dones, infos
 ```
@@ -221,18 +218,13 @@ PufferLib provides the Ocean suite with 20+ pre-built environments:
 import pufferlib
 
 # Make environment
-env = pufferlib.make('procgen-coinrun', num_envs=256)
+env = pufferlib.make("procgen-coinrun", num_envs=256)
 
 # With custom configuration
-env = pufferlib.make(
-    'atari-pong',
-    num_envs=128,
-    frameskip=4,
-    framestack=4
-)
+env = pufferlib.make("atari-pong", num_envs=128, frameskip=4, framestack=4)
 
 # Multi-agent environment
-env = pufferlib.make('pettingzoo-knights-archers-zombies', num_agents=4)
+env = pufferlib.make("pettingzoo-knights-archers-zombies", num_agents=4)
 ```
 
 ## Custom Environment Development
@@ -333,11 +325,11 @@ import gymnasium as gym
 import pufferlib
 
 # Wrap Gymnasium environment
-gym_env = gym.make('CartPole-v1')
+gym_env = gym.make("CartPole-v1")
 puffer_env = pufferlib.emulate(gym_env, num_envs=256)
 
 # Or use make directly
-env = pufferlib.make('gym-CartPole-v1', num_envs=256)
+env = pufferlib.make("gym-CartPole-v1", num_envs=256)
 ```
 
 ### PettingZoo Environments
@@ -351,7 +343,7 @@ pz_env = pistonball_v6.env()
 puffer_env = pufferlib.emulate(pz_env, num_envs=128)
 
 # Or use make directly
-env = pufferlib.make('pettingzoo-pistonball', num_envs=128)
+env = pufferlib.make("pettingzoo-pistonball", num_envs=128)
 ```
 
 ### Custom Wrappers
@@ -429,10 +421,7 @@ def step(self, action):
 
     done = timeout or success or failure
 
-    info = {
-        'TimeLimit.truncated': timeout,
-        'success': success
-    }
+    info = {"TimeLimit.truncated": timeout, "success": success}
 
     return obs, reward, done, info
 ```
@@ -481,10 +470,10 @@ class DebuggableEnv(PufferEnv):
 
     def render(self):
         """Render environment for debugging."""
-        if self.render_mode == 'human':
+        if self.render_mode == "human":
             # Display to screen
             self._display_scene()
-        elif self.render_mode == 'rgb_array':
+        elif self.render_mode == "rgb_array":
             # Return image
             return self._render_to_array()
 ```
@@ -495,6 +484,7 @@ class DebuggableEnv(PufferEnv):
 import logging
 
 logger = logging.getLogger(__name__)
+
 
 def step(self, action):
     logger.debug(f"Step {self.step_count}: action={action}")

@@ -33,11 +33,11 @@ filing = get_by_accession_number("0000320193-23-000106")
 
 # Direct construction (rarely needed)
 filing = Filing(
-    form='10-Q',
-    filing_date='2024-06-30',
-    company='Tesla Inc.',
+    form="10-Q",
+    filing_date="2024-06-30",
+    company="Tesla Inc.",
     cik=1318605,
-    accession_no='0001628280-24-028839'
+    accession_no="0001628280-24-028839",
 )
 ```
 
@@ -47,31 +47,31 @@ filing = Filing(
 
 ### Basic Properties
 ```python
-filing.cik              # 320193
-filing.company          # "Apple Inc."
-filing.form             # "10-K"
-filing.filing_date      # "2023-11-03"
-filing.period_of_report # "2023-09-30"
-filing.accession_no     # "0000320193-23-000106"
-filing.accession_number # alias for accession_no
+filing.cik  # 320193
+filing.company  # "Apple Inc."
+filing.form  # "10-K"
+filing.filing_date  # "2023-11-03"
+filing.period_of_report  # "2023-09-30"
+filing.accession_no  # "0000320193-23-000106"
+filing.accession_number  # alias for accession_no
 ```
 
 ### EntityFiling Extra Properties (from company.get_filings())
 ```python
 filing.acceptance_datetime  # datetime
-filing.file_number          # "001-36743"
-filing.size                 # bytes
-filing.primary_document     # filename
-filing.is_xbrl              # bool
-filing.is_inline_xbrl       # bool
+filing.file_number  # "001-36743"
+filing.size  # bytes
+filing.primary_document  # filename
+filing.is_xbrl  # bool
+filing.is_inline_xbrl  # bool
 ```
 
 ### URL Properties
 ```python
-filing.homepage_url   # SEC index page URL
-filing.filing_url     # primary document URL
-filing.text_url       # text version URL
-filing.base_dir       # base directory for all files
+filing.homepage_url  # SEC index page URL
+filing.filing_url  # primary document URL
+filing.text_url  # text version URL
+filing.base_dir  # base directory for all files
 ```
 
 ---
@@ -79,10 +79,10 @@ filing.base_dir       # base directory for all files
 ## Accessing Content
 
 ```python
-html = filing.html()         # HTML string or None
-text = filing.text()         # plain text (clean)
-md = filing.markdown()       # markdown string
-xml = filing.xml()           # XML string or None (ownership forms)
+html = filing.html()  # HTML string or None
+text = filing.text()  # plain text (clean)
+md = filing.markdown()  # markdown string
+xml = filing.xml()  # XML string or None (ownership forms)
 full = filing.full_text_submission()  # complete SGML submission
 
 # Markdown with page breaks (good for LLM processing)
@@ -95,7 +95,7 @@ md = filing.markdown(include_page_breaks=True, start_page_number=1)
 
 ### Get Form-Specific Object (Primary Method)
 ```python
-obj = filing.obj()        # or filing.data_object()
+obj = filing.obj()  # or filing.data_object()
 # Returns: TenK, TenQ, EightK, Form4, ThirteenF, ProxyStatement, etc.
 ```
 
@@ -129,7 +129,7 @@ if tenk and tenk.financials:
 
 ### Get XBRL Data
 ```python
-xbrl = filing.xbrl()     # Returns XBRL object or None
+xbrl = filing.xbrl()  # Returns XBRL object or None
 if xbrl:
     income = xbrl.statements.income_statement()
     balance = xbrl.statements.balance_sheet()
@@ -188,21 +188,18 @@ results = filing.search("artificial intelligence")
 print(f"Found {len(results)} mentions")
 
 # Regex search
-emails = filing.search(
-    r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b',
-    regex=True
-)
+emails = filing.search(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b", regex=True)
 
 # Financial terms
 revenue_mentions = filing.search("revenue")
 risk_factors = filing.search("risk factor")
-critical = filing.search(r'\b(material weakness|restatement)\b', regex=True)
+critical = filing.search(r"\b(material weakness|restatement)\b", regex=True)
 ```
 
 ### Document Sections
 ```python
 sections = filing.sections()  # list of section names
-doc = filing.parse()          # parse to Document for advanced ops
+doc = filing.parse()  # parse to Document for advanced ops
 ```
 
 ---
@@ -210,10 +207,10 @@ doc = filing.parse()          # parse to Document for advanced ops
 ## Viewing & Display
 
 ```python
-filing.view()                # display in console/Jupyter with Rich
-filing.open()                # open primary doc in browser
-filing.open_homepage()       # open SEC index page
-filing.serve(port=8080)      # serve locally at http://localhost:8080
+filing.view()  # display in console/Jupyter with Rich
+filing.open()  # open primary doc in browser
+filing.open_homepage()  # open SEC index page
+filing.serve(port=8080)  # serve locally at http://localhost:8080
 ```
 
 ---
@@ -222,8 +219,8 @@ filing.serve(port=8080)      # serve locally at http://localhost:8080
 
 ```python
 # Save
-filing.save("./data/filings/")         # auto-generates filename
-filing.save("./data/apple_10k.pkl")    # specific file
+filing.save("./data/filings/")  # auto-generates filename
+filing.save("./data/apple_10k.pkl")  # specific file
 
 # Load
 filing = Filing.load("./data/apple_10k.pkl")
@@ -244,9 +241,9 @@ filing.download(data_directory="./raw_filings/", compress=False)
 ```python
 from edgar import get_filings
 
-filings = get_filings(2024, 1, form="10-K")   # Q1 2024 10-Ks
-filings = get_filings(2023, form="10-K")       # all 2023 10-Ks
-filings = get_filings([2022, 2023, 2024])      # multiple years
+filings = get_filings(2024, 1, form="10-K")  # Q1 2024 10-Ks
+filings = get_filings(2023, form="10-K")  # all 2023 10-Ks
+filings = get_filings([2022, 2023, 2024])  # multiple years
 filings = get_filings(2024, [1, 2], form="10-Q")
 filings = get_filings(2024, 1, amendments=False)
 ```
@@ -255,11 +252,11 @@ filings = get_filings(2024, 1, amendments=False)
 
 ### Collection Properties
 ```python
-len(filings)         # count
-filings.empty        # bool
-filings.date_range   # (start_date, end_date)
-filings.start_date   # earliest
-filings.end_date     # latest
+len(filings)  # count
+filings.empty  # bool
+filings.date_range  # (start_date, end_date)
+filings.start_date  # earliest
+filings.end_date  # latest
 ```
 
 ### Access & Iteration
@@ -276,11 +273,11 @@ filing = filings.get("0001234567-24-000001")
 
 ### Subset Operations
 ```python
-filings.latest()     # most recent (single Filing)
-filings.latest(10)   # 10 most recent (Filings)
-filings.head(20)     # first 20
-filings.tail(20)     # last 20
-filings.sample(10)   # random 10
+filings.latest()  # most recent (single Filing)
+filings.latest(10)  # 10 most recent (Filings)
+filings.head(20)  # first 20
+filings.tail(20)  # last 20
+filings.sample(10)  # random 10
 ```
 
 ---
@@ -311,11 +308,7 @@ major = filings.filter(exchange=["NASDAQ", "NYSE"])
 
 ### Chain Filters
 ```python
-result = (filings
-    .filter(form="10-K")
-    .filter(exchange="NASDAQ")
-    .filter(date="2024-01-01:")
-    .latest(50))
+result = filings.filter(form="10-K").filter(exchange="NASDAQ").filter(date="2024-01-01:").latest(50)
 ```
 
 ### Find by Company Name
@@ -337,7 +330,7 @@ current = filings.current()
 
 ```python
 df = filings.to_pandas()
-df = filings.to_pandas('form', 'company', 'filing_date', 'cik')
+df = filings.to_pandas("form", "company", "filing_date", "cik")
 
 filings.save_parquet("filings.parquet")  # or .save()
 filings.download(data_directory="./raw_data/", compress=True)

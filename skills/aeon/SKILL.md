@@ -81,11 +81,7 @@ Group similar time series without labels. See `references/clustering.md` for met
 ```python
 from aeon.clustering import TimeSeriesKMeans
 
-clusterer = TimeSeriesKMeans(
-    n_clusters=3,
-    distance="dtw",
-    averaging_method="ba"
-)
+clusterer = TimeSeriesKMeans(n_clusters=3, distance="dtw", averaging_method="ba")
 labels = clusterer.fit_predict(X_train)
 centers = clusterer.cluster_centers_
 ```
@@ -157,6 +153,7 @@ X_features = rocket.fit_transform(X_train)
 
 # Use features with any sklearn classifier
 from sklearn.ensemble import RandomForestClassifier
+
 clf = RandomForestClassifier()
 clf.fit(X_features, y_train)
 ```
@@ -194,11 +191,7 @@ distance_matrix = dtw_pairwise_distance(X_train)
 # Use with classifiers
 from aeon.classification.distance_based import KNeighborsTimeSeriesClassifier
 
-clf = KNeighborsTimeSeriesClassifier(
-    n_neighbors=5,
-    distance="dtw",
-    distance_params={"window": 0.2}
-)
+clf = KNeighborsTimeSeriesClassifier(n_neighbors=5, distance="dtw", distance_params={"window": 0.2})
 ```
 
 **Available Distances:**
@@ -256,10 +249,7 @@ from aeon.transformations.collection import Normalizer
 from aeon.classification.convolution_based import RocketClassifier
 from sklearn.pipeline import Pipeline
 
-pipeline = Pipeline([
-    ('normalize', Normalizer()),
-    ('classify', RocketClassifier())
-])
+pipeline = Pipeline([("normalize", Normalizer()), ("classify", RocketClassifier())])
 
 pipeline.fit(X_train, y_train)
 accuracy = pipeline.score(X_test, y_test)
@@ -293,10 +283,10 @@ scores = detector.fit_predict(y)
 
 plt.figure(figsize=(15, 5))
 plt.subplot(2, 1, 1)
-plt.plot(y, label='Time Series')
+plt.plot(y, label="Time Series")
 plt.subplot(2, 1, 2)
-plt.plot(scores, label='Anomaly Scores', color='red')
-plt.axhline(np.percentile(scores, 95), color='k', linestyle='--')
+plt.plot(scores, label="Anomaly Scores", color="red")
+plt.axhline(np.percentile(scores, 95), color="k", linestyle="--")
 plt.show()
 ```
 
@@ -307,6 +297,7 @@ plt.show()
 1. **Normalize**: Most algorithms benefit from z-normalization
    ```python
    from aeon.transformations.collection import Normalizer
+
    normalizer = Normalizer()
    X_train = normalizer.fit_transform(X_train)
    X_test = normalizer.transform(X_test)
@@ -315,7 +306,8 @@ plt.show()
 2. **Handle Missing Values**: Impute before analysis
    ```python
    from aeon.transformations.collection import SimpleImputer
-   imputer = SimpleImputer(strategy='mean')
+
+   imputer = SimpleImputer(strategy="mean")
    X_train = imputer.fit_transform(X_train)
    ```
 

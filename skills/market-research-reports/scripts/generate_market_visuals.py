@@ -404,9 +404,7 @@ def main():
         action="store_true",
         help="Skip generation if file already exists",
     )
-    parser.add_argument(
-        "--verbose", "-v", action="store_true", help="Show detailed output"
-    )
+    parser.add_argument("--verbose", "-v", action="store_true", help="Show detailed output")
     parser.add_argument(
         "--dry-run",
         action="store_true",
@@ -425,14 +423,14 @@ def main():
     if not args.dry_run:
         output_dir.mkdir(parents=True, exist_ok=True)
 
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print("Market Research Visual Generator")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
     print(f"Topic: {args.topic}")
     print(f"Output Directory: {output_dir.absolute()}")
     print(f"Mode: {'All Visuals (27)' if args.all else 'Core Visuals Only (5-6)'}")
     print(f"Skip Existing: {args.skip_existing}")
-    print(f"{'='*60}\n")
+    print(f"{'=' * 60}\n")
 
     # Select visual set based on --all flag
     if args.all:
@@ -450,9 +448,7 @@ def main():
             for v in CORE_VISUALS + EXTENDED_VISUALS
             if pattern in v[0].lower() or pattern in v[2].lower()
         ]
-        print(
-            f"Filtered to {len(visuals_to_generate)} visuals matching '{args.only}'\n"
-        )
+        print(f"Filtered to {len(visuals_to_generate)} visuals matching '{args.only}'\n")
 
     if args.dry_run:
         print("DRY RUN - The following visuals would be generated:\n")
@@ -492,14 +488,14 @@ def main():
             failed += 1
 
     # Print summary
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print("Generation Complete")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
     print(f"Total:    {total}")
     print(f"Success:  {success}")
     print(f"Skipped:  {skipped}")
     print(f"Failed:   {failed}")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
     if failed > 0:
         print(f"\nWARNING: {failed} visuals failed to generate.")

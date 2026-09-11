@@ -35,7 +35,7 @@ Before computing complexity measures, optimal embedding parameters should be det
 Determine optimal time delay (τ) for phase space reconstruction.
 
 ```python
-optimal_tau = nk.complexity_delay(signal, delay_max=100, method='fraser1986', show=False)
+optimal_tau = nk.complexity_delay(signal, delay_max=100, method="fraser1986", show=False)
 ```
 
 **Methods:**
@@ -50,8 +50,7 @@ optimal_tau = nk.complexity_delay(signal, delay_max=100, method='fraser1986', sh
 Determine optimal embedding dimension (m).
 
 ```python
-optimal_m = nk.complexity_dimension(signal, delay=None, dimension_max=20,
-                                    method='afn', show=False)
+optimal_m = nk.complexity_dimension(signal, delay=None, dimension_max=20, method="afn", show=False)
 ```
 
 **Methods:**
@@ -66,7 +65,7 @@ optimal_m = nk.complexity_dimension(signal, delay=None, dimension_max=20,
 Determine optimal tolerance (r) for entropy measures.
 
 ```python
-optimal_r = nk.complexity_tolerance(signal, method='sd', show=False)
+optimal_r = nk.complexity_tolerance(signal, method="sd", show=False)
 ```
 
 **Methods:**
@@ -113,7 +112,7 @@ shannon_entropy = nk.entropy_shannon(signal)
 Approximate Entropy (ApEn) - regularity of patterns.
 
 ```python
-apen = nk.entropy_approximate(signal, delay=1, dimension=2, tolerance='sd')
+apen = nk.entropy_approximate(signal, delay=1, dimension=2, tolerance="sd")
 ```
 
 **Parameters:**
@@ -135,7 +134,7 @@ apen = nk.entropy_approximate(signal, delay=1, dimension=2, tolerance='sd')
 Sample Entropy (SampEn) - improved ApEn.
 
 ```python
-sampen = nk.entropy_sample(signal, delay=1, dimension=2, tolerance='sd')
+sampen = nk.entropy_sample(signal, delay=1, dimension=2, tolerance="sd")
 ```
 
 **Advantages over ApEn:**
@@ -156,8 +155,9 @@ sampen = nk.entropy_sample(signal, delay=1, dimension=2, tolerance='sd')
 Multiscale Entropy (MSE) - complexity across temporal scales.
 
 ```python
-mse = nk.entropy_multiscale(signal, scale=20, dimension=2, tolerance='sd',
-                            method='MSEn', show=False)
+mse = nk.entropy_multiscale(
+    signal, scale=20, dimension=2, tolerance="sd", method="MSEn", show=False
+)
 ```
 
 **Methods:**
@@ -181,7 +181,7 @@ mse = nk.entropy_multiscale(signal, scale=20, dimension=2, tolerance='sd',
 Fuzzy Entropy - uses fuzzy membership functions.
 
 ```python
-fuzzen = nk.entropy_fuzzy(signal, delay=1, dimension=2, tolerance='sd', r=0.2)
+fuzzen = nk.entropy_fuzzy(signal, delay=1, dimension=2, tolerance="sd", r=0.2)
 ```
 
 **Advantages:**
@@ -485,8 +485,7 @@ linelength = nk.fractal_linelength(signal)
 Largest Lyapunov Exponent - chaos and divergence.
 
 ```python
-lyap = nk.complexity_lyapunov(signal, delay=None, dimension=None,
-                              sampling_rate=1000, show=False)
+lyap = nk.complexity_lyapunov(signal, delay=None, dimension=None, sampling_rate=1000, show=False)
 ```
 
 **Interpretation:**
@@ -504,7 +503,7 @@ lyap = nk.complexity_lyapunov(signal, delay=None, dimension=None,
 Lempel-Ziv Complexity - algorithmic complexity.
 
 ```python
-lz = nk.complexity_lempelziv(signal, symbolize='median')
+lz = nk.complexity_lempelziv(signal, symbolize="median")
 ```
 
 **Method:**
@@ -524,7 +523,7 @@ lz = nk.complexity_lempelziv(signal, symbolize='median')
 Recurrence Quantification Analysis - phase space recurrences.
 
 ```python
-rqa_indices = nk.complexity_rqa(signal, delay=1, dimension=3, tolerance='sd')
+rqa_indices = nk.complexity_rqa(signal, delay=1, dimension=3, tolerance="sd")
 ```
 
 **Metrics:**
@@ -619,7 +618,7 @@ fs = nk.fishershannon_information(signal)
 Mutual Information - shared information between variables.
 
 ```python
-mi = nk.mutual_information(signal1, signal2, method='knn')
+mi = nk.mutual_information(signal1, signal2, method="knn")
 ```
 
 **Methods:**

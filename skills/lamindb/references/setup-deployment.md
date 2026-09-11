@@ -52,10 +52,12 @@ pip install lamindb-clinical
 
 ```python
 import lamindb as ln
+
 print(ln.__version__)
 
 # Check available modules
 import bionty as bt
+
 print(bt.__version__)
 ```
 
@@ -378,6 +380,7 @@ if artifact.is_cached():
 
 # Manually clear entire cache
 import shutil
+
 shutil.rmtree(ln.settings.cache_dir)
 ```
 
@@ -621,6 +624,7 @@ except Exception as e:
 ```python
 # Enable debug logging
 import logging
+
 logging.basicConfig(level=logging.DEBUG)
 
 # LaminDB operations will produce detailed logs

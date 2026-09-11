@@ -257,6 +257,7 @@ dataset = datasets.BBBP("~/molecule-datasets/")
 
 # With transforms
 from torchdrug import transforms
+
 transform = transforms.VirtualNode()
 dataset = datasets.BBBP("~/molecule-datasets/", transform=transform)
 
@@ -275,9 +276,8 @@ train, valid, test = dataset.split([0.8, 0.1, 0.1])
 
 # Scaffold split (for molecules)
 from torchdrug import utils
-train, valid, test = dataset.split(
-    utils.scaffold_split(dataset, [0.8, 0.1, 0.1])
-)
+
+train, valid, test = dataset.split(utils.scaffold_split(dataset, [0.8, 0.1, 0.1]))
 
 # Predefined splits (some datasets)
 train, valid, test = dataset.split()

@@ -80,14 +80,16 @@ from matchms import calculate_scores
 from matchms.similarity import CosineGreedy, ModifiedCosine, CosineHungarian
 
 # Calculate cosine similarity (fast, greedy algorithm)
-scores = calculate_scores(references=library_spectra,
-                         queries=query_spectra,
-                         similarity_function=CosineGreedy())
+scores = calculate_scores(
+    references=library_spectra, queries=query_spectra, similarity_function=CosineGreedy()
+)
 
 # Calculate modified cosine (accounts for precursor m/z differences)
-scores = calculate_scores(references=library_spectra,
-                         queries=query_spectra,
-                         similarity_function=ModifiedCosine(tolerance=0.1))
+scores = calculate_scores(
+    references=library_spectra,
+    queries=query_spectra,
+    similarity_function=ModifiedCosine(tolerance=0.1),
+)
 
 # Get best matches
 best_matches = scores.scores_by_query(query_spectra[0], sort=True)[:10]
@@ -113,12 +115,14 @@ from matchms.filtering import default_filters, normalize_intensities
 from matchms.filtering import select_by_relative_intensity, remove_peaks_around_precursor_mz
 
 # Define a processing pipeline
-processor = SpectrumProcessor([
-    default_filters,
-    normalize_intensities,
-    lambda s: select_by_relative_intensity(s, intensity_from=0.01),
-    lambda s: remove_peaks_around_precursor_mz(s, mz_tolerance=17)
-])
+processor = SpectrumProcessor(
+    [
+        default_filters,
+        normalize_intensities,
+        lambda s: select_by_relative_intensity(s, intensity_from=0.01),
+        lambda s: remove_peaks_around_precursor_mz(s, mz_tolerance=17),
+    ]
+)
 
 # Apply to all spectra
 processed_spectra = [processor(s) for s in spectra]
@@ -140,9 +144,9 @@ metadata = {"precursor_mz": 250.5, "ionmode": "positive"}
 spectrum = Spectrum(mz=mz, intensities=intensities, metadata=metadata)
 
 # Access spectrum properties
-print(spectrum.peaks.mz)           # m/z values
+print(spectrum.peaks.mz)  # m/z values
 print(spectrum.peaks.intensities)  # Intensity values
-print(spectrum.get("precursor_mz")) # Metadata field
+print(spectrum.get("precursor_mz"))  # Metadata field
 
 # Visualize spectra
 spectrum.plot()
@@ -156,7 +160,7 @@ Standardize and harmonize spectrum metadata:
 ```python
 # Metadata is automatically harmonized
 spectrum.set("Precursor_mz", 250.5)  # Gets harmonized to lowercase key
-print(spectrum.get("precursor_mz"))   # Returns 250.5
+print(spectrum.get("precursor_mz"))  # Returns 250.5
 
 # Derive chemical information
 from matchms.filtering import derive_inchi_from_smiles, derive_inchikey_from_inchi

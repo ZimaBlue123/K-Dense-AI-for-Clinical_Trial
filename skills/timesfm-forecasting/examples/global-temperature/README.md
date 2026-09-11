@@ -163,9 +163,7 @@ model.load_from_google_repo("google/timesfm-2.5-200m-pytorch")
 **Actual Working API:**
 ```python
 hparams = timesfm.TimesFmHparams(horizon_len=12)
-checkpoint = timesfm.TimesFmCheckpoint(
-    huggingface_repo_id="google/timesfm-1.0-200m-pytorch"
-)
+checkpoint = timesfm.TimesFmCheckpoint(huggingface_repo_id="google/timesfm-1.0-200m-pytorch")
 model = timesfm.TimesFm(hparams=hparams, checkpoint=checkpoint)
 ```
 

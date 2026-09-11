@@ -285,6 +285,7 @@ Chronological classification and target-based classification
 Biopython provides `Bio.KEGG.REST` module for easier Python integration:
 ```python
 from Bio.KEGG import REST
+
 result = REST.kegg_list("pathway").read()
 ```
 

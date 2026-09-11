@@ -114,9 +114,9 @@ def multiple_datasets_evaluation(group):
     all_results = {}
 
     for dataset_name in selected_datasets:
-        print(f"\n{'='*40}")
+        print(f"\n{'=' * 40}")
         print(f"Evaluating: {dataset_name}")
-        print(f"{'='*40}")
+        print(f"{'=' * 40}")
 
         benchmark = group.get(dataset_name)
         predictions = {}

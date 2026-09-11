@@ -26,11 +26,14 @@ from stable_baselines3.common.env_util import make_vec_env
 
 env = make_vec_env("CartPole-v1", n_envs=4, vec_env_cls=DummyVecEnv)
 
+
 # Method 2: Manual creation
 def make_env():
     def _init():
         return gym.make("CartPole-v1")
+
     return _init
+
 
 env = DummyVecEnv([make_env() for _ in range(4)])
 ```
@@ -85,11 +88,7 @@ env = make_vec_env("CartPole-v1", n_envs=4)
 env = make_vec_env("CartPole-v1", n_envs=8, vec_env_cls=SubprocVecEnv)
 
 # With custom environment kwargs
-env = make_vec_env(
-    "MyEnv-v0",
-    n_envs=4,
-    env_kwargs={"difficulty": "hard", "max_steps": 500}
-)
+env = make_vec_env("MyEnv-v0", n_envs=4, env_kwargs={"difficulty": "hard", "max_steps": 500})
 
 # With custom seed
 env = make_vec_env("CartPole-v1", n_envs=4, seed=42)
@@ -219,11 +218,11 @@ env = make_vec_env("Pendulum-v1", n_envs=4)
 # Wrap with normalization
 env = VecNormalize(
     env,
-    norm_obs=True,        # Normalize observations
-    norm_reward=True,     # Normalize rewards
-    clip_obs=10.0,        # Clip normalized observations
-    clip_reward=10.0,     # Clip normalized rewards
-    gamma=0.99,           # Discount factor for reward normalization
+    norm_obs=True,  # Normalize observations
+    norm_reward=True,  # Normalize rewards
+    clip_obs=10.0,  # Clip normalized observations
+    clip_reward=10.0,  # Clip normalized rewards
+    gamma=0.99,  # Discount factor for reward normalization
 )
 
 # Train
@@ -289,7 +288,7 @@ env = VecVideoRecorder(
     video_folder="./videos/",
     record_video_trigger=lambda x: x % 2000 == 0,  # Record every 2000 steps
     video_length=200,  # Max video length
-    name_prefix="training"
+    name_prefix="training",
 )
 
 model = PPO("MlpPolicy", env)
@@ -347,6 +346,7 @@ Create custom vectorized environment:
 ```python
 from stable_baselines3.common.vec_env import DummyVecEnv
 import gymnasium as gym
+
 
 class CustomVecEnv(DummyVecEnv):
     def step_wait(self):
@@ -444,11 +444,14 @@ model = SAC(
 def train():
     def make_env():
         return gym.make("CartPole-v1")
+
     env = SubprocVecEnv([make_env for _ in range(4)])
+
 
 # Good
 def make_env():
     return gym.make("CartPole-v1")
+
 
 if __name__ == "__main__":
     env = SubprocVecEnv([make_env for _ in range(4)])

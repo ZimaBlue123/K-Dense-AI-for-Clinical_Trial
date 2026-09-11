@@ -14,14 +14,14 @@ obj = filing.obj()  # returns TenK, EightK, ThirteenF, Form4, etc.
 tenk = filing.obj()  # or tenq for 10-Q
 
 # Financial statements
-tenk.income_statement    # formatted income statement
-tenk.balance_sheet       # balance sheet
-tenk.financials          # Financials object with all statements
+tenk.income_statement  # formatted income statement
+tenk.balance_sheet  # balance sheet
+tenk.financials  # Financials object with all statements
 
 # Document sections
-tenk.risk_factors        # full risk factors text
-tenk.business            # business description
-tenk.mda                 # management discussion & analysis
+tenk.risk_factors  # full risk factors text
+tenk.business  # business description
+tenk.mda  # management discussion & analysis
 
 # Usage via Financials
 if tenk.financials:
@@ -39,7 +39,7 @@ if tenk.financials:
 ```python
 eightk = filing.obj()
 
-eightk.items           # list of reported event codes (e.g. ["2.02", "9.01"])
+eightk.items  # list of reported event codes (e.g. ["2.02", "9.01"])
 eightk.press_releases  # attached press releases
 
 print(f"Items: {eightk.items}")
@@ -59,7 +59,7 @@ Common 8-K item codes:
 form4 = filing.obj()
 
 form4.reporting_owner  # insider name
-form4.transactions     # buy/sell details with prices, shares, dates
+form4.transactions  # buy/sell details with prices, shares, dates
 
 # Get HTML table
 html = form4.to_html()
@@ -76,9 +76,9 @@ Also covers:
 ```python
 schedule = filing.obj()
 
-schedule.total_shares                          # aggregate beneficial ownership
-schedule.items.item4_purpose_of_transaction    # activist intent (13D only)
-schedule.items.item5_interest_in_securities    # ownership percentage
+schedule.total_shares  # aggregate beneficial ownership
+schedule.items.item4_purpose_of_transaction  # activist intent (13D only)
+schedule.items.item5_interest_in_securities  # ownership percentage
 ```
 
 - **SC 13D**: Activist investors (5%+ with intent to influence)
@@ -91,13 +91,13 @@ schedule.items.item5_interest_in_securities    # ownership percentage
 ```python
 thirteenf = filing.obj()
 
-thirteenf.infotable    # full holdings DataFrame
+thirteenf.infotable  # full holdings DataFrame
 thirteenf.total_value  # portfolio market value
 
 # Analyze holdings
 holdings_df = thirteenf.infotable
 print(holdings_df.head())
-print(f"Total AUM: ${thirteenf.total_value/1e9:.1f}B")
+print(f"Total AUM: ${thirteenf.total_value / 1e9:.1f}B")
 ```
 
 ---
@@ -108,9 +108,9 @@ print(f"Total AUM: ${thirteenf.total_value/1e9:.1f}B")
 proxy = filing.obj()
 
 proxy.executive_compensation  # pay tables (5-year DataFrame)
-proxy.proposals               # shareholder vote items
-proxy.peo_name                # "Mr. Cook" (principal exec officer)
-proxy.peo_total_comp          # CEO total compensation
+proxy.proposals  # shareholder vote items
+proxy.peo_name  # "Mr. Cook" (principal exec officer)
+proxy.peo_total_comp  # CEO total compensation
 ```
 
 ---
@@ -120,7 +120,7 @@ proxy.peo_total_comp          # CEO total compensation
 ```python
 formd = filing.obj()
 
-formd.offering    # offering details and amounts
+formd.offering  # offering details and amounts
 formd.recipients  # related persons
 ```
 
@@ -131,8 +131,8 @@ formd.recipients  # related persons
 ```python
 formc = filing.obj()
 
-formc.offering_information       # target amount, deadline, securities
-formc.annual_report_disclosure   # issuer financials (C-AR)
+formc.offering_information  # target amount, deadline, securities
+formc.annual_report_disclosure  # issuer financials (C-AR)
 ```
 
 ---
@@ -143,7 +143,7 @@ formc.annual_report_disclosure   # issuer financials (C-AR)
 form144 = filing.obj()
 
 form144.proposed_sale_amount  # shares to be sold
-form144.securities            # security details
+form144.securities  # security details
 ```
 
 ---
@@ -163,8 +163,8 @@ npx.votes  # vote records by proposal
 ```python
 ten_d = filing.obj()
 
-ten_d.loans           # loan-level DataFrame
-ten_d.properties      # property-level DataFrame
+ten_d.loans  # loan-level DataFrame
+ten_d.properties  # property-level DataFrame
 ten_d.asset_data.summary()  # pool statistics
 ```
 
@@ -220,7 +220,7 @@ from edgar import Company
 
 apple = Company("AAPL")
 filing = apple.get_latest_filing("10-K")
-tenk = filing.obj()          # returns TenK with all sections and financials
+tenk = filing.obj()  # returns TenK with all sections and financials
 ```
 
 If a form type is not yet supported, `filing.obj()` raises `UnsupportedFilingTypeError`.

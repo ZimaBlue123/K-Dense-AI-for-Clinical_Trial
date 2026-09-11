@@ -9,10 +9,8 @@ import modal
 
 app = modal.App("ml-inference")
 
-image = (
-    modal.Image.debian_slim()
-    .uv_pip_install("torch", "transformers")
-)
+image = modal.Image.debian_slim().uv_pip_install("torch", "transformers")
+
 
 @app.cls(
     image=image,
@@ -22,6 +20,7 @@ class Model:
     @modal.enter()
     def load_model(self):
         from transformers import AutoModel, AutoTokenizer
+
         self.model = AutoModel.from_pretrained("bert-base-uncased")
         self.tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
 
@@ -30,6 +29,7 @@ class Model:
         inputs = self.tokenizer(text, return_tensors="pt")
         outputs = self.model(**inputs)
         return outputs.last_hidden_state.mean(dim=1).tolist()
+
 
 @app.local_entrypoint()
 def main():
@@ -44,21 +44,20 @@ def main():
 volume = modal.Volume.from_name("models", create_if_missing=True)
 MODEL_PATH = "/models"
 
-@app.cls(
-    image=image,
-    gpu="A100",
-    volumes={MODEL_PATH: volume}
-)
+
+@app.cls(image=image, gpu="A100", volumes={MODEL_PATH: volume})
 class ModelServer:
     @modal.enter()
     def load(self):
         import torch
+
         self.model = torch.load(f"{MODEL_PATH}/model.pt")
         self.model.eval()
 
     @modal.method()
     def infer(self, data):
         import torch
+
         with torch.no_grad():
             return self.model(torch.tensor(data)).tolist()
 ```
@@ -69,9 +68,7 @@ class ModelServer:
 
 ```python
 @app.function(
-    image=modal.Image.debian_slim().uv_pip_install("pandas", "numpy"),
-    cpu=2.0,
-    memory=8192
+    image=modal.Image.debian_slim().uv_pip_install("pandas", "numpy"), cpu=2.0, memory=8192
 )
 def process_batch(batch_id: int):
     import pandas as pd
@@ -86,6 +83,7 @@ def process_batch(batch_id: int):
     result.to_csv(f"s3://bucket/results_{batch_id}.csv")
 
     return batch_id
+
 
 @app.local_entrypoint()
 def main():
@@ -102,6 +100,7 @@ def process_item(item_id: int):
     # Expensive processing
     result = compute_something(item_id)
     return result
+
 
 @app.local_entrypoint()
 def main():
@@ -125,11 +124,12 @@ def main():
 volume = modal.Volume.from_name("data-pipeline")
 DATA_PATH = "/data"
 
+
 @app.function(
     image=modal.Image.debian_slim().uv_pip_install("pandas", "polars"),
     volumes={DATA_PATH: volume},
     cpu=4.0,
-    memory=16384
+    memory=16384,
 )
 def extract_transform_load():
     import polars as pl
@@ -139,13 +139,11 @@ def extract_transform_load():
 
     # Transform
     transformed = (
-        raw_data
-        .filter(pl.col("value") > 0)
+        raw_data.filter(pl.col("value") > 0)
         .group_by("category")
-        .agg([
-            pl.col("value").mean().alias("avg_value"),
-            pl.col("value").sum().alias("total_value")
-        ])
+        .agg(
+            [pl.col("value").mean().alias("avg_value"), pl.col("value").sum().alias("total_value")]
+        )
     )
 
     # Load
@@ -153,6 +151,7 @@ def extract_transform_load():
     volume.commit()
 
     return transformed.shape
+
 
 @app.function(schedule=modal.Cron("0 2 * * *"))
 def daily_pipeline():
@@ -195,10 +194,7 @@ def train_model():
 ### GPU Batch Inference
 
 ```python
-@app.function(
-    gpu="L40S",
-    image=modal.Image.debian_slim().uv_pip_install("torch", "transformers")
-)
+@app.function(gpu="L40S", image=modal.Image.debian_slim().uv_pip_install("torch", "transformers"))
 def batch_inference(texts: list[str]):
     from transformers import pipeline
 
@@ -207,13 +203,14 @@ def batch_inference(texts: list[str]):
 
     return results
 
+
 @app.local_entrypoint()
 def main():
     # Process 10,000 texts
     texts = load_texts()
 
     # Split into chunks of 100
-    chunks = [texts[i:i+100] for i in range(0, len(texts), 100)]
+    chunks = [texts[i : i + 100] for i in range(0, len(texts), 100)]
 
     # Process in parallel on multiple GPUs
     all_results = []
@@ -261,10 +258,10 @@ def run_simulation(config: dict):
 def monte_carlo_trial(trial_id: int, n_samples: int):
     import random
 
-    count = sum(1 for _ in range(n_samples)
-                if random.random()**2 + random.random()**2 <= 1)
+    count = sum(1 for _ in range(n_samples) if random.random() ** 2 + random.random() ** 2 <= 1)
 
     return count
+
 
 @app.local_entrypoint()
 def estimate_pi():
@@ -272,10 +269,7 @@ def estimate_pi():
     n_samples_per_trial = 1_000_000
 
     # Run trials in parallel
-    results = list(monte_carlo_trial.map(
-        range(n_trials),
-        [n_samples_per_trial] * n_trials
-    ))
+    results = list(monte_carlo_trial.map(range(n_trials), [n_samples_per_trial] * n_trials))
 
     total_count = sum(results)
     total_samples = n_trials * n_samples_per_trial
@@ -292,9 +286,9 @@ def estimate_pi():
 volume = modal.Volume.from_name("images")
 IMAGE_PATH = "/images"
 
+
 @app.function(
-    image=modal.Image.debian_slim().uv_pip_install("Pillow", "numpy"),
-    volumes={IMAGE_PATH: volume}
+    image=modal.Image.debian_slim().uv_pip_install("Pillow", "numpy"), volumes={IMAGE_PATH: volume}
 )
 def process_image(filename: str):
     from PIL import Image
@@ -312,6 +306,7 @@ def process_image(filename: str):
     result_img.save(f"{IMAGE_PATH}/processed/{filename}")
 
     return filename
+
 
 @app.function(volumes={IMAGE_PATH: volume})
 def process_all_images():
@@ -332,6 +327,7 @@ def process_all_images():
 ```python
 image = modal.Image.debian_slim().uv_pip_install("fastapi[standard]", "numpy", "scipy")
 
+
 @app.function(image=image)
 @modal.fastapi_endpoint(method="POST")
 def compute_statistics(data: dict):
@@ -345,7 +341,7 @@ def compute_statistics(data: dict):
         "median": float(np.median(values)),
         "std": float(np.std(values)),
         "skewness": float(stats.skew(values)),
-        "kurtosis": float(stats.kurtosis(values))
+        "kurtosis": float(stats.kurtosis(values)),
     }
 ```
 
@@ -355,7 +351,7 @@ def compute_statistics(data: dict):
 @app.function(
     schedule=modal.Cron("*/30 * * * *"),  # Every 30 minutes
     secrets=[modal.Secret.from_name("api-keys")],
-    volumes={"/data": modal.Volume.from_name("sensor-data")}
+    volumes={"/data": modal.Volume.from_name("sensor-data")},
 )
 def collect_sensor_data():
     import requests
@@ -365,7 +361,7 @@ def collect_sensor_data():
     # Fetch from API
     response = requests.get(
         "https://api.example.com/sensors",
-        headers={"Authorization": f"Bearer {os.environ['API_KEY']}"}
+        headers={"Authorization": f"Bearer {os.environ['API_KEY']}"},
     )
 
     data = response.json()
@@ -412,6 +408,7 @@ def process_many(items: list):
 # Store large datasets in volumes, not in image
 volume = modal.Volume.from_name("dataset")
 
+
 @app.function(volumes={"/data": volume})
 def train():
     data = load_from_volume("/data/training.parquet")
@@ -423,11 +420,10 @@ def train():
 ```python
 # Test on CPU first
 @app.function(cpu=4.0)
-def test_pipeline():
-    ...
+def test_pipeline(): ...
+
 
 # Then scale to GPU if needed
 @app.function(gpu="A100")
-def gpu_pipeline():
-    ...
+def gpu_pipeline(): ...
 ```

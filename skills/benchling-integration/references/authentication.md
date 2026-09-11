@@ -26,8 +26,7 @@ from benchling_sdk.benchling import Benchling
 from benchling_sdk.auth.api_key_auth import ApiKeyAuth
 
 benchling = Benchling(
-    url="https://your-tenant.benchling.com",
-    auth_method=ApiKeyAuth("your_api_key_here")
+    url="https://your-tenant.benchling.com", auth_method=ApiKeyAuth("your_api_key_here")
 )
 ```
 
@@ -49,10 +48,7 @@ from benchling_sdk.auth.api_key_auth import ApiKeyAuth
 api_key = os.environ.get("BENCHLING_API_KEY")
 tenant_url = os.environ.get("BENCHLING_TENANT_URL")
 
-benchling = Benchling(
-    url=tenant_url,
-    auth_method=ApiKeyAuth(api_key)
-)
+benchling = Benchling(url=tenant_url, auth_method=ApiKeyAuth(api_key))
 ```
 
 ### 2. OAuth 2.0 Client Credentials
@@ -79,14 +75,10 @@ from benchling_sdk.benchling import Benchling
 from benchling_sdk.auth.client_credentials_oauth2 import ClientCredentialsOAuth2
 
 auth_method = ClientCredentialsOAuth2(
-    client_id="your_client_id",
-    client_secret="your_client_secret"
+    client_id="your_client_id", client_secret="your_client_secret"
 )
 
-benchling = Benchling(
-    url="https://your-tenant.benchling.com",
-    auth_method=auth_method
-)
+benchling = Benchling(url="https://your-tenant.benchling.com", auth_method=auth_method)
 ```
 
 The SDK automatically handles token refresh.
@@ -144,10 +136,7 @@ from benchling_sdk.auth.oidc_auth import OidcAuth
 
 auth_method = OidcAuth(id_token="id_token_from_idp")
 
-benchling = Benchling(
-    url="https://your-tenant.benchling.com",
-    auth_method=auth_method
-)
+benchling = Benchling(url="https://your-tenant.benchling.com", auth_method=auth_method)
 ```
 
 **Direct HTTP Usage:**
@@ -309,8 +298,7 @@ from benchling_sdk.auth.api_key_auth import ApiKeyAuth
 
 try:
     benchling = Benchling(
-        url="https://your-tenant.benchling.com",
-        auth_method=ApiKeyAuth("your_api_key")
+        url="https://your-tenant.benchling.com", auth_method=ApiKeyAuth("your_api_key")
     )
 
     # Test authentication
@@ -328,23 +316,14 @@ If working with multiple Benchling tenants:
 ```python
 # Configuration for multiple tenants
 tenants = {
-    "production": {
-        "url": "https://prod.benchling.com",
-        "api_key": os.environ["PROD_API_KEY"]
-    },
-    "staging": {
-        "url": "https://staging.benchling.com",
-        "api_key": os.environ["STAGING_API_KEY"]
-    }
+    "production": {"url": "https://prod.benchling.com", "api_key": os.environ["PROD_API_KEY"]},
+    "staging": {"url": "https://staging.benchling.com", "api_key": os.environ["STAGING_API_KEY"]},
 }
 
 # Initialize clients
 clients = {}
 for name, config in tenants.items():
-    clients[name] = Benchling(
-        url=config["url"],
-        auth_method=ApiKeyAuth(config["api_key"])
-    )
+    clients[name] = Benchling(url=config["url"], auth_method=ApiKeyAuth(config["api_key"]))
 
 # Use specific client
 prod_sequences = clients["production"].dna_sequences.list()
@@ -360,15 +339,12 @@ from benchling_sdk.benchling import Benchling
 from benchling_sdk.auth.api_key_auth import ApiKeyAuth
 
 # Custom httpx client with certificate verification
-custom_client = httpx.Client(
-    verify="/path/to/custom/ca-bundle.crt",
-    timeout=30.0
-)
+custom_client = httpx.Client(verify="/path/to/custom/ca-bundle.crt", timeout=30.0)
 
 benchling = Benchling(
     url="https://your-tenant.benchling.com",
     auth_method=ApiKeyAuth("your_api_key"),
-    http_client=custom_client
+    http_client=custom_client,
 )
 ```
 

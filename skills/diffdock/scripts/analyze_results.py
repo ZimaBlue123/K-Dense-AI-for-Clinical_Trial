@@ -108,9 +108,7 @@ def extract_confidence_score(sdf_file, complex_dir):
         with open(sdf_file) as f:
             content = f.read()
             # Look for confidence score in SDF properties
-            conf_match = re.search(
-                r"confidence[:\s]+(-?\d+\.?\d*)", content, re.IGNORECASE
-            )
+            conf_match = re.search(r"confidence[:\s]+(-?\d+\.?\d*)", content, re.IGNORECASE)
             if conf_match:
                 return float(conf_match.group(1))
     except Exception:
@@ -182,16 +180,12 @@ def print_summary(results, top_n=None, min_confidence=None):
                 all_predictions.append((complex_name, pred["rank"], confidence))
 
         # Show statistics for this complex
-        if filtered_predictions and any(
-            p["confidence"] is not None for p in filtered_predictions
-        ):
+        if filtered_predictions and any(p["confidence"] is not None for p in filtered_predictions):
             confidences = [
-                p["confidence"]
-                for p in filtered_predictions
-                if p["confidence"] is not None
+                p["confidence"] for p in filtered_predictions if p["confidence"] is not None
             ]
             print(f"\n  Statistics: {len(filtered_predictions)} predictions")
-            print(f"    Mean confidence: {sum(confidences)/len(confidences):.3f}")
+            print(f"    Mean confidence: {sum(confidences) / len(confidences):.3f}")
             print(f"    Max confidence:  {max(confidences):.3f}")
             print(f"    Min confidence:  {min(confidences):.3f}")
 
@@ -204,7 +198,7 @@ def print_summary(results, top_n=None, min_confidence=None):
         confidences = [conf for _, _, conf in all_predictions]
         print(f"  Total predictions:    {len(all_predictions)}")
         print(f"  Total complexes:      {len(results)}")
-        print(f"  Mean confidence:      {sum(confidences)/len(confidences):.3f}")
+        print(f"  Mean confidence:      {sum(confidences) / len(confidences):.3f}")
         print(f"  Max confidence:       {max(confidences):.3f}")
         print(f"  Min confidence:       {min(confidences):.3f}")
 
@@ -214,11 +208,11 @@ def print_summary(results, top_n=None, min_confidence=None):
         low = sum(1 for c in confidences if c <= -1.5)
 
         print("\n  Confidence distribution:")
-        print(f"    High (> 0):          {high:4d} ({100*high/len(confidences):5.1f}%)")
+        print(f"    High (> 0):          {high:4d} ({100 * high / len(confidences):5.1f}%)")
         print(
-            f"    Moderate (-1.5 to 0): {moderate:4d} ({100*moderate/len(confidences):5.1f}%)"
+            f"    Moderate (-1.5 to 0): {moderate:4d} ({100 * moderate / len(confidences):5.1f}%)"
         )
-        print(f"    Low (< -1.5):        {low:4d} ({100*low/len(confidences):5.1f}%)")
+        print(f"    Low (< -1.5):        {low:4d} ({100 * low / len(confidences):5.1f}%)")
 
     print("\n" + "=" * 80)
 
@@ -229,9 +223,7 @@ def export_to_csv(results, output_path):
 
     with open(output_path, "w", newline="") as f:
         writer = csv.writer(f)
-        writer.writerow(
-            ["complex_name", "rank", "confidence", "confidence_class", "file_path"]
-        )
+        writer.writerow(["complex_name", "rank", "confidence", "confidence_class", "file_path"])
 
         for complex_name, data in results.items():
             predictions = data.get("predictions", [])
@@ -311,13 +303,9 @@ Examples:
     )
 
     parser.add_argument("results_dir", help="Path to DiffDock results directory")
-    parser.add_argument(
-        "--top", "-t", type=int, help="Show only top N predictions per complex"
-    )
+    parser.add_argument("--top", "-t", type=int, help="Show only top N predictions per complex")
     parser.add_argument("--threshold", type=float, help="Minimum confidence threshold")
-    parser.add_argument(
-        "--export", "-e", metavar="FILE", help="Export results to CSV file"
-    )
+    parser.add_argument("--export", "-e", metavar="FILE", help="Export results to CSV file")
     parser.add_argument(
         "--best",
         "-b",

@@ -4,10 +4,10 @@ Parameters can be passed directly to any Read API call, or set globally with `ad
 
 ```python
 # Inline parameters (valid for one call only)
-results = zot.items(q='climate change', limit=50, sort='date', direction='desc')
+results = zot.items(q="climate change", limit=50, sort="date", direction="desc")
 
 # Set globally (overridden by inline params on the next call)
-zot.add_parameters(limit=50, sort='dateAdded')
+zot.add_parameters(limit=50, sort="dateAdded")
 results = zot.items()
 ```
 
@@ -40,29 +40,29 @@ results = zot.items()
 
 ```python
 # Single tag
-zot.items(tag='machine learning')
+zot.items(tag="machine learning")
 
 # Multiple tags — AND logic (items must have all tags)
-zot.items(tag=['climate', 'adaptation'])
+zot.items(tag=["climate", "adaptation"])
 
 # OR logic (items with any tag)
-zot.items(tag='climate OR adaptation')
+zot.items(tag="climate OR adaptation")
 
 # Exclude a tag
-zot.items(tag='-retracted')
+zot.items(tag="-retracted")
 ```
 
 ## Item Type Filtering
 
 ```python
 # Single type
-zot.items(itemType='journalArticle')
+zot.items(itemType="journalArticle")
 
 # OR multiple types
-zot.items(itemType='journalArticle || book')
+zot.items(itemType="journalArticle || book")
 
 # Exclude a type
-zot.items(itemType='-note')
+zot.items(itemType="-note")
 ```
 
 Common item types: `journalArticle`, `book`, `bookSection`, `conferencePaper`,
@@ -77,14 +77,14 @@ Common item types: `journalArticle`, `book`, `bookSection`, `conferencePaper`,
 
 ```python
 # Recent journal articles matching query, sorted by date
-zot.items(q='CRISPR', itemType='journalArticle', sort='date', direction='desc', limit=20)
+zot.items(q="CRISPR", itemType="journalArticle", sort="date", direction="desc", limit=20)
 
 # Items added since a known library version
 zot.items(since=4000)
 
 # Items with a specific tag, offset for pagination
-zot.items(tag='to-read', limit=25, start=25)
+zot.items(tag="to-read", limit=25, start=25)
 
 # Full-text search
-zot.items(q='gene editing', qmode='everything', limit=10)
+zot.items(q="gene editing", qmode="everything", limit=10)
 ```

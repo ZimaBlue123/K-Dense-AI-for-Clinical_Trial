@@ -211,9 +211,7 @@ def string_interaction_partners(
         "caller_identity": caller_identity,
     }
 
-    url = f"{STRING_BASE_URL}/tsv/interaction_partners?" + urllib.parse.urlencode(
-        params
-    )
+    url = f"{STRING_BASE_URL}/tsv/interaction_partners?" + urllib.parse.urlencode(params)
 
     try:
         with urllib.request.urlopen(url) as response:

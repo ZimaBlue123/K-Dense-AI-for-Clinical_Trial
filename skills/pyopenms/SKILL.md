@@ -24,6 +24,7 @@ Verify installation:
 
 ```python
 import pyopenms
+
 print(pyopenms.__version__)
 ```
 

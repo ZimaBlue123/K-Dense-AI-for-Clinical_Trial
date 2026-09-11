@@ -25,11 +25,7 @@ import gtars
 regions = gtars.RegionSet.from_bed("regions.bed")
 
 # Create from coordinates
-regions = gtars.RegionSet([
-    ("chr1", 1000, 2000),
-    ("chr1", 3000, 4000),
-    ("chr2", 5000, 6000)
-])
+regions = gtars.RegionSet([("chr1", 1000, 2000), ("chr1", 3000, 4000), ("chr2", 5000, 6000)])
 
 # Access regions
 for region in regions:
@@ -122,8 +118,8 @@ import numpy as np
 
 # Export to NumPy arrays
 starts = regions.starts_array()  # NumPy array of start positions
-ends = regions.ends_array()      # NumPy array of end positions
-sizes = regions.sizes_array()    # NumPy array of region sizes
+ends = regions.ends_array()  # NumPy array of end positions
+sizes = regions.sizes_array()  # NumPy array of region sizes
 
 # Create from NumPy arrays
 chromosomes = ["chr1"] * len(starts)

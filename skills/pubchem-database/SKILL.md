@@ -32,7 +32,8 @@ Search for compounds using multiple identifier types:
 **By Chemical Name**:
 ```python
 import pubchempy as pcp
-compounds = pcp.get_compounds('aspirin', 'name')
+
+compounds = pcp.get_compounds("aspirin", "name")
 compound = compounds[0]
 ```
 
@@ -43,17 +44,17 @@ compound = pcp.Compound.from_cid(2244)  # Aspirin
 
 **By SMILES**:
 ```python
-compound = pcp.get_compounds('CC(=O)OC1=CC=CC=C1C(=O)O', 'smiles')[0]
+compound = pcp.get_compounds("CC(=O)OC1=CC=CC=C1C(=O)O", "smiles")[0]
 ```
 
 **By InChI**:
 ```python
-compound = pcp.get_compounds('InChI=1S/C9H8O4/...', 'inchi')[0]
+compound = pcp.get_compounds("InChI=1S/C9H8O4/...", "inchi")[0]
 ```
 
 **By Molecular Formula**:
 ```python
-compounds = pcp.get_compounds('C9H8O4', 'formula')
+compounds = pcp.get_compounds("C9H8O4", "formula")
 # Returns all compounds matching this formula
 ```
 
@@ -66,7 +67,7 @@ Retrieve molecular properties for compounds using either high-level or low-level
 import pubchempy as pcp
 
 # Get compound object with all properties
-compound = pcp.get_compounds('caffeine', 'name')[0]
+compound = pcp.get_compounds("caffeine", "name")[0]
 
 # Access individual properties
 molecular_formula = compound.molecular_formula
@@ -75,16 +76,14 @@ iupac_name = compound.iupac_name
 smiles = compound.canonical_smiles
 inchi = compound.inchi
 xlogp = compound.xlogp  # Partition coefficient
-tpsa = compound.tpsa    # Topological polar surface area
+tpsa = compound.tpsa  # Topological polar surface area
 ```
 
 **Get Specific Properties**:
 ```python
 # Request only specific properties
 properties = pcp.get_properties(
-    ['MolecularFormula', 'MolecularWeight', 'CanonicalSMILES', 'XLogP'],
-    'aspirin',
-    'name'
+    ["MolecularFormula", "MolecularWeight", "CanonicalSMILES", "XLogP"], "aspirin", "name"
 )
 # Returns list of dictionaries
 ```
@@ -93,15 +92,11 @@ properties = pcp.get_properties(
 ```python
 import pandas as pd
 
-compound_names = ['aspirin', 'ibuprofen', 'paracetamol']
+compound_names = ["aspirin", "ibuprofen", "paracetamol"]
 all_properties = []
 
 for name in compound_names:
-    props = pcp.get_properties(
-        ['MolecularFormula', 'MolecularWeight', 'XLogP'],
-        name,
-        'name'
-    )
+    props = pcp.get_properties(["MolecularFormula", "MolecularWeight", "XLogP"], name, "name")
     all_properties.extend(props)
 
 df = pd.DataFrame(all_properties)
@@ -117,16 +112,16 @@ Find structurally similar compounds using Tanimoto similarity:
 import pubchempy as pcp
 
 # Start with a query compound
-query_compound = pcp.get_compounds('gefitinib', 'name')[0]
+query_compound = pcp.get_compounds("gefitinib", "name")[0]
 query_smiles = query_compound.canonical_smiles
 
 # Perform similarity search
 similar_compounds = pcp.get_compounds(
     query_smiles,
-    'smiles',
-    searchtype='similarity',
+    "smiles",
+    searchtype="similarity",
     Threshold=85,  # Similarity threshold (0-100)
-    MaxRecords=50
+    MaxRecords=50,
 )
 
 # Process results
@@ -145,14 +140,9 @@ Find compounds containing a specific structural motif:
 import pubchempy as pcp
 
 # Search for compounds containing pyridine ring
-pyridine_smiles = 'c1ccncc1'
+pyridine_smiles = "c1ccncc1"
 
-matches = pcp.get_compounds(
-    pyridine_smiles,
-    'smiles',
-    searchtype='substructure',
-    MaxRecords=100
-)
+matches = pcp.get_compounds(pyridine_smiles, "smiles", searchtype="substructure", MaxRecords=100)
 
 print(f"Found {len(matches)} compounds containing pyridine")
 ```
@@ -170,7 +160,7 @@ Convert between different chemical structure formats:
 ```python
 import pubchempy as pcp
 
-compound = pcp.get_compounds('aspirin', 'name')[0]
+compound = pcp.get_compounds("aspirin", "name")[0]
 
 # Convert to different formats
 smiles = compound.canonical_smiles
@@ -179,8 +169,8 @@ inchikey = compound.inchikey
 cid = compound.cid
 
 # Download structure files
-pcp.download('SDF', 'aspirin', 'name', 'aspirin.sdf', overwrite=True)
-pcp.download('JSON', '2244', 'cid', 'aspirin.json', overwrite=True)
+pcp.download("SDF", "aspirin", "name", "aspirin.sdf", overwrite=True)
+pcp.download("JSON", "2244", "cid", "aspirin.json", overwrite=True)
 ```
 
 ### 6. Structure Visualization
@@ -191,7 +181,7 @@ Generate 2D structure images:
 import pubchempy as pcp
 
 # Download compound structure as PNG
-pcp.download('PNG', 'caffeine', 'name', 'caffeine.png', overwrite=True)
+pcp.download("PNG", "caffeine", "name", "caffeine.png", overwrite=True)
 
 # Using direct URL (via requests)
 import requests
@@ -200,7 +190,7 @@ cid = 2244  # Aspirin
 url = f"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{cid}/PNG?image_size=large"
 response = requests.get(url)
 
-with open('structure.png', 'wb') as f:
+with open("structure.png", "wb") as f:
     f.write(response.content)
 ```
 
@@ -211,11 +201,11 @@ Get all known names and synonyms for a compound:
 ```python
 import pubchempy as pcp
 
-synonyms_data = pcp.get_synonyms('aspirin', 'name')
+synonyms_data = pcp.get_synonyms("aspirin", "name")
 
 if synonyms_data:
-    cid = synonyms_data[0]['CID']
-    synonyms = synonyms_data[0]['Synonym']
+    cid = synonyms_data[0]["CID"]
+    synonyms = synonyms_data[0]["Synonym"]
 
     print(f"CID {cid} has {len(synonyms)} synonyms:")
     for syn in synonyms[:10]:  # First 10
@@ -238,8 +228,8 @@ response = requests.get(url)
 if response.status_code == 200:
     data = response.json()
     # Process bioassay information
-    table = data.get('Table', {})
-    rows = table.get('Row', [])
+    table = data.get("Table", {})
+    rows = table.get("Row", [])
     print(f"Found {len(rows)} bioassay records")
 ```
 
@@ -323,10 +313,10 @@ Provides utility functions for searching and retrieving compound information:
 from scripts.compound_search import search_by_name, get_compound_properties
 
 # Search for a compound
-compounds = search_by_name('ibuprofen')
+compounds = search_by_name("ibuprofen")
 
 # Get specific properties
-props = get_compound_properties('aspirin', 'name', ['MolecularWeight', 'XLogP'])
+props = get_compound_properties("aspirin", "name", ["MolecularWeight", "XLogP"])
 ```
 
 ### scripts/bioactivity_query.py
@@ -376,7 +366,7 @@ print(f"Active: {summary['active']}, Inactive: {summary['inactive']}")
 from pubchempy import BadRequestError, NotFoundError, TimeoutError
 
 try:
-    compound = pcp.get_compounds('query', 'name')[0]
+    compound = pcp.get_compounds("query", "name")[0]
 except NotFoundError:
     print("Compound not found")
 except BadRequestError:
@@ -397,16 +387,16 @@ Convert between different chemical identifiers:
 import pubchempy as pcp
 
 # Start with any identifier type
-compound = pcp.get_compounds('caffeine', 'name')[0]
+compound = pcp.get_compounds("caffeine", "name")[0]
 
 # Extract all identifier formats
 identifiers = {
-    'CID': compound.cid,
-    'Name': compound.iupac_name,
-    'SMILES': compound.canonical_smiles,
-    'InChI': compound.inchi,
-    'InChIKey': compound.inchikey,
-    'Formula': compound.molecular_formula
+    "CID": compound.cid,
+    "Name": compound.iupac_name,
+    "SMILES": compound.canonical_smiles,
+    "InChI": compound.inchi,
+    "InChIKey": compound.inchikey,
+    "Formula": compound.molecular_formula,
 }
 ```
 
@@ -417,21 +407,23 @@ Screen compounds using Lipinski's Rule of Five:
 ```python
 import pubchempy as pcp
 
+
 def check_drug_likeness(compound_name):
-    compound = pcp.get_compounds(compound_name, 'name')[0]
+    compound = pcp.get_compounds(compound_name, "name")[0]
 
     # Lipinski's Rule of Five
     rules = {
-        'MW <= 500': compound.molecular_weight <= 500,
-        'LogP <= 5': compound.xlogp <= 5 if compound.xlogp else None,
-        'HBD <= 5': compound.h_bond_donor_count <= 5,
-        'HBA <= 10': compound.h_bond_acceptor_count <= 10
+        "MW <= 500": compound.molecular_weight <= 500,
+        "LogP <= 5": compound.xlogp <= 5 if compound.xlogp else None,
+        "HBD <= 5": compound.h_bond_donor_count <= 5,
+        "HBA <= 10": compound.h_bond_acceptor_count <= 10,
     }
 
     violations = sum(1 for v in rules.values() if v is False)
     return rules, violations
 
-rules, violations = check_drug_likeness('aspirin')
+
+rules, violations = check_drug_likeness("aspirin")
 print(f"Lipinski violations: {violations}")
 ```
 
@@ -443,16 +435,12 @@ Identify structurally similar compounds to a known drug:
 import pubchempy as pcp
 
 # Start with known drug
-reference_drug = pcp.get_compounds('imatinib', 'name')[0]
+reference_drug = pcp.get_compounds("imatinib", "name")[0]
 reference_smiles = reference_drug.canonical_smiles
 
 # Find similar compounds
 similar = pcp.get_compounds(
-    reference_smiles,
-    'smiles',
-    searchtype='similarity',
-    Threshold=85,
-    MaxRecords=20
+    reference_smiles, "smiles", searchtype="similarity", Threshold=85, MaxRecords=20
 )
 
 # Filter by drug-like properties
@@ -473,22 +461,24 @@ Compare properties across multiple compounds:
 import pubchempy as pcp
 import pandas as pd
 
-compound_list = ['aspirin', 'ibuprofen', 'naproxen', 'celecoxib']
+compound_list = ["aspirin", "ibuprofen", "naproxen", "celecoxib"]
 
 properties_list = []
 for name in compound_list:
     try:
-        compound = pcp.get_compounds(name, 'name')[0]
-        properties_list.append({
-            'Name': name,
-            'CID': compound.cid,
-            'Formula': compound.molecular_formula,
-            'MW': compound.molecular_weight,
-            'LogP': compound.xlogp,
-            'TPSA': compound.tpsa,
-            'HBD': compound.h_bond_donor_count,
-            'HBA': compound.h_bond_acceptor_count
-        })
+        compound = pcp.get_compounds(name, "name")[0]
+        properties_list.append(
+            {
+                "Name": name,
+                "CID": compound.cid,
+                "Formula": compound.molecular_formula,
+                "MW": compound.molecular_weight,
+                "LogP": compound.xlogp,
+                "TPSA": compound.tpsa,
+                "HBD": compound.h_bond_donor_count,
+                "HBA": compound.h_bond_acceptor_count,
+            }
+        )
     except Exception as e:
         print(f"Error processing {name}: {e}")
 
@@ -504,21 +494,13 @@ Screen for compounds containing specific pharmacophores:
 import pubchempy as pcp
 
 # Define pharmacophore (e.g., sulfonamide group)
-pharmacophore_smiles = 'S(=O)(=O)N'
+pharmacophore_smiles = "S(=O)(=O)N"
 
 # Search for compounds containing this substructure
-hits = pcp.get_compounds(
-    pharmacophore_smiles,
-    'smiles',
-    searchtype='substructure',
-    MaxRecords=100
-)
+hits = pcp.get_compounds(pharmacophore_smiles, "smiles", searchtype="substructure", MaxRecords=100)
 
 # Further filter by properties
-filtered_hits = [
-    comp for comp in hits
-    if comp.molecular_weight and comp.molecular_weight < 500
-]
+filtered_hits = [comp for comp in hits if comp.molecular_weight and comp.molecular_weight < 500]
 
 print(f"Found {len(filtered_hits)} compounds with desired substructure")
 ```

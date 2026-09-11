@@ -379,8 +379,7 @@ print(f"Found {len(df)} GE CT series")
 # Download with idc-index (no GCP auth required)
 idc_client = IDCClient()
 idc_client.download_from_selection(
-    seriesInstanceUID=list(df['SeriesInstanceUID'].values),
-    downloadDir="./tcga_luad_thin_ct"
+    seriesInstanceUID=list(df["SeriesInstanceUID"].values), downloadDir="./tcga_luad_thin_ct"
 )
 ```
 

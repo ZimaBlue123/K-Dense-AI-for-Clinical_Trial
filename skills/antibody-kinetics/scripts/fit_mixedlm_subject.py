@@ -49,9 +49,7 @@ def main() -> int:
     )
     ap.add_argument("--outdir", required=True, help="输出目录")
     ap.add_argument("--titer-col", default="TITER", help="滴度/浓度列名（默认 TITER）")
-    ap.add_argument(
-        "--alpha", type=float, default=0.05, help="置信水平：alpha=0.05 表示 95%% CI"
-    )
+    ap.add_argument("--alpha", type=float, default=0.05, help="置信水平：alpha=0.05 表示 95%% CI")
     ap.add_argument(
         "--target-t-post", type=float, default=30.0, help="外推最大 t_post（如 30≈M36）"
     )
@@ -168,9 +166,7 @@ def main() -> int:
         slope = b1 + add1
         b = -slope
         A = math.exp(lnA)
-        t_thr = (
-            float((A / float(args.threshold)) ** (1.0 / b)) if b > 0 else float("nan")
-        )
+        t_thr = float((A / float(args.threshold)) ** (1.0 / b)) if b > 0 else float("nan")
         threshold_rows.append(
             {
                 "Group": str(g),
@@ -183,9 +179,7 @@ def main() -> int:
 
     pred_df = pd.DataFrame(pred_rows)
     pred_df.to_csv(outdir / "mixedlm_predictions_fixed_effects.csv", index=False)
-    pd.DataFrame(threshold_rows).to_csv(
-        outdir / "mixedlm_threshold_time_point.csv", index=False
-    )
+    pd.DataFrame(threshold_rows).to_csv(outdir / "mixedlm_threshold_time_point.csv", index=False)
 
     try:
         import matplotlib.pyplot as plt
@@ -230,9 +224,7 @@ def main() -> int:
         ax.set_yscale("log")
         ax.set_xlabel("t_post (months; aligned)")
         ax.set_ylabel("Titer [log scale]")
-        ax.set_title(
-            "Antibody persistence projection (MixedLM; fixed-effect marginal mean)"
-        )
+        ax.set_title("Antibody persistence projection (MixedLM; fixed-effect marginal mean)")
         ax.legend(loc="center left", bbox_to_anchor=(1, 0.5), frameon=False)
         fig.tight_layout()
         fig.savefig(outdir / "mixedlm_projection.png", bbox_inches="tight")

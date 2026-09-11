@@ -16,8 +16,8 @@ T = 2 * np.pi / w_d  # Period
 
 H0 = sigmaz()
 H1 = sigmax()
-H = [H0, [H1, 'cos(w*t)']]
-args = {'w': w_d}
+H = [H0, [H1, "cos(w*t)"]]
+args = {"w": w_d}
 
 # Calculate Floquet modes and quasi-energies
 f_modes, f_energies = floquet_modes(H, T, args)
@@ -53,9 +53,10 @@ result = fmmesolve(H, psi0, tlist, c_ops, e_ops=[sigmaz()], T=T, args=args)
 
 # Plot results
 import matplotlib.pyplot as plt
+
 plt.plot(tlist, result.expect[0])
-plt.xlabel('Time')
-plt.ylabel('⟨σz⟩')
+plt.xlabel("Time")
+plt.ylabel("⟨σz⟩")
 plt.show()
 ```
 
@@ -66,8 +67,7 @@ plt.show()
 A_ops = [[sigmaz(), lambda w: 0.1 * w if w > 0 else 0]]
 
 # Build Floquet tensor
-R, U = floquet_markov_mesolve(H, psi0, tlist, A_ops, e_ops=[sigmaz()],
-                               T=T, args=args)
+R, U = floquet_markov_mesolve(H, psi0, tlist, A_ops, e_ops=[sigmaz()], T=T, args=args)
 ```
 
 ### Effective Hamiltonian
@@ -139,12 +139,7 @@ bath = DrudeLorentzBath(Q, lam, gamma, T, Nk)
 ### HEOM Options
 
 ```python
-options = heom.HEOMSolver.Options(
-    nsteps=2000,
-    store_states=True,
-    rtol=1e-7,
-    atol=1e-9
-)
+options = heom.HEOMSolver.Options(nsteps=2000, store_states=True, rtol=1e-7, atol=1e-9)
 
 hsolver = heom.HEOMSolver(H_sys, [bath], max_depth=5, options=options)
 ```
@@ -160,8 +155,8 @@ from qutip import dicke
 
 # Dicke state |j, m⟩ for N spins
 N = 10  # Number of spins
-j = N/2  # Total angular momentum
-m = 0   # z-component
+j = N / 2  # Total angular momentum
+m = 0  # z-component
 
 psi = dicke(N, j, m)
 ```
@@ -173,11 +168,11 @@ from qutip.piqs import jspin
 
 # Collective spin operators
 N = 10
-Jx = jspin(N, 'x')
-Jy = jspin(N, 'y')
-Jz = jspin(N, 'z')
-Jp = jspin(N, '+')
-Jm = jspin(N, '-')
+Jx = jspin(N, "x")
+Jy = jspin(N, "y")
+Jz = jspin(N, "z")
+Jp = jspin(N, "+")
+Jm = jspin(N, "-")
 ```
 
 ### PIQS Dynamics
@@ -192,11 +187,16 @@ dephasing = 0.5
 pumping = 0.0
 collective_emission = 0.0
 
-system = Dicke(N=N, emission=emission, dephasing=dephasing,
-               pumping=pumping, collective_emission=collective_emission)
+system = Dicke(
+    N=N,
+    emission=emission,
+    dephasing=dephasing,
+    pumping=pumping,
+    collective_emission=collective_emission,
+)
 
 # Initial state
-psi0 = dicke(N, N/2, N/2)  # All spins up
+psi0 = dicke(N, N / 2, N / 2)  # All spins up
 
 # Time evolution
 tlist = np.linspace(0, 10, 100)
@@ -210,10 +210,12 @@ Quantum trajectories with memory effects.
 ```python
 from qutip import nm_mcsolve
 
+
 # Non-Markovian bath correlation
 def bath_correlation(t1, t2):
     tau = abs(t2 - t1)
     return np.exp(-tau / 2.0) * np.cos(tau)
+
 
 # System setup
 H = sigmaz()
@@ -222,9 +224,9 @@ psi0 = basis(2, 0)
 tlist = np.linspace(0, 10, 100)
 
 # Solve with memory
-result = nm_mcsolve(H, psi0, tlist, c_ops, sc_ops=[],
-                     bath_corr=bath_correlation, ntraj=500,
-                     e_ops=[sigmaz()])
+result = nm_mcsolve(
+    H, psi0, tlist, c_ops, sc_ops=[], bath_corr=bath_correlation, ntraj=500, e_ops=[sigmaz()]
+)
 ```
 
 ## Stochastic Solvers with Measurements
@@ -235,22 +237,21 @@ result = nm_mcsolve(H, psi0, tlist, c_ops, sc_ops=[],
 # Homodyne detection
 sc_ops = [np.sqrt(0.1) * destroy(N)]  # Measurement operator
 
-result = ssesolve(H, psi0, tlist, sc_ops=sc_ops,
-                   e_ops=[num(N)], ntraj=100,
-                   noise=11)  # 11 for homodyne
+result = ssesolve(
+    H, psi0, tlist, sc_ops=sc_ops, e_ops=[num(N)], ntraj=100, noise=11
+)  # 11 for homodyne
 
 # Heterodyne detection
-result = ssesolve(H, psi0, tlist, sc_ops=sc_ops,
-                   e_ops=[num(N)], ntraj=100,
-                   noise=12)  # 12 for heterodyne
+result = ssesolve(
+    H, psi0, tlist, sc_ops=sc_ops, e_ops=[num(N)], ntraj=100, noise=12
+)  # 12 for heterodyne
 ```
 
 ### Photon Counting
 
 ```python
 # Quantum jump times
-result = mcsolve(H, psi0, tlist, c_ops, ntraj=50,
-                 options=Options(store_states=True))
+result = mcsolve(H, psi0, tlist, c_ops, ntraj=50, options=Options(store_states=True))
 
 # Extract measurement times
 for i, jump_times in enumerate(result.col_times):
@@ -281,6 +282,7 @@ def ohmic_spectrum(w):
     else:
         return 0
 
+
 # Coupling operators and spectra
 a_ops = [[sigmax(), ohmic_spectrum]]
 
@@ -296,11 +298,12 @@ def thermal_spectrum(w):
     T = 1.0  # Temperature
     if abs(w) < 1e-10:
         return 0.1 * T
-    n_th = 1 / (np.exp(abs(w)/T) - 1)
+    n_th = 1 / (np.exp(abs(w) / T) - 1)
     if w >= 0:
         return 0.1 * w * (n_th + 1)
     else:
         return 0.1 * abs(w) * n_th
+
 
 a_ops = [[sigmax(), thermal_spectrum]]
 result = brmesolve(H, psi0, tlist, a_ops, e_ops=[sigmaz()])
@@ -315,9 +318,15 @@ result = brmesolve(H, psi0, tlist, a_ops, e_ops=[sigmaz()])
 L = liouvillian(H, c_ops)
 
 # Convert between representations
-from qutip import (spre, spost, sprepost,
-                    super_to_choi, choi_to_super,
-                    super_to_kraus, kraus_to_super)
+from qutip import (
+    spre,
+    spost,
+    sprepost,
+    super_to_choi,
+    choi_to_super,
+    super_to_kraus,
+    kraus_to_super,
+)
 
 # Superoperator forms
 L_spre = spre(H)  # Left multiplication
@@ -336,10 +345,10 @@ kraus = super_to_kraus(L)
 ```python
 # Depolarizing channel
 p = 0.1  # Error probability
-K0 = np.sqrt(1 - 3*p/4) * qeye(2)
-K1 = np.sqrt(p/4) * sigmax()
-K2 = np.sqrt(p/4) * sigmay()
-K3 = np.sqrt(p/4) * sigmaz()
+K0 = np.sqrt(1 - 3 * p / 4) * qeye(2)
+K1 = np.sqrt(p / 4) * sigmax()
+K2 = np.sqrt(p / 4) * sigmay()
+K3 = np.sqrt(p / 4) * sigmaz()
 
 kraus_ops = [K0, K1, K2, K3]
 E = kraus_to_super(kraus_ops)
@@ -365,8 +374,8 @@ E_damping = kraus_to_super([K0, K1])
 ```python
 # T2 dephasing
 gamma = 0.1
-K0 = Qobj([[1, 0], [0, np.sqrt(1 - gamma/2)]])
-K1 = Qobj([[0, 0], [0, np.sqrt(gamma/2)]])
+K0 = Qobj([[1, 0], [0, np.sqrt(1 - gamma / 2)]])
+K1 = Qobj([[0, 0], [0, np.sqrt(gamma / 2)]])
 
 E_dephasing = kraus_to_super([K0, K1])
 ```
@@ -405,26 +414,28 @@ final_states = [result.states[i][-1] for i in range(len(result.states))]
 ```python
 from qutip import QobjEvo
 
+
 # Time-dependent Hamiltonian with QobjEvo
 def drive(t, args):
-    return args['A'] * np.exp(-t/args['tau']) * np.sin(args['w'] * t)
+    return args["A"] * np.exp(-t / args["tau"]) * np.sin(args["w"] * t)
+
 
 H0 = num(N)
 H1 = destroy(N) + create(N)
-args = {'A': 1.0, 'w': 1.0, 'tau': 5.0}
+args = {"A": 1.0, "w": 1.0, "tau": 5.0}
 
 H_td = QobjEvo([H0, [H1, drive]], args=args)
 
 # Can update args without recreating
-H_td.arguments({'A': 2.0, 'w': 1.5, 'tau': 10.0})
+H_td.arguments({"A": 2.0, "w": 1.5, "tau": 10.0})
 ```
 
 ### Compiled Time-Dependent Terms
 
 ```python
 # Fastest method (requires Cython)
-H = [num(N), [destroy(N) + create(N), 'A * exp(-t/tau) * sin(w*t)']]
-args = {'A': 1.0, 'w': 1.0, 'tau': 5.0}
+H = [num(N), [destroy(N) + create(N), "A * exp(-t/tau) * sin(w*t)"]]
+args = {"A": 1.0, "w": 1.0, "tau": 5.0}
 
 # QuTiP compiles this for speed
 result = sesolve(H, psi0, tlist, args=args)
@@ -438,6 +449,7 @@ def time_dependent_coeff(t, args):
     # Access solver state if needed
     return complex_function(t, args)
 
+
 H = [H0, [H1, time_dependent_coeff]]
 ```
 
@@ -448,11 +460,13 @@ H = [H0, [H1, time_dependent_coeff]]
 ```python
 from qutip import parallel_map
 
+
 # Define task
 def simulate(gamma):
     c_ops = [np.sqrt(gamma) * destroy(N)]
     result = mesolve(H, psi0, tlist, c_ops, e_ops=[num(N)])
     return result.expect[0]
+
 
 # Run in parallel
 gamma_values = np.linspace(0, 1, 20)
@@ -474,12 +488,12 @@ results = serial_map(simulate, gamma_values)
 
 ```python
 # Save
-H.save('hamiltonian.qu')
-psi.save('state.qu')
+H.save("hamiltonian.qu")
+psi.save("state.qu")
 
 # Load
-H_loaded = qload('hamiltonian.qu')
-psi_loaded = qload('state.qu')
+H_loaded = qload("hamiltonian.qu")
+psi_loaded = qload("state.qu")
 ```
 
 ### Save/Load Results
@@ -487,18 +501,19 @@ psi_loaded = qload('state.qu')
 ```python
 # Save simulation results
 result = mesolve(H, psi0, tlist, c_ops, e_ops=[num(N)])
-result.save('simulation.dat')
+result.save("simulation.dat")
 
 # Load results
 from qutip import Result
-loaded_result = Result.load('simulation.dat')
+
+loaded_result = Result.load("simulation.dat")
 ```
 
 ### Export to MATLAB
 
 ```python
 # Export to .mat file
-H.matlab_export('hamiltonian.mat', 'H')
+H.matlab_export("hamiltonian.mat", "H")
 ```
 
 ## Solver Options
@@ -510,11 +525,11 @@ options = Options()
 
 # Integration parameters
 options.nsteps = 10000  # Max internal steps
-options.rtol = 1e-8     # Relative tolerance
-options.atol = 1e-10    # Absolute tolerance
+options.rtol = 1e-8  # Relative tolerance
+options.atol = 1e-10  # Absolute tolerance
 
 # Method selection
-options.method = 'adams'  # Non-stiff (default)
+options.method = "adams"  # Non-stiff (default)
 # options.method = 'bdf'  # Stiff problems
 
 # Storage options

@@ -38,9 +38,7 @@ def calculate_qc_metrics(adata, mt_threshold=5, min_genes=200, min_cells=3):
     adata.var["mt"] = adata.var_names.str.startswith(("MT-", "mt-", "Mt-"))
 
     # Calculate QC metrics
-    sc.pp.calculate_qc_metrics(
-        adata, qc_vars=["mt"], percent_top=None, log1p=False, inplace=True
-    )
+    sc.pp.calculate_qc_metrics(adata, qc_vars=["mt"], percent_top=None, log1p=False, inplace=True)
 
     print("\n=== QC Metrics Summary ===")
     print(f"Total cells: {adata.n_obs}")
@@ -151,10 +149,10 @@ def filter_data(
 
     print("\n=== Filtering Results ===")
     print(
-        f"Cells: {n_cells_before} -> {adata.n_obs} ({adata.n_obs/n_cells_before*100:.1f}% retained)"
+        f"Cells: {n_cells_before} -> {adata.n_obs} ({adata.n_obs / n_cells_before * 100:.1f}% retained)"
     )
     print(
-        f"Genes: {n_genes_before} -> {adata.n_vars} ({adata.n_vars/n_genes_before*100:.1f}% retained)"
+        f"Genes: {n_genes_before} -> {adata.n_vars} ({adata.n_vars / n_genes_before * 100:.1f}% retained)"
     )
 
     return adata
@@ -177,12 +175,8 @@ def main():
     parser.add_argument(
         "--min-genes", type=int, default=200, help="Min genes per cell (default: 200)"
     )
-    parser.add_argument(
-        "--min-cells", type=int, default=3, help="Min cells per gene (default: 3)"
-    )
-    parser.add_argument(
-        "--skip-plots", action="store_true", help="Skip generating QC plots"
-    )
+    parser.add_argument("--min-cells", type=int, default=3, help="Min cells per gene (default: 3)")
+    parser.add_argument("--skip-plots", action="store_true", help="Skip generating QC plots")
 
     args = parser.parse_args()
 

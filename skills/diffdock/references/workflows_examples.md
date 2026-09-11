@@ -144,7 +144,7 @@ screening_data = {
     "complex_name": [f"screen_{i}" for i in range(len(ligands))],
     "protein_path": ["target_protein.pdb"] * len(ligands),
     "ligand_description": ligands["smiles"].tolist(),
-    "protein_sequence": [""] * len(ligands)
+    "protein_sequence": [""] * len(ligands),
 }
 
 df = pd.DataFrame(screening_data)
@@ -206,12 +206,7 @@ top_hits.to_csv("top_hits.csv", index=False)
 # create_ensemble_csv.py
 import pandas as pd
 
-conformations = [
-    "protein_conf1.pdb",
-    "protein_conf2.pdb",
-    "protein_conf3.pdb",
-    "protein_conf4.pdb"
-]
+conformations = ["protein_conf1.pdb", "protein_conf2.pdb", "protein_conf3.pdb", "protein_conf4.pdb"]
 
 ligand = "CC(C)Cc1ccc(cc1)C(C)C(=O)O"
 
@@ -219,7 +214,7 @@ data = {
     "complex_name": [f"ensemble_{i}" for i in range(len(conformations))],
     "protein_path": conformations,
     "ligand_description": [ligand] * len(conformations),
-    "protein_sequence": [""] * len(conformations)
+    "protein_sequence": [""] * len(conformations),
 }
 
 pd.DataFrame(data).to_csv("ensemble_input.csv", index=False)
@@ -264,13 +259,13 @@ from rdkit import Chem
 import os
 
 # Load protein
-protein = PDBFile('protein.pdb')
-forcefield = ForceField('amber14-all.xml', 'amber14/tip3pfb.xml')
+protein = PDBFile("protein.pdb")
+forcefield = ForceField("amber14-all.xml", "amber14/tip3pfb.xml")
 
 # Process each DiffDock pose
-pose_dir = 'results/diffdock_poses/'
+pose_dir = "results/diffdock_poses/"
 for pose_file in os.listdir(pose_dir):
-    if pose_file.endswith('.sdf'):
+    if pose_file.endswith(".sdf"):
         # Load ligand
         mol = Chem.SDMolSupplier(os.path.join(pose_dir, pose_file))[0]
 
@@ -286,8 +281,7 @@ for pose_file in os.listdir(pose_dir):
 
         # Save minimized structure
         positions = simulation.context.getState(getPositions=True).getPositions()
-        PDBFile.writeFile(simulation.topology, positions,
-                         open(f"minimized_{pose_file}.pdb", 'w'))
+        PDBFile.writeFile(simulation.topology, positions, open(f"minimized_{pose_file}.pdb", "w"))
 ```
 
 ## Workflow 7: Using the Graphical Interface
@@ -361,6 +355,7 @@ python -m inference ... --batch_size 2
 **Solution**: Ensure GPU usage
 ```python
 import torch
+
 print(torch.cuda.is_available())  # Should return True
 ```
 

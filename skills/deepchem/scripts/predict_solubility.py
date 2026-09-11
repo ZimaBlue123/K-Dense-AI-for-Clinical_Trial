@@ -60,9 +60,7 @@ def train_solubility_model(
 
         # Normalize data
         print("Normalizing features and targets...")
-        transformers = [
-            dc.trans.NormalizationTransformer(transform_y=True, dataset=train)
-        ]
+        transformers = [dc.trans.NormalizationTransformer(transform_y=True, dataset=train)]
         for transformer in transformers:
             train = transformer.transform(train)
             valid = transformer.transform(valid)
@@ -151,9 +149,7 @@ def predict_new_molecules(model, smiles_list, transformers=None):
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Train a molecular solubility prediction model"
-    )
+    parser = argparse.ArgumentParser(description="Train a molecular solubility prediction model")
     parser.add_argument(
         "--data", type=str, default=None, help="Path to CSV file with molecular data"
     )

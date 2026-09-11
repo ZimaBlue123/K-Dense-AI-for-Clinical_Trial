@@ -164,9 +164,7 @@ import dxpy
 input_file = dxpy.upload_local_file("sample.fastq", project="project-xxxx")
 
 # Run analysis
-job = dxpy.DXApplet("applet-xxxx").run({
-    "reads": dxpy.dxlink(input_file.get_id())
-})
+job = dxpy.DXApplet("applet-xxxx").run({"reads": dxpy.dxlink(input_file.get_id())})
 
 # Wait for completion
 job.wait_on_done()
@@ -183,10 +181,7 @@ import dxpy
 
 # Find BAM files from a specific experiment
 files = dxpy.find_data_objects(
-    classname="file",
-    name="*.bam",
-    properties={"experiment": "exp001"},
-    project="project-xxxx"
+    classname="file", name="*.bam", properties={"experiment": "exp001"}, project="project-xxxx"
 )
 
 # Download each file
@@ -203,25 +198,30 @@ for file_result in files:
 import dxpy
 import subprocess
 
-@dxpy.entry_point('main')
+
+@dxpy.entry_point("main")
 def main(input_file, quality_threshold=30):
     # Download input
     dxpy.download_dxfile(input_file["$dnanexus_link"], "input.fastq")
 
     # Process
-    subprocess.check_call([
-        "quality_filter",
-        "--input", "input.fastq",
-        "--output", "filtered.fastq",
-        "--threshold", str(quality_threshold)
-    ])
+    subprocess.check_call(
+        [
+            "quality_filter",
+            "--input",
+            "input.fastq",
+            "--output",
+            "filtered.fastq",
+            "--threshold",
+            str(quality_threshold),
+        ]
+    )
 
     # Upload output
     output_file = dxpy.upload_local_file("filtered.fastq")
 
-    return {
-        "filtered_reads": dxpy.dxlink(output_file)
-    }
+    return {"filtered_reads": dxpy.dxlink(output_file)}
+
 
 dxpy.run()
 ```
@@ -282,18 +282,12 @@ Process multiple files with the same analysis:
 
 ```python
 # Find all FASTQ files
-files = dxpy.find_data_objects(
-    classname="file",
-    name="*.fastq",
-    project="project-xxxx"
-)
+files = dxpy.find_data_objects(classname="file", name="*.fastq", project="project-xxxx")
 
 # Launch parallel jobs
 jobs = []
 for file_result in files:
-    job = dxpy.DXApplet("applet-xxxx").run({
-        "input": dxpy.dxlink(file_result["id"])
-    })
+    job = dxpy.DXApplet("applet-xxxx").run({"input": dxpy.dxlink(file_result["id"])})
     jobs.append(job)
 
 # Wait for all completions
@@ -310,14 +304,10 @@ Chain multiple analyses together:
 qc_job = qc_applet.run({"reads": input_file})
 
 # Step 2: Alignment (uses QC output)
-align_job = align_applet.run({
-    "reads": qc_job.get_output_ref("filtered_reads")
-})
+align_job = align_applet.run({"reads": qc_job.get_output_ref("filtered_reads")})
 
 # Step 3: Variant calling (uses alignment output)
-variant_job = variant_applet.run({
-    "bam": align_job.get_output_ref("aligned_bam")
-})
+variant_job = variant_applet.run({"bam": align_job.get_output_ref("aligned_bam")})
 ```
 
 ### Pattern 3: Data Organization
@@ -327,8 +317,7 @@ Organize analysis results systematically:
 ```python
 # Create organized folder structure
 dxpy.api.project_new_folder(
-    "project-xxxx",
-    {"folder": "/experiments/exp001/results", "parents": True}
+    "project-xxxx", {"folder": "/experiments/exp001/results", "parents": True}
 )
 
 # Upload with metadata
@@ -336,12 +325,8 @@ result_file = dxpy.upload_local_file(
     "results.txt",
     project="project-xxxx",
     folder="/experiments/exp001/results",
-    properties={
-        "experiment": "exp001",
-        "sample": "sample1",
-        "analysis_date": "2025-10-20"
-    },
-    tags=["validated", "published"]
+    properties={"experiment": "exp001", "sample": "sample1", "analysis_date": "2025-10-20"},
+    tags=["validated", "published"],
 )
 ```
 

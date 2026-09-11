@@ -50,21 +50,19 @@ client = DataCommonsClient()
 response = client.observation.fetch(
     variable_dcids=["Count_Person"],
     entity_dcids=["geoId/06"],  # California
-    date="latest"
+    date="latest",
 )
 
 # Get time series
 response = client.observation.fetch(
-    variable_dcids=["UnemploymentRate_Person"],
-    entity_dcids=["country/USA"],
-    date="all"
+    variable_dcids=["UnemploymentRate_Person"], entity_dcids=["country/USA"], date="all"
 )
 
 # Query by hierarchy
 response = client.observation.fetch(
     variable_dcids=["MedianIncome_Household"],
     entity_expression="geoId/06<-containedInPlace+{typeOf:County}",
-    date="2020"
+    date="2020",
 )
 ```
 
@@ -82,20 +80,13 @@ Explore entity relationships and properties within the knowledge graph. See `ref
 **Common patterns:**
 ```python
 # Discover properties
-labels = client.node.fetch_property_labels(
-    node_dcids=["geoId/06"],
-    out=True
-)
+labels = client.node.fetch_property_labels(node_dcids=["geoId/06"], out=True)
 
 # Navigate hierarchy
-children = client.node.fetch_place_children(
-    node_dcids=["country/USA"]
-)
+children = client.node.fetch_place_children(node_dcids=["country/USA"])
 
 # Get entity names
-names = client.node.fetch_entity_names(
-    node_dcids=["geoId/06", "geoId/48"]
-)
+names = client.node.fetch_entity_names(node_dcids=["geoId/06", "geoId/48"])
 ```
 
 ### 3. Resolve Endpoint - Entity Identification
@@ -111,21 +102,13 @@ Translate entity names, coordinates, or external IDs into Data Commons IDs (DCID
 **Common patterns:**
 ```python
 # Resolve by name
-response = client.resolve.fetch_dcids_by_name(
-    names=["California", "Texas"],
-    entity_type="State"
-)
+response = client.resolve.fetch_dcids_by_name(names=["California", "Texas"], entity_type="State")
 
 # Resolve by coordinates
-dcid = client.resolve.fetch_dcid_by_coordinates(
-    latitude=37.7749,
-    longitude=-122.4194
-)
+dcid = client.resolve.fetch_dcid_by_coordinates(latitude=37.7749, longitude=-122.4194)
 
 # Resolve Wikidata IDs
-response = client.resolve.fetch_dcids_by_wikidata_id(
-    wikidata_ids=["Q30", "Q99"]
-)
+response = client.resolve.fetch_dcids_by_wikidata_id(wikidata_ids=["Q30", "Q99"])
 ```
 
 ## Typical Workflow
@@ -134,27 +117,19 @@ Most Data Commons queries follow this pattern:
 
 1. **Resolve entities** (if starting with names):
    ```python
-   resolve_response = client.resolve.fetch_dcids_by_name(
-       names=["California", "Texas"]
-   )
-   dcids = [r["candidates"][0]["dcid"]
-            for r in resolve_response.to_dict().values()
-            if r["candidates"]]
+   resolve_response = client.resolve.fetch_dcids_by_name(names=["California", "Texas"])
+   dcids = [r["candidates"][0]["dcid"] for r in resolve_response.to_dict().values() if r["candidates"]]
    ```
 
 2. **Discover available variables** (optional):
    ```python
-   variables = client.observation.fetch_available_statistical_variables(
-       entity_dcids=dcids
-   )
+   variables = client.observation.fetch_available_statistical_variables(entity_dcids=dcids)
    ```
 
 3. **Query statistical data**:
    ```python
    response = client.observation.fetch(
-       variable_dcids=["Count_Person", "UnemploymentRate_Person"],
-       entity_dcids=dcids,
-       date="latest"
+       variable_dcids=["Count_Person", "UnemploymentRate_Person"], entity_dcids=dcids, date="latest"
    )
    ```
 
@@ -182,9 +157,7 @@ Statistical variables use specific naming patterns in Data Commons:
 **Discovery methods:**
 ```python
 # Check what variables are available for an entity
-available = client.observation.fetch_available_statistical_variables(
-    entity_dcids=["geoId/06"]
-)
+available = client.observation.fetch_available_statistical_variables(entity_dcids=["geoId/06"])
 
 # Or explore via the web interface
 # https://datacommons.org/tools/statvar
@@ -196,9 +169,7 @@ All observation responses integrate with Pandas:
 
 ```python
 response = client.observation.fetch(
-    variable_dcids=["Count_Person"],
-    entity_dcids=["geoId/06", "geoId/48"],
-    date="all"
+    variable_dcids=["Count_Person"], entity_dcids=["geoId/06", "geoId/48"], date="all"
 )
 
 # Convert to DataFrame
@@ -206,11 +177,7 @@ df = response.to_observations_as_records()
 # Columns: date, entity, variable, value
 
 # Reshape for analysis
-pivot = df.pivot_table(
-    values='value',
-    index='date',
-    columns='entity'
-)
+pivot = df.pivot_table(values="value", index="date", columns="entity")
 ```
 
 ## API Authentication

@@ -256,14 +256,12 @@ papers = searcher.search_by_keywords(
     keywords=["CRISPR", "gene editing"],
     start_date="2024-01-01",
     end_date="2024-12-31",
-    category="genomics"
+    category="genomics",
 )
 
 # Search by author
 papers = searcher.search_by_author(
-    author_name="Smith",
-    start_date="2023-01-01",
-    end_date="2024-12-31"
+    author_name="Smith", start_date="2023-01-01", end_date="2024-12-31"
 )
 
 # Get specific paper

@@ -76,7 +76,7 @@ pip install rsgislib torchgeo earthengine-api
 import rasterio
 import numpy as np
 
-with rasterio.open('sentinel2.tif') as src:
+with rasterio.open("sentinel2.tif") as src:
     red = src.read(4)
     nir = src.read(8)
     ndvi = (nir - red) / (nir + red + 1e-8)
@@ -86,9 +86,9 @@ with rasterio.open('sentinel2.tif') as src:
 ```python
 import geopandas as gpd
 
-zones = gpd.read_file('zones.geojson')
-points = gpd.read_file('points.geojson')
-joined = gpd.sjoin(points, zones, predicate='within')
+zones = gpd.read_file("zones.geojson")
+points = gpd.read_file("points.geojson")
+joined = gpd.sjoin(points, zones, predicate="within")
 ```
 
 ## License

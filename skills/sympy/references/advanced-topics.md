@@ -22,15 +22,16 @@ line = Line(p1, p2)
 line_from_eq = Line(Point(0, 0), slope=2)
 
 # Line properties
-line.slope       # Slope
+line.slope  # Slope
 line.equation()  # Equation of line
-line.length      # oo (infinite for lines)
+line.length  # oo (infinite for lines)
 
 # Line segment
 from sympy.geometry import Segment
+
 seg = Segment(p1, p2)
-seg.length       # Finite length
-seg.midpoint     # Midpoint
+seg.length  # Finite length
+seg.midpoint  # Midpoint
 
 # Intersection
 line2 = Line(Point(0, 1), Point(1, 0))
@@ -38,15 +39,15 @@ intersection = line.intersection(line2)  # [Point(1/2, 1/2)]
 
 # Circles
 circle = Circle(Point(0, 0), 5)  # Center, radius
-circle.area           # 25*pi
+circle.area  # 25*pi
 circle.circumference  # 10*pi
 
 # Triangles
 tri = Triangle(p1, p2, p3)
-tri.area       # Area
+tri.area  # Area
 tri.perimeter  # Perimeter
-tri.angles     # Dictionary of angles
-tri.vertices   # Tuple of vertices
+tri.angles  # Dictionary of angles
+tri.vertices  # Tuple of vertices
 
 # Polygons
 poly = Polygon(Point(0, 0), Point(1, 0), Point(1, 1), Point(0, 1))
@@ -70,6 +71,7 @@ line1.is_perpendicular(line2)  # False
 
 # Tangent lines
 from sympy.geometry import Circle, Point
+
 circle = Circle(Point(0, 0), 5)
 point = Point(5, 0)
 tangents = circle.tangent_lines(point)
@@ -111,12 +113,13 @@ from sympy import sin, cos, pi
 
 # Ellipse
 ellipse = Ellipse(Point(0, 0), hradius=3, vradius=2)
-ellipse.area          # 6*pi
+ellipse.area  # 6*pi
 ellipse.eccentricity  # Eccentricity
 
 # Parametric curves
 from sympy.abc import t
-curve = Curve((cos(t), sin(t)), (t, 0, 2*pi))  # Circle
+
+curve = Curve((cos(t), sin(t)), (t, 0, 2 * pi))  # Circle
 ```
 
 ## Number Theory
@@ -127,14 +130,14 @@ curve = Curve((cos(t), sin(t)), (t, 0, 2*pi))  # Circle
 from sympy.ntheory import isprime, primerange, prime, nextprime, prevprime
 
 # Check if prime
-isprime(7)    # True
-isprime(10)   # False
+isprime(7)  # True
+isprime(10)  # False
 
 # Generate primes in range
 list(primerange(10, 50))  # [11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]
 
 # nth prime
-prime(10)     # 29 (10th prime)
+prime(10)  # 29 (10th prime)
 
 # Next and previous primes
 nextprime(10)  # 11
@@ -162,11 +165,11 @@ divisors(60)  # [1, 2, 3, 4, 5, 6, 10, 12, 15, 20, 30, 60]
 from sympy import gcd, lcm, igcd, ilcm
 
 # Greatest common divisor
-gcd(60, 48)   # 12
+gcd(60, 48)  # 12
 igcd(60, 48)  # 12 (integer version)
 
 # Least common multiple
-lcm(60, 48)   # 240
+lcm(60, 48)  # 240
 ilcm(60, 48)  # 240 (integer version)
 
 # Multiple arguments
@@ -195,13 +198,13 @@ from sympy.solvers.diophantine import diophantine
 from sympy.abc import x, y, z
 
 # Linear Diophantine: ax + by = c
-diophantine(3*x + 4*y - 5)  # {(4*t_0 - 5, -3*t_0 + 5)}
+diophantine(3 * x + 4 * y - 5)  # {(4*t_0 - 5, -3*t_0 + 5)}
 
 # Quadratic forms
 diophantine(x**2 + y**2 - 25)  # Pythagorean-type equations
 
 # More complex equations
-diophantine(x**2 - 4*x*y + 8*y**2 - 3*x + 7*y - 5)
+diophantine(x**2 - 4 * x * y + 8 * y**2 - 3 * x + 7 * y - 5)
 ```
 
 ### Continued Fractions
@@ -250,16 +253,16 @@ from sympy.combinatorics import Permutation
 
 # Create permutation (cycle notation)
 p = Permutation([1, 2, 0, 3])  # Sends 0->1, 1->2, 2->0, 3->3
-p = Permutation(0, 1, 2)(3)    # Cycle notation: (0 1 2)(3)
+p = Permutation(0, 1, 2)(3)  # Cycle notation: (0 1 2)(3)
 
 # Permutation operations
-p.order()       # Order of permutation
-p.is_even       # True if even permutation
+p.order()  # Order of permutation
+p.is_even  # True if even permutation
 p.inversions()  # Number of inversions
 
 # Compose permutations
 q = Permutation([2, 0, 1, 3])
-r = p * q       # Composition
+r = p * q  # Composition
 ```
 
 ### Partitions
@@ -286,7 +289,7 @@ catalan(5)  # 42
 
 # Fibonacci numbers
 fibonacci(10)  # 55
-lucas(10)      # 123 (Lucas numbers)
+lucas(10)  # 123 (Lucas numbers)
 ```
 
 ### Group Theory
@@ -300,10 +303,10 @@ p2 = Permutation([0, 2, 1])
 G = PermutationGroup(p1, p2)
 
 # Group properties
-G.order()        # Order of group
-G.is_abelian     # Check if abelian
-G.is_cyclic()    # Check if cyclic
-G.elements       # All group elements
+G.order()  # Order of group
+G.is_abelian  # Check if abelian
+G.is_cyclic()  # Check if cyclic
+G.elements  # All group elements
 ```
 
 ## Logic and Sets
@@ -315,7 +318,7 @@ from sympy import symbols, And, Or, Not, Xor, Implies, Equivalent
 from sympy.logic.boolalg import truth_table, simplify_logic
 
 # Define boolean variables
-x, y, z = symbols('x y z', bool=True)
+x, y, z = symbols("x y z", bool=True)
 
 # Logical operations
 expr = And(x, Or(y, Not(z)))
@@ -343,29 +346,29 @@ A = FiniteSet(1, 2, 3, 4)
 B = FiniteSet(3, 4, 5, 6)
 
 # Set operations
-union = Union(A, B)              # {1, 2, 3, 4, 5, 6}
+union = Union(A, B)  # {1, 2, 3, 4, 5, 6}
 intersection = Intersection(A, B)  # {3, 4}
-difference = Complement(A, B)     # {1, 2}
+difference = Complement(A, B)  # {1, 2}
 
 # Intervals
-I = Interval(0, 1)              # [0, 1]
-I_open = Interval.open(0, 1)    # (0, 1)
+I = Interval(0, 1)  # [0, 1]
+I_open = Interval.open(0, 1)  # (0, 1)
 I_lopen = Interval.Lopen(0, 1)  # (0, 1]
 I_ropen = Interval.Ropen(0, 1)  # [0, 1)
 
 # Special sets
-S.Reals        # All real numbers
-S.Integers     # All integers
-S.Naturals     # Natural numbers
-S.EmptySet     # Empty set
-S.Complexes    # Complex numbers
+S.Reals  # All real numbers
+S.Integers  # All integers
+S.Naturals  # Natural numbers
+S.EmptySet  # Empty set
+S.Complexes  # Complex numbers
 
 # Set membership
 3 in A  # True
 7 in A  # False
 
 # Subset and superset
-A.is_subset(B)    # False
+A.is_subset(B)  # False
 A.is_superset(B)  # False
 ```
 
@@ -381,6 +384,7 @@ squares = ImageSet(Lambda(x, x**2), S.Integers)
 
 # Power set
 from sympy.sets import FiniteSet
+
 A = FiniteSet(1, 2, 3)
 # Note: SymPy doesn't have direct powerset, but can generate
 ```
@@ -391,15 +395,16 @@ A = FiniteSet(1, 2, 3)
 
 ```python
 from sympy import Poly, symbols, factor, expand, roots
-x, y = symbols('x y')
+
+x, y = symbols("x y")
 
 # Create polynomial
-p = Poly(x**2 + 2*x + 1, x)
+p = Poly(x**2 + 2 * x + 1, x)
 
 # Polynomial properties
-p.degree()       # 2
-p.coeffs()       # [1, 2, 1]
-p.as_expr()      # Convert back to expression
+p.degree()  # 2
+p.coeffs()  # [1, 2, 1]
+p.as_expr()  # Convert back to expression
 
 # Arithmetic
 p1 = Poly(x**2 + 1, x)
@@ -414,7 +419,7 @@ q, r = div(p1, p2)  # Quotient and remainder
 ```python
 from sympy import roots, real_roots, count_roots
 
-p = Poly(x**3 - 6*x**2 + 11*x - 6, x)
+p = Poly(x**3 - 6 * x**2 + 11 * x - 6, x)
 
 # All roots
 r = roots(p)  # {1: 1, 2: 1, 3: 1}
@@ -432,7 +437,7 @@ count_roots(p, a, b)  # Number of roots in [a, b]
 from sympy import gcd, lcm, factor, factor_list
 
 p1 = Poly(x**2 - 1, x)
-p2 = Poly(x**2 - 2*x + 1, x)
+p2 = Poly(x**2 - 2 * x + 1, x)
 
 # GCD and LCM
 g = gcd(p1, p2)
@@ -448,8 +453,8 @@ factors = factor_list(x**3 - x**2 + x - 1)  # List form
 ```python
 from sympy import groebner, symbols
 
-x, y, z = symbols('x y z')
-polynomials = [x**2 + y**2 + z**2 - 1, x*y - z]
+x, y, z = symbols("x y z")
+polynomials = [x**2 + y**2 + z**2 - 1, x * y - z]
 
 # Compute Groebner basis
 gb = groebner(polynomials, x, y, z)
@@ -461,14 +466,22 @@ gb = groebner(polynomials, x, y, z)
 
 ```python
 from sympy.stats import (
-    Normal, Uniform, Exponential, Poisson, Binomial,
-    P, E, variance, density, sample
+    Normal,
+    Uniform,
+    Exponential,
+    Poisson,
+    Binomial,
+    P,
+    E,
+    variance,
+    density,
+    sample,
 )
 
 # Define random variables
-X = Normal('X', 0, 1)  # Normal(mean, std)
-Y = Uniform('Y', 0, 1)  # Uniform(a, b)
-Z = Exponential('Z', 1)  # Exponential(rate)
+X = Normal("X", 0, 1)  # Normal(mean, std)
+Y = Uniform("Y", 0, 1)  # Uniform(a, b)
+Z = Exponential("Z", 1)  # Exponential(rate)
 
 # Probability
 P(X > 0)  # 1/2
@@ -491,19 +504,19 @@ density(X)(x)  # sqrt(2)*exp(-x**2/2)/(2*sqrt(pi))
 from sympy.stats import Die, Bernoulli, Binomial, Poisson
 
 # Die
-D = Die('D', 6)
+D = Die("D", 6)
 P(D > 3)  # 1/2
 
 # Bernoulli
-B = Bernoulli('B', 0.5)
+B = Bernoulli("B", 0.5)
 P(B)  # 1/2
 
 # Binomial
-X = Binomial('X', 10, 0.5)
+X = Binomial("X", 10, 0.5)
 P(X == 5)  # Probability of exactly 5 successes in 10 trials
 
 # Poisson
-Y = Poisson('Y', 3)
+Y = Poisson("Y", 3)
 P(Y < 2)  # Probability of less than 2 events
 ```
 
@@ -514,14 +527,15 @@ from sympy.stats import Normal, P, E
 from sympy import symbols
 
 # Independent random variables
-X = Normal('X', 0, 1)
-Y = Normal('Y', 0, 1)
+X = Normal("X", 0, 1)
+Y = Normal("Y", 0, 1)
 
 # Joint probability
 P((X > 0) & (Y > 0))  # 1/4
 
 # Covariance
 from sympy.stats import covariance
+
 covariance(X, Y)  # 0 (independent)
 ```
 
@@ -531,31 +545,31 @@ covariance(X, Y)  # 0 (independent)
 
 ```python
 from sympy import (
-    gamma,      # Gamma function
-    beta,       # Beta function
-    erf,        # Error function
-    besselj,    # Bessel function of first kind
-    bessely,    # Bessel function of second kind
-    hermite,    # Hermite polynomial
-    legendre,   # Legendre polynomial
-    laguerre,   # Laguerre polynomial
-    chebyshevt, # Chebyshev polynomial (first kind)
-    zeta        # Riemann zeta function
+    gamma,  # Gamma function
+    beta,  # Beta function
+    erf,  # Error function
+    besselj,  # Bessel function of first kind
+    bessely,  # Bessel function of second kind
+    hermite,  # Hermite polynomial
+    legendre,  # Legendre polynomial
+    laguerre,  # Laguerre polynomial
+    chebyshevt,  # Chebyshev polynomial (first kind)
+    zeta,  # Riemann zeta function
 )
 
 # Gamma function
 gamma(5)  # 24 (equivalent to 4!)
-gamma(1/2)  # sqrt(pi)
+gamma(1 / 2)  # sqrt(pi)
 
 # Bessel functions
 besselj(0, x)  # J_0(x)
 bessely(1, x)  # Y_1(x)
 
 # Orthogonal polynomials
-hermite(3, x)    # 8*x**3 - 12*x
-legendre(2, x)   # (3*x**2 - 1)/2
-laguerre(2, x)   # x**2/2 - 2*x + 1
-chebyshevt(3, x) # 4*x**3 - 3*x
+hermite(3, x)  # 8*x**3 - 12*x
+legendre(2, x)  # (3*x**2 - 1)/2
+laguerre(2, x)  # x**2/2 - 2*x + 1
+chebyshevt(3, x)  # 4*x**3 - 3*x
 ```
 
 ### Hypergeometric Functions
@@ -579,7 +593,7 @@ from sympy.geometry import Point, Triangle
 from sympy import symbols
 
 # Define symbolic triangle
-a, b = symbols('a b', positive=True)
+a, b = symbols("a b", positive=True)
 tri = Triangle(Point(0, 0), Point(a, 0), Point(0, b))
 
 # Compute properties symbolically
@@ -616,7 +630,7 @@ combs = list(combinations([1, 2, 3, 4], 2))
 ```python
 from sympy.stats import Normal, P, E, variance
 
-X = Normal('X', mu, sigma)
+X = Normal("X", mu, sigma)
 
 # Compute statistics
 mean = E(X)

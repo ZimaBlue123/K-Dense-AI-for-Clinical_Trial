@@ -33,6 +33,7 @@ Attach to functions via mount points:
 ```python
 vol = modal.Volume.from_name("my-volume")
 
+
 @app.function(volumes={"/data": vol})
 def run():
     with open("/data/xyz.txt", "w") as f:
@@ -86,10 +87,8 @@ with vol.batch_upload() as batch:
 ### Via Image
 
 ```python
-image = modal.Image.debian_slim().add_local_dir(
-    local_path="/home/user/my_dir",
-    remote_path="/app"
-)
+image = modal.Image.debian_slim().add_local_dir(local_path="/home/user/my_dir", remote_path="/app")
+
 
 @app.function(image=image)
 def process():
@@ -147,6 +146,7 @@ Current v2 limits:
 ```python
 volume = modal.Volume.from_name("model-weights", create_if_missing=True)
 MODEL_DIR = "/models"
+
 
 @app.function(volumes={MODEL_DIR: volume})
 def train():

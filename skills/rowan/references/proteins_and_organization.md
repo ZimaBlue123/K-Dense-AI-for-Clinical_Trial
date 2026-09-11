@@ -34,10 +34,7 @@ The `Protein` class represents a protein structure stored on Rowan.
 import rowan
 
 # Upload PDB file
-protein = rowan.upload_protein(
-    name="EGFR Kinase",
-    file_path="protein.pdb"
-)
+protein = rowan.upload_protein(name="EGFR Kinase", file_path="protein.pdb")
 
 print(f"Protein UUID: {protein.uuid}")
 print(f"Name: {protein.name}")
@@ -53,10 +50,7 @@ Fetch structure directly from RCSB PDB database.
 import rowan
 
 # Download from PDB
-protein = rowan.create_protein_from_pdb_id(
-    name="EGFR Kinase (1M17)",
-    code="1M17"
-)
+protein = rowan.create_protein_from_pdb_id(name="EGFR Kinase (1M17)", code="1M17")
 
 print(f"Created protein: {protein.uuid}")
 ```
@@ -117,12 +111,7 @@ protein = rowan.retrieve_protein("protein-uuid")
 protein.update(name="EGFR Kinase Domain")
 
 # Define binding pocket
-protein.update(
-    pocket={
-        "center": [10.0, 20.0, 30.0],
-        "size": [20.0, 20.0, 20.0]
-    }
-)
+protein.update(pocket={"center": [10.0, 20.0, 30.0], "size": [20.0, 20.0, 20.0]})
 ```
 
 ---
@@ -185,10 +174,7 @@ import rowan
 folder = rowan.create_folder(name="Drug Discovery Project")
 
 # Create subfolder
-subfolder = rowan.create_folder(
-    name="Lead Compounds",
-    parent_uuid=folder.uuid
-)
+subfolder = rowan.create_folder(name="Lead Compounds", parent_uuid=folder.uuid)
 ```
 
 ---
@@ -282,7 +268,7 @@ mol = stjames.Molecule.from_smiles("CCO")
 workflow = rowan.submit_pka_workflow(
     initial_molecule=mol,
     name="Ethanol pKa",
-    folder_uuid=folder.uuid  # Organize in folder
+    folder_uuid=folder.uuid,  # Organize in folder
 )
 ```
 
@@ -378,10 +364,7 @@ project.delete()
 import rowan
 
 project = rowan.create_project("Drug Discovery")
-folder = rowan.create_folder(
-    name="Phase 1 Compounds",
-    project_uuid=project.uuid
-)
+folder = rowan.create_folder(name="Phase 1 Compounds", project_uuid=project.uuid)
 ```
 
 ---
@@ -409,7 +392,7 @@ protein.sanitize()
 # Define binding site
 pocket = {
     "center": [10.0, 20.0, 30.0],  # From crystal ligand
-    "size": [20.0, 20.0, 20.0]
+    "size": [20.0, 20.0, 20.0],
 }
 
 # Submit docking workflows to hit folder
@@ -420,7 +403,7 @@ for smiles in hit_compounds:
         pocket=pocket,
         initial_molecule=mol,
         name=f"Dock: {smiles[:20]}",
-        folder_uuid=hit_folder.uuid
+        folder_uuid=hit_folder.uuid,
     )
 ```
 
@@ -442,7 +425,7 @@ for compound in compounds:
         protein=protein_uuid,  # Reuse same protein
         pocket=pocket,
         initial_molecule=compound,
-        name=f"Dock: {compound.name}"
+        name=f"Dock: {compound.name}",
     )
 ```
 
@@ -494,6 +477,6 @@ print(f"Available credits: {user.credits}")
 workflow = rowan.submit_pka_workflow(
     initial_molecule=mol,
     name="pKa calculation",
-    max_credits=10.0  # Fail if exceeds 10 credits
+    max_credits=10.0,  # Fail if exceeds 10 credits
 )
 ```

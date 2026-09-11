@@ -6,10 +6,10 @@ Combine datasets based on common variables using standard pandas merge:
 
 ```python
 # Merge on common column
-result = gdf.merge(df, on='common_column')
+result = gdf.merge(df, on="common_column")
 
 # Left join
-result = gdf.merge(df, on='common_column', how='left')
+result = gdf.merge(df, on="common_column", how="left")
 
 # Important: Call merge on GeoDataFrame to preserve geometry
 # This works: gdf.merge(df, ...)
@@ -26,19 +26,19 @@ Join based on geometric predicates:
 
 ```python
 # Intersects (default)
-joined = gpd.sjoin(gdf1, gdf2, how='inner', predicate='intersects')
+joined = gpd.sjoin(gdf1, gdf2, how="inner", predicate="intersects")
 
 # Available predicates
-joined = gpd.sjoin(gdf1, gdf2, predicate='contains')
-joined = gpd.sjoin(gdf1, gdf2, predicate='within')
-joined = gpd.sjoin(gdf1, gdf2, predicate='touches')
-joined = gpd.sjoin(gdf1, gdf2, predicate='crosses')
-joined = gpd.sjoin(gdf1, gdf2, predicate='overlaps')
+joined = gpd.sjoin(gdf1, gdf2, predicate="contains")
+joined = gpd.sjoin(gdf1, gdf2, predicate="within")
+joined = gpd.sjoin(gdf1, gdf2, predicate="touches")
+joined = gpd.sjoin(gdf1, gdf2, predicate="crosses")
+joined = gpd.sjoin(gdf1, gdf2, predicate="overlaps")
 
 # Join types
-joined = gpd.sjoin(gdf1, gdf2, how='left')   # Keep all from left
-joined = gpd.sjoin(gdf1, gdf2, how='right')  # Keep all from right
-joined = gpd.sjoin(gdf1, gdf2, how='inner')  # Intersection only
+joined = gpd.sjoin(gdf1, gdf2, how="left")  # Keep all from left
+joined = gpd.sjoin(gdf1, gdf2, how="right")  # Keep all from right
+joined = gpd.sjoin(gdf1, gdf2, how="inner")  # Intersection only
 ```
 
 The `how` parameter determines which geometries are retained:
@@ -55,7 +55,7 @@ Join to nearest features:
 nearest = gpd.sjoin_nearest(gdf1, gdf2)
 
 # Add distance column
-nearest = gpd.sjoin_nearest(gdf1, gdf2, distance_col='distance')
+nearest = gpd.sjoin_nearest(gdf1, gdf2, distance_col="distance")
 
 # Limit search radius (significantly improves performance)
 nearest = gpd.sjoin_nearest(gdf1, gdf2, max_distance=1000)
@@ -70,19 +70,19 @@ Set-theoretic operations combining geometries from two GeoDataFrames:
 
 ```python
 # Intersection - keep areas where both overlap
-intersection = gpd.overlay(gdf1, gdf2, how='intersection')
+intersection = gpd.overlay(gdf1, gdf2, how="intersection")
 
 # Union - combine all areas
-union = gpd.overlay(gdf1, gdf2, how='union')
+union = gpd.overlay(gdf1, gdf2, how="union")
 
 # Difference - areas in first not in second
-difference = gpd.overlay(gdf1, gdf2, how='difference')
+difference = gpd.overlay(gdf1, gdf2, how="difference")
 
 # Symmetric difference - areas in either but not both
-sym_diff = gpd.overlay(gdf1, gdf2, how='symmetric_difference')
+sym_diff = gpd.overlay(gdf1, gdf2, how="symmetric_difference")
 
 # Identity - intersection + difference
-identity = gpd.overlay(gdf1, gdf2, how='identity')
+identity = gpd.overlay(gdf1, gdf2, how="identity")
 ```
 
 Result includes attributes from both input GeoDataFrames.
@@ -93,17 +93,17 @@ Aggregate geometries based on attribute values:
 
 ```python
 # Dissolve by attribute
-dissolved = gdf.dissolve(by='region')
+dissolved = gdf.dissolve(by="region")
 
 # Dissolve with aggregation functions
-dissolved = gdf.dissolve(by='region', aggfunc='sum')
-dissolved = gdf.dissolve(by='region', aggfunc={'population': 'sum', 'area': 'mean'})
+dissolved = gdf.dissolve(by="region", aggfunc="sum")
+dissolved = gdf.dissolve(by="region", aggfunc={"population": "sum", "area": "mean"})
 
 # Dissolve all into single geometry
 dissolved = gdf.dissolve()
 
 # Preserve internal boundaries
-dissolved = gdf.dissolve(by='region', as_index=False)
+dissolved = gdf.dissolve(by="region", as_index=False)
 ```
 
 ## Clipping
@@ -129,7 +129,7 @@ import pandas as pd
 combined = pd.concat([gdf1, gdf2], ignore_index=True)
 
 # With keys for identification
-combined = pd.concat([gdf1, gdf2], keys=['source1', 'source2'])
+combined = pd.concat([gdf1, gdf2], keys=["source1", "source2"])
 ```
 
 ## Spatial Indexing

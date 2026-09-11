@@ -237,12 +237,7 @@ python skills/exploratory-data-analysis/scripts/eda_analyzer.py data.csv output_
 from scripts.assumption_checks import comprehensive_assumption_check
 
 # 缁煎悎鍋囪妫€楠岋紙鍚彲瑙嗗寲锛?
-results = comprehensive_assumption_check(
-    data=df,
-    value_col='score',
-    group_col='group',
-    alpha=0.05
-)
+results = comprehensive_assumption_check(data=df, value_col="score", group_col="group", alpha=0.05)
 ```
 
 **Prompt 妯℃澘**锛?
@@ -260,7 +255,7 @@ from sksurv.ensemble import RandomSurvivalForest
 from sksurv.metrics import concordance_index_ipcw
 
 # 鍒涘缓鐢熷瓨缁撳眬
-y = Surv.from_dataframe('event', 'time', df)
+y = Surv.from_dataframe("event", "time", df)
 
 # 璁粌妯″瀷
 rsf = RandomSurvivalForest(n_estimators=100, random_state=42)
@@ -283,11 +278,7 @@ c_uno = concordance_index_ipcw(y_train, y_test, rsf.predict(X_test))[0]
 import requests
 
 url = "https://clinicaltrials.gov/api/v2/studies"
-params = {
-    "query.cond": "breast cancer",
-    "filter.overallStatus": "RECRUITING",
-    "pageSize": 10
-}
+params = {"query.cond": "breast cancer", "filter.overallStatus": "RECRUITING", "pageSize": 10}
 response = requests.get(url, params=params)
 data = response.json()
 print(f"Found {data['totalCount']} trials")

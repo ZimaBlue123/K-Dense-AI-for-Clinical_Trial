@@ -111,9 +111,7 @@ def check_drift(recording: si.BaseRecording, output_folder: str) -> dict:
     print(f"  Detected {len(peaks)} peaks")
 
     # Localize peaks
-    peak_locations = localize_peaks(
-        recording, peaks, method="center_of_mass", **job_kwargs
-    )
+    peak_locations = localize_peaks(recording, peaks, method="center_of_mass", **job_kwargs)
 
     # Save drift plot
     import matplotlib.pyplot as plt
@@ -189,9 +187,7 @@ def run_spike_sorting(
     return sorting
 
 
-def postprocess(
-    sorting: si.BaseSorting, recording: si.BaseRecording, output_folder: str
-) -> tuple:
+def postprocess(sorting: si.BaseSorting, recording: si.BaseRecording, output_folder: str) -> tuple:
     """Run post-processing and compute quality metrics."""
     print("Post-processing...")
 
@@ -308,9 +304,7 @@ def export_results(analyzer, sorting, recording, labels: dict, output_folder: st
 
     # Export to Phy
     phy_folder = f"{output_folder}/phy_export"
-    si.export_to_phy(
-        analyzer, phy_folder, compute_pc_features=True, compute_amplitudes=True
-    )
+    si.export_to_phy(analyzer, phy_folder, compute_pc_features=True, compute_amplitudes=True)
     print(f"  Phy export: {phy_folder}")
 
     # Generate report
@@ -398,9 +392,7 @@ def run_pipeline(
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Neuropixels analysis pipeline (best practices)"
-    )
+    parser = argparse.ArgumentParser(description="Neuropixels analysis pipeline (best practices)")
     parser.add_argument("data_path", help="Path to SpikeGLX/OpenEphys recording")
     parser.add_argument("output_path", help="Output directory")
     parser.add_argument(

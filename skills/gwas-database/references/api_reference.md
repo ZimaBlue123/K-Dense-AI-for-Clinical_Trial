@@ -59,6 +59,7 @@ While no explicit rate limits are documented, follow best practices:
 import requests
 from time import sleep
 
+
 def query_with_rate_limit(url, delay=0.1):
     response = requests.get(url)
     sleep(delay)
@@ -155,7 +156,7 @@ params = {"size": 100, "page": 0}
 response = requests.get(url, params=params, headers={"Content-Type": "application/json"})
 data = response.json()
 
-associations = data.get('_embedded', {}).get('associations', [])
+associations = data.get("_embedded", {}).get("associations", [])
 print(f"Found {len(associations)} associations")
 ```
 
@@ -200,7 +201,9 @@ response = requests.get(url, headers={"Content-Type": "application/json"})
 variant = response.json()
 
 print(f"rsID: {variant.get('rsId')}")
-print(f"Location: chr{variant.get('locations', [{}])[0].get('chromosomeName')}:{variant.get('locations', [{}])[0].get('chromosomePosition')}")
+print(
+    f"Location: chr{variant.get('locations', [{}])[0].get('chromosomeName')}:{variant.get('locations', [{}])[0].get('chromosomePosition')}"
+)
 ```
 
 **Response Fields:**
@@ -266,6 +269,7 @@ All list endpoints support pagination:
 ```python
 import requests
 
+
 def get_all_associations(trait_id):
     """Retrieve all associations for a trait with pagination"""
     base_url = "https://www.ebi.ac.uk/gwas/rest/api"
@@ -281,7 +285,7 @@ def get_all_associations(trait_id):
             break
 
         data = response.json()
-        associations = data.get('_embedded', {}).get('associations', [])
+        associations = data.get("_embedded", {}).get("associations", [])
 
         if not associations:
             break
@@ -304,7 +308,7 @@ response = requests.get("https://www.ebi.ac.uk/gwas/rest/api/studies/GCST001795"
 study = response.json()
 
 # Follow link to associations
-associations_url = study['_links']['associations']['href']
+associations_url = study["_links"]["associations"]["href"]
 associations_response = requests.get(associations_url)
 associations = associations_response.json()
 ```
@@ -360,7 +364,7 @@ base_url = "https://www.ebi.ac.uk/gwas/summary-statistics/api"
 url = f"{base_url}/traits/{trait_id}/associations"
 params = {
     "p_upper": "0.000000001",  # p < 1e-9
-    "size": 100
+    "size": 100,
 }
 response = requests.get(url, params=params)
 results = response.json()
@@ -389,11 +393,7 @@ end_pos = 115000000
 
 base_url = "https://www.ebi.ac.uk/gwas/summary-statistics/api"
 url = f"{base_url}/chromosomes/{chromosome}/associations"
-params = {
-    "start": start_pos,
-    "end": end_pos,
-    "size": 1000
-}
+params = {"start": start_pos, "end": end_pos, "size": 1000}
 response = requests.get(url, params=params)
 variants = response.json()
 ```
@@ -507,6 +507,7 @@ Paginated responses include page information:
 ```python
 import requests
 
+
 def safe_api_request(url, params=None):
     """Make API request with error handling"""
     try:
@@ -535,6 +536,7 @@ def safe_api_request(url, params=None):
 ```python
 import requests
 
+
 def get_variant_pleiotropy(rs_id):
     """Get all traits associated with a variant"""
     base_url = "https://www.ebi.ac.uk/gwas/rest/api"
@@ -545,17 +547,18 @@ def get_variant_pleiotropy(rs_id):
     data = response.json()
 
     traits = {}
-    for assoc in data.get('_embedded', {}).get('associations', []):
-        trait = assoc.get('efoTrait')
-        pvalue = assoc.get('pvalue')
+    for assoc in data.get("_embedded", {}).get("associations", []):
+        trait = assoc.get("efoTrait")
+        pvalue = assoc.get("pvalue")
         if trait:
             if trait not in traits or float(pvalue) < float(traits[trait]):
                 traits[trait] = pvalue
 
     return traits
 
+
 # Example usage
-pleiotropy = get_variant_pleiotropy('rs7903146')
+pleiotropy = get_variant_pleiotropy("rs7903146")
 for trait, pval in sorted(pleiotropy.items(), key=lambda x: float(x[1])):
     print(f"{trait}: p={pval}")
 ```
@@ -564,6 +567,7 @@ for trait, pval in sorted(pleiotropy.items(), key=lambda x: float(x[1])):
 
 ```python
 import requests
+
 
 def get_significant_associations(trait_id, p_threshold=5e-8):
     """Get genome-wide significant associations"""
@@ -581,13 +585,13 @@ def get_significant_associations(trait_id, p_threshold=5e-8):
             break
 
         data = response.json()
-        associations = data.get('_embedded', {}).get('associations', [])
+        associations = data.get("_embedded", {}).get("associations", [])
 
         if not associations:
             break
 
         for assoc in associations:
-            pvalue = assoc.get('pvalue')
+            pvalue = assoc.get("pvalue")
             if pvalue and float(pvalue) <= p_threshold:
                 results.append(assoc)
 
@@ -600,6 +604,7 @@ def get_significant_associations(trait_id, p_threshold=5e-8):
 
 ```python
 import requests
+
 
 def get_complete_variant_data(rs_id):
     """Get variant data from both APIs"""
@@ -617,10 +622,7 @@ def get_complete_variant_data(rs_id):
     # Could also query summary statistics API for this variant
     # across all studies with summary data
 
-    return {
-        "variant": variant_info,
-        "associations": associations
-    }
+    return {"variant": variant_info, "associations": associations}
 ```
 
 ### 4. Genomic Region Queries
@@ -628,23 +630,21 @@ def get_complete_variant_data(rs_id):
 ```python
 import requests
 
+
 def query_region(chromosome, start, end, p_threshold=None):
     """Query variants in genomic region"""
     # From main API
     base_url = "https://www.ebi.ac.uk/gwas/rest/api"
     url = f"{base_url}/singleNucleotidePolymorphisms/search/findByChromBpLocationRange"
-    params = {
-        "chrom": chromosome,
-        "bpStart": start,
-        "bpEnd": end,
-        "size": 1000
-    }
+    params = {"chrom": chromosome, "bpStart": start, "bpEnd": end, "size": 1000}
 
     response = requests.get(url, params=params, headers={"Content-Type": "application/json"})
     variants = response.json()
 
     # Can also query summary statistics API
-    sumstats_url = f"https://www.ebi.ac.uk/gwas/summary-statistics/api/chromosomes/{chromosome}/associations"
+    sumstats_url = (
+        f"https://www.ebi.ac.uk/gwas/summary-statistics/api/chromosomes/{chromosome}/associations"
+    )
     sumstats_params = {"start": start, "end": end, "size": 1000}
     if p_threshold:
         sumstats_params["p_upper"] = str(p_threshold)
@@ -652,10 +652,7 @@ def query_region(chromosome, start, end, p_threshold=None):
     sumstats_response = requests.get(sumstats_url, params=sumstats_params)
     sumstats = sumstats_response.json()
 
-    return {
-        "catalog_variants": variants,
-        "summary_stats": sumstats
-    }
+    return {"catalog_variants": variants, "summary_stats": sumstats}
 ```
 
 ## Integration Examples
@@ -666,6 +663,7 @@ def query_region(chromosome, start, end, p_threshold=None):
 import requests
 import pandas as pd
 from time import sleep
+
 
 class GWASCatalogQuery:
     def __init__(self):
@@ -686,22 +684,24 @@ class GWASCatalogQuery:
                 break
 
             data = response.json()
-            associations = data.get('_embedded', {}).get('associations', [])
+            associations = data.get("_embedded", {}).get("associations", [])
 
             if not associations:
                 break
 
             for assoc in associations:
-                pvalue = assoc.get('pvalue')
+                pvalue = assoc.get("pvalue")
                 if pvalue and float(pvalue) <= p_threshold:
-                    results.append({
-                        'rs_id': assoc.get('rsId'),
-                        'pvalue': float(pvalue),
-                        'risk_allele': assoc.get('strongestAllele'),
-                        'or_beta': assoc.get('orPerCopyNum') or assoc.get('betaNum'),
-                        'study': assoc.get('studyId'),
-                        'pubmed_id': assoc.get('pubmedId')
-                    })
+                    results.append(
+                        {
+                            "rs_id": assoc.get("rsId"),
+                            "pvalue": float(pvalue),
+                            "risk_allele": assoc.get("strongestAllele"),
+                            "or_beta": assoc.get("orPerCopyNum") or assoc.get("betaNum"),
+                            "study": assoc.get("studyId"),
+                            "pubmed_id": assoc.get("pubmedId"),
+                        }
+                    )
 
             page += 1
             sleep(0.1)
@@ -727,26 +727,29 @@ class GWASCatalogQuery:
             return response.json()
         return None
 
+
 # Example usage
 gwas = GWASCatalogQuery()
 
 # Query type 2 diabetes associations
-df = gwas.get_trait_associations('EFO_0001360')
+df = gwas.get_trait_associations("EFO_0001360")
 print(f"Found {len(df)} genome-wide significant associations")
 print(f"Unique variants: {df['rs_id'].nunique()}")
 
 # Get top variants
-top_variants = df.nsmallest(10, 'pvalue')
+top_variants = df.nsmallest(10, "pvalue")
 print("\nTop 10 variants:")
-print(top_variants[['rs_id', 'pvalue', 'risk_allele']])
+print(top_variants[["rs_id", "pvalue", "risk_allele"]])
 
 # Get details for top variant
 if len(top_variants) > 0:
-    top_rs = top_variants.iloc[0]['rs_id']
+    top_rs = top_variants.iloc[0]["rs_id"]
     variant_info = gwas.get_variant_details(top_rs)
     if variant_info:
-        loc = variant_info.get('locations', [{}])[0]
-        print(f"\n{top_rs} location: chr{loc.get('chromosomeName')}:{loc.get('chromosomePosition')}")
+        loc = variant_info.get("locations", [{}])[0]
+        print(
+            f"\n{top_rs} location: chr{loc.get('chromosomeName')}:{loc.get('chromosomePosition')}"
+        )
 ```
 
 ### FTP Download Integration
@@ -754,6 +757,7 @@ if len(top_variants) > 0:
 ```python
 import requests
 from pathlib import Path
+
 
 def download_summary_statistics(gcst_id, output_dir="."):
     """Download summary statistics from FTP"""
@@ -769,7 +773,7 @@ def download_summary_statistics(gcst_id, output_dir="."):
         response = requests.get(harmonised_url, stream=True)
         response.raise_for_status()
 
-        with open(output_path, 'wb') as f:
+        with open(output_path, "wb") as f:
             for chunk in response.iter_content(chunk_size=8192):
                 f.write(chunk)
 
@@ -779,6 +783,7 @@ def download_summary_statistics(gcst_id, output_dir="."):
     except requests.exceptions.HTTPError:
         print(f"Harmonised file not found for {gcst_id}")
         return None
+
 
 # Example usage
 download_summary_statistics("GCST001234", output_dir="./sumstats")

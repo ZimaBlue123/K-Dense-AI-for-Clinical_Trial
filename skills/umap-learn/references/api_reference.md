@@ -380,17 +380,17 @@ import umap
 
 # Standard 2D visualization embedding
 reducer = umap.UMAP(
-    n_neighbors=15,          # Balance local/global structure
-    n_components=2,          # Output dimensions
-    metric='euclidean',      # Distance metric
-    min_dist=0.1,           # Minimum distance between points
-    spread=1.0,             # Scale of embedded points
-    random_state=42,        # Reproducibility
-    n_epochs=200,           # Training iterations (None = auto)
-    learning_rate=1.0,      # SGD learning rate
-    init='spectral',        # Initialization method
-    low_memory=True,        # Memory-efficient mode
-    verbose=True            # Print progress
+    n_neighbors=15,  # Balance local/global structure
+    n_components=2,  # Output dimensions
+    metric="euclidean",  # Distance metric
+    min_dist=0.1,  # Minimum distance between points
+    spread=1.0,  # Scale of embedded points
+    random_state=42,  # Reproducibility
+    n_epochs=200,  # Training iterations (None = auto)
+    learning_rate=1.0,  # SGD learning rate
+    init="spectral",  # Initialization method
+    low_memory=True,  # Memory-efficient mode
+    verbose=True,  # Print progress
 )
 
 embedding = reducer.fit_transform(data)
@@ -402,9 +402,9 @@ embedding = reducer.fit_transform(data)
 # Train with labels for class separation
 reducer = umap.UMAP(
     n_neighbors=15,
-    target_weight=0.5,           # Balance data structure vs labels
-    target_metric='categorical',  # Metric for labels
-    random_state=42
+    target_weight=0.5,  # Balance data structure vs labels
+    target_metric="categorical",  # Metric for labels
+    random_state=42,
 )
 
 embedding = reducer.fit_transform(data, y=labels)
@@ -415,11 +415,11 @@ embedding = reducer.fit_transform(data, y=labels)
 ```python
 # Optimized for clustering
 reducer = umap.UMAP(
-    n_neighbors=30,      # More global structure
-    min_dist=0.0,        # Allow tight packing
-    n_components=10,     # Higher dimensions for density
-    metric='euclidean',
-    random_state=42
+    n_neighbors=30,  # More global structure
+    min_dist=0.0,  # Allow tight packing
+    n_components=10,  # Higher dimensions for density
+    metric="euclidean",
+    random_state=42,
 )
 
 embedding = reducer.fit_transform(data)
@@ -430,6 +430,7 @@ embedding = reducer.fit_transform(data)
 ```python
 from numba import njit
 
+
 @njit()
 def custom_distance(x, y):
     """Custom distance function (must be Numba-compatible)"""
@@ -437,6 +438,7 @@ def custom_distance(x, y):
     for i in range(x.shape[0]):
         result += abs(x[i] - y[i])
     return result
+
 
 reducer = umap.UMAP(metric=custom_distance)
 embedding = reducer.fit_transform(data)
@@ -449,22 +451,26 @@ import tensorflow as tf
 from umap.parametric_umap import ParametricUMAP
 
 # Define custom encoder
-encoder = tf.keras.Sequential([
-    tf.keras.layers.InputLayer(input_shape=(input_dim,)),
-    tf.keras.layers.Dense(256, activation='relu'),
-    tf.keras.layers.Dropout(0.3),
-    tf.keras.layers.Dense(128, activation='relu'),
-    tf.keras.layers.Dropout(0.3),
-    tf.keras.layers.Dense(2)  # Output dimension
-])
+encoder = tf.keras.Sequential(
+    [
+        tf.keras.layers.InputLayer(input_shape=(input_dim,)),
+        tf.keras.layers.Dense(256, activation="relu"),
+        tf.keras.layers.Dropout(0.3),
+        tf.keras.layers.Dense(128, activation="relu"),
+        tf.keras.layers.Dropout(0.3),
+        tf.keras.layers.Dense(2),  # Output dimension
+    ]
+)
 
 # Define decoder for reconstruction
-decoder = tf.keras.Sequential([
-    tf.keras.layers.InputLayer(input_shape=(2,)),
-    tf.keras.layers.Dense(128, activation='relu'),
-    tf.keras.layers.Dense(256, activation='relu'),
-    tf.keras.layers.Dense(input_dim)
-])
+decoder = tf.keras.Sequential(
+    [
+        tf.keras.layers.InputLayer(input_shape=(2,)),
+        tf.keras.layers.Dense(128, activation="relu"),
+        tf.keras.layers.Dense(256, activation="relu"),
+        tf.keras.layers.Dense(input_dim),
+    ]
+)
 
 # Train parametric UMAP with autoencoder
 embedder = ParametricUMAP(
@@ -477,7 +483,7 @@ embedder = ParametricUMAP(
     batch_size=128,
     n_neighbors=15,
     min_dist=0.1,
-    random_state=42
+    random_state=42,
 )
 
 embedding = embedder.fit_transform(data)
@@ -490,20 +496,20 @@ reconstructed = embedder.inverse_transform(embedding)
 ```python
 # Preserve local density information
 reducer = umap.UMAP(
-    densmap=True,           # Enable DensMAP
-    dens_lambda=2.0,       # Weight of density preservation
-    dens_frac=0.3,         # Fraction for density estimation
-    output_dens=True,      # Output density estimates
+    densmap=True,  # Enable DensMAP
+    dens_lambda=2.0,  # Weight of density preservation
+    dens_frac=0.3,  # Fraction for density estimation
+    output_dens=True,  # Output density estimates
     n_neighbors=15,
     min_dist=0.1,
-    random_state=42
+    random_state=42,
 )
 
 embedding = reducer.fit_transform(data)
 
 # Access density estimates
 original_density = reducer.rad_orig_  # Density in original space
-embedded_density = reducer.rad_emb_   # Density in embedded space
+embedded_density = reducer.rad_emb_  # Density in embedded space
 ```
 
 ### Aligned UMAP for Time Series
@@ -518,9 +524,9 @@ datasets = [day1_data, day2_data, day3_data, day4_data]
 mapper = AlignedUMAP(
     n_neighbors=15,
     alignment_regularisation=1e-2,  # Alignment strength
-    alignment_window_size=2,        # Align with adjacent datasets
+    alignment_window_size=2,  # Align with adjacent datasets
     n_components=2,
-    random_state=42
+    random_state=42,
 )
 
 mapper.fit(datasets)

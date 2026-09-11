@@ -61,15 +61,14 @@ print(odds_ci)
 **Marginal effects:**
 ```python
 # Average marginal effects (AME)
-marginal_effects = results.get_margeff(at='mean')
+marginal_effects = results.get_margeff(at="mean")
 print(marginal_effects.summary())
 
 # Marginal effects at means (MEM)
-marginal_effects_mem = results.get_margeff(at='mean', method='dydx')
+marginal_effects_mem = results.get_margeff(at="mean", method="dydx")
 
 # Marginal effects at representative values
-marginal_effects_custom = results.get_margeff(at='mean',
-                                              atexog={'x1': 1, 'x2': 5})
+marginal_effects_custom = results.get_margeff(at="mean", atexog={"x1": 1, "x2": 5})
 ```
 
 **Predictions:**
@@ -91,8 +90,7 @@ new_probs = results.predict(X_new)
 
 **Model evaluation:**
 ```python
-from sklearn.metrics import (classification_report, confusion_matrix,
-                             roc_auc_score, roc_curve)
+from sklearn.metrics import classification_report, confusion_matrix, roc_auc_score, roc_curve
 
 # Classification report
 print(classification_report(y, predictions))
@@ -188,10 +186,7 @@ import numpy as np
 import pandas as pd
 
 # Get parameter names and values
-params_df = pd.DataFrame({
-    'coef': results.params,
-    'RRR': np.exp(results.params)
-})
+params_df = pd.DataFrame({"coef": results.params, "RRR": np.exp(results.params)})
 print(params_df)
 ```
 
@@ -303,6 +298,7 @@ print(f"Negative Binomial AIC: {nb_results.aic:.2f}")
 
 # Likelihood ratio test (if NB is better)
 from scipy import stats
+
 lr_stat = 2 * (nb_results.llf - poisson_results.llf)
 lr_pval = 1 - stats.chi2.cdf(lr_stat, df=1)  # 1 extra parameter (alpha)
 print(f"LR test p-value: {lr_pval:.4f}")
@@ -325,8 +321,7 @@ For count data with excess zeros.
 - ZeroInflatedNegativeBinomialP (ZINB)
 
 ```python
-from statsmodels.discrete.count_model import (ZeroInflatedPoisson,
-                                               ZeroInflatedNegativeBinomialP)
+from statsmodels.discrete.count_model import ZeroInflatedPoisson, ZeroInflatedNegativeBinomialP
 
 # ZIP model
 zip_model = ZeroInflatedPoisson(y_counts, X, exog_infl=X_inflation)
@@ -345,10 +340,10 @@ print(zip_results.summary())
 # 2. Count model: distribution of counts
 
 # Predicted probabilities of inflation
-inflation_probs = zip_results.predict(X, which='prob')
+inflation_probs = zip_results.predict(X, which="prob")
 
 # Predicted counts
-predicted_counts = zip_results.predict(X, which='mean')
+predicted_counts = zip_results.predict(X, which="mean")
 ```
 
 ### Hurdle Models
@@ -364,9 +359,7 @@ Two-stage model: whether any counts, then how many.
 from statsmodels.discrete.count_model import HurdleCountModel
 
 # Specify count distribution and zero inflation
-model = HurdleCountModel(y_counts, X,
-                         exog_infl=X_hurdle,
-                         dist='poisson')  # or 'negbin'
+model = HurdleCountModel(y_counts, X, exog_infl=X_hurdle, dist="poisson")  # or 'negbin'
 results = model.fit()
 
 print(results.summary())
@@ -389,8 +382,8 @@ For ordered categorical outcomes.
 from statsmodels.miscmodels.ordinal_model import OrderedModel
 
 # y should be ordered integers: 0, 1, 2, ...
-model = OrderedModel(y_ordered, X, distr='logit')  # or 'probit'
-results = model.fit(method='bfgs')
+model = OrderedModel(y_ordered, X, distr="logit")  # or 'probit'
+results = model.fit(method="bfgs")
 
 print(results.summary())
 ```
@@ -398,11 +391,11 @@ print(results.summary())
 **Interpretation:**
 ```python
 # Cutpoints (thresholds between categories)
-cutpoints = results.params[-n_categories+1:]
+cutpoints = results.params[-n_categories + 1 :]
 print("Cutpoints:", cutpoints)
 
 # Coefficients
-coefficients = results.params[:-n_categories+1]
+coefficients = results.params[: -n_categories + 1]
 print("Coefficients:", coefficients)
 
 # Predicted probabilities for each category
@@ -438,6 +431,7 @@ print(f"Log-likelihood: {results.llf:.2f}")
 # Likelihood ratio test vs null model
 lr_stat = 2 * (results.llf - results.llnull)
 from scipy import stats
+
 lr_pval = 1 - stats.chi2.cdf(lr_stat, results.df_model)
 print(f"LR test p-value: {lr_pval}")
 ```
@@ -445,8 +439,7 @@ print(f"LR test p-value: {lr_pval}")
 ### Classification Metrics (Binary)
 
 ```python
-from sklearn.metrics import (accuracy_score, precision_score, recall_score,
-                             f1_score, roc_auc_score)
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
 
 # Predictions
 probs = results.predict(X)
@@ -491,12 +484,13 @@ predicted_counts = pd.Series(np.round(predicted)).value_counts().sort_index()
 
 # Compare distributions
 import matplotlib.pyplot as plt
+
 fig, ax = plt.subplots()
-observed.plot(kind='bar', alpha=0.5, label='Observed', ax=ax)
-predicted_counts.plot(kind='bar', alpha=0.5, label='Predicted', ax=ax)
+observed.plot(kind="bar", alpha=0.5, label="Observed", ax=ax)
+predicted_counts.plot(kind="bar", alpha=0.5, label="Predicted", ax=ax)
 ax.legend()
-ax.set_xlabel('Count')
-ax.set_ylabel('Frequency')
+ax.set_xlabel("Count")
+ax.set_ylabel("Frequency")
 plt.show()
 
 # Rootogram (better visualization)
@@ -536,6 +530,7 @@ model_full = Logit(y, X_full).fit()
 lr_stat = 2 * (model_full.llf - model_reduced.llf)
 df = model_full.df_model - model_reduced.df_model
 from scipy import stats
+
 lr_pval = 1 - stats.chi2.cdf(lr_stat, df)
 print(f"LR test p-value: {lr_pval:.4f}")
 ```
@@ -545,18 +540,20 @@ print(f"LR test p-value: {lr_pval:.4f}")
 ```python
 # Fit multiple models
 models = {
-    'Logit': Logit(y, X).fit(),
-    'Probit': Probit(y, X).fit(),
+    "Logit": Logit(y, X).fit(),
+    "Probit": Probit(y, X).fit(),
     # Add more models
 }
 
 # Compare AIC/BIC
-comparison = pd.DataFrame({
-    'AIC': {name: model.aic for name, model in models.items()},
-    'BIC': {name: model.bic for name, model in models.items()},
-    'Pseudo R²': {name: model.prsquared for name, model in models.items()}
-})
-print(comparison.sort_values('AIC'))
+comparison = pd.DataFrame(
+    {
+        "AIC": {name: model.aic for name, model in models.items()},
+        "BIC": {name: model.bic for name, model in models.items()},
+        "Pseudo R²": {name: model.prsquared for name, model in models.items()},
+    }
+)
+print(comparison.sort_values("AIC"))
 
 # Cross-validation for predictive performance
 from sklearn.model_selection import cross_val_score
@@ -573,7 +570,7 @@ Use R-style formulas for easier specification.
 import statsmodels.formula.api as smf
 
 # Logit with formula
-formula = 'y ~ x1 + x2 + C(category) + x1:x2'
+formula = "y ~ x1 + x2 + C(category) + x1:x2"
 results = smf.logit(formula, data=df).fit()
 
 # MNLogit with formula
@@ -598,7 +595,7 @@ results = model.fit()
 
 # Targeting: select top 20% likely to purchase
 probs = results.predict(X)
-top_20_pct_idx = np.argsort(probs)[-int(0.2*len(probs)):]
+top_20_pct_idx = np.argsort(probs)[-int(0.2 * len(probs)) :]
 ```
 
 ### Multinomial Choice (Transportation Mode)
@@ -636,10 +633,10 @@ zip_model = ZeroInflatedPoisson(claims, X_count, exog_infl=X_inflation)
 results = zip_model.fit()
 
 # P(never file claim)
-never_claim_prob = results.predict(X, which='prob-zero')
+never_claim_prob = results.predict(X, which="prob-zero")
 
 # Expected claims
-expected_claims = results.predict(X, which='mean')
+expected_claims = results.predict(X, which="mean")
 ```
 
 ## Best Practices

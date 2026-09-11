@@ -44,15 +44,12 @@ from ensembl_rest import EnsemblClient
 client = EnsemblClient()
 
 # Look up gene by symbol
-gene_data = client.symbol_lookup(
-    species='human',
-    symbol='BRCA2'
-)
+gene_data = client.symbol_lookup(species="human", symbol="BRCA2")
 
 # Get detailed gene information
 gene_info = client.lookup_id(
-    id='ENSG00000139618',  # BRCA2 Ensembl ID
-    expand=True
+    id="ENSG00000139618",  # BRCA2 Ensembl ID
+    expand=True,
 )
 ```
 
@@ -64,8 +61,7 @@ server = "https://rest.ensembl.org"
 
 # Symbol lookup
 response = requests.get(
-    f"{server}/lookup/symbol/homo_sapiens/BRCA2",
-    headers={"Content-Type": "application/json"}
+    f"{server}/lookup/symbol/homo_sapiens/BRCA2", headers={"Content-Type": "application/json"}
 )
 gene_data = response.json()
 ```
@@ -84,14 +80,14 @@ Fetch genomic, transcript, or protein sequences in various formats (JSON, FASTA,
 ```python
 # Using ensembl_rest package
 sequence = client.sequence_id(
-    id='ENSG00000139618',  # Gene ID
-    content_type='application/json'
+    id="ENSG00000139618",  # Gene ID
+    content_type="application/json",
 )
 
 # Get sequence for a genomic region
 region_seq = client.sequence_region(
-    species='human',
-    region='7:140424943-140624564'  # chromosome:start-end
+    species="human",
+    region="7:140424943-140624564",  # chromosome:start-end
 )
 ```
 
@@ -108,16 +104,10 @@ Query genetic variation data and predict variant consequences using the Variant 
 **VEP example:**
 ```python
 # Predict variant consequences
-vep_result = client.vep_hgvs(
-    species='human',
-    hgvs_notation='ENST00000380152.7:c.803C>T'
-)
+vep_result = client.vep_hgvs(species="human", hgvs_notation="ENST00000380152.7:c.803C>T")
 
 # Query variant by rsID
-variant = client.variation_id(
-    species='human',
-    id='rs699'
-)
+variant = client.variation_id(species="human", id="rs699")
 ```
 
 ### 4. Comparative Genomics
@@ -134,15 +124,12 @@ Perform cross-species comparisons to identify orthologs, paralogs, and evolution
 ```python
 # Find orthologs for a human gene
 orthologs = client.homology_ensemblgene(
-    id='ENSG00000139618',  # Human BRCA2
-    target_species='mouse'
+    id="ENSG00000139618",  # Human BRCA2
+    target_species="mouse",
 )
 
 # Get gene tree
-gene_tree = client.genetree_member_symbol(
-    species='human',
-    symbol='BRCA2'
-)
+gene_tree = client.genetree_member_symbol(species="human", symbol="BRCA2")
 ```
 
 ### 5. Genomic Region Analysis
@@ -158,11 +145,7 @@ Find all genomic features (genes, transcripts, regulatory elements) in a specifi
 **Example:**
 ```python
 # Find all features in a region
-features = client.overlap_region(
-    species='human',
-    region='7:140424943-140624564',
-    feature='gene'
-)
+features = client.overlap_region(species="human", region="7:140424943-140624564", feature="gene")
 ```
 
 ### 6. Assembly Mapping
@@ -176,13 +159,9 @@ Convert coordinates between different genome assemblies (e.g., GRCh37 to GRCh38)
 from ensembl_rest import AssemblyMapper
 
 # Map coordinates from GRCh37 to GRCh38
-mapper = AssemblyMapper(
-    species='human',
-    asm_from='GRCh37',
-    asm_to='GRCh38'
-)
+mapper = AssemblyMapper(species="human", asm_from="GRCh37", asm_to="GRCh38")
 
-mapped = mapper.map(chrom='7', start=140453136, end=140453136)
+mapped = mapper.map(chrom="7", start=140453136, end=140453136)
 ```
 
 ## API Best Practices
@@ -204,22 +183,19 @@ Always implement proper error handling:
 import requests
 import time
 
+
 def query_ensembl(endpoint, params=None, max_retries=3):
     server = "https://rest.ensembl.org"
     headers = {"Content-Type": "application/json"}
 
     for attempt in range(max_retries):
-        response = requests.get(
-            f"{server}{endpoint}",
-            headers=headers,
-            params=params
-        )
+        response = requests.get(f"{server}{endpoint}", headers=headers, params=params)
 
         if response.status_code == 200:
             return response.json()
         elif response.status_code == 429:
             # Rate limited - wait and retry
-            retry_after = int(response.headers.get('Retry-After', 1))
+            retry_after = int(response.headers.get("Retry-After", 1))
             time.sleep(retry_after)
         else:
             response.raise_for_status()
@@ -290,7 +266,7 @@ To query available species and assemblies:
 species_list = client.info_species()
 
 # Get assembly information for a species
-assembly_info = client.info_assembly(species='human')
+assembly_info = client.info_assembly(species="human")
 ```
 
 Common species identifiers:

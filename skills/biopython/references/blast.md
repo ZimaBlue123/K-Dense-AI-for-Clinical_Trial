@@ -19,9 +19,9 @@ record = SeqIO.read("sequence.fasta", "fasta")
 
 # Run BLAST search
 result_handle = NCBIWWW.qblast(
-    program="blastn",           # BLAST program
-    database="nt",              # Database to search
-    sequence=str(record.seq)    # Query sequence
+    program="blastn",  # BLAST program
+    database="nt",  # Database to search
+    sequence=str(record.seq),  # Query sequence
 )
 
 # Save results
@@ -57,12 +57,12 @@ result_handle = NCBIWWW.qblast(
     program="blastn",
     database="nt",
     sequence=str(record.seq),
-    expect=0.001,              # E-value threshold
-    hitlist_size=50,           # Number of hits to return
-    alignments=25,             # Number of alignments to show
-    word_size=11,              # Word size for initial match
-    gapcosts="5 2",            # Gap costs (open extend)
-    format_type="XML"          # Output format (default)
+    expect=0.001,  # E-value threshold
+    hitlist_size=50,  # Number of hits to return
+    alignments=25,  # Number of alignments to show
+    word_size=11,  # Word size for initial match
+    gapcosts="5 2",  # Gap costs (open extend)
+    format_type="XML",  # Output format (default)
 )
 ```
 
@@ -176,8 +176,8 @@ blastn_cline = NcbiblastnCommandline(
     query="input.fasta",
     db="local_database",
     evalue=0.001,
-    outfmt=5,                    # XML format
-    out="results.xml"
+    outfmt=5,  # XML format
+    out="results.xml",
 )
 
 # Run BLAST
@@ -185,6 +185,7 @@ stdout, stderr = blastn_cline()
 
 # Parse results
 from Bio.Blast import NCBIXML
+
 with open("results.xml") as result_handle:
     blast_record = NCBIXML.read(result_handle)
 ```
@@ -204,9 +205,7 @@ from Bio.Blast.Applications import NcbimakeblastdbCommandline
 
 # Create nucleotide database
 makedb_cline = NcbimakeblastdbCommandline(
-    input_file="sequences.fasta",
-    dbtype="nucl",
-    out="my_database"
+    input_file="sequences.fasta", dbtype="nucl", out="my_database"
 )
 stdout, stderr = makedb_cline()
 ```
@@ -222,19 +221,21 @@ def get_best_hits(blast_record, num_hits=10, e_value_thresh=0.001):
     for alignment in blast_record.alignments[:num_hits]:
         for hsp in alignment.hsps:
             if hsp.expect < e_value_thresh:
-                hits.append({
-                    'title': alignment.title,
-                    'accession': alignment.accession,
-                    'length': alignment.length,
-                    'e_value': hsp.expect,
-                    'score': hsp.score,
-                    'identities': hsp.identities,
-                    'align_length': hsp.align_length,
-                    'query_start': hsp.query_start,
-                    'query_end': hsp.query_end,
-                    'sbjct_start': hsp.sbjct_start,
-                    'sbjct_end': hsp.sbjct_end
-                })
+                hits.append(
+                    {
+                        "title": alignment.title,
+                        "accession": alignment.accession,
+                        "length": alignment.length,
+                        "e_value": hsp.expect,
+                        "score": hsp.score,
+                        "identities": hsp.identities,
+                        "align_length": hsp.align_length,
+                        "query_start": hsp.query_start,
+                        "query_end": hsp.query_end,
+                        "sbjct_start": hsp.sbjct_start,
+                        "sbjct_end": hsp.sbjct_end,
+                    }
+                )
                 break  # Only take best HSP per alignment
     return hits
 ```
@@ -245,6 +246,7 @@ def get_best_hits(blast_record, num_hits=10, e_value_thresh=0.001):
 def calculate_percent_identity(hsp):
     """Calculate percent identity for an HSP."""
     return (hsp.identities / hsp.align_length) * 100
+
 
 # Use it
 for alignment in blast_record.alignments:
@@ -261,6 +263,7 @@ from Bio import Entrez, SeqIO
 
 Entrez.email = "your.email@example.com"
 
+
 def fetch_hit_sequences(blast_record, num_sequences=5):
     """Fetch sequences for top BLAST hits."""
     sequences = []
@@ -269,12 +272,7 @@ def fetch_hit_sequences(blast_record, num_sequences=5):
         accession = alignment.accession
 
         # Fetch sequence from GenBank
-        handle = Entrez.efetch(
-            db="nucleotide",
-            id=accession,
-            rettype="fasta",
-            retmode="text"
-        )
+        handle = Entrez.efetch(db="nucleotide", id=accession, rettype="fasta", retmode="text")
         record = SeqIO.read(handle, "fasta")
         handle.close()
 
@@ -290,16 +288,13 @@ def fetch_hit_sequences(blast_record, num_sequences=5):
 ```python
 # Run BLAST with tabular output
 blastn_cline = NcbiblastnCommandline(
-    query="input.fasta",
-    db="database",
-    outfmt=6,
-    out="results.txt"
+    query="input.fasta", db="database", outfmt=6, out="results.txt"
 )
 
 # Parse tabular results
 with open("results.txt") as f:
     for line in f:
-        fields = line.strip().split('\t')
+        fields = line.strip().split("\t")
         query_id = fields[0]
         subject_id = fields[1]
         percent_identity = float(fields[2])
@@ -318,7 +313,7 @@ blastn_cline = NcbiblastnCommandline(
     query="input.fasta",
     db="database",
     outfmt="6 qseqid sseqid pident length evalue bitscore qseq sseq",
-    out="results.txt"
+    out="results.txt",
 )
 ```
 
@@ -378,7 +373,7 @@ result_handle = NCBIWWW.qblast(
     "blastn",
     "nt",
     str(query_record.seq),
-    entrez_query="Mus musculus[Organism]"  # Restrict to mouse
+    entrez_query="Mus musculus[Organism]",  # Restrict to mouse
 )
 
 blast_record = NCBIXML.read(result_handle)

@@ -33,9 +33,9 @@ protein = ESMProtein(
         FunctionAnnotation(
             label="green_fluorescent_protein",
             start=65,
-            end=75  # Chromophore region
+            end=75,  # Chromophore region
         )
-    ]
+    ],
 )
 
 # Step 2: Generate initial sequence with function conditioning
@@ -44,7 +44,7 @@ print("Step 2: Generating initial sequence...")
 config = GenerationConfig(
     track="sequence",
     num_steps=target_length // 3,  # Gradual generation
-    temperature=0.7  # Moderate diversity
+    temperature=0.7,  # Moderate diversity
 )
 protein = model.generate(protein, config)
 print(f"Generated sequence: {protein.sequence[:50]}...")
@@ -52,10 +52,7 @@ print(f"Generated sequence: {protein.sequence[:50]}...")
 # Step 3: Predict structure
 print("Step 3: Predicting structure...")
 
-config = GenerationConfig(
-    track="structure",
-    num_steps=target_length // 2
-)
+config = GenerationConfig(track="structure", num_steps=target_length // 2)
 protein = model.generate(protein, config)
 print(f"Structure predicted, coordinates shape: {protein.coordinates.shape}")
 
@@ -67,17 +64,17 @@ sequence_list = list(protein.sequence)
 # Keep chromophore region, refine others
 for i in range(0, 65):
     if i % 3 == 0:  # Refine every third position
-        sequence_list[i] = '_'
+        sequence_list[i] = "_"
 for i in range(75, target_length):
     if i % 3 == 0:
-        sequence_list[i] = '_'
+        sequence_list[i] = "_"
 
-protein.sequence = ''.join(sequence_list)
+protein.sequence = "".join(sequence_list)
 
 config = GenerationConfig(
     track="sequence",
     num_steps=50,
-    temperature=0.5  # Lower temperature for refinement
+    temperature=0.5,  # Lower temperature for refinement
 )
 protein = model.generate(protein, config)
 
@@ -114,17 +111,18 @@ def analyze_gfp(protein):
     # Check barrel structure (GFPs have beta-barrel)
     # Analyze secondary structure if available
     if protein.secondary_structure:
-        beta_content = protein.secondary_structure.count('E') / len(protein.sequence)
+        beta_content = protein.secondary_structure.count("E") / len(protein.sequence)
         print(f"Beta sheet content: {beta_content:.2%}")
 
     # Check sequence similarity to known GFPs
     # (Would require BLAST or alignment tool in practice)
 
     return {
-        'length': len(protein.sequence),
-        'chromophore': chromophore_region,
-        'coordinates_available': protein.coordinates is not None
+        "length": len(protein.sequence),
+        "chromophore": chromophore_region,
+        "coordinates_available": protein.coordinates is not None,
     }
+
 
 analysis = analyze_gfp(protein)
 print(f"\nAnalysis results: {analysis}")
@@ -166,22 +164,18 @@ for i in range(num_variants):
     seq_list = list(parent_sequence)
 
     # Select random positions to mutate
-    mutation_positions = np.random.choice(
-        len(seq_list),
-        size=positions_to_mutate,
-        replace=False
-    )
+    mutation_positions = np.random.choice(len(seq_list), size=positions_to_mutate, replace=False)
 
     for pos in mutation_positions:
-        seq_list[pos] = '_'
+        seq_list[pos] = "_"
 
     # Generate variant
-    variant_protein = ESMProtein(sequence=''.join(seq_list))
+    variant_protein = ESMProtein(sequence="".join(seq_list))
 
     config = GenerationConfig(
         track="sequence",
         num_steps=positions_to_mutate * 2,
-        temperature=0.8  # Higher diversity
+        temperature=0.8,  # Higher diversity
     )
 
     variant = model.generate(variant_protein, config)
@@ -199,10 +193,7 @@ variant_proteins_with_structure = []
 for i, seq in enumerate(variants):
     protein = ESMProtein(sequence=seq)
 
-    config = GenerationConfig(
-        track="structure",
-        num_steps=len(seq) // 2
-    )
+    config = GenerationConfig(track="structure", num_steps=len(seq) // 2)
 
     protein_with_structure = model.generate(protein, config)
     variant_proteins_with_structure.append(protein_with_structure)
@@ -213,10 +204,12 @@ for i, seq in enumerate(variants):
 # Step 3: Analyze variant diversity
 print("\nAnalyzing variant diversity...")
 
+
 # Calculate Hamming distances from parent
 def hamming_distance(seq1, seq2):
     """Calculate Hamming distance between sequences."""
     return sum(c1 != c2 for c1, c2 in zip(seq1, seq2))
+
 
 distances = [hamming_distance(parent_sequence, var) for var in variants]
 print(f"Average mutations per variant: {np.mean(distances):.1f}")
@@ -229,12 +222,14 @@ from esm.models.esmc import ESMC
 
 embedding_model = ESMC.from_pretrained("esmc-300m").to("cuda")
 
+
 def get_embedding(sequence):
     """Get mean-pooled embedding for sequence."""
     protein = ESMProtein(sequence=sequence)
     tensor = embedding_model.encode(protein)
     emb = embedding_model.forward(tensor)
     return emb.mean(dim=1).cpu().detach().numpy().flatten()
+
 
 variant_embeddings = np.array([get_embedding(seq) for seq in variants])
 
@@ -278,7 +273,7 @@ print("\nSaving results...")
 with open("variant_library.fasta", "w") as f:
     f.write(f">Parent\n{parent_sequence}\n\n")
     for i, var in enumerate(variants):
-        f.write(f">Variant_{i+1}_Cluster_{cluster_labels[i]}\n{var}\n")
+        f.write(f">Variant_{i + 1}_Cluster_{cluster_labels[i]}\n{var}\n")
 
 with open("representative_variants.fasta", "w") as f:
     for i, rep in enumerate(representatives):
@@ -323,7 +318,7 @@ for i in range(num_designs):
     # Start with structure, remove sequence
     design_protein = ESMProtein(
         coordinates=target_protein.coordinates.copy(),
-        secondary_structure=target_protein.secondary_structure
+        secondary_structure=target_protein.secondary_structure,
     )
 
     # Generate sequence for this structure
@@ -331,7 +326,7 @@ for i in range(num_designs):
         track="sequence",
         num_steps=len(original_sequence),
         temperature=0.7,
-        condition_on_coordinates_only=True
+        condition_on_coordinates_only=True,
     )
 
     designed = model.generate(design_protein, config)
@@ -349,10 +344,7 @@ for seq in optimized_sequences:
     # Predict structure for designed sequence
     test_protein = ESMProtein(sequence=seq)
 
-    config = GenerationConfig(
-        track="structure",
-        num_steps=len(seq) // 2
-    )
+    config = GenerationConfig(track="structure", num_steps=len(seq) // 2)
 
     predicted = model.generate(test_protein, config)
 
@@ -366,6 +358,7 @@ print(f"Validated {len(validated_designs)}/{num_designs} designs")
 # Step 3: Analyze sequence properties
 print("\nAnalyzing sequence properties...")
 
+
 def calculate_properties(sequence):
     """Calculate basic sequence properties."""
     # Hydrophobicity (simplified)
@@ -375,17 +368,20 @@ def calculate_properties(sequence):
     # Charge
     positive = "KR"
     negative = "DE"
-    net_charge = sum(1 for aa in sequence if aa in positive) - sum(1 for aa in sequence if aa in negative)
+    net_charge = sum(1 for aa in sequence if aa in positive) - sum(
+        1 for aa in sequence if aa in negative
+    )
 
     # Aromatic content
     aromatic = "FWY"
     aromatic_fraction = sum(1 for aa in sequence if aa in aromatic) / len(sequence)
 
     return {
-        'hydrophobic_fraction': hydrophobic_fraction,
-        'net_charge': net_charge,
-        'aromatic_fraction': aromatic_fraction
+        "hydrophobic_fraction": hydrophobic_fraction,
+        "net_charge": net_charge,
+        "aromatic_fraction": aromatic_fraction,
     }
+
 
 # Compare to original
 original_props = calculate_properties(original_sequence)
@@ -397,9 +393,9 @@ print(f"  Aromatic: {original_props['aromatic_fraction']:.2%}")
 # Analyze designs
 design_properties = [calculate_properties(seq) for seq in validated_designs]
 
-avg_hydrophobic = np.mean([p['hydrophobic_fraction'] for p in design_properties])
-avg_charge = np.mean([p['net_charge'] for p in design_properties])
-avg_aromatic = np.mean([p['aromatic_fraction'] for p in design_properties])
+avg_hydrophobic = np.mean([p["hydrophobic_fraction"] for p in design_properties])
+avg_charge = np.mean([p["net_charge"] for p in design_properties])
+avg_aromatic = np.mean([p["aromatic_fraction"] for p in design_properties])
 
 print(f"\nDesigned sequences (average):")
 print(f"  Hydrophobic: {avg_hydrophobic:.2%}")
@@ -409,25 +405,27 @@ print(f"  Aromatic: {avg_aromatic:.2%}")
 # Step 4: Rank designs
 print("\nRanking designs...")
 
+
 def score_design(sequence, original_props):
     """Score design based on desired properties."""
     props = calculate_properties(sequence)
 
     # Prefer higher hydrophobic content (for stability)
-    hydrophobic_score = props['hydrophobic_fraction']
+    hydrophobic_score = props["hydrophobic_fraction"]
 
     # Prefer similar charge to original
-    charge_score = 1.0 / (1.0 + abs(props['net_charge'] - original_props['net_charge']))
+    charge_score = 1.0 / (1.0 + abs(props["net_charge"] - original_props["net_charge"]))
 
     # Combined score
     return hydrophobic_score * 0.6 + charge_score * 0.4
+
 
 scores = [(seq, score_design(seq, original_props)) for seq in validated_designs]
 scores.sort(key=lambda x: x[1], reverse=True)
 
 print("\nTop 5 designs:")
 for i, (seq, score) in enumerate(scores[:5]):
-    print(f"\n{i+1}. Score: {score:.3f}")
+    print(f"\n{i + 1}. Score: {score:.3f}")
     print(f"   Sequence: {seq[:40]}...")
 
 # Step 5: Save results
@@ -438,7 +436,7 @@ with open("optimized_sequences.fasta", "w") as f:
 
     for i, (seq, score) in enumerate(scores):
         props = calculate_properties(seq)
-        f.write(f">Design_{i+1}_Score_{score:.3f}\n")
+        f.write(f">Design_{i + 1}_Score_{score:.3f}\n")
         f.write(f"# Hydrophobic: {props['hydrophobic_fraction']:.2%}, ")
         f.write(f"Charge: {props['net_charge']:+d}, ")
         f.write(f"Aromatic: {props['aromatic_fraction']:.2%}\n")
@@ -472,6 +470,7 @@ esmc_model = ESMC.from_pretrained("esmc-600m").to("cuda")
 # Example: Predict if protein is an enzyme
 # (In practice, you'd have a labeled training set)
 
+
 def predict_function_generative(sequence):
     """Predict function using ESM3 generative approach."""
 
@@ -481,12 +480,13 @@ def predict_function_generative(sequence):
     config = GenerationConfig(
         track="function",
         num_steps=20,
-        temperature=0.3  # Low temperature for confident predictions
+        temperature=0.3,  # Low temperature for confident predictions
     )
 
     protein_with_function = esm3_model.generate(protein, config)
 
     return protein_with_function.function_annotations
+
 
 def predict_function_embedding(sequence, function_classifier):
     """Predict function using ESM C embeddings + classifier."""
@@ -505,11 +505,12 @@ def predict_function_embedding(sequence, function_classifier):
 
     return prediction[0], probability[0]
 
+
 # Example workflow with test sequences
 test_sequences = {
     "kinase": "MPRTKEINDAGLIVHSPQWFYKARNDTESLGKIVHEF",
     "protease": "AGLIVHSPQWFYKARNDTESLGKIVHEFPMCDEGH",
-    "transporter": "KTEFLNDGRPMLIVHSPQWFYKARNDTESLGKIVH"
+    "transporter": "KTEFLNDGRPMLIVHSPQWFYKARNDTESLGKIVH",
 }
 
 print("Predicting functions...\n")
@@ -605,17 +606,13 @@ print("\nGenerating visualization...")
 
 plt.figure(figsize=(12, 8))
 scatter = plt.scatter(
-    embeddings_2d[:, 0],
-    embeddings_2d[:, 1],
-    c=cluster_labels,
-    cmap='viridis',
-    alpha=0.6
+    embeddings_2d[:, 0], embeddings_2d[:, 1], c=cluster_labels, cmap="viridis", alpha=0.6
 )
 plt.colorbar(scatter)
 plt.title("Protein Sequence Clustering (ESM C Embeddings)")
 plt.xlabel("t-SNE 1")
 plt.ylabel("t-SNE 2")
-plt.savefig("protein_clusters.png", dpi=300, bbox_inches='tight')
+plt.savefig("protein_clusters.png", dpi=300, bbox_inches="tight")
 print("Visualization saved to: protein_clusters.png")
 
 # Step 5: Analyze clusters
@@ -651,7 +648,7 @@ def process_large_dataset(sequences, batch_size=32):
     results = []
 
     for i in range(0, len(sequences), batch_size):
-        batch = sequences[i:i + batch_size]
+        batch = sequences[i : i + batch_size]
 
         # Process batch
         batch_results = [process_sequence(seq) for seq in batch]
@@ -672,6 +669,7 @@ def process_large_dataset(sequences, batch_size=32):
 ```python
 from concurrent.futures import ThreadPoolExecutor
 import asyncio
+
 
 def parallel_workflow(sequences, n_workers=4):
     """Process sequences in parallel."""

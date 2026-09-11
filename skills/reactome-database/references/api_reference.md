@@ -23,6 +23,7 @@ GET /data/database/version
 **Example:**
 ```python
 import requests
+
 response = requests.get("https://reactome.org/ContentService/data/database/version")
 print(response.text)  # e.g., "94"
 ```
@@ -54,6 +55,7 @@ GET /data/query/{id}
 **Example:**
 ```python
 import requests
+
 response = requests.get("https://reactome.org/ContentService/data/query/R-HSA-69278")
 pathway = response.json()
 print(f"Pathway: {pathway['displayName']}")
@@ -124,8 +126,7 @@ GET /data/query?name={query}
 **Example:**
 ```python
 response = requests.get(
-    "https://reactome.org/ContentService/data/query",
-    params={"name": "glycolysis"}
+    "https://reactome.org/ContentService/data/query", params={"name": "glycolysis"}
 )
 results = response.json()
 ```
@@ -207,7 +208,7 @@ data = "\n".join(identifiers)
 response = requests.post(
     "https://reactome.org/AnalysisService/identifiers/",
     headers={"Content-Type": "text/plain"},
-    data=data
+    data=data,
 )
 
 result = response.json()
@@ -391,17 +392,14 @@ Use `/projection/` endpoints to map non-human identifiers to human pathways:
 response = requests.post(
     "https://reactome.org/AnalysisService/identifiers/projection/",
     headers={"Content-Type": "text/plain"},
-    data=mouse_genes
+    data=mouse_genes,
 )
 ```
 
 ### 4. Process Large Result Sets
 For analyses returning many pathways, filter by significance:
 ```python
-significant_pathways = [
-    p for p in result["pathways"]
-    if p["entities"]["fdr"] < 0.05
-]
+significant_pathways = [p for p in result["pathways"] if p["entities"]["fdr"] < 0.05]
 ```
 
 ## Integration Examples
@@ -410,6 +408,7 @@ significant_pathways = [
 ```python
 import requests
 import json
+
 
 def analyze_gene_list(genes, output_file="analysis_results.json"):
     """
@@ -420,7 +419,7 @@ def analyze_gene_list(genes, output_file="analysis_results.json"):
     response = requests.post(
         "https://reactome.org/AnalysisService/identifiers/",
         headers={"Content-Type": "text/plain"},
-        data=data
+        data=data,
     )
 
     if response.status_code != 200:
@@ -430,19 +429,20 @@ def analyze_gene_list(genes, output_file="analysis_results.json"):
     token = result["summary"]["token"]
 
     # Filter significant pathways (FDR < 0.05)
-    significant = [
-        p for p in result["pathways"]
-        if p["entities"]["fdr"] < 0.05
-    ]
+    significant = [p for p in result["pathways"] if p["entities"]["fdr"] < 0.05]
 
     # Save results
     with open(output_file, "w") as f:
-        json.dump({
-            "token": token,
-            "total_pathways": len(result["pathways"]),
-            "significant_pathways": len(significant),
-            "pathways": significant
-        }, f, indent=2)
+        json.dump(
+            {
+                "token": token,
+                "total_pathways": len(result["pathways"]),
+                "significant_pathways": len(significant),
+                "pathways": significant,
+            },
+            f,
+            indent=2,
+        )
 
     # Generate browser URL for top pathway
     if significant:
@@ -451,6 +451,7 @@ def analyze_gene_list(genes, output_file="analysis_results.json"):
         print(f"View top result: {url}")
 
     return result
+
 
 # Usage
 genes = ["TP53", "BRCA1", "BRCA2", "CDK1", "CDK2"]

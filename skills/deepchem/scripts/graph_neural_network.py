@@ -52,21 +52,15 @@ def create_model(model_type, n_tasks, mode="classification"):
             n_tasks=n_tasks, mode=mode, batch_size=128, learning_rate=0.001, dropout=0.0
         )
     elif model_type == "gat":
-        return dc.models.GATModel(
-            n_tasks=n_tasks, mode=mode, batch_size=128, learning_rate=0.001
-        )
+        return dc.models.GATModel(n_tasks=n_tasks, mode=mode, batch_size=128, learning_rate=0.001)
     elif model_type == "attentivefp":
         return dc.models.AttentiveFPModel(
             n_tasks=n_tasks, mode=mode, batch_size=128, learning_rate=0.001
         )
     elif model_type == "mpnn":
-        return dc.models.MPNNModel(
-            n_tasks=n_tasks, mode=mode, batch_size=128, learning_rate=0.001
-        )
+        return dc.models.MPNNModel(n_tasks=n_tasks, mode=mode, batch_size=128, learning_rate=0.001)
     elif model_type == "dmpnn":
-        return dc.models.DMPNNModel(
-            n_tasks=n_tasks, mode=mode, batch_size=128, learning_rate=0.001
-        )
+        return dc.models.DMPNNModel(n_tasks=n_tasks, mode=mode, batch_size=128, learning_rate=0.001)
     else:
         raise ValueError(f"Unknown model type: {model_type}")
 
@@ -93,9 +87,7 @@ def train_on_molnet(dataset_name, model_type, n_epochs=50):
     # Load dataset with graph featurization
     print(f"\nLoading {dataset_name} dataset with GraphConv featurizer...")
     load_func = getattr(dc.molnet, f"load_{dataset_name}")
-    tasks, datasets, transformers = load_func(
-        featurizer="GraphConv", splitter="scaffold"
-    )
+    tasks, datasets, transformers = load_func(featurizer="GraphConv", splitter="scaffold")
     train, valid, test = datasets
 
     n_tasks = len(tasks)
@@ -172,9 +164,7 @@ def train_on_custom_data(
     # Load and featurize data
     print(f"\nLoading data from {data_path}...")
     featurizer = dc.feat.MolGraphConvFeaturizer()
-    loader = dc.data.CSVLoader(
-        tasks=target_cols, feature_field=smiles_col, featurizer=featurizer
-    )
+    loader = dc.data.CSVLoader(tasks=target_cols, feature_field=smiles_col, featurizer=featurizer)
     dataset = loader.create_dataset(data_path)
 
     print(f"Loaded {len(dataset)} molecules")
@@ -243,9 +233,7 @@ def main():
         default=None,
         help="MoleculeNet dataset to use",
     )
-    parser.add_argument(
-        "--data", type=str, default=None, help="Path to custom CSV file"
-    )
+    parser.add_argument("--data", type=str, default=None, help="Path to custom CSV file")
     parser.add_argument(
         "--task-type",
         type=str,
@@ -259,12 +247,8 @@ def main():
         default=["target"],
         help="Names of target columns (for custom data)",
     )
-    parser.add_argument(
-        "--smiles-col", type=str, default="smiles", help="Name of SMILES column"
-    )
-    parser.add_argument(
-        "--epochs", type=int, default=50, help="Number of training epochs"
-    )
+    parser.add_argument("--smiles-col", type=str, default="smiles", help="Name of SMILES column")
+    parser.add_argument("--epochs", type=int, default=50, help="Number of training epochs")
 
     args = parser.parse_args()
 
@@ -283,9 +267,7 @@ def main():
     # Train model
     try:
         if args.dataset:
-            model, results = train_on_molnet(
-                args.dataset, args.model, n_epochs=args.epochs
-            )
+            model, results = train_on_molnet(args.dataset, args.model, n_epochs=args.epochs)
         else:
             model, test_set = train_on_custom_data(
                 args.data,

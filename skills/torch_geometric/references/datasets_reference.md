@@ -14,7 +14,8 @@ This document provides a comprehensive catalog of all datasets available in `tor
 
 ```python
 from torch_geometric.datasets import Planetoid
-dataset = Planetoid(root='/tmp/Cora', name='Cora')
+
+dataset = Planetoid(root="/tmp/Cora", name="Cora")
 ```
 
 ### Coauthor
@@ -26,7 +27,8 @@ dataset = Planetoid(root='/tmp/Cora', name='Cora')
 
 ```python
 from torch_geometric.datasets import Coauthor
-dataset = Coauthor(root='/tmp/CS', name='CS')
+
+dataset = Coauthor(root="/tmp/CS", name="CS")
 ```
 
 ### Amazon
@@ -38,7 +40,8 @@ dataset = Coauthor(root='/tmp/CS', name='CS')
 
 ```python
 from torch_geometric.datasets import Amazon
-dataset = Amazon(root='/tmp/Computers', name='Computers')
+
+dataset = Amazon(root="/tmp/Computers", name="Computers")
 ```
 
 ### CitationFull
@@ -48,7 +51,8 @@ dataset = Amazon(root='/tmp/Computers', name='Computers')
 
 ```python
 from torch_geometric.datasets import CitationFull
-dataset = CitationFull(root='/tmp/Cora', name='Cora')
+
+dataset = CitationFull(root="/tmp/Cora", name="Cora")
 ```
 
 ## Graph Classification
@@ -67,7 +71,8 @@ dataset = CitationFull(root='/tmp/Cora', name='Cora')
 
 ```python
 from torch_geometric.datasets import TUDataset
-dataset = TUDataset(root='/tmp/ENZYMES', name='ENZYMES')
+
+dataset = TUDataset(root="/tmp/ENZYMES", name="ENZYMES")
 ```
 
 ### MoleculeNet
@@ -87,7 +92,8 @@ dataset = TUDataset(root='/tmp/ENZYMES', name='ENZYMES')
 
 ```python
 from torch_geometric.datasets import MoleculeNet
-dataset = MoleculeNet(root='/tmp/ESOL', name='ESOL')
+
+dataset = MoleculeNet(root="/tmp/ESOL", name="ESOL")
 ```
 
 ## Molecular and Chemical Datasets
@@ -99,7 +105,8 @@ dataset = MoleculeNet(root='/tmp/ESOL', name='ESOL')
 
 ```python
 from torch_geometric.datasets import QM7b
-dataset = QM7b(root='/tmp/QM7b')
+
+dataset = QM7b(root="/tmp/QM7b")
 ```
 
 ### QM9
@@ -109,7 +116,8 @@ dataset = QM7b(root='/tmp/QM7b')
 
 ```python
 from torch_geometric.datasets import QM9
-dataset = QM9(root='/tmp/QM9')
+
+dataset = QM9(root="/tmp/QM9")
 ```
 
 ### ZINC
@@ -119,7 +127,8 @@ dataset = QM9(root='/tmp/QM9')
 
 ```python
 from torch_geometric.datasets import ZINC
-dataset = ZINC(root='/tmp/ZINC', subset=True)
+
+dataset = ZINC(root="/tmp/ZINC", subset=True)
 ```
 
 ### AQSOL
@@ -128,7 +137,8 @@ dataset = ZINC(root='/tmp/ZINC', subset=True)
 
 ```python
 from torch_geometric.datasets import AQSOL
-dataset = AQSOL(root='/tmp/AQSOL')
+
+dataset = AQSOL(root="/tmp/AQSOL")
 ```
 
 ### MD17
@@ -138,7 +148,8 @@ dataset = AQSOL(root='/tmp/AQSOL')
 
 ```python
 from torch_geometric.datasets import MD17
-dataset = MD17(root='/tmp/MD17', name='benzene')
+
+dataset = MD17(root="/tmp/MD17", name="benzene")
 ```
 
 ### PCQM4Mv2
@@ -148,7 +159,8 @@ dataset = MD17(root='/tmp/MD17', name='benzene')
 
 ```python
 from torch_geometric.datasets import PCQM4Mv2
-dataset = PCQM4Mv2(root='/tmp/PCQM4Mv2')
+
+dataset = PCQM4Mv2(root="/tmp/PCQM4Mv2")
 ```
 
 ## Social Networks
@@ -161,7 +173,8 @@ dataset = PCQM4Mv2(root='/tmp/PCQM4Mv2')
 
 ```python
 from torch_geometric.datasets import Reddit
-dataset = Reddit(root='/tmp/Reddit')
+
+dataset = Reddit(root="/tmp/Reddit")
 ```
 
 ### Reddit2
@@ -170,7 +183,8 @@ dataset = Reddit(root='/tmp/Reddit')
 
 ```python
 from torch_geometric.datasets import Reddit2
-dataset = Reddit2(root='/tmp/Reddit2')
+
+dataset = Reddit2(root="/tmp/Reddit2")
 ```
 
 ### Twitch
@@ -180,7 +194,8 @@ dataset = Reddit2(root='/tmp/Reddit2')
 
 ```python
 from torch_geometric.datasets import Twitch
-dataset = Twitch(root='/tmp/Twitch', name='DE')
+
+dataset = Twitch(root="/tmp/Twitch", name="DE")
 ```
 
 ### Facebook
@@ -189,7 +204,8 @@ dataset = Twitch(root='/tmp/Twitch', name='DE')
 
 ```python
 from torch_geometric.datasets import FacebookPagePage
-dataset = FacebookPagePage(root='/tmp/Facebook')
+
+dataset = FacebookPagePage(root="/tmp/Facebook")
 ```
 
 ### GitHub
@@ -198,7 +214,8 @@ dataset = FacebookPagePage(root='/tmp/Facebook')
 
 ```python
 from torch_geometric.datasets import GitHub
-dataset = GitHub(root='/tmp/GitHub')
+
+dataset = GitHub(root="/tmp/GitHub")
 ```
 
 ## Knowledge Graphs
@@ -210,7 +227,8 @@ dataset = GitHub(root='/tmp/GitHub')
 
 ```python
 from torch_geometric.datasets import Entities
-dataset = Entities(root='/tmp/AIFB', name='AIFB')
+
+dataset = Entities(root="/tmp/AIFB", name="AIFB")
 ```
 
 ### WordNet18
@@ -220,7 +238,8 @@ dataset = Entities(root='/tmp/AIFB', name='AIFB')
 
 ```python
 from torch_geometric.datasets import WordNet18
-dataset = WordNet18(root='/tmp/WordNet18')
+
+dataset = WordNet18(root="/tmp/WordNet18")
 ```
 
 ### WordNet18RR
@@ -229,7 +248,8 @@ dataset = WordNet18(root='/tmp/WordNet18')
 
 ```python
 from torch_geometric.datasets import WordNet18RR
-dataset = WordNet18RR(root='/tmp/WordNet18RR')
+
+dataset = WordNet18RR(root="/tmp/WordNet18RR")
 ```
 
 ### FB15k-237
@@ -239,7 +259,8 @@ dataset = WordNet18RR(root='/tmp/WordNet18RR')
 
 ```python
 from torch_geometric.datasets import FB15k_237
-dataset = FB15k_237(root='/tmp/FB15k')
+
+dataset = FB15k_237(root="/tmp/FB15k")
 ```
 
 ## Heterogeneous Graphs
@@ -252,7 +273,8 @@ dataset = FB15k_237(root='/tmp/FB15k')
 
 ```python
 from torch_geometric.datasets import OGB_MAG
-dataset = OGB_MAG(root='/tmp/OGB_MAG')
+
+dataset = OGB_MAG(root="/tmp/OGB_MAG")
 ```
 
 ### MovieLens
@@ -264,7 +286,8 @@ dataset = OGB_MAG(root='/tmp/OGB_MAG')
 
 ```python
 from torch_geometric.datasets import MovieLens
-dataset = MovieLens(root='/tmp/MovieLens', model_name='100k')
+
+dataset = MovieLens(root="/tmp/MovieLens", model_name="100k")
 ```
 
 ### IMDB
@@ -274,7 +297,8 @@ dataset = MovieLens(root='/tmp/MovieLens', model_name='100k')
 
 ```python
 from torch_geometric.datasets import IMDB
-dataset = IMDB(root='/tmp/IMDB')
+
+dataset = IMDB(root="/tmp/IMDB")
 ```
 
 ### DBLP
@@ -284,7 +308,8 @@ dataset = IMDB(root='/tmp/IMDB')
 
 ```python
 from torch_geometric.datasets import DBLP
-dataset = DBLP(root='/tmp/DBLP')
+
+dataset = DBLP(root="/tmp/DBLP")
 ```
 
 ### LastFM
@@ -294,7 +319,8 @@ dataset = DBLP(root='/tmp/DBLP')
 
 ```python
 from torch_geometric.datasets import LastFM
-dataset = LastFM(root='/tmp/LastFM')
+
+dataset = LastFM(root="/tmp/LastFM")
 ```
 
 ## Temporal Graphs
@@ -305,7 +331,8 @@ dataset = LastFM(root='/tmp/LastFM')
 
 ```python
 from torch_geometric.datasets import BitcoinOTC
-dataset = BitcoinOTC(root='/tmp/BitcoinOTC')
+
+dataset = BitcoinOTC(root="/tmp/BitcoinOTC")
 ```
 
 ### ICEWS18
@@ -314,7 +341,8 @@ dataset = BitcoinOTC(root='/tmp/BitcoinOTC')
 
 ```python
 from torch_geometric.datasets import ICEWS18
-dataset = ICEWS18(root='/tmp/ICEWS18')
+
+dataset = ICEWS18(root="/tmp/ICEWS18")
 ```
 
 ### GDELT
@@ -323,7 +351,8 @@ dataset = ICEWS18(root='/tmp/ICEWS18')
 
 ```python
 from torch_geometric.datasets import GDELT
-dataset = GDELT(root='/tmp/GDELT')
+
+dataset = GDELT(root="/tmp/GDELT")
 ```
 
 ### JODIEDataset
@@ -333,7 +362,8 @@ dataset = GDELT(root='/tmp/GDELT')
 
 ```python
 from torch_geometric.datasets import JODIEDataset
-dataset = JODIEDataset(root='/tmp/JODIE', name='Reddit')
+
+dataset = JODIEDataset(root="/tmp/JODIE", name="Reddit")
 ```
 
 ## 3D Meshes and Point Clouds
@@ -346,7 +376,8 @@ dataset = JODIEDataset(root='/tmp/JODIE', name='Reddit')
 
 ```python
 from torch_geometric.datasets import ShapeNet
-dataset = ShapeNet(root='/tmp/ShapeNet', categories=['Airplane'])
+
+dataset = ShapeNet(root="/tmp/ShapeNet", categories=["Airplane"])
 ```
 
 ### ModelNet
@@ -358,7 +389,8 @@ dataset = ShapeNet(root='/tmp/ShapeNet', categories=['Airplane'])
 
 ```python
 from torch_geometric.datasets import ModelNet
-dataset = ModelNet(root='/tmp/ModelNet', name='10')
+
+dataset = ModelNet(root="/tmp/ModelNet", name="10")
 ```
 
 ### FAUST
@@ -368,7 +400,8 @@ dataset = ModelNet(root='/tmp/ModelNet', name='10')
 
 ```python
 from torch_geometric.datasets import FAUST
-dataset = FAUST(root='/tmp/FAUST')
+
+dataset = FAUST(root="/tmp/FAUST")
 ```
 
 ### CoMA
@@ -378,7 +411,8 @@ dataset = FAUST(root='/tmp/FAUST')
 
 ```python
 from torch_geometric.datasets import CoMA
-dataset = CoMA(root='/tmp/CoMA')
+
+dataset = CoMA(root="/tmp/CoMA")
 ```
 
 ### S3DIS
@@ -388,7 +422,8 @@ dataset = CoMA(root='/tmp/CoMA')
 
 ```python
 from torch_geometric.datasets import S3DIS
-dataset = S3DIS(root='/tmp/S3DIS', test_area=6)
+
+dataset = S3DIS(root="/tmp/S3DIS", test_area=6)
 ```
 
 ## Image and Vision Datasets
@@ -400,7 +435,8 @@ dataset = S3DIS(root='/tmp/S3DIS', test_area=6)
 
 ```python
 from torch_geometric.datasets import MNISTSuperpixels
-dataset = MNISTSuperpixels(root='/tmp/MNIST')
+
+dataset = MNISTSuperpixels(root="/tmp/MNIST")
 ```
 
 ### Flickr
@@ -410,7 +446,8 @@ dataset = MNISTSuperpixels(root='/tmp/MNIST')
 
 ```python
 from torch_geometric.datasets import Flickr
-dataset = Flickr(root='/tmp/Flickr')
+
+dataset = Flickr(root="/tmp/Flickr")
 ```
 
 ### PPI
@@ -420,7 +457,8 @@ dataset = Flickr(root='/tmp/Flickr')
 
 ```python
 from torch_geometric.datasets import PPI
-dataset = PPI(root='/tmp/PPI', split='train')
+
+dataset = PPI(root="/tmp/PPI", split="train")
 ```
 
 ## Small Classic Graphs
@@ -432,6 +470,7 @@ dataset = PPI(root='/tmp/PPI', split='train')
 
 ```python
 from torch_geometric.datasets import KarateClub
+
 dataset = KarateClub()
 ```
 
@@ -461,9 +500,11 @@ PyG integrates seamlessly with OGB datasets:
 
 ```python
 from torch_geometric.datasets import OGB_MAG, OGB_PPA
+
 # or
 from ogb.nodeproppred import PygNodePropPredDataset
-dataset = PygNodePropPredDataset(name='ogbn-arxiv')
+
+dataset = PygNodePropPredDataset(name="ogbn-arxiv")
 ```
 
 ## Synthetic Datasets
@@ -474,6 +515,7 @@ dataset = PygNodePropPredDataset(name='ogbn-arxiv')
 
 ```python
 from torch_geometric.datasets import FakeDataset
+
 dataset = FakeDataset(num_graphs=100, avg_num_nodes=50)
 ```
 
@@ -483,7 +525,8 @@ dataset = FakeDataset(num_graphs=100, avg_num_nodes=50)
 
 ```python
 from torch_geometric.datasets import StochasticBlockModelDataset
-dataset = StochasticBlockModelDataset(root='/tmp/SBM', num_graphs=1000)
+
+dataset = StochasticBlockModelDataset(root="/tmp/SBM", num_graphs=1000)
 ```
 
 ### ExplainerDataset
@@ -492,6 +535,7 @@ dataset = StochasticBlockModelDataset(root='/tmp/SBM', num_graphs=1000)
 
 ```python
 from torch_geometric.datasets import ExplainerDataset
+
 dataset = ExplainerDataset(num_graphs=1000)
 ```
 
@@ -503,7 +547,8 @@ dataset = ExplainerDataset(num_graphs=1000)
 
 ```python
 from torch_geometric.datasets import QM8
-dataset = QM8(root='/tmp/QM8')
+
+dataset = QM8(root="/tmp/QM8")
 ```
 
 ## Biological Networks
@@ -537,8 +582,7 @@ Already listed above under Image and Vision Datasets
 from torch_geometric.datasets import Planetoid
 from torch_geometric.transforms import NormalizeFeatures
 
-dataset = Planetoid(root='/tmp/Cora', name='Cora',
-                    transform=NormalizeFeatures())
+dataset = Planetoid(root="/tmp/Cora", name="Cora", transform=NormalizeFeatures())
 ```
 
 ### Train/Val/Test Splits
@@ -551,14 +595,16 @@ test_data = data[data.test_mask]
 
 # For graph classification
 from torch_geometric.loader import DataLoader
-train_dataset = dataset[:int(len(dataset) * 0.8)]
-test_dataset = dataset[int(len(dataset) * 0.8):]
+
+train_dataset = dataset[: int(len(dataset) * 0.8)]
+test_dataset = dataset[int(len(dataset) * 0.8) :]
 train_loader = DataLoader(train_dataset, batch_size=32)
 ```
 
 ### Custom Data Loading
 ```python
 from torch_geometric.data import Data, Dataset
+
 
 class MyCustomDataset(Dataset):
     def __init__(self, root, transform=None):

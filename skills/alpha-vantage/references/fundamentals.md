@@ -26,8 +26,8 @@ data = av_get("OVERVIEW", symbol="AAPL")
 # "SharesOutstanding", "DividendDate", "ExDividendDate", "FiscalYearEnd"
 
 print(data["MarketCapitalization"])  # "2850000000000"
-print(data["PERatio"])               # "29.50"
-print(data["Sector"])                # "TECHNOLOGY"
+print(data["PERatio"])  # "29.50"
+print(data["Sector"])  # "TECHNOLOGY"
 ```
 
 ## ETF_PROFILE — ETF Profile & Holdings
@@ -77,16 +77,16 @@ Returns annual and quarterly income statements.
 
 ```python
 data = av_get("INCOME_STATEMENT", symbol="IBM")
-annual = data["annualReports"]    # list, most recent first
+annual = data["annualReports"]  # list, most recent first
 quarterly = data["quarterlyReports"]  # list, most recent first
 
 yr = annual[0]  # Most recent fiscal year
-print(yr["fiscalDateEnding"])       # "2023-12-31"
-print(yr["totalRevenue"])           # "61860000000"
-print(yr["grossProfit"])            # "32688000000"
-print(yr["operatingIncome"])        # "..."
-print(yr["netIncome"])              # "..."
-print(yr["ebitda"])                 # "..."
+print(yr["fiscalDateEnding"])  # "2023-12-31"
+print(yr["totalRevenue"])  # "61860000000"
+print(yr["grossProfit"])  # "32688000000"
+print(yr["operatingIncome"])  # "..."
+print(yr["netIncome"])  # "..."
+print(yr["ebitda"])  # "..."
 # Other keys: "reportedCurrency", "costOfRevenue", "costofGoodsAndServicesSold",
 #   "sellingGeneralAndAdministrative", "researchAndDevelopment",
 #   "operatingExpenses", "investmentIncomeNet", "netInterestIncome",
@@ -107,9 +107,9 @@ data = av_get("BALANCE_SHEET", symbol="IBM")
 annual = data["annualReports"]
 
 yr = annual[0]
-print(yr["totalAssets"])           # "..."
-print(yr["totalLiabilities"])      # "..."
-print(yr["totalShareholderEquity"]) # "..."
+print(yr["totalAssets"])  # "..."
+print(yr["totalLiabilities"])  # "..."
+print(yr["totalShareholderEquity"])  # "..."
 # Other keys: "reportedCurrency", "fiscalDateEnding",
 #   "cashAndCashEquivalentsAtCarryingValue", "cashAndShortTermInvestments",
 #   "inventory", "currentNetReceivables", "totalCurrentAssets",
@@ -134,10 +134,10 @@ data = av_get("CASH_FLOW", symbol="IBM")
 annual = data["annualReports"]
 
 yr = annual[0]
-print(yr["operatingCashflow"])              # "..."
-print(yr["capitalExpenditures"])            # "..."
-print(yr["cashflowFromInvestment"])         # "..."
-print(yr["cashflowFromFinancing"])          # "..."
+print(yr["operatingCashflow"])  # "..."
+print(yr["capitalExpenditures"])  # "..."
+print(yr["cashflowFromInvestment"])  # "..."
+print(yr["cashflowFromFinancing"])  # "..."
 # Other keys: "reportedCurrency", "fiscalDateEnding",
 #   "paymentsForRepurchaseOfCommonStock", "dividendPayout",
 #   "dividendPayoutCommonStock", "dividendPayoutPreferredStock",
@@ -185,9 +185,14 @@ Returns earnings release schedule for the next 3-12 months.
 ```python
 # Returns CSV format - use requests directly
 import requests, csv, io, os
+
 resp = requests.get(
     "https://www.alphavantage.co/query",
-    params={"function": "EARNINGS_CALENDAR", "symbol": "IBM", "apikey": os.environ["ALPHAVANTAGE_API_KEY"]}
+    params={
+        "function": "EARNINGS_CALENDAR",
+        "symbol": "IBM",
+        "apikey": os.environ["ALPHAVANTAGE_API_KEY"],
+    },
 )
 reader = csv.DictReader(io.StringIO(resp.text))
 for row in reader:
@@ -202,7 +207,7 @@ for row in reader:
 # Returns CSV
 resp = requests.get(
     "https://www.alphavantage.co/query",
-    params={"function": "LISTING_STATUS", "state": "active", "apikey": API_KEY}
+    params={"function": "LISTING_STATUS", "state": "active", "apikey": API_KEY},
 )
 reader = csv.DictReader(io.StringIO(resp.text))
 # Fields: "symbol", "name", "exchange", "assetType", "ipoDate",
@@ -214,8 +219,7 @@ reader = csv.DictReader(io.StringIO(resp.text))
 ```python
 # Returns CSV
 resp = requests.get(
-    "https://www.alphavantage.co/query",
-    params={"function": "IPO_CALENDAR", "apikey": API_KEY}
+    "https://www.alphavantage.co/query", params={"function": "IPO_CALENDAR", "apikey": API_KEY}
 )
 reader = csv.DictReader(io.StringIO(resp.text))
 for row in reader:

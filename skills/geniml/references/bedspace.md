@@ -97,14 +97,10 @@ The `-n` parameter controls the number of results returned.
 from geniml.bedspace import BEDSpaceModel
 
 # Load trained model
-model = BEDSpaceModel.load('model/')
+model = BEDSpaceModel.load("model/")
 
 # Query similar items
-results = model.search(
-    query="T_cell",
-    search_type="l2r",
-    top_k=10
-)
+results = model.search(query="T_cell", search_type="l2r", top_k=10)
 ```
 
 ## Best Practices

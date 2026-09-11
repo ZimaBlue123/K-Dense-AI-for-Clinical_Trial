@@ -101,7 +101,7 @@ Mathematical transformations of coordinates:
 
 ```python
 # Rotate around origin (0, 0) by angle in degrees
-rotated = gdf.geometry.rotate(angle=45, origin='center')
+rotated = gdf.geometry.rotate(angle=45, origin="center")
 
 # Rotate around custom point
 rotated = gdf.geometry.rotate(angle=45, origin=(100, 100))
@@ -114,7 +114,7 @@ rotated = gdf.geometry.rotate(angle=45, origin=(100, 100))
 scaled = gdf.geometry.scale(xfact=2.0, yfact=2.0)
 
 # Scale with origin
-scaled = gdf.geometry.scale(xfact=2.0, yfact=2.0, origin='center')
+scaled = gdf.geometry.scale(xfact=2.0, yfact=2.0, origin="center")
 ```
 
 ### Translate
@@ -128,7 +128,7 @@ translated = gdf.geometry.translate(xoff=100, yoff=50)
 
 ```python
 # Shear transformation
-skewed = gdf.geometry.skew(xs=15, ys=0, origin='center')
+skewed = gdf.geometry.skew(xs=15, ys=0, origin="center")
 ```
 
 ### Custom Affine Transform

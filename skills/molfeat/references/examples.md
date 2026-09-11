@@ -121,13 +121,7 @@ from molfeat.calc import FPCalculator
 import datamol as dm
 
 # Prepare data
-smiles_list = [
-    "CCO",
-    "CC(=O)O",
-    "c1ccccc1",
-    "CC(C)O",
-    "CCCC"
-]
+smiles_list = ["CCO", "CC(=O)O", "c1ccccc1", "CC(C)O", "CCCC"]
 
 # Create transformer
 calc = FPCalculator("ecfp")
@@ -143,17 +137,17 @@ print(f"Features shape: {features.shape}")  # (5, 2048)
 ```python
 # Handle invalid SMILES gracefully
 smiles_with_errors = [
-    "CCO",           # Valid
-    "invalid",       # Invalid
-    "CC(=O)O",       # Valid
-    "xyz123",        # Invalid
+    "CCO",  # Valid
+    "invalid",  # Invalid
+    "CC(=O)O",  # Valid
+    "xyz123",  # Invalid
 ]
 
 transformer = MoleculeTransformer(
     FPCalculator("ecfp"),
     n_jobs=-1,
-    verbose=True,           # Log errors
-    ignore_errors=True      # Continue on failure
+    verbose=True,  # Log errors
+    ignore_errors=True,  # Continue on failure
 )
 
 features = transformer(smiles_with_errors)
@@ -168,21 +162,14 @@ from molfeat.trans import FeatConcat, MoleculeTransformer
 from molfeat.calc import FPCalculator
 
 # Combine MACCS (167) + ECFP (2048) = 2215 dimensions
-concat_calc = FeatConcat([
-    FPCalculator("maccs"),
-    FPCalculator("ecfp", radius=3, fpSize=2048)
-])
+concat_calc = FeatConcat([FPCalculator("maccs"), FPCalculator("ecfp", radius=3, fpSize=2048)])
 
 transformer = MoleculeTransformer(concat_calc, n_jobs=-1)
 features = transformer(smiles_list)
 print(f"Combined features shape: {features.shape}")  # (n, 2215)
 
 # Triple combination
-triple_concat = FeatConcat([
-    FPCalculator("maccs"),
-    FPCalculator("ecfp"),
-    FPCalculator("rdkit")
-])
+triple_concat = FeatConcat([FPCalculator("maccs"), FPCalculator("ecfp"), FPCalculator("rdkit")])
 ```
 
 ### Saving and Loading Configurations
@@ -192,10 +179,7 @@ from molfeat.trans import MoleculeTransformer
 from molfeat.calc import FPCalculator
 
 # Create and save transformer
-transformer = MoleculeTransformer(
-    FPCalculator("ecfp", radius=3, fpSize=2048),
-    n_jobs=-1
-)
+transformer = MoleculeTransformer(FPCalculator("ecfp", radius=3, fpSize=2048), n_jobs=-1)
 
 # Save to YAML
 transformer.to_state_yaml_file("my_featurizer.yml")
@@ -261,9 +245,7 @@ print(f"ChemBERTa embeddings shape: {embeddings.shape}")
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 
-X_train, X_test, y_train, y_test = train_test_split(
-    embeddings, labels, test_size=0.2
-)
+X_train, X_test, y_train, y_test = train_test_split(embeddings, labels, test_size=0.2)
 
 clf = RandomForestClassifier()
 clf.fit(X_train, y_train)
@@ -317,10 +299,12 @@ from molfeat.trans import MoleculeTransformer
 from molfeat.calc import FPCalculator
 
 # Create ML pipeline
-pipeline = Pipeline([
-    ('featurizer', MoleculeTransformer(FPCalculator("ecfp"), n_jobs=-1)),
-    ('classifier', RandomForestClassifier(n_estimators=100))
-])
+pipeline = Pipeline(
+    [
+        ("featurizer", MoleculeTransformer(FPCalculator("ecfp"), n_jobs=-1)),
+        ("classifier", RandomForestClassifier(n_estimators=100)),
+    ]
+)
 
 # Train and evaluate
 pipeline.fit(smiles_train, y_train)
@@ -338,16 +322,15 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.svm import SVC
 
 # Define pipeline
-pipeline = Pipeline([
-    ('featurizer', MoleculeTransformer(FPCalculator("ecfp"), n_jobs=-1)),
-    ('classifier', SVC())
-])
+pipeline = Pipeline(
+    [("featurizer", MoleculeTransformer(FPCalculator("ecfp"), n_jobs=-1)), ("classifier", SVC())]
+)
 
 # Define parameter grid
 param_grid = {
-    'classifier__C': [0.1, 1, 10],
-    'classifier__kernel': ['rbf', 'linear'],
-    'classifier__gamma': ['scale', 'auto']
+    "classifier__C": [0.1, 1, 10],
+    "classifier__kernel": ["rbf", "linear"],
+    "classifier__gamma": ["scale", "auto"],
 }
 
 # Grid search
@@ -365,14 +348,11 @@ from sklearn.metrics import roc_auc_score
 
 # Test different featurizers
 featurizers = {
-    'ECFP': FPCalculator("ecfp"),
-    'MACCS': FPCalculator("maccs"),
-    'RDKit': FPCalculator("rdkit"),
-    'Descriptors': RDKitDescriptors2D(),
-    'Combined': FeatConcat([
-        FPCalculator("maccs"),
-        FPCalculator("ecfp")
-    ])
+    "ECFP": FPCalculator("ecfp"),
+    "MACCS": FPCalculator("maccs"),
+    "RDKit": FPCalculator("rdkit"),
+    "Descriptors": RDKitDescriptors2D(),
+    "Combined": FeatConcat([FPCalculator("maccs"), FPCalculator("ecfp")]),
 }
 
 results = {}
@@ -400,6 +380,7 @@ from torch.utils.data import Dataset, DataLoader
 from molfeat.trans import MoleculeTransformer
 from molfeat.calc import FPCalculator
 
+
 # Custom dataset
 class MoleculeDataset(Dataset):
     def __init__(self, smiles, labels, transformer):
@@ -410,15 +391,14 @@ class MoleculeDataset(Dataset):
         return len(self.labels)
 
     def __getitem__(self, idx):
-        return (
-            torch.tensor(self.features[idx], dtype=torch.float32),
-            self.labels[idx]
-        )
+        return (torch.tensor(self.features[idx], dtype=torch.float32), self.labels[idx])
+
 
 # Prepare data
 transformer = MoleculeTransformer(FPCalculator("ecfp"), n_jobs=-1)
 train_dataset = MoleculeDataset(smiles_train, y_train, transformer)
 train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
+
 
 # Simple neural network
 class MoleculeClassifier(nn.Module):
@@ -432,11 +412,12 @@ class MoleculeClassifier(nn.Module):
             nn.ReLU(),
             nn.Dropout(0.3),
             nn.Linear(256, 1),
-            nn.Sigmoid()
+            nn.Sigmoid(),
         )
 
     def forward(self, x):
         return self.network(x)
+
 
 # Train model
 model = MoleculeClassifier(input_dim=2048)
@@ -462,6 +443,7 @@ for epoch in range(10):
 from molfeat.trans import MoleculeTransformer
 import datamol as dm
 
+
 class CustomTransformer(MoleculeTransformer):
     def preprocess(self, mol):
         """Custom preprocessing: standardize molecule"""
@@ -476,6 +458,7 @@ class CustomTransformer(MoleculeTransformer):
 
         return mol
 
+
 # Use custom transformer
 transformer = CustomTransformer(FPCalculator("ecfp"), n_jobs=-1)
 features = transformer(smiles_list)
@@ -487,12 +470,14 @@ features = transformer(smiles_list)
 import datamol as dm
 from molfeat.calc import RDKitDescriptors3D
 
+
 # Generate conformers
 def prepare_3d_mol(smiles):
     mol = dm.to_mol(smiles)
     mol = dm.add_hs(mol)
     mol = dm.conform.generate_conformers(mol, n_confs=1)
     return mol
+
 
 # 3D descriptors
 calc_3d = RDKitDescriptors3D()
@@ -514,10 +499,7 @@ smiles_large = load_large_dataset()  # e.g., 100,000 molecules
 
 # Test different parallelization levels
 for n_jobs in [1, 2, 4, -1]:
-    transformer = MoleculeTransformer(
-        FPCalculator("ecfp"),
-        n_jobs=n_jobs
-    )
+    transformer = MoleculeTransformer(FPCalculator("ecfp"), n_jobs=n_jobs)
 
     start = time.time()
     features = transformer(smiles_large)
@@ -610,7 +592,7 @@ X_scaled = scaler.fit_transform(X)
 
 # Build linear model
 model = Ridge(alpha=1.0)
-scores = cross_val_score(model, X_scaled, y, cv=5, scoring='r2')
+scores = cross_val_score(model, X_scaled, y, cv=5, scoring="r2")
 print(f"R² = {scores.mean():.3f} (+/- {scores.std():.3f})")
 
 # Fit final model
@@ -666,11 +648,7 @@ for i, idx in enumerate(top_indices, 1):
 
 ```python
 # Use ignore_errors to skip invalid molecules
-transformer = MoleculeTransformer(
-    FPCalculator("ecfp"),
-    ignore_errors=True,
-    verbose=True
-)
+transformer = MoleculeTransformer(FPCalculator("ecfp"), ignore_errors=True, verbose=True)
 
 # Filter out None values after transformation
 features = transformer(smiles_list)
@@ -687,12 +665,13 @@ def featurize_in_chunks(smiles_list, transformer, chunk_size=10000):
     all_features = []
 
     for i in range(0, len(smiles_list), chunk_size):
-        chunk = smiles_list[i:i+chunk_size]
+        chunk = smiles_list[i : i + chunk_size]
         features = transformer(chunk)
         all_features.append(features)
-        print(f"Processed {i+len(chunk)}/{len(smiles_list)}")
+        print(f"Processed {i + len(chunk)}/{len(smiles_list)}")
 
     return np.vstack(all_features)
+
 
 # Use with large dataset
 features = featurize_in_chunks(large_smiles_list, transformer)
@@ -705,12 +684,14 @@ import random
 import numpy as np
 import torch
 
+
 # Set all random seeds
 def set_seed(seed=42):
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
+
 
 set_seed(42)
 
@@ -719,5 +700,6 @@ transformer.to_state_yaml_file("config.yml")
 
 # Document version
 import molfeat
+
 print(f"molfeat version: {molfeat.__version__}")
 ```
