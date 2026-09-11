@@ -30,6 +30,16 @@ classifiers = [
 # of truth is `requirements.txt` (consumed directly by `pip install -r`).
 # Hatch will discover the project metadata above without bundling deps.
 
+dependencies = [
+    "pytest>=9.1.1",
+    "python-dotenv>=1.0.0",
+]
+
+[dependency-groups]
+dev = [
+    "skills-ref @ git+https://github.com/agentskills/agentskills.git#subdirectory=skills-ref",
+]
+
 [tool.hatch.build.targets.wheel]
 packages = ["scripts"]
 
@@ -86,4 +96,4 @@ exclude = [
 [tool.pytest.ini_options]
 minversion = "8.0"
 testpaths = ["tests"]
-addopts = "-ra --strict-markers"
+addopts = "-ra --strict-markers --import-mode=importlib"
